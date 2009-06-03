@@ -1,0 +1,5 @@
+window name=widWin title="Widget = matrix"
+matrix nrow=2 ncol=3 rowlabels="'Row A' 'Row B'" \
+   collabels="'Col 1' 'Col 2' 'Col 3'" \
+values="10 20 30 100 200 300" names="a b c d e f" \
+   font="times 10 italic"

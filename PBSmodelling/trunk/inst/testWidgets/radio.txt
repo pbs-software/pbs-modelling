@@ -1,0 +1,6 @@
+window name=widWin title="Widget = radio"
+grid 1 4 pady=10
+   radio name=junk value=0 text="None"
+   radio name=junk value=1 text="Option A"
+   radio name=junk value=2 text="Option B"
+   radio name=junk value=3 text="Option C"

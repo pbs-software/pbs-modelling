@@ -1,0 +1,14 @@
+window title="Lissajous Curve"
+grid 1 2
+  label text=Pars: font=bold
+  vector length=4 names="m n phi k" \
+    labels="'x cycles' 'y cycles' 'y phase' points" \
+    values="2 3 0 1000" vertical=T
+grid 1 2
+  label text=History: font=bold
+  history
+grid 1 2
+  grid 2 1
+    radio name=ptype text=lines  value="l" mode=character
+    radio name=ptype text=points value="p" mode=character
+button text=Plot func=drawLiss font=bold
