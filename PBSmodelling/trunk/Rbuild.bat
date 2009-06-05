@@ -13,6 +13,6 @@ SET PBS_NO_PAUSE=1
 call RPathCheck.bat
 
 if not defined PBSERROR (
-  Rcmd install %1 )
+  Rcmd INSTALL %1 )
 
 :end
