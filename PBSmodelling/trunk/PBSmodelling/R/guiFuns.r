@@ -159,6 +159,7 @@
 		return(.PBSmod[[winName]]$widgetPtrs[[key]])
 
 	.PBSmod[[winName]]$widgetPtrs[[key]] <<- list(...)
+
 }
 
 
@@ -373,6 +374,19 @@
 				if (any(wid$vecnames!=""))
 					names(retData[[wid$names]]) <- wid$vecnames
 			}
+		}
+	}
+	
+	#droplist widget - get position of selected item (and possibly the complete set of possible choices)
+	for(wid in .PBSmod[[winName]]$widgets) {
+		if (wid$type=="droplist") {
+			wid_name <- paste( wid$name, ".id", sep="" )
+			
+			#get widget ptr (not widget's variable ptr)
+			tk_widget <- data[[ wid$name ]]$tclwidget
+			
+			#get selected index (not value)
+			retData[[wid_name]] <- as.integer( tcl( tk_widget, "getvalue" ) )
 		}
 	}
 
@@ -2599,6 +2613,110 @@ parseWinFile <- function(fname, astext=FALSE)
 	return(tkWidget)
 }
 
+.createWidget.spinbox <- function(tk, widget, winName)
+{
+	if (!is.null(widget$label))
+	if (widget$label!="") {
+		#if label is set, then create a 2x1 grid
+		label <- widget$label
+		widget$label <- "" #blank it out, inf loop if not.
+		newgridwidget <-
+		list(type="grid", nrow=1, ncol=2, font="", byrow=TRUE, borderwidth=1, relief="flat", padx=0, pady=0, fg=widget$fg, bg=widget$bg, .widgets=
+			list(
+				list(
+					list(type="label", text=label, padx=0, pady=0, font=widget$font, fg=widget$fg, bg=widget$bg),
+					widget
+				)
+			)
+		)
+		return(.createWidget.grid(tk, newgridwidget, winName))
+	}
+	
+	#create real tk widget spinbox below
+	argList <- list(parent=tk, type="SpinBox", editable=TRUE, range=c( widget$from, widget$to, widget$by ) )
+	if (!is.null(widget$entryfg) && widget$entryfg!="") {
+		argList$foreground=widget$entryfg
+		argList$selectforeground=widget$entryfg
+		argList$entryfg=widget$entryfg
+	}
+	if (!is.null(widget$entrybg) && widget$entrybg!="") {
+		argList$background=widget$entrybg
+		argList$insertbackground=widget$entrybg
+		argList$selectbackground=widget$entrybg
+		argList$entrybg=widget$entrybg
+		
+	}
+	if (!is.null(widget$entryfont) && widget$entryfont!="") 
+		argList$font <- .createTkFont(widget$entryfont)
+		
+	if( is.na( widget$value ) )
+		widget$value = widget$from
+		
+	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
+	argList$width<-widget$width
+	
+	#setup callback function
+	
+	tkWidget<-do.call("tkwidget", argList)
+
+	enter <- !is.null(widget$enter)
+	if (enter)
+		enter <- widget$enter
+	if (enter) {
+		#dont update it (unless an return was pressed) as it can slow it down a lot
+		tkbind(tkWidget,"<KeyPress-Return>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+	}
+	else
+		tkbind(tkWidget,"<KeyRelease>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+	return(tkWidget)
+}
+
+.createWidget.droplist <- function(tk, widget, winName)
+{
+	print( widget$values )
+	#create real tk widget below
+	argList <- list(parent=tk, type="ComboBox", editable=FALSE,values=widget$values)
+	if (!is.null(widget$fg) && widget$fg!="") {
+		#see http://tcltk.free.fr/Bwidget/ComboBox.html for possible options
+		argList$foreground=widget$fg
+		#argList$entryfg=widget$fg
+		argList$selectforeground=widget$fg
+	}
+	if (!is.null(widget$bg) && widget$bg!="") {
+		#argList$background=widget$bg #this affects the colour of the drop down arrow
+		argList$selectbackground=widget$bg #covers what's selected - but stays after the item is selected
+		argList$insertbackground=widget$bg
+		argList$highlightbackground=widget$bg
+		argList$entrybg=widget$bg
+	}
+	if (!is.null(widget$font) && widget$font!="")
+		argList$font <- .createTkFont(widget$font)
+	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(widget$values[ widget$selected ]))$tclvar
+	argList$width<-widget$width
+
+	#TODO fix this
+	#callback func	
+	if (widget[["function"]]!="")
+		argList$modifycmd = function(...) { .extractData(widget[["function"]], widget$action, winName) }
+
+	
+	spinbox_widget <- do.call( "tkwidget", argList )
+
+	#save widget - so we can use tcl( spinbox_widget, "getvalue" ) at a later time
+	.map.set(winName, widget$name, tclwidget=spinbox_widget )
+
+	enter <- !is.null(widget$enter)
+	if (enter)
+		enter <- widget$enter
+	if (enter) {
+		#dont update it (unless an return was pressed) as it can slow it down a lot
+		tkbind(spinbox_widget,"<KeyPress-Return>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+	}
+	else
+		tkbind(spinbox_widget,"<KeyRelease>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+	return(spinbox_widget)
+}
+
 .createWidget.radio <- function(tk, widget, winName)
 {
 	argList <- list(parent=tk, text=widget$text, value=widget$value)
@@ -3755,7 +3873,7 @@ clearWinVal <- function()
 # -----------------------------------------------------------
 .convertMode <- function(x, mode)
 {
-
+	#cat( "converting: <<", x, ">> to", mode,"\n")
 	#TODO - fix regexs
 	#they dont slow down, but will mess up with NAs
 

@@ -19,4 +19,7 @@ Packaged on", pkg_date, "
 Pacific Biological Station, Nanaimo
 
 ")
+
+	#TODO find a better place
+	tclRequire("BWidget")
 }
