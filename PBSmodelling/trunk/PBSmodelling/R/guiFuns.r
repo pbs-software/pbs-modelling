@@ -243,8 +243,19 @@
 	if (length(data)<1)
 		return(NULL)
 
+	superobjects_to_process <- list() #superobjects (which scroll) which are stored elsewhere
+
 	#extract values from tcl into an R list whose index corresponds to the data list
 	for(i in 1:length(data)) {
+		if( any( grep( "^\\[superobject\\]",  keys[i] ) ) ) {
+			#skip superobjects
+			#get superobject name
+			
+			tmp <- gsub( "]d$", "]", keys[i] )
+			tmp <- gsub( "\\[[a-z0-9,]*\\]", "", tmp )
+			superobjects_to_process[[ tmp ]] = TRUE
+			next
+		}
 		wid <- .PBSmod[[winName]]$widgets[[keys[i]]]
 		if (!is.null(data[[i]]$tclvar)) {
 			values[[i]] <- tclvalue(data[[i]]$tclvar)
@@ -388,6 +399,12 @@
 			#get selected index (not value)
 			retData[[wid_name]] <- as.integer( tcl( tk_widget, "getvalue" ) )
 		}
+	}
+	
+	#superobjects to process
+	for( k in names( superobjects_to_process ) ) {
+		.superobject.saveValues( winName, k ) #save currently visible data
+		retData[[ k ]] <- .PBSmod[[ winName ]]$widgets[[ k ]]$.data
 	}
 
 	return(retData)
@@ -1871,7 +1888,12 @@ parseWinFile <- function(fname, astext=FALSE)
 
 .createWidget.label <- function(tk, widget, winName)
 {
-	argList <- list(parent=tk, text=widget$text)
+	argList <- list(parent=tk)
+	if( !is.null(widget$name) && widget$name != "" ) {
+		argList$text<-tclvalue( .map.add(winName, widget$name, tclvar=tclVar(widget$text))$tclvar )
+	} else {
+		argList$text = widget$text
+	}
 	if (!is.null(widget$fg) && widget$fg!="")
 		argList$foreground=widget$fg
 	if (!is.null(widget$bg) && widget$bg!="")
@@ -1884,6 +1906,10 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$wraplength <- widget$wraplength 
 
 	tkWidget<-do.call("tklabel", argList)
+	if( !is.null(widget$name) && widget$name != "" ) {
+		tkconfigure( tkWidget,textvariable= .map.get(winName, widget$name )$tclvar )
+	}
+
 	return(tkWidget)
 }
 
@@ -2241,13 +2267,11 @@ parseWinFile <- function(fname, astext=FALSE)
 
 .createWidget.data <- function(tk, widget, winName)
 {
-
 	nrow <- widget$nrow
 	ncol <- widget$ncol
 
 	names <- widget$names
 	modes <- widget$modes
-
 
 	rowlabels <- widget$rowlabels
 	rownames <- widget$rownames
@@ -2306,7 +2330,7 @@ parseWinFile <- function(fname, astext=FALSE)
 			colLabelOffset <- 1
 
 
-	#single labels should be displayed as the title
+	#single column labels should be displayed as the title
 	if (nCollabels==1 && ncol>1) {
 		wid$toptitle<-collabels[1]
 		wid$topfont<-widget$font
@@ -2351,7 +2375,10 @@ parseWinFile <- function(fname, astext=FALSE)
 					tmp_i <- i
 					if (all(collabels[1]=="NULL"))
 						tmp_i <- tmp_i - 1
-					wid$.widgets[[tmp_i]][[j]] <- list(type='label', text=text, font=widget$font, bg=widget$bg, fg=widget$fg)
+					#define a row label (per each row)
+					row_number = tmp_i - 1 #for renaming row labels
+					label_name <- paste( widget$name, "[rowlabel][", row_number, "]", sep="" )
+					wid$.widgets[[tmp_i]][[j]] <- list(type='label', text=text, name=label_name, mode="character", font=widget$font, bg=widget$bg, fg=widget$fg)
 				}
 			}
 			else {
@@ -2448,6 +2475,103 @@ parseWinFile <- function(fname, astext=FALSE)
 	return(tkWidget)
 }
 
+#must be outside of .createwidget.superobject since getWinVal must be able to call this
+.superobject.saveValues <- function( winName, widget_name )
+{
+	userObject <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data
+	rows_to_display <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$rows_to_display
+	display_top <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top
+	ncols <- ncol( userObject )
+	new_widget_name <- paste( "[superobject]", widget_name, sep="" ) 
+	
+	#Save data viewable on screen (which user might have changed)
+	for( i in 1:rows_to_display ) {
+		for( j in 1:ncols ) {
+			var_name = paste( new_widget_name, "[", i, ",", j ,"]d", sep="" )
+			tmp_ptr <- .map.get( winName, var_name )
+			userObject[ display_top + i - 1, j ] <- tclvalue( tmp_ptr$tclvar )
+		}
+	}
+		
+	#save back to global memory (so getWinVal can access it)
+	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject
+		
+}
+
+.createWidget.superobject <- function(tk, widget, winName)
+{
+	userObject <- get(widget$name, pos=find(widget$name))
+	if( !is.data.frame( userObject ) )
+		stop( "superobjects only support data.frames" )
+
+	widget_name <- widget$name
+	
+	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <<- 1
+	rows_to_display <- 3 #num of rows visible
+	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$rows_to_display <<- rows_to_display
+	ncols <- ncol( userObject )
+	nrows <- nrow( userObject )
+
+	new_widget_name <- paste( "[superobject]", widget$name, sep="" ) 
+	assign( new_widget_name, userObject[1:rows_to_display,], envir = .GlobalEnv )
+	
+	widget$name <- new_widget_name
+	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject
+	rm( userObject )
+
+	scroll_callback <- function( ... )
+	{
+		.superobject.saveValues( winName, widget_name )
+		
+		display_top <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top
+		userObject <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data
+		
+		args = list( ... )
+		if( args[[1]] == "scroll" ) {
+			display_top <- display_top + as.integer( args[[2]] )
+			if( display_top < 1 ) 
+				display_top <- 1
+			if( display_top + rows_to_display - 1 > nrows ) 
+				display_top <- nrows - rows_to_display + 1
+				
+			#TODO cap at top range
+			print( display_top )
+		} else {
+			warning( "scroll not handled" )
+			print( list( ... ) )
+			return();
+		}
+		.PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <<- display_top
+		
+		#update row labels
+		for( i in 1:rows_to_display ) {
+			var_name = paste( new_widget_name, "[rowlabel][", i ,"]", sep="" )
+			tmp_ptr <- .map.get( winName, var_name )
+			tclvalue( tmp_ptr$tclvar ) <- rownames( userObject )[ display_top + i - 1 ]
+		}
+
+		#update row values
+		for( i in 1:rows_to_display ) {
+			for( j in 1:ncols ) {
+				var_name = paste( new_widget_name, "[", i, ",", j ,"]d", sep="" )
+				tmp_ptr <- .map.get( winName, var_name )
+				tclvalue( tmp_ptr$tclvar ) <- userObject[ display_top + i - 1, j ]			
+			}
+		}
+
+	}
+
+	frame <- tkframe( tk )
+	obj_tk <- .createWidget.object( frame, widget, winName )
+	
+	#TODO make scroll grow to size of object
+	scroll <- tkscrollbar( frame, repeatinterval=5, command=function(...)scroll_callback(...))
+
+	tkgrid( obj_tk, scroll )
+	tkgrid.configure( scroll,rowspan=4,sticky="nsw" )
+	
+	return( frame )
+}
 
 .createWidget.object <- function(tk, widget, winName)
 {

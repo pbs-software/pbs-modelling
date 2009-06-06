@@ -52,6 +52,8 @@
 .widgetDefs$label <- list(
 	list(param='type', required=TRUE, class="character"),
 	list(param='text', required=FALSE, class="character", default=""),
+	list(param='name', required=FALSE, class="character"),
+	list(param='mode', required=FALSE, class="character", default="character", grep="^(numeric|integer|complex|logical|character)$"), #most times it should be a character - but numeric might make sense too
 	list(param='font', required=FALSE, class="character", default=""),
 	list(param='fg', required=FALSE, class="character", default="black"),
 	list(param='bg', required=FALSE, class="character", default=""),
@@ -288,6 +290,25 @@
 	)
 
 .widgetDefs$object <- list(
+	list(param='type', required=TRUE, class="character"),
+	list(param='name', required=TRUE, class="character", grep="^([a-zA-Z0-9])+(\\[[0-9,]+\\])?$"),
+	list(param='font', required=FALSE, class="character", default=""),
+	list(param='fg', required=FALSE, class="character", default="black"),
+	list(param='bg', required=FALSE, class="character", default=""),
+	list(param='entryfont', required=FALSE, class="character", default=""),
+	list(param='entryfg', required=FALSE, class="character", default="black"),
+	list(param='entrybg', required=FALSE, class="character", default="white"),
+	list(param='vertical', required=FALSE, class="logical", default=FALSE),
+	list(param='function', required=FALSE, class="character", default=""),
+	list(param='enter', required=FALSE, class="logical", default=TRUE),
+	list(param='action', required=FALSE, class="character", default="data"),
+	list(param='width', required=FALSE, class="integer", default=6, grep="^[0-9]+$"),
+	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
+	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
+	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	)
+
+.widgetDefs$superobject <- list(
 	list(param='type', required=TRUE, class="character"),
 	list(param='name', required=TRUE, class="character", grep="^([a-zA-Z0-9])+(\\[[0-9,]+\\])?$"),
 	list(param='font', required=FALSE, class="character", default=""),
