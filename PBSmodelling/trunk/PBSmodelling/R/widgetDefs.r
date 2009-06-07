@@ -69,10 +69,12 @@
 	list(param='name', required=TRUE, class="character"),
 	list(param='values', required=TRUE, class="characterVector", grep="^([a-zA-Z0-9])+(\\[[0-9,]+\\])?([ \t]+([a-zA-Z0-9])+(\\[[0-9,]+\\])?)*$"),
 	list(param='selected', required=FALSE, class="integer", default=1, grep="^[0-9]+$"),
+	list(param='add', required=FALSE, class="logical", default=FALSE),
 	list(param='font', required=FALSE, class="character", default=""),
 	list(param='fg', required=FALSE, class="character", default="black"),
 	list(param='bg', required=FALSE, class="character", default=""),
 	list(param='function', required=FALSE, class="character"),
+	list(param='enter', required=FALSE, class="logical", default=TRUE), #require an enter to call function
 	list(param='action', required=FALSE, class="character", default="droplist"),
 	list(param='mode', required=FALSE, class="character", default="character", grep="^(numeric|integer|complex|logical|character)$"), #most times it should be a character - but numeric might make sense too
 	list(param='width', required=FALSE, class="integer", default=20),
@@ -104,6 +106,22 @@
 	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
+.widgetDefs$table <- list(
+	list(param='type', required=TRUE, class="character"),
+	list(param='name', required=TRUE, class="character"),
+	list(param='font', required=FALSE, class="character", default=""),
+	list(param='fg', required=FALSE, class="character", default="black"),
+	list(param='bg', required=FALSE, class="character", default="white"),
+	list(param='rowlabels', required=FALSE, class="characterVector", default=""),
+	list(param='collabels', required=FALSE, class="characterVector", default=""),
+	list(param='function', required=FALSE, class="character"),
+	list(param='action', required=FALSE, class="character", default="table"),
+	list(param='width', required=FALSE, class="integerVector", default=10),
+	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
+	)
+
 .widgetDefs$null <- list(
 	list(param='type', required=TRUE, class="character"),
 	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
@@ -122,6 +140,7 @@
 	list(param='entryfont', required=FALSE, class="character", default=""),
 	list(param='entryfg', required=FALSE, class="character", default="black"),
 	list(param='entrybg', required=FALSE, class="character", default="white"),
+	list(param='password', required=FALSE, class="logical", default=FALSE),
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='enter', required=FALSE, class="logical", default=TRUE), #require an enter to call function
 	list(param='action', required=FALSE, class="character", default="entry"),

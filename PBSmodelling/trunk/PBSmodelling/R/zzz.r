@@ -22,4 +22,5 @@ Pacific Biological Station, Nanaimo
 
 	#TODO find a better place
 	tclRequire("BWidget")
+	tclRequire("Tktable")
 }

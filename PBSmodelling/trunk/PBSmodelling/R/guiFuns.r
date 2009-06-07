@@ -244,6 +244,7 @@
 		return(NULL)
 
 	superobjects_to_process <- list() #superobjects (which scroll) which are stored elsewhere
+	tables_to_process <- list() #tktable matrix objects - stored in tclarray
 
 	#extract values from tcl into an R list whose index corresponds to the data list
 	for(i in 1:length(data)) {
@@ -264,6 +265,11 @@
 			#special case for text widgets
 			values[[i]] <- tclvalue(tkget(data[[i]]$tclwidget,"0.0","end"))
 			wid$mode <- "character"
+		}
+		else if (!is.null(data[[i]]$tclarray)) {
+			#special case for table matrix
+			tables_to_process[[ data[[i]]$widgetname ]] = TRUE
+			next
 		}
 		else {
 			stop(paste("unknown type:", data[[i]]))
@@ -397,7 +403,7 @@
 			tk_widget <- data[[ wid$name ]]$tclwidget
 			
 			#get selected index (not value)
-			retData[[wid_name]] <- as.integer( tcl( tk_widget, "getvalue" ) )
+			retData[[wid_name]] <- as.integer( tcl( tk_widget, "getvalue" ) ) + 1
 		}
 	}
 	
@@ -405,6 +411,12 @@
 	for( k in names( superobjects_to_process ) ) {
 		.superobject.saveValues( winName, k ) #save currently visible data
 		retData[[ k ]] <- .PBSmod[[ winName ]]$widgets[[ k ]]$.data
+	}
+	
+	#tables to process
+	
+	for( k in names( tables_to_process ) ) {
+		retData[[ k ]] <- .table.getvalue( winName, k )
 	}
 
 	return(retData)
@@ -2534,6 +2546,11 @@ parseWinFile <- function(fname, astext=FALSE)
 
 .createWidget.superobject <- function(tk, widget, winName)
 {
+	#check for existance
+	tmp <- .check.object.exists( tk, widget, winName )
+	if( !is.null( tmp ) )
+		return( tmp )
+		
 	userObject <- get(widget$name, pos=find(widget$name))
 	if( !is.data.frame( userObject ) )
 		stop( "superobjects only support data.frames" )
@@ -2618,7 +2635,10 @@ parseWinFile <- function(fname, astext=FALSE)
 	return( frame )
 }
 
-.createWidget.object <- function(tk, widget, winName)
+#call to test for existance of dynamically loaded object for "object", "table"
+#returns NULL on no errors
+#on errors, a tk display error is created which can be embeded in the window
+.check.object.exists <- function( tk, widget, winName )
 {
 	.dispError <- function(errorTxt)
 	{
@@ -2634,7 +2654,153 @@ parseWinFile <- function(fname, astext=FALSE)
 	if (!exists(widget$name, env = .GlobalEnv)) {
 		return(.dispError(paste("Error: variable \"", widget$name, "\" could not be found.", sep="")))
 	}
+	return( NULL )
+}
 
+.table.getvalue <- function( winName, widgetName )
+{
+	widget <- .PBSmod[[ winName ]]$widgets[[ widgetName ]]
+	tcl_array <- .map.get( winName, widgetName)$tclarray
+	nrows <- widget$.dim[1]
+	ncols <- widget$.dim[2]
+	
+	mat <- matrix( nrow = nrows, ncol = ncols, dimnames = widget$.dimnames )
+	
+	row_label_offset <- ifelse( widget$collabels=="NULL", 1, 0 )
+	col_label_offset <- ifelse( widget$rowlabels=="NULL", 1, 0 )
+	
+	#extract data
+	for (i in (1:nrows))
+		for (j in (1:ncols)) {
+			tmp <- tcl_array[[i-row_label_offset,j-col_label_offset]]
+			mat[ i, j ] <- as( tclvalue( tmp ), widget$.mode )
+		}
+	
+	return( mat )
+}
+
+.table.setvalue <- function( winName, widgetName, value )
+{
+	widget <- .PBSmod[[ winName ]]$widgets[[ widgetName ]]
+	tcl_array <- .map.get( winName, widgetName)$tclarray
+	nrows <- widget$.dim[1]
+	ncols <- widget$.dim[2]
+	
+	if( any( dim( value ) != widget$.dim ) ) stop( "value for table is not the correct dimension" )
+	
+	row_label_offset <- ifelse( widget$collabels=="NULL", 1, 0 )
+	col_label_offset <- ifelse( widget$rowlabels=="NULL", 1, 0 )
+	
+	#extract data
+	for (i in (1:nrows))
+		for (j in (1:ncols)) {
+			tcl_array[[i-row_label_offset,j-col_label_offset]] <- value[ i, j ]
+		}
+	return( value )
+}
+
+.createWidget.table <- function(tk, widget, winName)
+{
+	tmp <- .check.object.exists( tk, widget, winName )
+	if( !is.null( tmp ) )
+		return( tmp )
+	
+	userObject <- get(widget$name, pos=find(widget$name))
+	if( !is.matrix( userObject ) )
+		stop( "table only supports matrix" )
+
+	widget_name <- widget$name
+
+	#to help us getWinVal the correct size/mode/names
+	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.dim <<- dim( userObject )
+	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.mode <<- mode( userObject )
+	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.dimnames <<- dimnames( userObject )
+	nrows <- nrow( userObject )
+	ncols <- ncol( userObject )
+	table_nrows <- nrows
+	table_ncols <- ncols
+
+	frame <- tkframe( tk )
+	
+	#create tcl storage for matrix
+	tcl_array <- .map.add( winName, widget$name, tclarray=tclArray() )$tclarray
+	.map.set( winName, widget$name, widgetname = widget$name )
+	
+	#array also holds labels - if they are wanted, then put labels in [[0,*]] and [[*,0]]
+	#and start elements at [[1,*]] and [[*,1]]. If labels aren't required, start data at [[0,*]] and [[*,0]]
+	row_label_offset <- ifelse( widget$collabels=="NULL", 1, 0 )[1]
+	col_label_offset <- ifelse( widget$rowlabels=="NULL", 1, 0 )[1]
+	show_rowtitle <- ifelse( widget$rowlabels=="NULL", 0, 1 )[1]
+	show_coltitle <- ifelse( widget$collabels=="NULL", 0, 1 )[1]
+	
+	#fill in titles
+	if( widget$rowlabels!="NULL" ) {
+		for (i in (1:nrows)) {
+			if( all( widget$rowlabels == "" ) )
+				tcl_array[[i-row_label_offset,0]] <- rownames( userObject )[i]
+			else
+				tcl_array[[i-row_label_offset,0]] <- widget$rowlabels[i]
+		}
+		#reserve left col for row titles
+		table_ncols <- table_ncols + 1
+	}
+	if( widget$collabels[1]!="NULL" ) {
+		for (i in (1:ncols)) {
+			if( all( widget$collabels == "" ) )
+				tcl_array[[0,i-col_label_offset]] <- colnames( userObject )[i]
+			else
+				tcl_array[[0,i-col_label_offset]] <- widget$collabels[i]
+		}
+		#reserve top row for column titles
+		table_nrows <- table_nrows + 1
+	}
+	
+	#fill in data
+	for (i in (1:nrows))
+		for (j in (1:ncols)) {
+			tcl_array[[i-row_label_offset,j-col_label_offset]] <- userObject[i,j] #tcl arrays start at 0
+		}
+	
+	#example from: http://bioinf.wehi.edu.au/~wettenhall/RTclTkExamples/tktable.html
+	argList <- list( parent = frame, type = "table", rows=table_nrows,cols=table_ncols,titlerows=show_coltitle,titlecols=show_rowtitle,
+	             height=0,width=10,multiline=0,
+	             xscrollcommand=function(...) tkset(xscr,...),yscrollcommand=function(...) tkset(yscr,...))
+
+	#if( length( widget$width ) > 1 )
+	#	argList$width <- 
+
+	if (!is.null(widget$font) && widget$font!="")
+		argList$font <- .createTkFont(widget$font)
+
+
+	table1 <- do.call( "tkwidget", argList )
+	             
+	#bug with tktable for "moveto" scrollbar scrolling - doesn't hit last element - must push down on keyboard, or click down arrow
+	xscr <- tkscrollbar( frame,orient="horizontal", command=function(...)tkxview(table1,...))
+	yscr <- tkscrollbar( frame,command=function(...)tkyview(table1,...))
+	
+	tkgrid(table1,yscr)
+	tkgrid.configure(yscr,sticky="nsw")
+	tkgrid(xscr,sticky="new")
+	tkconfigure(table1,variable=tcl_array,background=widget$bg,foreground=widget$fg,selectmode="extended")
+	
+	tmp_width <- rep( widget$width, times = table_ncols )
+	for( i in 1:table_ncols )
+		tcl( table1, "width", i-1, tmp_width[ i ] )
+	
+	#TODO editable flag
+	#tkconfigure(table1, state="disabled" )
+	tkconfigure(table1, browsecmd=function(...) { .extractData(widget[["function"]], widget$action, winName)} )
+	
+	
+	return( frame )
+}
+
+.createWidget.object <- function(tk, widget, winName)
+{
+	tmp <- .check.object.exists( tk, widget, winName )
+	if( !is.null( tmp ) )
+		return( tmp )
 
 	userObject <- get(widget$name, pos=find(widget$name))
 
@@ -2770,6 +2936,9 @@ parseWinFile <- function(fname, astext=FALSE)
 	argList$width<-widget$width
 	tkWidget<-do.call("tkentry", argList)
 
+	if( widget$password )
+		tkconfigure( tkWidget, show="*")
+
 	enter <- !is.null(widget$enter)
 	if (enter)
 		enter <- widget$enter
@@ -2821,12 +2990,19 @@ parseWinFile <- function(fname, astext=FALSE)
 	if( is.na( widget$value ) )
 		widget$value = widget$from
 		
+
 	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
 	argList$width<-widget$width
+	argList$validate = "all"
+	#argList$validateCommand = function(...) { print('gf'); return( 0 ) }
 	
 	#setup callback function
-	
+	argList$modifycmd = function(...) { .extractData(widget[["function"]], widget$action, winName)}	
+
 	tkWidget<-do.call("tkwidget", argList)
+	#tkconfigure( tkWidget, command = function(...) { print(list(...)); } )
+	#tcl( tkWidget, "from", "6" )
+	
 
 	enter <- !is.null(widget$enter)
 	if (enter)
@@ -2844,7 +3020,7 @@ parseWinFile <- function(fname, astext=FALSE)
 {
 	print( widget$values )
 	#create real tk widget below
-	argList <- list(parent=tk, type="ComboBox", editable=FALSE,values=widget$values)
+	argList <- list(parent=tk, type="ComboBox", editable=widget$add,values=widget$values)
 	if (!is.null(widget$fg) && widget$fg!="") {
 		#see http://tcltk.free.fr/Bwidget/ComboBox.html for possible options
 		argList$foreground=widget$fg
@@ -2863,26 +3039,24 @@ parseWinFile <- function(fname, astext=FALSE)
 	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(widget$values[ widget$selected ]))$tclvar
 	argList$width<-widget$width
 
-	#TODO fix this
-	#callback func	
-	if (widget[["function"]]!="")
-		argList$modifycmd = function(...) { .extractData(widget[["function"]], widget$action, winName) }
-
-	
+	#callback
+	argList$modifycmd = function(...) { .extractData(widget[["function"]], widget$action, winName)}
 	spinbox_widget <- do.call( "tkwidget", argList )
 
 	#save widget - so we can use tcl( spinbox_widget, "getvalue" ) at a later time
 	.map.set(winName, widget$name, tclwidget=spinbox_widget )
 
-	enter <- !is.null(widget$enter)
-	if (enter)
-		enter <- widget$enter
-	if (enter) {
-		#dont update it (unless an return was pressed) as it can slow it down a lot
-		tkbind(spinbox_widget,"<KeyPress-Return>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
-	}
-	else
-		tkbind(spinbox_widget,"<KeyRelease>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+	#TODO FIXME this should fire as a user types in new data when "add=T" but this doesn't work
+	#enter <- !is.null(widget$enter)
+	#if (enter)
+	#	enter <- widget$enter
+	#if (enter) {
+	#	#dont update it (unless an return was pressed) as it can slow it down a lot
+	#	tkbind(spinbox_widget,"<KeyPress-Return>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+	#}
+	#else
+	#	tkbind(spinbox_widget,"<KeyRelease>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+	
 	return(spinbox_widget)
 }
 
@@ -3876,6 +4050,11 @@ setWinVal <- function(vars, winName="")
 			return(value)
 		}
 		stop(paste("unhandled widget type", x$tclwidget))
+	}
+	
+	#special case for table arrays
+	else if( !is.null(x$tclarray) ) {
+		return( .table.setvalue( winName, wid$name, value ) )
 	}
 
 	#catch any special "high level" widgets that do not have
