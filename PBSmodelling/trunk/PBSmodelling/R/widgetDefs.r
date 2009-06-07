@@ -30,8 +30,8 @@
 	list(param='borderwidth', required=FALSE, class="integer", default=1),
 	list(param='relief', required=FALSE, class="character", default="flat", grep="^(raised|sunken|flat|ridge|groove|solid)$"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$menu <- list(
@@ -60,8 +60,8 @@
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
 	list(param='justify', required=FALSE, class="character", default="left", grep="^(l|r|c|left|right|center)?$"),
 	list(param='wraplength', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 	
 .widgetDefs$droplist <- list(
@@ -77,8 +77,8 @@
 	list(param='mode', required=FALSE, class="character", default="character", grep="^(numeric|integer|complex|logical|character)$"), #most times it should be a character - but numeric might make sense too
 	list(param='width', required=FALSE, class="integer", default=20),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$spinbox <- list(
@@ -100,14 +100,14 @@
 	list(param='action', required=FALSE, class="character", default="droplist"),
 	list(param='width', required=FALSE, class="integer", default=20),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$null <- list(
 	list(param='type', required=TRUE, class="character"),
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$entry <- list(
@@ -127,8 +127,8 @@
 	list(param='action', required=FALSE, class="character", default="entry"),
 	list(param='mode', required=FALSE, class="character", default="numeric", grep="^(numeric|integer|complex|logical|character)$"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$button <- list(
@@ -141,8 +141,8 @@
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='action', required=FALSE, class="character", default="button"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$check <- list(
@@ -157,8 +157,8 @@
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='action', required=FALSE, class="character", default="check"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$radio <- list(
@@ -174,8 +174,8 @@
 	list(param='mode', required=FALSE, class="character", default="numeric", grep="^(numeric|integer|complex|logical|character)$"),
 	list(param='selected', required=FALSE, class="logical", default=FALSE),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$slide <- list(
@@ -192,8 +192,8 @@
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='action', required=FALSE, class="character", default="slide"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$slideplus <- list(
@@ -207,8 +207,8 @@
 	list(param='enter', required=FALSE, class="logical", default=FALSE), #require an enter to change min/max values
 	list(param='action', required=FALSE, class="character", default="slideplus"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$vector <- list(
@@ -231,8 +231,8 @@
 	list(param='mode', required=FALSE, class="character", default="numeric", grep="^(numeric|integer|complex|logical|character)$"),
 	list(param='width', required=FALSE, class="integer", default=6, grep="^[0-9]+$"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$matrix <- list(
@@ -258,8 +258,8 @@
 	list(param='mode', required=FALSE, class="character", default="numeric", grep="^(numeric|integer|complex|logical|character)$"),
 	list(param='width', required=FALSE, class="integer", default=6, grep="^[0-9]+$"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$data <- list(
@@ -283,10 +283,10 @@
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='enter', required=FALSE, class="logical", default=TRUE),
 	list(param='action', required=FALSE, class="character", default="data"),
-	list(param='width', required=FALSE, class="integer", default=6, grep="^[0-9]+$"),
+	list(param='width', required=FALSE, class="integerVector", default=6),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$object <- list(
@@ -304,13 +304,18 @@
 	list(param='action', required=FALSE, class="character", default="data"),
 	list(param='width', required=FALSE, class="integer", default=6, grep="^[0-9]+$"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$superobject <- list(
 	list(param='type', required=TRUE, class="character"),
 	list(param='name', required=TRUE, class="character", grep="^([a-zA-Z0-9])+(\\[[0-9,]+\\])?$"),
+	list(param='rowshow', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
+	list(param='colnames', required=FALSE, class="logical", default=TRUE),
+	list(param='rownames', required=FALSE, class="logical", default=TRUE),
+	list(param='edit', required=FALSE, class="logical", default=TRUE),
+	list(param='enter', required=FALSE, class="logical", default=TRUE),
 	list(param='font', required=FALSE, class="character", default=""),
 	list(param='fg', required=FALSE, class="character", default="black"),
 	list(param='bg', required=FALSE, class="character", default=""),
@@ -321,10 +326,10 @@
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='enter', required=FALSE, class="logical", default=TRUE),
 	list(param='action', required=FALSE, class="character", default="data"),
-	list(param='width', required=FALSE, class="integer", default=6, grep="^[0-9]+$"),
+	list(param='width', required=FALSE, class="integerVector", default=6),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$history <- list(
@@ -333,8 +338,8 @@
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='import', required=FALSE, class="character", default=""),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$text <- list(
@@ -353,8 +358,8 @@
 	list(param='borderwidth', required=FALSE, class="integer", default=1),
 	list(param='relief', required=FALSE, class="character", default="sunken", grep="^(raised|sunken|flat|ridge|groove|solid)$"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
-	list(param='padx', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
-	list(param='pady', required=FALSE, class="integer", default=0, grep="^[0-9]+$")
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 

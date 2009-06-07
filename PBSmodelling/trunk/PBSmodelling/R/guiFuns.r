@@ -1586,6 +1586,15 @@ parseWinFile <- function(fname, astext=FALSE)
 					else
 						paramData[[i]] <- tmp
 				}
+				else if (argOrder[[pos]]$class=="integerVector") {
+					#convert value to a vector of strings
+					tmp <- .stripSlashesVec(paramData[[i]], fname, line.start, line.end, sourcefile)
+					if (is.null(tmp)) {
+						errorFound <- 1
+					}
+					else
+						paramData[[i]] <- as.integer( tmp )
+				}
 				else if ((argOrder[[pos]]$class=="numeric" || argOrder[[pos]]$class=="integer") && any(grep("[a-z]", paramData[[i]], ignore.case=TRUE))) {
 					paramData[[i]] <- 0
 				}
@@ -2281,6 +2290,9 @@ parseWinFile <- function(fname, astext=FALSE)
 	if (is.null(widget$rownames)) widget$rownames <- ""
 	if (is.null(widget$colnames)) widget$colnames <- ""
 
+	print( widget$collabels )
+	print( widget$rowlabels )
+
 	if (all(widget$values==""))
 		values <- ""
 	else {
@@ -2410,6 +2422,9 @@ parseWinFile <- function(fname, astext=FALSE)
 				if (all(collabels[1]=="NULL"))
 					i <- i - 1
 
+				#get width
+				width <- rep( widget$width, length=ncol+1)[ j - 1 ]
+
 				if (mode=="logical") {
 					#display a checkbox
 					if (is.na(as.logical(value)))
@@ -2439,7 +2454,7 @@ parseWinFile <- function(fname, astext=FALSE)
 						  action=widget$action,
 						  enter=widget$enter,
 						  value=value,
-						  width=widget$width,
+						  width=width,
 						  mode=mode,
 						  entryfont=widget$entryfont,
 						  entrybg=widget$entrybg,
@@ -2526,7 +2541,12 @@ parseWinFile <- function(fname, astext=FALSE)
 	widget_name <- widget$name
 	
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <<- 1
-	rows_to_display <- 3 #num of rows visible
+	rows_to_display <- widget$rowshow #num of rows visible
+	enable_scrolling <- TRUE
+	if( rows_to_display <= 0 || rows_to_display > nrow( userObject ) ) {
+		rows_to_display = nrow( userObject )
+		enable_scrolling <- FALSE
+	}
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$rows_to_display <<- rows_to_display
 	ncols <- ncol( userObject )
 	nrows <- nrow( userObject )
@@ -2576,7 +2596,9 @@ parseWinFile <- function(fname, astext=FALSE)
 		}
 		
 		#update position of scroll bar
-		tkset( scroll, (display_top-1) / ( nrows - rows_to_display ) , 0.0 )
+		beg <- (display_top-1) / ( nrows - rows_to_display )
+		end <- beg
+		tkset( scroll, beg , end )
 
 	}
 
@@ -2586,8 +2608,12 @@ parseWinFile <- function(fname, astext=FALSE)
 	#TODO make scroll grow to size of object
 	scroll <- tkscrollbar( frame, repeatinterval=5, command=function(...)scroll_callback(...))
 
-	tkgrid( obj_tk, scroll )
-	tkgrid.configure( scroll,rowspan=4,sticky="nsw" )
+	if( enable_scrolling == TRUE ) {
+		tkgrid( obj_tk, scroll )
+		tkgrid.configure( scroll,rowspan=4,sticky="nsw" )
+	} else {
+		tkgrid( obj_tk )
+	}
 	
 	return( frame )
 }
