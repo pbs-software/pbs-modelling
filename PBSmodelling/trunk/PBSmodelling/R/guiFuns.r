@@ -411,6 +411,8 @@
 	for( k in names( superobjects_to_process ) ) {
 		.superobject.saveValues( winName, k ) #save currently visible data
 		retData[[ k ]] <- .PBSmod[[ winName ]]$widgets[[ k ]]$.data
+		if( .PBSmod[[ winName ]]$widgets[[ k ]]$class == "matrix" )
+			retData[[ k ]] <- as.matrix( retData[[ k ]] )
 	}
 	
 	#tables to process
@@ -2550,12 +2552,17 @@ parseWinFile <- function(fname, astext=FALSE)
 	tmp <- .check.object.exists( tk, widget, winName )
 	if( !is.null( tmp ) )
 		return( tmp )
-		
+
+	widget_name <- widget$name	
 	userObject <- get(widget$name, pos=find(widget$name))
+	if( is.matrix( userObject ) ) {
+		userObject <- as.data.frame( userObject )
+		.PBSmod[[ winName ]]$widgets[[ widget_name ]]$class <<- "matrix"
+	} else {
+		.PBSmod[[ winName ]]$widgets[[ widget_name ]]$class <<- ""
+	}
 	if( !is.data.frame( userObject ) )
 		stop( "superobjects only support data.frames" )
-
-	widget_name <- widget$name
 	
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <<- 1
 	rows_to_display <- widget$rowshow #num of rows visible
@@ -2664,19 +2671,25 @@ parseWinFile <- function(fname, astext=FALSE)
 	nrows <- widget$.dim[1]
 	ncols <- widget$.dim[2]
 	
-	mat <- matrix( nrow = nrows, ncol = ncols, dimnames = widget$.dimnames )
+	mat <- list() #data.frame( nrow = nrows, ncol = ncols, dimnames = widget$.dimnames )
 	
 	row_label_offset <- ifelse( widget$collabels=="NULL", 1, 0 )
 	col_label_offset <- ifelse( widget$rowlabels=="NULL", 1, 0 )
 	
 	#extract data
-	for (i in (1:nrows))
-		for (j in (1:ncols)) {
+	for (j in (1:ncols)) {
+		mat[[ j ]] <- vector( widget$.modes[j], length=nrows )
+		for (i in (1:nrows)) {
 			tmp <- tcl_array[[i-row_label_offset,j-col_label_offset]]
-			mat[ i, j ] <- as( tclvalue( tmp ), widget$.mode )
+			mat[[ j ]][ i ] <- as( tclvalue( tmp ), widget$.modes[j] )
 		}
+	}
 	
-	return( mat )
+	tmp <- data.frame( mat )
+	dimnames( tmp ) <- widget$.dimnames
+	if( widget$.class == "matrix" )
+		tmp <- as.matrix( tmp )
+	return( tmp )
 }
 
 .table.setvalue <- function( winName, widgetName, value )
@@ -2706,15 +2719,23 @@ parseWinFile <- function(fname, astext=FALSE)
 		return( tmp )
 	
 	userObject <- get(widget$name, pos=find(widget$name))
-	if( !is.matrix( userObject ) )
+	if( !is.matrix( userObject ) && !is.data.frame( userObject ) )
 		stop( "table only supports matrix" )
+		
+	#convert any factors to characters
+	for( i in 1:ncol(userObject) ) {
+		userObject[[ i ]] <- as.vector( userObject[[ i ]] ) #will convert factors into characters
+	}
 
 	widget_name <- widget$name
 
 	#to help us getWinVal the correct size/mode/names
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.dim <<- dim( userObject )
-	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.mode <<- mode( userObject )
+	modes <- c()
+	for( i in 1:ncol( userObject ) ) modes <- c( modes, mode( userObject[[ i ]] ) )
+	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.modes <<- modes
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.dimnames <<- dimnames( userObject )
+	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.class <<- ifelse( is.matrix( userObject ), "matrix", "data.frame" )
 	nrows <- nrow( userObject )
 	ncols <- ncol( userObject )
 	table_nrows <- nrows
@@ -2936,7 +2957,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	argList$width<-widget$width
 	tkWidget<-do.call("tkentry", argList)
 
-	if( widget$password )
+	if( !is.null( widget$password ) && widget$password == TRUE )
 		tkconfigure( tkWidget, show="*")
 
 	enter <- !is.null(widget$enter)
