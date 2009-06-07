@@ -2478,6 +2478,8 @@ parseWinFile <- function(fname, astext=FALSE)
 #must be outside of .createwidget.superobject since getWinVal must be able to call this
 .superobject.saveValues <- function( winName, widget_name )
 {
+	modes <- .PBSmod[[ winName ]]$widgets[[ paste( "[superobject]", widget_name, sep="" ) ]]$modes
+	
 	userObject <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data
 	rows_to_display <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$rows_to_display
 	display_top <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top
@@ -2489,13 +2491,30 @@ parseWinFile <- function(fname, astext=FALSE)
 		for( j in 1:ncols ) {
 			var_name = paste( new_widget_name, "[", i, ",", j ,"]d", sep="" )
 			tmp_ptr <- .map.get( winName, var_name )
-			userObject[ display_top + i - 1, j ] <- tclvalue( tmp_ptr$tclvar )
+			userObject[ display_top + i - 1, j ] <- .convertMode( tclvalue( tmp_ptr$tclvar ), modes[ j ] )
 		}
 	}
 		
 	#save back to global memory (so getWinVal can access it)
-	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject
-		
+	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject	
+}
+
+.superobject.redraw <- function( winName, widget_name )
+{
+	userObject <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data
+	rows_to_display <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$rows_to_display
+	display_top <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top
+	ncols <- ncol( userObject )
+	new_widget_name <- paste( "[superobject]", widget_name, sep="" ) 
+	
+	#reload screen data with userObject values
+	for( i in 1:rows_to_display ) {
+		for( j in 1:ncols ) {
+			var_name = paste( new_widget_name, "[", i, ",", j ,"]d", sep="" )
+			tmp_ptr <- .map.get( winName, var_name )
+			tclvalue( tmp_ptr$tclvar ) <- userObject[ display_top + i - 1, j ]
+		}
+	}
 }
 
 .createWidget.superobject <- function(tk, widget, winName)
@@ -2529,18 +2548,15 @@ parseWinFile <- function(fname, astext=FALSE)
 		args = list( ... )
 		if( args[[1]] == "scroll" ) {
 			display_top <- display_top + as.integer( args[[2]] )
-			if( display_top < 1 ) 
-				display_top <- 1
-			if( display_top + rows_to_display - 1 > nrows ) 
-				display_top <- nrows - rows_to_display + 1
-				
-			#TODO cap at top range
-			print( display_top )
 		} else {
-			warning( "scroll not handled" )
-			print( list( ... ) )
-			return();
+			#warning( "scroll not handled" )
+			display_top = ceiling( as.numeric( args[[2]] ) * ( nrows - rows_to_display ) ) + 1
 		}
+		#enforce range
+		if( display_top < 1 ) 
+			display_top <- 1
+		if( display_top + rows_to_display - 1 > nrows ) 
+			display_top <- nrows - rows_to_display + 1
 		.PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <<- display_top
 		
 		#update row labels
@@ -2558,6 +2574,9 @@ parseWinFile <- function(fname, astext=FALSE)
 				tclvalue( tmp_ptr$tclvar ) <- userObject[ display_top + i - 1, j ]			
 			}
 		}
+		
+		#update position of scroll bar
+		tkset( scroll, (display_top-1) / ( nrows - rows_to_display ) , 0.0 )
 
 	}
 
@@ -3872,6 +3891,13 @@ setWinVal <- function(vars, winName="")
 				.setWinValHelper(paste(varname,"[",i,"]",sep=""), value[i], winName)
 			return(value)
 		}
+	}
+	
+	#special case for superobject
+	if( wid$type == "superobject" ) {
+		.PBSmod[[ winName ]]$widgets[[ wid$name ]]$.data <<- value
+		.superobject.redraw( winName, wid$name )
+		return( value )
 	}
 
 	stop(paste("unable to update\"", varname, "\" - no widget found.", sep=""))
