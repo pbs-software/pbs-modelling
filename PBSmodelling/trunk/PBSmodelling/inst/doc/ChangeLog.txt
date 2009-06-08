@@ -1,7 +1,8 @@
 PBSmodelling Changes
 ====================
-2.11  2009-xx-xx  Alex
-  - Alex migrate PBSmodelling to googlecode.com's SVN system.
+2.11  2009-06-08  Alex
+  - Inroduced four new widget objects: 'droplist', 'spinbox', 'superobject', 'table'.
+  - Alex migrated PBSmodelling to googlecode.com's SVN system.
 
 2.10  2009-05-14  Rowan
   - Added Norm's functions for clearing ('clearRcon')and focusing on ('focusRcon') the R console.

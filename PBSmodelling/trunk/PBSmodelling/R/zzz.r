@@ -4,7 +4,7 @@
 	library.dynam("PBSmodelling", pkg, lib)
 	.initPBSoptions()
 	
-	pkg_info <- sessionInfo( package="PBSmodelling" )$otherPkgs$PBSmodelling
+	pkg_info <- utils::sessionInfo( package="PBSmodelling" )$otherPkgs$PBSmodelling
 	pkg_date <- strsplit( pkg_info$Packaged, " " )[[1]][1]
 	
 	userguide_path <- system.file( "doc/PBSmodelling-UG.pdf", package = "PBSmodelling" )
