@@ -1496,11 +1496,11 @@ parseWinFile <- function(fname, astext=FALSE)
 	s<-.convertParamStrToList(inputStr, fname, line.start, line.end, sourcefile)
 	for(j in 1:length(s)) {
 		value<-s[[j]]$value
+		quoted <- s[[j]]$quoted == "Y"
 		#argument is named, unnamed arguments are no longer valid
 		if (!is.null(s[[j]]$key)) {
 			namedArguments <- 1 
 			key<-casefold(s[[j]]$key)
-			paramData[[key]] <- value
 			if (typeDefined==0) {
 				if (key=="type") {
 					typeDefined <- 1;
@@ -1509,6 +1509,11 @@ parseWinFile <- function(fname, astext=FALSE)
 					#fetch argument Ordering
 					argOrder <- paramOrder[[value]]
 				}
+			} else {
+				#special case where unquoted NULL is converted to a real NULL, but can't work for ALL values because of NULL widget type.
+				if( !quoted && value == "NULL" )
+					value <- NA #use NA instead - to signify user gave NULL rather than ommitted it
+				paramData[[key]] <- value
 			}
 		}
 		#argument is not named (no key was given)
@@ -1532,6 +1537,9 @@ parseWinFile <- function(fname, astext=FALSE)
 			else {
 				#determine the name of the second argument
 				argName <- argOrder[[j]]$param
+				#special case where unquoted NULL is converted to a real NULL, but can't work for ALL values because of NULL widget type.
+				if( !quoted && value == "NULL" )
+					value <- NA #use NA instead - to signify user gave NULL rather than ommitted it
 				paramData[[argName]] <- value
 			}
 		}
@@ -1572,15 +1580,23 @@ parseWinFile <- function(fname, astext=FALSE)
 				names(paramData)[i] <- fullParamName
 			}
 			#check supplied argument data matches grep pattern (if defined)
-			if (!is.null(argOrder[[pos]]$grep)) {
+			if (!is.null(argOrder[[pos]]$grep) && !all( is.na( paramData[[i]] ) ) ) {
 				if (!any(grep(argOrder[[pos]]$grep, paramData[[i]]))) {
 					#supplied data is not formatted correctly
 					.catError(paste('argument \'', givenNames[i], '\': value \'', paramData[[i]], '\' is not accepted. It should match', argOrder[[pos]]$grep , sep=""), 	fname, line.start, line.end, sourcefile)
 					errorFound <- 1
 				}
 			}
+			#check argument for user-specified NULL options (represented by an NA)
+			if( all( is.na( paramData[[i]] ) ) ) {
+				if ( is.null( argOrder[[pos]]$allow_null ) || argOrder[[pos]]$allow_null == FALSE ) {
+					#NULL is not valid for this option
+					.catError(paste('argument \'', givenNames[i], '\': NULL is not accepted. To specify the word use "NULL"', sep=""), fname, line.start, line.end, sourcefile)
+					errorFound <- 1
+				}
+			}
 			#some strings - if character need to be stripped of slashes, or sub-divided
-			if (errorFound == 0 && !is.null(argOrder[[pos]]$class)) {
+			if (errorFound == 0 && !is.null(argOrder[[pos]]$class) && !is.na(paramData[[i]]) ) {
 				if (argOrder[[pos]]$class=="character") {
 					#convert value to either a single string (.stripSlashes)
 					tmp <- .stripSlashes(paramData[[i]], fname, line.start, line.end, sourcefile)
@@ -1641,6 +1657,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 	if (errorFound != 0)
 		return(NULL)
+	#TODO what is this below? this seems useless here - it should be in a loop - why is it specific to radio types?
 	#convert default values from character class to specified class ($mode in widgetDefs.r)
 	if ( !.isReallyNull(paramData,"value") && !.isReallyNull(paramData,"mode") && paramData$type=="radio" ) {
 		paramData$value <- as(paramData$value, paramData$mode)
@@ -1652,6 +1669,13 @@ parseWinFile <- function(fname, astext=FALSE)
 			sourceCode <- c(sourceCode, sourcefile[[i]])
 		}
 	}
+	
+	#restore NA -> NULL values
+	for(i in 1:length(givenNames)) {
+		if( length( paramData[[i]] ) == 1 && all( is.na( paramData[[i]] ) ) )
+			paramData[[i]] <- NULL
+	}
+	
 	paramData$.debug <- list(sourceCode=sourceCode, fname=fname, line.start=line.start, line.end=line.end)
 	return(paramData)
 }
@@ -1905,6 +1929,9 @@ parseWinFile <- function(fname, astext=FALSE)
 	argList$command=function(...) { .extractData(widget[["function"]], widget$action, winName)}
 
 	tkWidget<-do.call("tkcheckbutton", argList)
+	.map.set( winName, widget$name, tclwidget=tkWidget )
+	if( widget$edit == FALSE )
+		tkconfigure( tkWidget, state="disabled" )
 
 	return(tkWidget)
 }
@@ -2094,7 +2121,8 @@ parseWinFile <- function(fname, astext=FALSE)
 						  action=widget$action,
 						  checked=checked,
 						  bg=widget$bg,
-						  fg=widget$entryfg
+						  fg=widget$entryfg,
+						  edit=widget$edit
 					)
 				}
 				else {
@@ -2110,7 +2138,8 @@ parseWinFile <- function(fname, astext=FALSE)
 						  mode=widget$mode,
 						  entryfont=widget$entryfont,
 						  entrybg=widget$entrybg,
-						  entryfg=widget$entryfg
+						  entryfg=widget$entryfg,
+						  edit=widget$edit
 					)
 
 				}
@@ -2260,6 +2289,7 @@ parseWinFile <- function(fname, astext=FALSE)
 				  checked=checked,
 				  bg=widget$bg,
 				  fg=widget$entryfg,
+				  edit=widget$edit,
 				  .name=vname
 			)
 		}
@@ -2277,6 +2307,7 @@ parseWinFile <- function(fname, astext=FALSE)
 				  entryfont=widget$entryfont,
 				  entrybg=widget$entrybg,
 				  entryfg=widget$entryfg,
+				  edit=widget$edit,
 				  .name=vname
 			)
 
@@ -2456,7 +2487,8 @@ parseWinFile <- function(fname, astext=FALSE)
 						  action=widget$action,
 						  checked=checked,
 						  bg=widget$bg,
-						  fg=widget$entryfg
+						  fg=widget$entryfg,
+						  edit=widget$edit
 					)
 				}
 				else {
@@ -2472,7 +2504,8 @@ parseWinFile <- function(fname, astext=FALSE)
 						  mode=mode,
 						  entryfont=widget$entryfont,
 						  entrybg=widget$entrybg,
-						  entryfg=widget$entryfg
+						  entryfg=widget$entryfg,
+						  edit=widget$edit
 					)
 				}
 
@@ -2795,6 +2828,7 @@ parseWinFile <- function(fname, astext=FALSE)
 
 
 	table1 <- do.call( "tkwidget", argList )
+	.map.set( winName, widget$name, tclwidget=table1 )
 	             
 	#bug with tktable for "moveto" scrollbar scrolling - doesn't hit last element - must push down on keyboard, or click down arrow
 	xscr <- tkscrollbar( frame,orient="horizontal", command=function(...)tkxview(table1,...))
@@ -2809,9 +2843,13 @@ parseWinFile <- function(fname, astext=FALSE)
 	for( i in 1:table_ncols )
 		tcl( table1, "width", i-1, tmp_width[ i ] )
 	
-	#TODO editable flag
-	#tkconfigure(table1, state="disabled" )
+	#callback func
 	tkconfigure(table1, browsecmd=function(...) { .extractData(widget[["function"]], widget$action, winName)} )
+	
+	
+	
+	if( widget$edit == FALSE )
+		tkconfigure( table1, state="disabled" )
 	
 	
 	return( frame )
@@ -2850,7 +2888,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		            mode=mode(userObject),
 		            sticky=widget$sticky,
 		            padx=widget$padx,
-		            pady=widget$pady
+		            pady=widget$pady,
+		            edit=widget$edit
 		            );
 		.PBSmod[[winName]]$widgets[[widget$name]] <<- wid
 		return(.createWidget(tk, wid, winName))
@@ -2889,7 +2928,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		            modes=dataModes,
 		            sticky=widget$sticky,
 		            padx=widget$padx,
-		            pady=widget$pady
+		            pady=widget$pady,
+		            edit=widget$edit
 		            );
 		.PBSmod[[winName]]$widgets[[widget$name]] <<- wid
 		return(.createWidget(tk, wid, winName))
@@ -2917,7 +2957,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		            mode=mode(userObject),
 		            sticky=widget$sticky,
 		            padx=widget$padx,
-		            pady=widget$pady
+		            pady=widget$pady,
+		            edit=widget$edit
 		            );
 		.PBSmod[[winName]]$widgets[[widget$name]] <<- wid
 		return(.createWidget(tk, wid, winName))
@@ -2955,8 +2996,13 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$font <- .createTkFont(widget$entryfont)
 	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
 	argList$width<-widget$width
+	
 	tkWidget<-do.call("tkentry", argList)
-
+	.map.set( winName, widget$name, tclwidget=tkWidget )
+	
+	if( widget$edit == FALSE )
+		tkconfigure( tkWidget, state="readonly" )
+		
 	if( !is.null( widget$password ) && widget$password == TRUE )
 		tkconfigure( tkWidget, show="*")
 
@@ -3021,9 +3067,13 @@ parseWinFile <- function(fname, astext=FALSE)
 	argList$modifycmd = function(...) { .extractData(widget[["function"]], widget$action, winName)}	
 
 	tkWidget<-do.call("tkwidget", argList)
+	.map.set( winName, widget$name, tclwidget=tkWidget )
 	#tkconfigure( tkWidget, command = function(...) { print(list(...)); } )
 	#tcl( tkWidget, "from", "6" )
 	
+	#bug in spinbox -> up/down arrows still modify value in disabled mode
+	if( widget$edit == FALSE )
+		tkconfigure( tkWidget, state="disabled" )
 
 	enter <- !is.null(widget$enter)
 	if (enter)
@@ -3037,11 +3087,28 @@ parseWinFile <- function(fname, astext=FALSE)
 	return(tkWidget)
 }
 
+# Returns the value(s) to use for initializing a widget
+# -> from widget$value (if set)
+# -> or global var matching widget$name when value is NULL
+# widget: widget list passed to .creatWidget.XXX
+# winName: name of window being created
+.getValueForWidgetSetup <- function( widget, winName )
+{
+	#return user set value (if set)
+	if( !is.null( widget$values ) )
+		return( widget$values )
+	
+	if (!exists(widget$name, env = .GlobalEnv))
+		.stopWidget( paste( "unable to find variable \"", widget$name, "\" in global memory - this search happend since value=NULL", sep="" ), widget$.debug, winName )
+	
+	return( get( widget$name, env = .GlobalEnv ) )
+}
+
 .createWidget.droplist <- function(tk, widget, winName)
 {
-	print( widget$values )
+	values <- .getValueForWidgetSetup( widget, winName )
 	#create real tk widget below
-	argList <- list(parent=tk, type="ComboBox", editable=widget$add,values=widget$values)
+	argList <- list(parent=tk, type="ComboBox", editable=widget$add,values=values)
 	if (!is.null(widget$fg) && widget$fg!="") {
 		#see http://tcltk.free.fr/Bwidget/ComboBox.html for possible options
 		argList$foreground=widget$fg
@@ -3057,15 +3124,18 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 	if (!is.null(widget$font) && widget$font!="")
 		argList$font <- .createTkFont(widget$font)
-	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(widget$values[ widget$selected ]))$tclvar
+	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(values[ widget$selected ]))$tclvar
 	argList$width<-widget$width
 
 	#callback
 	argList$modifycmd = function(...) { .extractData(widget[["function"]], widget$action, winName)}
-	spinbox_widget <- do.call( "tkwidget", argList )
+	drop_widget <- do.call( "tkwidget", argList )
 
-	#save widget - so we can use tcl( spinbox_widget, "getvalue" ) at a later time
-	.map.set(winName, widget$name, tclwidget=spinbox_widget )
+	#save widget - so we can use tcl( drop_widget, "getvalue" ) at a later time
+	.map.set(winName, widget$name, tclwidget=drop_widget )
+
+	if( widget$edit == FALSE )
+		tkconfigure( drop_widget, state="disabled" )
 
 	#TODO FIXME this should fire as a user types in new data when "add=T" but this doesn't work
 	#enter <- !is.null(widget$enter)
@@ -3078,7 +3148,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	#else
 	#	tkbind(spinbox_widget,"<KeyRelease>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
 	
-	return(spinbox_widget)
+	return(drop_widget)
 }
 
 .createWidget.radio <- function(tk, widget, winName)
@@ -3096,6 +3166,11 @@ parseWinFile <- function(fname, astext=FALSE)
 	argList$command=function(...) { .extractData(widget[["function"]], widget$action, winName)}
 
 	tkWidget<-do.call("tkradiobutton", argList)
+	.map.set( winName, widget$name, tclwidget=tkWidget )
+	
+	if( widget$edit == FALSE )
+		tkconfigure( tkWidget, state="disabled" )
+
 	return(tkWidget)
 }
 
@@ -4127,46 +4202,6 @@ setWinVal <- function(vars, winName="")
 	}
 
 	stop(paste("unable to update\"", varname, "\" - no widget found.", sep=""))
-
-	#custon widgets have more than one sub-widget that needs updating
-	if (wid$type=="vector") {
-		len <- length(value)
-		if (wid$length != len && len != 1)
-			stop(paste('value should be a vector with length', wid$length, 'or 1'))
-		for (i in 1:wid$length) {
-			if (len==1)
-				index<-1
-			else
-				index<-i
-			.setWinValHelper(paste(varname, "[", i, "]", sep=""), value[index])
-		}
-	}
-	else if (wid$type=="matrix") {
-		lenExpected <- wid$nrow * wid$ncol
-		len <- length(value)
-		if (len != lenExpected && len != 1)
-			stop(paste('value should be a vector with length', lenExpected, 'or 1'))
-		for (i in 1:wid$nrow) {
-			for (j in 1:wid$ncol) {
-				if (len == 1) {
-					index <- 1 #only a single value
-				}
-				else if (wid$byrow==TRUE)
-					index <- (i-1)*wid$ncol + j
-				else
-					index <- (j-1)*wid$nrow + i
-
-				.setWinValHelper(paste(varname, "[", i, ",", j, "]", sep=""), value[index])
-			}
-		}
-	}
-	else if (wid$type=="slideplus") {
-		#TODO: slideplus changes - maybe a list(from=,to=,current=)
-		stop(paste('unable to change slideplus - still needs to be implemented'))
-	}
-	else {
-		stop(paste('unable to set "', varname, '"', sep=""))
-	}
 }
 
 
@@ -4237,6 +4272,75 @@ clearWinVal <- function()
 	rmlist <- intersect(objs,globs)
 	rm(list=rmlist,pos=".GlobalEnv")
 	invisible(rmlist)
+}
+
+
+# ***********************************************************
+# 
+setWidgetState <- function( varname, state, winName )
+{
+	if (!exists(".PBSmod"))
+		stop(".PBSmod was not found")
+	if( missing( winName ) )
+		winName <- .PBSmod$.activeWin
+	if (.isReallyNull(.PBSmod, winName))
+		stop(paste("supplied window \"",winName,"\" name not found"))
+	
+	if( any( state == c( "disabled", "normal", "readonly", "active" ) ) == FALSE ) 
+		stop( "state must be disabled, normal, readonly (for entry), or active( for radio)" )
+	
+	x<-.map.get(winName, varname)
+	wid<-.PBSmod[[winName]]$widgets[[varname]]
+	
+	if( wid$type == "radio" ) stop( "radio not implemented" )
+	
+	#if tclwidget is known - set it directly here
+	if( !is.null( x$tclwidget ) ) {
+		tkconfigure( x$tclwidget, state=state )
+		return(invisible(NULL))
+	}
+	
+	#deal with more complicated objects
+	if (is.null(wid)) {
+		stop(paste('unable to set "', varname, '": not found.', sep=""))
+	}
+
+	#special case for matrix
+	if (wid$type=="matrix") {
+		if (length(wid$names)==1) {
+			for(i in 1:wid$nrow)
+				for(j in 1:wid$ncol)
+					setWidgetState(paste(varname,"[",i,",",j,"]",sep=""), state, winName)
+			return(NULL)
+		}
+	}
+
+	#special case for data
+	if (wid$type=="data") {
+		if (length(wid$names)==1) {
+			for(i in 1:wid$nrow)
+				for(j in 1:wid$ncol)
+					setWidgetState(paste(varname,"[",i,",",j,"]d",sep=""), state, winName)
+			return(NULL)
+		}
+	}
+
+	#special case for vector
+	if (wid$type=="vector") {
+		if (length(wid$names)==1) {
+			for(i in 1:wid$length)
+				setWidgetState(paste(varname,"[",i,"]",sep=""), state, winName)
+			return(NULL)
+		}
+	}
+	
+	#special case for superobject
+	if( wid$type == "superobject" ) {
+		return( setWidgetState(paste("[superobject]", varname,sep=""), state, winName) )
+		stop( "SUPEROBJECT setwidgetstate not implemented" )
+	}
+
+	stop(paste("unable to update\"", varname, "\" - no widget found.", sep=""))
 }
 
 

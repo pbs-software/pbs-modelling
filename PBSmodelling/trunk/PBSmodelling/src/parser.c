@@ -45,20 +45,21 @@ void dispError(char *error, SEXP env, SEXP fname, SEXP lineNum)
 }
 
 
-/* create a 2 element list (with names "key", "value")
+/* create a 2/3 element list (with names "key" (optional), "value", "quoted")
    args:  key - first element
           val - second element
+          quoted - third element: "Y" or "N"
           *objs - count number of protected objects (pass by ref)
           list_names - constant 2 length STRSXP for "key", "value" names
    returns: the SEXP of the list
 */
-SEXP addPair(char *key, char *val, int *objs, SEXP list_names, SEXP list_names_value_only)
+SEXP addPair(char *key, char *val, char *quoted, int *objs, SEXP list_names, SEXP list_names_value_only)
 {
 	SEXP list, p;
 	
 	if (!key[0]) { /*no key was given (i.e. "")*/
-		/*create a 1 element list*/
-	    PROTECT(list = allocVector(VECSXP, 1));
+		/*create a 2 element list*/
+	    PROTECT(list = allocVector(VECSXP, 2));
 	    (*objs)++;
 	    
 	    /*create a single string and attach to 0th element of list*/
@@ -66,6 +67,12 @@ SEXP addPair(char *key, char *val, int *objs, SEXP list_names, SEXP list_names_v
 	    (*objs)++;
 	    SET_STRING_ELT(p, 0, mkChar(val));
 	    SET_VECTOR_ELT(list, 0, p);
+	    
+	    /*create a single string and attach to 1st element of list*/
+	    PROTECT(p=allocVector(STRSXP, 1));
+	    (*objs)++;
+	    SET_STRING_ELT(p, 0, mkChar(quoted));
+	    SET_VECTOR_ELT(list, 1, p);
 
 	    /*name them "key", and "value"*/
 	    setAttrib(list, R_NamesSymbol, list_names_value_only);
@@ -73,8 +80,8 @@ SEXP addPair(char *key, char *val, int *objs, SEXP list_names, SEXP list_names_v
 	}
 	/*otherwise save both key and value*/
 
-	/*create a 2 element list*/
-    PROTECT(list = allocVector(VECSXP, 2));
+	/*create a 3 element list*/
+    PROTECT(list = allocVector(VECSXP, 3));
     (*objs)++;
     
     /*create a single string and attach as 0th element of list*/
@@ -88,6 +95,12 @@ SEXP addPair(char *key, char *val, int *objs, SEXP list_names, SEXP list_names_v
     (*objs)++;
     SET_STRING_ELT(p, 0, mkChar(val));
     SET_VECTOR_ELT(list, 1, p);
+
+    /*create a single string and attach to 2nd element of list*/
+    PROTECT(p=allocVector(STRSXP, 1));
+    (*objs)++;
+    SET_STRING_ELT(p, 0, mkChar(quoted));
+    SET_VECTOR_ELT(list, 2, p);
     
     /*name them "key", and "value"*/
     setAttrib(list, R_NamesSymbol, list_names);
@@ -164,16 +177,18 @@ SEXP strToList(SEXP str, SEXP env, SEXP fname, SEXP lineNum)
 	char *key, *value, buf1[MAXSTRSIZE+1], buf2[MAXSTRSIZE+1], c;
 	const char *s;
     
-    /*make a char vector for "key", "value" names for list pairs*/
-    PROTECT(list_names = allocVector(STRSXP, 2));
+    /*make a char vector for "key", "value", "quoted" names for list pairs*/
+    PROTECT(list_names = allocVector(STRSXP, 3));
     objs++;
     SET_STRING_ELT(list_names, 0,  mkChar("key"));
     SET_STRING_ELT(list_names, 1,  mkChar("value"));
+    SET_STRING_ELT(list_names, 2,  mkChar("quoted"));
 
-    /*make a char vector for only "value" name for list pairs with no valid key*/
-    PROTECT(list_names_value_only = allocVector(STRSXP, 1));
+    /*make a char vector for only "value", "quoted" name for list pairs with no valid key*/
+    PROTECT(list_names_value_only = allocVector(STRSXP, 2));
     objs++;
     SET_STRING_ELT(list_names_value_only, 0,  mkChar("value"));
+    SET_STRING_ELT(list_names_value_only, 1,  mkChar("quoted"));
 
 
     PROTECT(str = AS_CHARACTER(str));
@@ -240,7 +255,7 @@ SEXP strToList(SEXP str, SEXP env, SEXP fname, SEXP lineNum)
     			value[j]='\0';
     			if (!equal)
     				key="";
-    			p=addPair(key, value, &objs, list_names, list_names_value_only);
+    			p=addPair(key, value, (quotefound ? "Y" : "N" ), &objs, list_names, list_names_value_only);
     			SET_VECTOR_ELT(list, kvpair++, p);
     		}
     		else if (equal) {
@@ -287,7 +302,7 @@ SEXP strToList(SEXP str, SEXP env, SEXP fname, SEXP lineNum)
 	    value[j]='\0';
 	    if (!equal)
 	    	key="";
-	    p=addPair(key, value, &objs, list_names, list_names_value_only);
+	    p=addPair(key, value, (quotefound ? "Y" : "N" ), &objs, list_names, list_names_value_only);
 	    SET_VECTOR_ELT(list, kvpair++, p);
 	}
     else if (equal) {
