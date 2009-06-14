@@ -14,7 +14,8 @@
 	list(param='vertical', required=FALSE, class="logical", default=TRUE),
 	list(param='bg', required=FALSE, class="character", default="#D4D0C8"),
 	list(param='fg', required=FALSE, class="character", default="#000000"),
-	list(param='onclose', required=FALSE, class="character", default="")
+	list(param='onclose', required=FALSE, class="character", default=""),
+	list(param='remove', required=FALSE, class="logical", default=FALSE)
 	)
 
 
@@ -26,6 +27,12 @@
 	list(param='sidetitle', required=FALSE, class="character", default=""),
 	list(param='topfont', required=FALSE, class="character", default=""),
 	list(param='sidefont', required=FALSE, class="character", default=""),
+	list(param='topfg', required=FALSE, class="character", default=NULL),
+	list(param='sidefg', required=FALSE, class="character", default=NULL),
+	list(param='fg', required=FALSE, class="character", default="black"),
+	list(param='topbg', required=FALSE, class="character", default=NULL),
+	list(param='sidebg', required=FALSE, class="character", default=NULL),
+	list(param='bg', required=FALSE, class="character", default=""),
 	list(param='byrow', required=FALSE, class="logical", default=TRUE),
 	list(param='borderwidth', required=FALSE, class="integer", default=1),
 	list(param='relief', required=FALSE, class="character", default="flat", grep="^(raised|sunken|flat|ridge|groove|solid)$"),
@@ -38,13 +45,17 @@
 	list(param='type', required=TRUE, class="character"),
 	list(param='nitems', required=FALSE, class="integer", default=1),
 	list(param='label', required=TRUE, class="character"),
-	list(param='font', required=FALSE, class="character", default="") #only is valid on sub-menus and not at top level
+	list(param='font', required=FALSE, class="character", default=""), #only is valid on sub-menus and not at top level
+	list(param='fg', required=FALSE, class="character", default=""),
+	list(param='bg', required=FALSE, class="character", default="")
 	)
 
 .widgetDefs$menuitem <- list(
 	list(param='type', required=TRUE, class="character"),
 	list(param='label', required=TRUE, class="character"),
 	list(param='font', required=FALSE, class="character", default=""),
+	list(param='fg', required=FALSE, class="character", default=""),
+	list(param='bg', required=FALSE, class="character", default=""),
 	list(param='function', required=TRUE, class="character"),
 	list(param='action', required=FALSE, class="character", default="menuitem")
 	)
@@ -127,6 +138,7 @@
 
 .widgetDefs$null <- list(
 	list(param='type', required=TRUE, class="character"),
+	list(param='bg', required=FALSE, class="character", default=""),
 	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
 	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
@@ -228,6 +240,12 @@
 	list(param='to', required=FALSE, class="numeric", default=1),
 	list(param='by', required=FALSE, class="numeric", default=0.01),
 	list(param='value', required=FALSE, class="numeric", default=NA),
+	list(param='font', required=FALSE, class="character", default=""),
+	list(param='fg', required=FALSE, class="character", default="black"),
+	list(param='bg', required=FALSE, class="character", default=""),
+	list(param='entryfont', required=FALSE, class="character", default=""),
+	list(param='entryfg', required=FALSE, class="character", default="black"),
+	list(param='entrybg', required=FALSE, class="character", default="white"),
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='enter', required=FALSE, class="logical", default=FALSE), #require an enter to change min/max values
 	list(param='action', required=FALSE, class="character", default="slideplus"),
@@ -366,6 +384,12 @@
 	list(param='name', required=FALSE, class="character", default="default", grep="^([a-zA-Z0-9]+)$"),
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='import', required=FALSE, class="character", default=""),
+	list(param='fg', required=FALSE, class="character", default="black"),
+	list(param='bg', required=FALSE, class="character", default=""),
+	list(param='entryfg', required=FALSE, class="character", default="black"),
+	list(param='entrybg', required=FALSE, class="character", default=""),
+	list(param='text', required=FALSE, class="character", default=""),
+	list(param='textpos', required=FALSE, class="character", default="N", grep="^(n|s|N|S|e|w|E|W)$"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
 	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
 	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
