@@ -2010,7 +2010,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		values <- widget$values
 	}
 
-	wid <- list(type="grid", bg=widget$bg, fg=widget$fg) #new grid widget to create
+	wid <- list(type="grid", bg=widget$bg, fg=widget$fg, borderwidth=widget$borderwidth) #new grid widget to create
 	wid$.widgets <- list() #elements in the grid
 	wid$byrow <- TRUE
 
@@ -2205,7 +2205,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	if( is.null( widget$vecnames ) ) widget$vecnames <- ""
 
 	n <- widget$length
-	wid <- list(type="grid", bg=widget$bg, fg=widget$fg) #new grid widget to create
+	wid <- list(type="grid", bg=widget$bg, fg=widget$fg, borderwidth=widget$borderwidth ) #new grid widget to create
 	wid$byrow = widget$vertical #pass byrow param to grid
 
 	nNames <- length(names)
@@ -2359,7 +2359,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		#dim(values) <- c(nrow, ncol)
 	}
 
-	wid <- list(type="grid", bg=widget$bg) #new grid widget to create
+	wid <- list(type="grid", bg=widget$bg, borderwidth=widget$borderwidth) #new grid widget to create
 	wid$.widgets <- list() #elements in the grid
 	wid$byrow <- TRUE
 
@@ -2905,6 +2905,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		            width=widget$width,
 		            mode=mode(userObject),
 		            sticky=widget$sticky,
+		            borderwidth=widget$borderwidth,
 		            padx=widget$padx,
 		            pady=widget$pady,
 		            edit=widget$edit
@@ -2947,6 +2948,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		            width=widget$width,
 		            modes=dataModes,
 		            sticky=widget$sticky,
+		            borderwidth=widget$borderwidth,
 		            padx=widget$padx,
 		            pady=widget$pady,
 		            edit=widget$edit
@@ -2978,6 +2980,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		            width=widget$width,
 		            mode=mode(userObject),
 		            sticky=widget$sticky,
+		            borderwidth=widget$borderwidth,
 		            padx=widget$padx,
 		            pady=widget$pady,
 		            edit=widget$edit
