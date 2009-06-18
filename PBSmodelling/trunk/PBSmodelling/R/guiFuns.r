@@ -1870,7 +1870,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	#widget name can sometimes be "foo[1,2,3]" or some such combo.
 	#where as type="vector" name="foo" is never seen in the regular map
 	if (!is.null(widget$name)) {
-		if (length(widget$name)==1) {
+		if (length(widget$name)==1 && widget$name != "" ) {
 			if (.isReallyNull(.PBSmod[[winName]]$widgets, widget$name)) {
 				.PBSmod[[winName]]$widgets[[widget$name]] <<- widget
 			} else {
@@ -3083,7 +3083,6 @@ parseWinFile <- function(fname, astext=FALSE)
 	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
 	argList$width<-widget$width
 	argList$validate = "all"
-	#argList$validateCommand = function(...) { print('gf'); return( 0 ) }
 	
 	#setup callback function
 	argList$modifycmd = function(...) { .extractData(widget[["function"]], widget$action, winName)}	
@@ -3479,7 +3478,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		)
 	)
 	
-	if( !is.null( widget$text ) ) {
+	if( !.isReallyNull( widget, "text" ) ) {
 		widget$textpos <- tolower( widget$textpos )
 		text_wid <- list(type = "text", name = textname, height = 6, width = 18, 
     	                 edit = TRUE, scrollbar = TRUE, fg = "black", bg = "white", 
