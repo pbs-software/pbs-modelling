@@ -1675,9 +1675,12 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 	
 	#restore NA -> NULL values
-	for(i in 1:length(givenNames)) {
+	i <- 1
+	while( i <= length( paramData ) ) {
 		if( length( paramData[[i]] ) == 1 && all( is.na( paramData[[i]] ) ) )
-			paramData[[i]] <- NULL
+			paramData[[i]] <- NULL #assigning NULL deletes the entry, so the current value of i will point to the next item
+		else
+			i <- i + 1 #if no deletion, advance to next item
 	}
 	
 	paramData$.debug <- list(sourceCode=sourceCode, fname=fname, line.start=line.start, line.end=line.end)
@@ -2000,14 +2003,11 @@ parseWinFile <- function(fname, astext=FALSE)
 
 	if (is.null(rownames)) rownames <- ""
 	if (is.null(colnames)) colnames <- ""
-	if (is.null(rowlabels)) rowlabels <- ""
-	if (is.null(collabels)) collabels <- ""
 
 	if (all(widget$values==""))
 		values <- ""
 	else {
 		values <- widget$values
-		#dim(values) <- c(nrow, ncol)
 	}
 
 	wid <- list(type="grid", bg=widget$bg, fg=widget$fg) #new grid widget to create
@@ -2027,11 +2027,11 @@ parseWinFile <- function(fname, astext=FALSE)
     	.stopWidget(paste('"names" argument must contain 1 or', ncol*nrow, 'names seperated by whitespace.'), widget$.debug, winName)
   
 	#count rowlabels
-	if (nRowlabels!=1 && nRowlabels!=nrow)
+	if (nRowlabels!=1 && nRowlabels!=0 && nRowlabels!=nrow)
 		.stopWidget(paste('"rowlabels" argument should contain 1 or', nrow, 'labels.'), widget$.debug, winName)
 
 	#count collabels
-	if (nCollabels!=1 && nCollabels!=ncol)
+	if (nCollabels!=1 && nCollabels!=0 && nCollabels!=ncol)
 		.stopWidget(paste('"collabels" argument should contain 1 or',ncol,'labels.'), widget$.debug, winName)
 
 	#count rownames
@@ -2042,13 +2042,15 @@ parseWinFile <- function(fname, astext=FALSE)
 	if (nColNames!=1 && nColNames!=ncol)
 		.stopWidget(paste('"colnames" argument should contain 1 or',ncol,'labels.'), widget$.debug, winName)
 
-	if (all(rowlabels=="NULL"))
+	if (is.null(rowlabels))
 			colLabelOffset <- 0
 		else
 			colLabelOffset <- 1
 
 	#single labels should be displayed as the title
-	if (nCollabels==1 && ncol>1) {
+	if( is.null( collabels ) ) {
+		#nothing
+	} else if (nCollabels==1 && ncol>1) {
 		wid$toptitle<-collabels[1]
 		wid$topfont<-widget$font
 		wid$toptitle.offset<-1 #to help center the label
@@ -2068,7 +2070,9 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 
 	#row title
-	if (nRowlabels==1 && nrow>1) {
+	if( is.null( rowlabels ) ) {
+		wid$sidetitle.offset<-1 #to help center the label
+	} else if (nRowlabels==1 && nrow>1) {
 		wid$sidetitle<-rowlabels[1]
 		wid$sidefont<-widget$font
 		wid$sidetitle.offset<-1 #to help center the label
@@ -2081,7 +2085,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		for(j in 1:(ncol+1)) {
 			#first row is for labels
 			if (j==1) {
-				if (!all(rowlabels=="NULL")) {
+				if (!is.null(rowlabels)) {
 					if (nRowlabels==1 && nrow>1) {
 						text <- as.character(rowCount)
 					}
@@ -2089,7 +2093,7 @@ parseWinFile <- function(fname, astext=FALSE)
 						text <- rowlabels[rowCount]
 
 					tmp_i <- i
-					if (all(collabels[1]=="NULL"))
+					if( is.null( collabels ) )
 						tmp_i <- tmp_i - 1
 					wid$.widgets[[tmp_i]][[j]] <- list(type='label', text=text, font=widget$font, bg=widget$bg, fg=widget$fg)
 				}
@@ -2114,9 +2118,9 @@ parseWinFile <- function(fname, astext=FALSE)
 
 				#tweak offset if labels are disabled
 				# ****must be un-tweaked after creating the entry or check widget
-				if (all(rowlabels[1]=="NULL"))
+				if( is.null(rowlabels) )
 					j <- j - 1
-				if (all(collabels[1]=="NULL"))
+				if( is.null(collabels) )
 					i <- i - 1
 
 				if (widget$mode=="logical") {
@@ -2159,9 +2163,9 @@ parseWinFile <- function(fname, astext=FALSE)
 
 				}
 				# ***untweak offset for special case of no labels
-				if (all(rowlabels=="NULL"))
+				if( is.null(rowlabels) )
 					j <- j + 1
-				if (all(collabels=="NULL"))
+				if( is.null(collabels) )
 					i <- i + 1
 			}
 		}
@@ -2190,13 +2194,15 @@ parseWinFile <- function(fname, astext=FALSE)
 	names <- widget$names
 	labels <- widget$labels
 
-	if (all(labels==""))
+	if (!is.null( labels ) && all(labels==""))
 		labels <- names
 
 	if (all(widget$values==""))
 		values <- ""
 	else
 		values <- widget$values
+
+	if( is.null( widget$vecnames ) ) widget$vecnames <- ""
 
 	n <- widget$length
 	wid <- list(type="grid", bg=widget$bg, fg=widget$fg) #new grid widget to create
@@ -2239,11 +2245,11 @@ parseWinFile <- function(fname, astext=FALSE)
 
 
 	#count labels
-	if (nLabels!=1 && nLabels!=n)
+	if (nLabels!=1 && !is.null(labels) && nLabels!=n)
 		.stopWidget(paste('labels argument should contain 1 or',n,'labels.'), widget$.debug, winName)
 
 	#single labels should be displayed as the title
-	if (nLabels==1 && n!=1 && all(widget$labels!="NULL")) {
+	if (nLabels==1 && n!=1 && !is.null(labels) ) {
 		wid$toptitle=labels[1]
 		wid$topfont<-widget$font
 	}
@@ -2256,14 +2262,18 @@ parseWinFile <- function(fname, astext=FALSE)
 	wid$.widgets <- list()
 	for(i in 1:n) {
 		wid$.widgets[[i]] <- list()
-
+		
 		#create label
-		if (nLabels==1 && n!=1)
-			text <- as.character(i)
-		else
-			text <- labels[i]
-
-		wid$.widgets[[i]][[1]] <- list(type='label', text=text, font=widget$font, fg=widget$fg, bg=widget$bg)
+		if( is.null( labels ) ) {
+			entryIndex <- 1
+		} else {
+			entryIndex <- 2
+			if (nLabels==1 && n!=1)
+				text <- as.character(i)
+			else
+				text <- labels[i]
+			wid$.widgets[[i]][[1]] <- list(type='label', text=text, font=widget$font, fg=widget$fg, bg=widget$bg)
+		}
 
 		#create entry
 		if (nNames==1)
@@ -2280,11 +2290,6 @@ parseWinFile <- function(fname, astext=FALSE)
 			vname <- NULL
 		else
 			vname <- widget$vecnames[i]
-
-		if (all(widget$labels=="NULL"))
-			entryIndex <- 1
-		else
-			entryIndex <- 2
 
 		if (widget$mode=="logical") {
 			#display a checkbox
@@ -2347,12 +2352,6 @@ parseWinFile <- function(fname, astext=FALSE)
 	collabels <- widget$collabels
 	colnames <- widget$colnames
 
-	if (is.null(widget$rownames)) widget$rownames <- ""
-	if (is.null(widget$colnames)) widget$colnames <- ""
-
-	print( widget$collabels )
-	print( widget$rowlabels )
-
 	if (all(widget$values==""))
 		values <- ""
 	else {
@@ -2381,7 +2380,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		.stopWidget(paste('modes argument must contain 1 or',ncol,'modes seperated by whitespace.'), widget$.debug, winName)
     
 	#count rowlabels
-	if (nRowlabels!=1 && nRowlabels!=nrow)
+	if (nRowlabels!=1 && nRowlabels!=0 && nRowlabels!=nrow)
 		.stopWidget(paste('rowlabels should contain 1 or',nrow,'labels.'), widget$.debug, winName)
 
 	#count rownames
@@ -2389,21 +2388,22 @@ parseWinFile <- function(fname, astext=FALSE)
 		.stopWidget(paste('rownames argument should contain 1 or',nrow,'labels.'), widget$.debug, winName)
 
 	#count collabels
-	if (nCollabels!=1 && nCollabels!=ncol)
+	if (nCollabels!=1 && nCollabels!=0 && nCollabels!=ncol)
 		.stopWidget(paste('collabels argument should contain 1 or',ncol,'labels.'), widget$.debug, winName)
 
 	#count colnames
 	if (nColNames!=1 && nColNames!=ncol)
 		.stopWidget(paste('colnames argument should contain 1 or',ncol,'labels.'), widget$.debug, winName)
 
-	if (all(rowlabels=="NULL"))
+	if( is.null( rowlabels ) )
 			colLabelOffset <- 0
 		else
 			colLabelOffset <- 1
 
-
 	#single column labels should be displayed as the title
-	if (nCollabels==1 && ncol>1) {
+	if( is.null( collabels ) ) {
+		#nothing
+	} else if (nCollabels==1 && ncol>1) {
 		wid$toptitle<-collabels[1]
 		wid$topfont<-widget$font
 		wid$toptitle.offset<-1 #to help center the label
@@ -2413,8 +2413,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		for(j in 1:ncol) {
 			wid$.widgets[[1]][[j+colLabelOffset]] <- list(type='label', text=j, font=widget$font, bg=widget$bg, fg=widget$fg)
 		}
-	}
-	else {
+	} else {
 		wid$.widgets[[1]] <- list()
 		wid$.widgets[[1]][[1]] <- list(type='label', text="", bg=widget$bg, fg=widget$fg)
 		for(j in 1:ncol) {
@@ -2423,7 +2422,9 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 
 	#row title
-	if (nRowlabels==1 && nrow>1) {
+	if( is.null( rowlabels ) ) {
+		wid$sidetitle.offset<-1 #to help center the label
+	} else if (nRowlabels==1 && nrow>1) {
 		wid$sidetitle<-rowlabels[1]
 		wid$sidefont<-widget$font
 		wid$sidetitle.offset<-1 #to help center the label
@@ -2435,9 +2436,9 @@ parseWinFile <- function(fname, astext=FALSE)
 		wid$.widgets[[i]] <- list()
 
 		for(j in 1:(ncol+1)) {
-			#first row is for labels
+			#first col is for labels
 			if (j==1) {
-				if (!all(rowlabels=="NULL")) {
+				if (!is.null(rowlabels)) {
 					if (nRowlabels==1 && nrow>1) {
 						text <- as.character(rowCount)
 					}
@@ -2445,7 +2446,7 @@ parseWinFile <- function(fname, astext=FALSE)
 						text <- rowlabels[rowCount]
 
 					tmp_i <- i
-					if (all(collabels[1]=="NULL"))
+					if (is.null( collabels ))
 						tmp_i <- tmp_i - 1
 					#define a row label (per each row)
 					row_number = tmp_i - 1 #for renaming row labels
@@ -2475,15 +2476,15 @@ parseWinFile <- function(fname, astext=FALSE)
 				else
 					mode <- modes[j-1] #columns are offset by one
 
-				#tweak offset if labels are disabled
-				# ****must be un-tweaked after creating the entry or check widget
-				if (all(rowlabels=="NULL"))
-					j <- j - 1
-				if (all(collabels[1]=="NULL"))
-					i <- i - 1
-
 				#get width
 				width <- rep( widget$width, length=ncol+1)[ j - 1 ]
+
+				#tweak offset if labels are disabled
+				# ****must be un-tweaked after creating the entry or check widget
+				if (is.null( rowlabels ))
+					j <- j - 1
+				if (is.null( collabels ))
+					i <- i - 1
 
 				if (mode=="logical") {
 					#display a checkbox
@@ -2525,9 +2526,9 @@ parseWinFile <- function(fname, astext=FALSE)
 				}
 
 				# ***untweak offset for special case of no labels
-				if (all(rowlabels=="NULL"))
+				if (is.null( rowlabels ))
 					j <- j + 1
-				if (all(collabels[1]=="NULL"))
+				if (is.null( collabels ))
 					i <- i + 1
 			}
 		}
@@ -2539,11 +2540,11 @@ parseWinFile <- function(fname, astext=FALSE)
 		wid$.widgets[[i]] <- NULL
 
 	#remove titles if applicable
-	if (all(rowlabels=="NULL")) {
+	if (is.null(rowlabels)) {
 		wid$sidetitle <- ""
 		wid$toptitle.offset <- NULL
 	}
-	if (all(collabels=="NULL")) {
+	if (is.null(collabels)) {
 		wid$toptitle <- ""
 		wid$sidetitle.offset <- NULL
 	}
@@ -2673,6 +2674,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		tkset( scroll, beg , end )
 
 	}
+
+	widget$vertical <- FALSE #superobject doesn't really do anything for vectors
 
 	frame <- tkframe( tk )
 	obj_tk <- .createWidget.object( frame, widget, winName )
@@ -2906,6 +2909,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		            pady=widget$pady,
 		            edit=widget$edit
 		            );
+		if( widget$rowlabels == FALSE ) wid$rowlabels <- NULL
+		if( widget$collabels == FALSE ) wid$collabels <- NULL
 		.PBSmod[[winName]]$widgets[[widget$name]] <<- wid
 		return(.createWidget(tk, wid, winName))
 	}
@@ -2946,6 +2951,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		            pady=widget$pady,
 		            edit=widget$edit
 		            );
+		if( widget$rowlabels == FALSE ) wid$rowlabels <- NULL
+		if( widget$collabels == FALSE ) wid$collabels <- NULL
 		.PBSmod[[winName]]$widgets[[widget$name]] <<- wid
 		return(.createWidget(tk, wid, winName))
 	}
@@ -2975,6 +2982,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		            pady=widget$pady,
 		            edit=widget$edit
 		            );
+		if( widget$collabels == FALSE ) wid$labels <- NULL
 		.PBSmod[[winName]]$widgets[[widget$name]] <<- wid
 		return(.createWidget(tk, wid, winName))
 	}
@@ -2985,8 +2993,7 @@ parseWinFile <- function(fname, astext=FALSE)
 
 .createWidget.entry <- function(tk, widget, winName)
 {
-	if (!is.null(widget$label))
-	if (widget$label!="") {
+	if (!is.null(widget$label) && widget$label!="") {
 		#if label is set, then create a 2x1 grid
 		label <- widget$label
 		widget$label <- "" #blank it out, inf loop if not.

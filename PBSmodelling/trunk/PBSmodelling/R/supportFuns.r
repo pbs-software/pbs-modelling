@@ -245,14 +245,17 @@ showArgs <- function(widget, width=70, showargs=FALSE) {
 	if (missing(widget)) widget=sort(names(x))
 	x=x[widget]; xnam=names(x)
 	out=character(0) # output file
-	for(i in 1:length(x)) { 
+
+	for(i in 1:length(x)) {
+		#print widget name, and underline it
 		cat(xnam[i])
 		cat(paste("\n",paste(rep("-",nchar(xnam[i])),collapse=""),"\n",sep=""))
+		
 		expr=xnam[i]
 		for(j in 2:length(x[[i]])) { 
 			argu=x[[i]][[j]]$param
 			if (x[[i]][[j]]$required==TRUE) {}
-			else if (!is.null(x[[i]][[j]]$default)) {
+			else if (!.isReallyNull(x[[i]][[j]], "default")) {
 				argu=c(argu,"=")
 				if (x[[i]][[j]]$class=="character" || x[[i]][[j]]$class=="characterVector")
 					delim="\"" else delim=""
@@ -260,7 +263,7 @@ showArgs <- function(widget, width=70, showargs=FALSE) {
 			}
 			else {
 				cat("\n\n")
-				stop(paste(z[i],"::",x[[i]][[j]]$param, "is not required, but has no default."))
+				stop(paste(xnam[i],"::",x[[i]][[j]]$param, "is not required, but has no default."))
 			}
 			expr=paste(expr,paste(argu,collapse=""),sep=" ")
 		}
