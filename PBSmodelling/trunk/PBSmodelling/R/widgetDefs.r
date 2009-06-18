@@ -34,7 +34,7 @@
 	list(param='sidebg', required=FALSE, class="character", default=NULL),
 	list(param='bg', required=FALSE, class="character", default=""),
 	list(param='byrow', required=FALSE, class="logical", default=TRUE),
-	list(param='borderwidth', required=FALSE, class="integer", default=0),
+	list(param='borderwidth', required=FALSE, class="integer", default=1),
 	list(param='relief', required=FALSE, class="character", default="flat", grep="^(raised|sunken|flat|ridge|groove|solid)$"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
 	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
@@ -395,7 +395,7 @@
 	list(param='fg', required=FALSE, class="character", default="black"),
 	list(param='bg', required=FALSE, class="character", default=""),
 	list(param='entryfg', required=FALSE, class="character", default="black"),
-	list(param='entrybg', required=FALSE, class="character", default=""),
+	list(param='entrybg', required=FALSE, class="character", default="white"),
 	list(param='text', required=FALSE, class="character", default=NULL, allow_null = TRUE),
 	list(param='textpos', required=FALSE, class="character", default="N", grep="^(n|s|N|S|e|w|E|W)$"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
@@ -416,7 +416,7 @@
 	list(param='mode', required=FALSE, class="character", default="character", grep="^(numeric|integer|complex|logical|character)$"),
 	list(param='font', required=FALSE, class="character", default=""),
 	list(param='value', required=FALSE, class="character", default=""),
-	list(param='borderwidth', required=FALSE, class="integer", default=0),
+	list(param='borderwidth', required=FALSE, class="integer", default=1),
 	list(param='relief', required=FALSE, class="character", default="sunken", grep="^(raised|sunken|flat|ridge|groove|solid)$"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
 	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
