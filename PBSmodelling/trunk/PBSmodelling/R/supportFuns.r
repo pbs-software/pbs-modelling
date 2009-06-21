@@ -254,12 +254,14 @@ showArgs <- function(widget, width=70, showargs=FALSE) {
 		expr=xnam[i]
 		for(j in 2:length(x[[i]])) { 
 			argu=x[[i]][[j]]$param
-			if (x[[i]][[j]]$required==TRUE) {}
+			if (x[[i]][[j]]$required==TRUE) { }
 			else if (!.isReallyNull(x[[i]][[j]], "default")) {
+				
+				default <- ifelse( is.null( x[[i]][[j]]$default ), "NULL", paste(delim,x[[i]][[j]]$default,delim,sep="") )
 				argu=c(argu,"=")
 				if (x[[i]][[j]]$class=="character" || x[[i]][[j]]$class=="characterVector")
 					delim="\"" else delim=""
-				argu=c(argu,paste(delim,x[[i]][[j]]$default,delim,sep=""))
+				argu=c(argu,default)
 			}
 			else {
 				cat("\n\n")

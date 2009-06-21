@@ -1516,7 +1516,7 @@ parseWinFile <- function(fname, astext=FALSE)
 			} else {
 				#special case where unquoted NULL is converted to a real NULL, but can't work for ALL values because of NULL widget type.
 				if( !quoted && value == "NULL" )
-					value <- NA #use NA instead - to signify user gave NULL rather than ommitted it
+					value <- list(NULL) #assign NULL, rather than delete (
 				paramData[[key]] <- value
 			}
 		}
@@ -1672,15 +1672,6 @@ parseWinFile <- function(fname, astext=FALSE)
 		for(i in line.start:line.end) {
 			sourceCode <- c(sourceCode, sourcefile[[i]])
 		}
-	}
-	
-	#restore NA -> NULL values
-	i <- 1
-	while( i <= length( paramData ) ) {
-		if( length( paramData[[i]] ) == 1 && all( is.na( paramData[[i]] ) ) )
-			paramData[[i]] <- NULL #assigning NULL deletes the entry, so the current value of i will point to the next item
-		else
-			i <- i + 1 #if no deletion, advance to next item
 	}
 	
 	paramData$.debug <- list(sourceCode=sourceCode, fname=fname, line.start=line.start, line.end=line.end)

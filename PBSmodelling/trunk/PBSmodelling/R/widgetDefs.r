@@ -78,7 +78,7 @@
 .widgetDefs$droplist <- list(
 	list(param='type', required=TRUE, class="character"),
 	list(param='name', required=TRUE, class="character"),
-	list(param='values', required=TRUE, class="characterVector", grep="^([a-zA-Z0-9])+(\\[[0-9,]+\\])?([ \t]+([a-zA-Z0-9])+(\\[[0-9,]+\\])?)*$", allow_null=TRUE),
+	list(param='values', required=FALSE, class="characterVector", default=NULL, grep="^([a-zA-Z0-9])+(\\[[0-9,]+\\])?([ \t]+([a-zA-Z0-9])+(\\[[0-9,]+\\])?)*$", allow_null=TRUE),
 	list(param='selected', required=FALSE, class="integer", default=1, grep="^[0-9]+$"),
 	list(param='add', required=FALSE, class="logical", default=FALSE),
 	list(param='font', required=FALSE, class="character", default=""),
