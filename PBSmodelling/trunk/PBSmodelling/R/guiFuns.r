@@ -2826,7 +2826,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	
 	#example from: http://bioinf.wehi.edu.au/~wettenhall/RTclTkExamples/tktable.html
 	argList <- list( parent = frame, type = "table", rows=table_nrows,cols=table_ncols,titlerows=show_coltitle,titlecols=show_rowtitle,
-	             height=0,width=10,multiline=0,
+	             height=widget$rowshow,width=10,multiline=0,
 	             xscrollcommand=function(...) tkset(xscr,...),yscrollcommand=function(...) tkset(yscr,...))
 
 	#if( length( widget$width ) > 1 )
@@ -2835,6 +2835,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	if (!is.null(widget$font) && widget$font!="")
 		argList$font <- .createTkFont(widget$font)
 
+	
 
 	table1 <- do.call( "tkwidget", argList )
 	.map.set( winName, widget$name, tclwidget=table1 )
