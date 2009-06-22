@@ -70,21 +70,6 @@
 	return(FALSE)
 }
 
-
-# ***********************************************************
-# .isReallyNull:
-#   returns true if key is not a real key of the list
-#   false if key is found in names(list)
-# Arguments:
-#   list - a named list
-#   key  - named element of list to look for
-# -----------------------------------------------------------
-.isReallyNull <- function(list, key)
-{
-	return (!any(names(list)==key))
-}
-
-
 # ***********************************************************
 # .searchCollection:
 #   searches a haystack for a needle, or a similar longer needle.
@@ -145,7 +130,7 @@
 # -----------------------------------------------------------
 .map.add <- function(winName, key, ...)
 {
-	if (.isReallyNull(.PBSmod, winName))
+	if( is.null( .PBSmod[[ winName ]] ) )
 		.map.init(winName)
 
 	if (!is.character(key)) {
@@ -155,7 +140,7 @@
 		stop("map error - key must be atleast 1character long")
 	}
 
-	if (!.isReallyNull(.PBSmod[[winName]]$widgetPtrs, key))
+	if (!is.null(.PBSmod[[winName]]$widgetPtrs[[ key ]]))
 		return(.PBSmod[[winName]]$widgetPtrs[[key]])
 
 	.PBSmod[[winName]]$widgetPtrs[[key]] <<- list(...)
@@ -174,7 +159,7 @@
 # -----------------------------------------------------------
 .map.set <- function(winName, key, ...)
 {
-	if (.isReallyNull(.PBSmod, winName))
+	if( is.null( .PBSmod[[ winName ]] ) )
 		.map.init(winName)
 
 	if (!is.character(key))
@@ -258,15 +243,15 @@
 			next
 		}
 		wid <- .PBSmod[[winName]]$widgets[[keys[i]]]
-		if (!is.null(data[[i]]$tclvar)) {
+		if (!is.null(data[[i]][[ "tclvar" ]])) {
 			values[[i]] <- tclvalue(data[[i]]$tclvar)
 		}
-		else if (!is.null(data[[i]]$tclwidget)) {
+		else if (!is.null(data[[i]][["tclwidget"]])) {
 			#special case for text widgets
 			values[[i]] <- tclvalue(tkget(data[[i]]$tclwidget,"0.0","end"))
 			wid$mode <- "character"
 		}
-		else if (!is.null(data[[i]]$tclarray)) {
+		else if (!is.null(data[[i]][["tclarray"]])) {
 			#special case for table matrix
 			tables_to_process[[ data[[i]]$widgetname ]] = TRUE
 			next
@@ -276,10 +261,10 @@
 		}
 
 		#convert data to propper type
-		if (is.null(wid$mode))
+		if (is.null(wid[["mode"]]))
 			mode <- "numeric"
 		else
-			mode <- wid$mode
+			mode <- wid[["mode"]]
 
 		values[[i]] <- .convertMode(values[[i]], mode)
 	}
@@ -302,7 +287,7 @@
 					matrixTmp <- list()
 
 				#create a list for the new matrix
-				if (.isReallyNull(matrixTmp, name)) {
+				if( is.null( matrixTmp[[ name ]] ) ) {
 					matrixTmp[[name]] <- list()
 				}
 
@@ -311,7 +296,7 @@
 			}
 			else {
 				#single index found (vector)
-				if (.isReallyNull(retData, name))
+				if ( is.null( retData[[ name ]] ) )
 					retData[[name]] <- NA
 				retData[[name]][ind] <- values[[i]]
 			}
@@ -327,7 +312,7 @@
 					dataframeTmp <- list()
 
 				#create a list for the new matrix
-				if (.isReallyNull(dataframeTmp, name)) {
+				if ( is.null( dataframeTmp[[ name ]] ) ) {
 					dataframeTmp[[name]] <- list()
 				}
 
@@ -342,7 +327,7 @@
 		else {
 			#no index (ie var is of standard type: [a-z0-9_]+)
 			retData[[keys[i]]] <- values[[i]]
-			if (!.isReallyNull(.PBSmod[[winName]]$widgets[[keys[i]]], ".name"))
+			if (!is.null(.PBSmod[[ winName ]]$widgets[[ keys[i] ]][[ ".name" ]]))
 				names(retData[[keys[i]]]) <- .PBSmod[[winName]]$widgets[[keys[i]]]$.name
 		}
 	}
@@ -387,7 +372,7 @@
 	#assign vecnames to any vectors
 	for(wid in .PBSmod[[winName]]$widgets) {
 		if (wid$type=="vector") {
-			if (!.isReallyNull(retData, wid$names)) {
+			if (!is.null(retData[[ wid$names ]])) {
 				if (any(wid$vecnames!=""))
 					names(retData[[wid$names]]) <- wid$vecnames
 			}
@@ -611,7 +596,7 @@
 # -----------------------------------------------------------
 focusWin <- function(winName, winVal=TRUE)
 {
-	if (.isReallyNull(.PBSmod, winName))
+	if( is.null( .PBSmod[[ winName ]] ) )
 		stop(paste("supplied winName \"", winName, "\" is not a valid window", sep=""))
 	tkfocus(.PBSmod[[winName]]$tkwindow)
 	if (winVal)
@@ -830,7 +815,7 @@ closeWin <- function(name)
 		name <- names(.PBSmod)
 	name <- grep("^[^\\.]", name, value=TRUE)
 	for(n in name) {
-		if(!.isReallyNull(.PBSmod, n)) {
+		if(!is.null(.PBSmod[[ n ]])) {
 			tt <- .PBSmod[[n]]$tkwindow
 			tkdestroy(tt)
 		}
@@ -860,7 +845,7 @@ closeWin <- function(name)
 		#validate each window
 
 		#check for a window title
-		if (is.null(x[[i]]$title))
+		if (is.null(x[[i]][["title"]]))
 			x[[i]]$title <- paramOrder$window$title
 
 		#check for widgets
@@ -871,10 +856,10 @@ closeWin <- function(name)
 
 		#TODO - check .menu too?
 
-		if (is.null(x[[i]]$winBackground))
+		if (is.null(x[[i]][["winBackground"]]))
 			x[[i]]$winBackground = "#D4D0C8"
 
-		if (is.null(x[[i]]$winForeground))
+		if (is.null(x[[i]][["winForeground"]]))
 			x[[i]]$winForeground = "#000000"
 	}
 
@@ -911,7 +896,7 @@ closeWin <- function(name)
 		#unless they are absolutely required
 		args <- paramOrder[[type]]
 		for(j in 1:length(args)) {
-			if (is.null(x[[i]][[args[[j]]$param]])) {
+			if (is.null(x[[i]][[args[[j]][["param"]] ]] )) {
 				#a paramater is missing from the list.
 
 				#is the paramater required?
@@ -919,7 +904,7 @@ closeWin <- function(name)
 					stop(paste("missing argument", args[[j]]$param, "from widget", type))
 
 				#is there a default value?
-				if (!is.null(args[[j]]$default))
+				if (!is.null(args[[j]][["default"]]))
 					x[[i]][[args[[j]]$param]] <- args[[j]]$default
 			}
 			else {
@@ -927,7 +912,7 @@ closeWin <- function(name)
 				#and matches the grep
 
 				#check grep if applicable
-				if (!is.null(args[[j]]$grep)) {
+				if (!is.null(args[[j]][["grep"]])) {
 					#check grep from .widgetDefs with supplied value from list
 					if (!any(grep(args[[j]]$grep, x[[i]][[args[[j]]$param]])))
 						stop(paste("given value \"", x[[i]][[args[[j]]$param]], 
@@ -1502,7 +1487,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		value<-s[[j]]$value
 		quoted <- s[[j]]$quoted == "Y"
 		#argument is named, unnamed arguments are no longer valid
-		if (!is.null(s[[j]]$key)) {
+		if (!is.null(s[[j]][["key"]])) {
 			namedArguments <- 1 
 			key<-casefold(s[[j]]$key)
 			if (typeDefined==0) {
@@ -1558,7 +1543,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		.catError(paste("no widget type given", sep=""), fname, line.start, line.end, sourcefile)
 		return(NULL) }
 	#check that widget type is valid
-	if(.isReallyNull(paramOrder, paramData$type)) {
+	if( is.null( paramOrder[[ paramData[["type"]] ]] ) ) {
 		.catError(paste("unknown widget type '", paramData$type,"'", sep=""), fname, line.start, line.end, sourcefile)
 		return(NULL) }
 	#test if all given arguments are valid arguments of the given type
@@ -1593,14 +1578,14 @@ parseWinFile <- function(fname, astext=FALSE)
 			}
 			#check argument for user-specified NULL options (represented by an NA)
 			if( all( is.na( paramData[[i]] ) ) ) {
-				if ( is.null( argOrder[[pos]]$allow_null ) || argOrder[[pos]]$allow_null == FALSE ) {
+				if ( is.null( argOrder[[pos]][["allow_null"]] ) || argOrder[[pos]]$allow_null == FALSE ) {
 					#NULL is not valid for this option
 					.catError(paste('argument \'', givenNames[i], '\': NULL is not accepted. To specify the word use "NULL"', sep=""), fname, line.start, line.end, sourcefile)
 					errorFound <- 1
 				}
 			}
 			#some strings - if character need to be stripped of slashes, or sub-divided
-			if (errorFound == 0 && !is.null(argOrder[[pos]]$class) && !is.na(paramData[[i]]) ) {
+			if (errorFound == 0 && !is.null(argOrder[[pos]][["class"]]) && !is.na(paramData[[i]]) ) {
 				if (argOrder[[pos]]$class=="character") {
 					#convert value to either a single string (.stripSlashes)
 					tmp <- .stripSlashes(paramData[[i]], fname, line.start, line.end, sourcefile)
@@ -1646,14 +1631,14 @@ parseWinFile <- function(fname, astext=FALSE)
 	#check that all required arguments have been supplied
 	for(i in 1:length(argOrder)) {
 		if (argOrder[[i]]$required) {
-			if (.isReallyNull(paramData, argOrder[[i]]$param)) {
+			if( is.null( paramData[[ argOrder[[i]][["param"]] ]] ) ) {
 				.catError(paste('required argument \'', argOrder[[i]]$param, '\' is missing from widget \'', paramData$type, '\'', sep=""), fname, line.start, line.end, sourcefile)
 				errorFound <- 1
 			}
 		}
-		else if (!is.null(argOrder[[i]]$default)) {
+		else if (!is.null(argOrder[[i]][["default"]])) {
 			#fill in any default values if applicible
-			if (is.null(paramData[[argOrder[[i]]$param]])) {
+			if (is.null(paramData[[argOrder[[i]][["param"]]]])) {
 				#set it to default value
 				paramData[[argOrder[[i]]$param]] <- argOrder[[i]]$default
 			}
@@ -1663,7 +1648,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		return(NULL)
 
 	#convert default values from character class to specified class ($mode in widgetDefs.r) - but why is this only specific to radio?
-	if ( !.isReallyNull(paramData,"value") && !.isReallyNull(paramData,"mode") && paramData$type=="radio" ) {
+	if ( !is.null( paramData[[ "value" ]] ) && !is.null( paramData[[ "mode" ]] ) && paramData$type=="radio" ) {
 		paramData$value <- as(paramData$value, paramData$mode)
 	}
 	#store debug information to be used if there are any errors while building the GUI
@@ -1698,45 +1683,45 @@ parseWinFile <- function(fname, astext=FALSE)
 	if (is.null(sidetitle))
 		sidetitle <- ""
 
-	if (is.null(grid$ncol)) {
+	if (is.null(grid[["ncol"]])) {
 		grid$ncol=length(grid$.widgets[[1]])
 	}
 
-	if (is.null(grid$nrow)) {
+	if (is.null(grid[["nrow"]])) {
 		grid$nrow=length(grid$.widgets)
 	}
 
 	#offset the title (useful for centering titles over a certain part)
 	#like over the 3 columns of a matrix, but not row labels
-	if (is.null(grid$toptitle.offset))
+	if (is.null(grid[["toptitle.offset"]]))
 		grid$toptitle.offset<-0
-	if (is.null(grid$sidetitle.offset))
+	if (is.null(grid[["sidetitle.offset"]]))
 		grid$sidetitle.offset<-0
 
 	#set byrow
-	if (is.null(grid$byrow)) {
+	if (is.null(grid[["byrow"]])) {
 		grid$byrow=TRUE
 	}
 
 	#set font options
-	topfont <- ifelse( is.null(grid$topfont), "", grid$topfont )
-	sidefont <- ifelse( is.null(grid$sidefont), "", grid$sidefont )
+	topfont <- ifelse( is.null(grid[["topfont"]]), "", grid$topfont )
+	sidefont <- ifelse( is.null(grid[["sidefont"]]), "", grid$sidefont )
 	
 	#set fg
-	if( is.null(grid$topfg) ) grid$topfg <- grid$fg
-	if( is.null(grid$sidefg) ) grid$sidefg <- grid$fg
+	if( is.null(grid[["topfg"]]) ) grid$topfg <- grid$fg
+	if( is.null(grid[["sidefg"]]) ) grid$sidefg <- grid$fg
 	#set bg
-	if( is.null(grid$topbg) ) grid$topbg <- grid$bg
-	if( is.null(grid$sidebg) ) grid$sidebg <- grid$bg
+	if( is.null(grid[["topbg"]]) ) grid$topbg <- grid$bg
+	if( is.null(grid[["sidebg"]]) ) grid$sidebg <- grid$bg
 
 	#display title (if set)
 	if (toptitle!="") {
 		colspan=as.integer(grid$ncol)-grid$toptitle.offset
 		argList <- list(parent=tk, text=toptitle)
-		if (!is.null(grid$topfg) && grid$topfg!="") {
+		if (!is.null(grid[["topfg"]]) && grid$topfg!="") {
 			argList$foreground <- grid$topfg
 		}
-		if (!is.null(grid$topbg) && grid$topbg!="")
+		if (!is.null(grid[["topbg"]]) && grid$topbg!="")
 			argList$background <- grid$topbg
 		if (topfont!="")
 			argList$font <- .createTkFont(topfont)
@@ -1748,9 +1733,9 @@ parseWinFile <- function(fname, astext=FALSE)
 	if (sidetitle!="") {
 		rowspan=as.integer(grid$nrow)-grid$sidetitle.offset
 		argList <- list(parent=tk, text=sidetitle)
-		if (!is.null(grid$sidefg) && grid$sidefg!="")
+		if (!is.null(grid[["sidefg"]]) && grid$sidefg!="")
 			argList$foreground=grid$sidefg
-		if (!is.null(grid$sidebg) && grid$sidebg!="")
+		if (!is.null(grid[["sidebg"]]) && grid$sidebg!="")
 			argList$background=grid$sidebg
 		if (topfont!="")
 			argList$font <- .createTkFont(sidefont)
@@ -1862,7 +1847,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	#where as type="vector" name="foo" is never seen in the regular map
 	if (!is.null(widget$name)) {
 		if (length(widget$name)==1 && widget$name != "" ) {
-			if (.isReallyNull(.PBSmod[[winName]]$widgets, widget$name)) {
+			if (is.null(.PBSmod[[winName]]$widgets[[ widget$name ]])) {
 				.PBSmod[[winName]]$widgets[[widget$name]] <<- widget
 			} else {
 				#duplicate widget name found -> likely a radio with many options but only one var name
@@ -1894,16 +1879,16 @@ parseWinFile <- function(fname, astext=FALSE)
 	#because it is added as padding, and not parsed.
 	#all other defaults are set in paramOrder list
 
-	if (is.null(widget$borderwidth))
+	if (is.null(widget[["borderwidth"]]))
 		widget$borderwidth <- 5
 
-	if (is.null(widget$relief))
+	if (is.null(widget[["relief"]]))
 		widget$relief <- "flat"
 
 	argList <- list(parent=tk, borderwidth=widget$borderwidth,relief=widget$relief)
-	if (!is.null(widget$bg) && widget$bg!="")
+	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		argList$background=widget$bg
-	if (!is.null(widget$font) && widget$font!="")
+	if (!is.null(widget[["font"]]) && widget$font!="")
 		argList$font <- .createTkFont(widget$font)
 
 	tkWidget<-do.call("tkframe", argList)
@@ -1924,11 +1909,11 @@ parseWinFile <- function(fname, astext=FALSE)
 		val <- 0
 
 	argList <- list(parent=tk, text=widget$text)
-	if (!is.null(widget$fg) && widget$fg!="")
+	if (!is.null(widget[["fg"]]) && widget$fg!="")
 		argList$foreground=widget$fg
-	if (!is.null(widget$bg) && widget$bg!="")
+	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		argList$background=widget$bg
-	if (!is.null(widget$font) && widget$font!="")
+	if (!is.null(widget[["font"]]) && widget$font!="")
 		argList$font <- .createTkFont(widget$font)
 
 	argList$variable <- .map.add(winName, widget$name, tclvar=tclVar(val))$tclvar
@@ -1945,24 +1930,24 @@ parseWinFile <- function(fname, astext=FALSE)
 .createWidget.label <- function(tk, widget, winName)
 {
 	argList <- list(parent=tk)
-	if( !is.null(widget$name) && widget$name != "" ) {
+	if( !is.null(widget[["name"]]) && widget$name != "" ) {
 		argList$text<-tclvalue( .map.add(winName, widget$name, tclvar=tclVar(widget$text))$tclvar )
 	} else {
 		argList$text = widget$text
 	}
-	if (!is.null(widget$fg) && widget$fg!="")
+	if (!is.null(widget[["fg"]]) && widget$fg!="")
 		argList$foreground=widget$fg
-	if (!is.null(widget$bg) && widget$bg!="")
+	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		argList$background=widget$bg
-	if (!is.null(widget$font) && widget$font!="")
+	if (!is.null(widget[["font"]]) && widget$font!="")
 		argList$font <- .createTkFont(widget$font)
-	if (!is.null(widget$justify) && widget$justify!="")
+	if (!is.null(widget[["justify"]]) && widget$justify!="")
 		argList$justify <- widget$justify
-	if (!is.null(widget$wraplength) && widget$wraplength > 0)
+	if (!is.null(widget[["wraplength"]]) && widget$wraplength > 0)
 		argList$wraplength <- widget$wraplength 
 
 	tkWidget<-do.call("tklabel", argList)
-	if( !is.null(widget$name) && widget$name != "" ) {
+	if( !is.null(widget[["name"]]) && widget$name != "" ) {
 		tkconfigure( tkWidget,textvariable= .map.get(winName, widget$name )$tclvar )
 	}
 
@@ -1972,7 +1957,7 @@ parseWinFile <- function(fname, astext=FALSE)
 .createWidget.null <- function(tk, widget, winName)
 {
 	argList <- list( parent = tk, text="" )
-	if( !is.null(widget$bg) && widget$bg != "" )
+	if( !is.null(widget[["bg"]]) && widget$bg != "" )
 		argList$bg <- widget$bg
 	tkWidget <- do.call( "tklabel", argList )
 	return(tkWidget)
@@ -2193,7 +2178,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	else
 		values <- widget$values
 
-	if( is.null( widget$vecnames ) ) widget$vecnames <- ""
+	if( is.null( widget[["vecnames"]] ) ) widget$vecnames <- ""
 
 	n <- widget$length
 	wid <- list(type="grid", bg=widget$bg, fg=widget$fg, borderwidth=widget$borderwidth ) #new grid widget to create
@@ -2832,7 +2817,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	#if( length( widget$width ) > 1 )
 	#	argList$width <- 
 
-	if (!is.null(widget$font) && widget$font!="")
+	if (!is.null(widget[["font"]]) && widget$font!="")
 		argList$font <- .createTkFont(widget$font)
 
 	
@@ -2988,7 +2973,7 @@ parseWinFile <- function(fname, astext=FALSE)
 
 .createWidget.entry <- function(tk, widget, winName)
 {
-	if (!is.null(widget$label) && widget$label!="") {
+	if (!is.null(widget[["label"]]) && widget$label!="") {
 		#if label is set, then create a 2x1 grid
 		label <- widget$label
 		widget$label <- "" #blank it out, inf loop if not.
@@ -3005,11 +2990,11 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 	#create real tk widget below
 	argList <- list(parent=tk)
-	if (!is.null(widget$entryfg) && widget$entryfg!="")
+	if (!is.null(widget[["entryfg"]]) && widget$entryfg!="")
 		argList$foreground=widget$entryfg
-	if (!is.null(widget$entrybg) && widget$entrybg!="")
+	if (!is.null(widget[["entrybg"]]) && widget$entrybg!="")
 		argList$background=widget$entrybg
-	if (!is.null(widget$entryfont) && widget$entryfont!="")
+	if (!is.null(widget[["entryfont"]]) && widget$entryfont!="")
 		argList$font <- .createTkFont(widget$entryfont)
 	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
 	argList$width<-widget$width
@@ -3020,10 +3005,10 @@ parseWinFile <- function(fname, astext=FALSE)
 	if( widget$edit == FALSE )
 		tkconfigure( tkWidget, state="readonly" )
 		
-	if( !is.null( widget$password ) && widget$password == TRUE )
+	if( !is.null( widget[["password"]] ) && widget$password == TRUE )
 		tkconfigure( tkWidget, show="*")
 
-	enter <- !is.null(widget$enter)
+	enter <- !is.null(widget[["enter"]])
 	if (enter)
 		enter <- widget$enter
 	if (enter) {
@@ -3037,7 +3022,7 @@ parseWinFile <- function(fname, astext=FALSE)
 
 .createWidget.spinbox <- function(tk, widget, winName)
 {
-	if (!is.null(widget$label))
+	if (!is.null(widget[["label"]]))
 	if (widget$label!="") {
 		#if label is set, then create a 2x1 grid
 		label <- widget$label
@@ -3056,12 +3041,12 @@ parseWinFile <- function(fname, astext=FALSE)
 	
 	#create real tk widget spinbox below
 	argList <- list(parent=tk, type="SpinBox", editable=TRUE, range=c( widget$from, widget$to, widget$by ) )
-	if (!is.null(widget$entryfg) && widget$entryfg!="") {
+	if (!is.null(widget[["entryfg"]]) && widget$entryfg!="") {
 		argList$foreground=widget$entryfg
 		argList$selectforeground=widget$entryfg
 		argList$entryfg=widget$entryfg
 	}
-	if (!is.null(widget$entrybg) && widget$entrybg!="") {
+	if (!is.null(widget[["entrybg"]]) && widget$entrybg!="") {
 		argList$background=widget$entrybg
 		argList$insertbackground=widget$entrybg
 		argList$selectbackground=widget$entrybg
@@ -3091,7 +3076,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	if( widget$edit == FALSE )
 		tkconfigure( tkWidget, state="disabled" )
 
-	enter <- !is.null(widget$enter)
+	enter <- !is.null(widget[["enter"]])
 	if (enter)
 		enter <- widget$enter
 	if (enter) {
@@ -3111,7 +3096,7 @@ parseWinFile <- function(fname, astext=FALSE)
 .getValueForWidgetSetup <- function( widget, winName )
 {
 	#return user set value (if set)
-	if( !is.null( widget$values ) )
+	if( !is.null( widget[["values"]] ) )
 		return( widget$values )
 	
 	if (!exists(widget$name, env = .GlobalEnv))
@@ -3125,20 +3110,20 @@ parseWinFile <- function(fname, astext=FALSE)
 	values <- .getValueForWidgetSetup( widget, winName )
 	#create real tk widget below
 	argList <- list(parent=tk, type="ComboBox", editable=widget$add,values=values)
-	if (!is.null(widget$fg) && widget$fg!="") {
+	if (!is.null(widget[["fg"]]) && widget$fg!="") {
 		#see http://tcltk.free.fr/Bwidget/ComboBox.html for possible options
 		argList$foreground=widget$fg
 		#argList$entryfg=widget$fg
 		argList$selectforeground=widget$fg
 	}
-	if (!is.null(widget$bg) && widget$bg!="") {
+	if (!is.null(widget[["bg"]]) && widget$bg!="") {
 		#argList$background=widget$bg #this affects the colour of the drop down arrow
 		argList$selectbackground=widget$bg #covers what's selected - but stays after the item is selected
 		argList$insertbackground=widget$bg
 		argList$highlightbackground=widget$bg
 		argList$entrybg=widget$bg
 	}
-	if (!is.null(widget$font) && widget$font!="")
+	if (!is.null(widget[["font"]]) && widget$font!="")
 		argList$font <- .createTkFont(widget$font)
 	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(values[ widget$selected ]))$tclvar
 	argList$width<-widget$width
@@ -3170,14 +3155,14 @@ parseWinFile <- function(fname, astext=FALSE)
 .createWidget.radio <- function(tk, widget, winName)
 {
 	argList <- list(parent=tk, text=widget$text, value=widget$value)
-	if (!is.null(widget$fg) && widget$fg!="")
+	if (!is.null(widget[["fg"]]) && widget$fg!="")
 		argList$foreground=widget$fg
-	if (!is.null(widget$bg) && widget$bg!="")
+	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		argList$background=widget$bg
-	if (!is.null(widget$font) && widget$font!="")
+	if (!is.null(widget[["font"]]) && widget$font!="")
 		argList$font <- .createTkFont(widget$font)
 	argList$variable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
-	if (!is.null(widget$selected) && widget$selected==TRUE)
+	if (!is.null(widget[["selected"]]) && widget$selected==TRUE)
 		tclvalue(argList$variable) <- widget$value
 	argList$command=function(...) { .extractData(widget[["function"]], widget$action, winName)}
 
@@ -3198,14 +3183,14 @@ parseWinFile <- function(fname, astext=FALSE)
 
 .createWidget.slide <- function(tk, widget, winName)
 {
-	if (is.null(widget$value))
+	if (is.null(widget[["value"]]))
 		widget$value <- widget$to
 	argList <- list(parent=tk, from=widget$from, to=widget$to, orient=widget$orientation, showvalue=widget$showvalue)
-	if (!is.null(widget$fg) && widget$fg!="")
+	if (!is.null(widget[["fg"]]) && widget$fg!="")
 		argList$foreground<-widget$fg
-	if (!is.null(widget$bg) && widget$bg!="")
+	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		argList$background<-widget$bg
-	if (!is.null(widget$font) && widget$font!="")
+	if (!is.null(widget[["font"]]) && widget$font!="")
 		argList$font <- .createTkFont(widget$font)
 	argList$variable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
 	argList$command<-function(...) { .extractData(widget[["function"]], widget$action, winName)}
@@ -3293,11 +3278,11 @@ parseWinFile <- function(fname, astext=FALSE)
 	getColourfulWidget <- function( parent, type, widget, ... )
 	{
 		argList <- list( parent = parent, ... )
-		if( !is.null( widget$fg ) && widget$fg != "" )
+		if( !is.null( widget[["fg"]] ) && widget$fg != "" )
 			argList$fg <- widget$fg
-		if( !is.null( widget$bg ) && widget$bg != "" )
+		if( !is.null( widget[["bg"]] ) && widget$bg != "" )
 			argList$bg <- widget$bg
-		if ( !is.null( widget$font ) && widget$font != "")
+		if ( !is.null( widget[["font"]] ) && widget$font != "")
 			argList$font=.createTkFont(widget$font)
 		return( do.call( type, argList ) )
 	}
@@ -3306,7 +3291,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	from <- widget$from / widget$by
 	to <- widget$to / widget$by
 
-	if (is.null(widget$value)) {
+	if (is.null(widget[["value"]])) {
 		value <- to
 		widget$value <- widget$to
 	}
@@ -3372,9 +3357,9 @@ parseWinFile <- function(fname, astext=FALSE)
 	param <- list(parent=tk, text=widget$text)
 	if (widget$font != "")
 		param$font=.createTkFont(widget$font)
-	if (!is.null(widget$fg) && widget$fg!="")
+	if (!is.null(widget[["fg"]]) && widget$fg!="")
 		param$foreground=widget$fg
-	if (!is.null(widget$bg) && widget$bg!="")
+	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		param$background=widget$bg
 	if (is.numeric(widget$width) && widget$width > 0)
 		param$width=widget$width
@@ -3473,7 +3458,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		)
 	)
 	
-	if( !.isReallyNull( widget, "text" ) ) {
+	if( !is.null( widget[[ "text" ]] ) ) {
 		widget$textpos <- tolower( widget$textpos )
 		text_wid <- list(type = "text", name = textname, height = 6, width = 18, 
     	                 edit = TRUE, scrollbar = TRUE, fg = "black", bg = "white", 
@@ -4137,7 +4122,7 @@ setWinVal <- function(vars, winName="")
 {
 	if (winName=="")
 		winName <- .PBSmod$.activeWin
-	if (.isReallyNull(.PBSmod, winName))
+	if( is.null( .PBSmod[[ winName ]] ) )
 		stop(paste("unable to find .PBSmod$", winName))
 
 	if (!length(vars))
@@ -4159,7 +4144,7 @@ setWinVal <- function(vars, winName="")
 	wid<-.PBSmod[[winName]]$widgets[[varname]]
 
 	#if tclvar is known, we can set it directly.
-	if (!is.null(x$tclvar)) {
+	if (!is.null(x[["tclvar"]])) {
 
 		#value should only be length 1
 		if (length(value)!=1)
@@ -4173,7 +4158,7 @@ setWinVal <- function(vars, winName="")
 		tclvalue(x$tclvar) <- value
 
 		#some widgets must update other widgets(or functions) when they change
-		if (!is.null(x$onChange)) {
+		if (!is.null(x[["onChange"]])) {
 			if (is.function(x$onChange)) {
 				do.call(x$onChange, list())
 			}
@@ -4185,7 +4170,7 @@ setWinVal <- function(vars, winName="")
 	}
 
 	#otherwise if tclwidget is known (only text widget)
-	else if (!is.null(x$tclwidget)) {
+	else if (!is.null(x[["tclwidget"]])) {
 		#special case for text boxes
 		if (wid$type=="text") {
 			if (wid$edit==FALSE)
@@ -4205,7 +4190,7 @@ setWinVal <- function(vars, winName="")
 	}
 	
 	#special case for table arrays
-	else if( !is.null(x$tclarray) ) {
+	else if( !is.null(x[["tclarray"]]) ) {
 		return( .table.setvalue( winName, wid$name, value ) )
 	}
 
@@ -4278,7 +4263,7 @@ getWinVal <- function(v=NULL, scope="", asvector=FALSE, winName="")
 	if (winName=="")
 		winName <- .PBSmod$.activeWin
 
-	if (.isReallyNull(.PBSmod, winName))
+	if( is.null( .PBSmod[[ winName ]] ) )
 		stop(paste("supplied window \"",winName,"\" name not found"))
 
 	#extract all variables regardless if asked for by user
@@ -4339,7 +4324,7 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 		stop(".PBSmod was not found")
 	if( missing( winname ) )
 		winname <- .PBSmod$.activeWin
-	if (.isReallyNull(.PBSmod, winname))
+	if( is.null( .PBSmod[[ winname ]] ) )
 		stop(paste("supplied window \"",winname,"\" name not found"))
 	
 	if( any( state == c( "disabled", "normal", "readonly", "active" ) ) == FALSE ) 
@@ -4362,7 +4347,7 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 	}
 	
 	#if tclwidget is known - set it directly here
-	if( !is.null( x$tclwidget ) ) {
+	if( !is.null( x[["tclwidget"]] ) ) {
 		tkconfigure( x$tclwidget, state=state )
 		return(invisible(NULL))
 	}
@@ -4681,7 +4666,7 @@ updateGUI <- function(scope="L") {
 
 	if (!exists(".PBSmod",envir=.GlobalEnv)) return (invisible("'.PBSmod' does not exist"))
 	win = .PBSmod$.activeWin                 # Get the current active window name
-	if (.isReallyNull(.PBSmod,win)) return (invisible("No active window"))
+	if (is.null(.PBSmod[[win]])) return (invisible("No active window"))
 	guiList=.extractVar(win)  # GUI information from .PBSmod[[win]]
 
 	# Check for parent environment variables that match the GUI list.

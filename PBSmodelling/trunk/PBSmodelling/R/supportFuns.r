@@ -255,7 +255,7 @@ showArgs <- function(widget, width=70, showargs=FALSE) {
 		for(j in 2:length(x[[i]])) { 
 			argu=x[[i]][[j]]$param
 			if (x[[i]][[j]]$required==TRUE) { }
-			else if (!.isReallyNull(x[[i]][[j]], "default")) {
+			else if ( any( names( x[[i]][[j]] ) == "default" ) ) {
 				if (x[[i]][[j]]$class=="character" || x[[i]][[j]]$class=="characterVector")
 					delim="\""
 				else
@@ -946,7 +946,7 @@ openFile <- function(fname="") {
 			stop(paste("File \"", fname, "\" does not exist", sep=""))
 
 		ext <- sub("^.*\\.", "", fname)
-		if (.isReallyNull(.PBSmod$.options$openfile, ext)) {
+		if ( is.null( .PBSmod$.options$openfile[[ ext ]] ) ) {
 			if (!exists("shell.exec", mode="function")) 
 				stop(paste("There is no program associated with the extension '", ext, "'\n",
 				           "Please set an association with the setPBSext command\n"))
@@ -1036,7 +1036,7 @@ getPBSext <- function(ext) {
 		stop(".PBSmod was not found")
 	if (missing(ext))
 		return(.PBSmod$.options$openfile)
-	if (.isReallyNull(.PBSmod$.options$openfile, ext))
+	if ( is.null( .PBSmod$.options$openfile[[ ext ]] ) )
 		return(NULL)
 	return(.PBSmod$.options$openfile[[ext]])
 }
