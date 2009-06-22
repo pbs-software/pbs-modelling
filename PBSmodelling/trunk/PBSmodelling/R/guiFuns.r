@@ -764,29 +764,12 @@ createWin <- function(fname, astext=FALSE)
 
 		#create the widgets
 		if (length(guiDesc[[i]]$.widgets)>0) {
+			gridWidget <- .packWidgetsIntoGrid( guiDesc[[i]]$.widgets, guiDesc[[i]]$vertical )
 			#pack all widgets into a grid with ncol=1 nrow=<number of widgets>
-			gridWidget = list(
-			             type="grid", 
-			             font="",
-			             borderwidth=0,
-			             relief="flat",
-			             padx=0,
-			             pady=0,
-			             .widgets=list(),
-			             nrow <- length(guiDesc[[i]]$.widgets),
-			             ncol <- 1,
-			             byrow=guiDesc[[i]]$vertical
-			)
-
-			#add all widgets to this grid, each in a new row [[j]] and 1st column [[1]]
-			for(j in 1:length(guiDesc[[i]]$.widgets)) {
-				gridWidget$.widgets[[j]] <- list()
-				gridWidget$.widgets[[j]][[1]] <- guiDesc[[i]]$.widgets[[j]]
-			}
 
 			#create the newly created gridWidget - which will result in recursive
 			#calls to .createWidget which will create all the children of the grid
-			wid <- .createWidget(tt, gridWidget, guiDesc[[i]]$windowname)
+			wid <- .createWidget( tt, gridWidget, guiDesc[[i]]$windowname )
 			tkgrid(wid)
 			
 			#finish setup to any history widgets which have default imports
@@ -800,6 +783,29 @@ createWin <- function(fname, astext=FALSE)
 		}
 	}
 	return(invisible(NULL))
+}
+
+#pack all widgets into a grid with ncol=1 nrow=<number of widgets>
+.packWidgetsIntoGrid <- function( widgets, vertical = TRUE ) {
+	gridWidget = list(
+	             type="grid", 
+	             font="",
+	             borderwidth=0,
+	             relief="flat",
+	             padx=0,
+	             pady=0,
+	             .widgets=list(),
+	             nrow = length( widgets ),
+	             ncol = 1,
+	             byrow = vertical
+	)
+
+	#add all widgets to this grid, each in a new row [[j]] and 1st column [[1]]
+	for(j in 1:length(widgets)) {
+		gridWidget$.widgets[[j]] <- list()
+		gridWidget$.widgets[[j]][[1]] <- widgets[[j]]
+	}
+	return( gridWidget )
 }
 
 
@@ -1816,8 +1822,10 @@ parseWinFile <- function(fname, astext=FALSE)
 			fontparam$family="Helvetica"
 		else if (any(grep("^[0-9]+$", fontstr[i])))
 			fontparam$size=fontstr[i]
-		else if (fontstr[i] != "")
-			cat(paste("warning: ignoring font option \"", fontstr[i], "\"\n", sep=""))
+		else if (fontstr[i] != "") {
+			fontparam$family = fontstr[i]
+			#cat(paste("warning: font familly \"", fontstr[i], "\" is not guarenteed to work with TK on all platforms\n", sep=""))
+		}
 	}
 	return(do.call(tkfont.create, fontparam))
 }
@@ -1897,6 +1905,16 @@ parseWinFile <- function(fname, astext=FALSE)
 	.buildgrid(tkWidget, widget, winName)
 
 	return(tkWidget)
+}
+
+.createWidget.include <- function(tk, widget, winName)
+{
+	gui_desc <- parseWinFile( widget$file )
+	if( length( gui_desc ) == 0 )
+		return( tkframe( tk ) )
+	if( length( gui_desc ) > 1 ) warning( "Multiple windows found in the window description file - only the first will be included (and displayed)" )
+	grid <- .packWidgetsIntoGrid( gui_desc[[ 1 ]]$.widgets, gui_desc[[ 1 ]]$vertical )
+	return( .createWidget( tk, grid, winName ) )
 }
 
 .createWidget.check <- function(tk, widget, winName)

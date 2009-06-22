@@ -144,6 +144,11 @@
 	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
+.widgetDefs$include <- list(
+	list(param='type', required=TRUE, class="character"),
+	list(param='file', required=TRUE, class="character")
+	)
+
 .widgetDefs$entry <- list(
 	list(param='type', required=TRUE, class="character"),
 	list(param='name', required=TRUE, class="character", grep="^([a-zA-Z0-9])+(\\[[0-9,]+\\])?$"),
