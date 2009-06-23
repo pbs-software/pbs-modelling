@@ -476,7 +476,7 @@ unpackList <- function(x, scope="L") {
 	}
 	namx[namx != ""] }
 
-#packList-------------------------------2009-05-13
+#packList-------------------------------2009-06-23
 # Pack a list with (i) existing objects using their 
 # names or (ii) one explicit value.
 #-----------------------------------------------RH
@@ -488,7 +488,7 @@ packList=function(stuff, target="PBSlist", value,
 			sapply(x,function(x){deparseBO(x)},simplify=FALSE) # recursion through lists within lists
 		} else {
 			xclass=class(x)
-			if (mode(x) %in% c("call","expression","(","function"))
+			if (mode(x) %in% c("call","expression","(","function","NULL"))
 				x=paste(deparse(x),collapse="")
 			class(x)=xclass
 			return(x)
