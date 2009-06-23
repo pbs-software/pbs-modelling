@@ -36,7 +36,7 @@ writeList <- function(x, fname="", format="D", comments="") {
 #.writeList.P---------------------------2009-02-10
 # Saves list x to disk using "P" format
 #-------------------------------------------ACB/RH
-.writeList.P <- function(x, fname="", comments) {
+.writeList.P <- function( x, fname="", comments) {
 	if (fname!="") sink(fname)
 	if (!missing(comments))
 		cat(paste(comments,collapse="\n")); cat("\n")
@@ -71,35 +71,53 @@ writeList <- function(x, fname="", format="D", comments="") {
 			cat(paste("$$vector mode=\"", typeof(iii), "\" names=", vecNames, "\n", sep=""))
 			cat(iii); cat("\n")
 		}
-		else if (is.matrix(iii) || is.array(iii)) {
-			d=dim(iii); nr=d[1]; nc=d[2]; nd=length(d) # dimension info
-			#get the dimensional names
-			matRowNames<-dimnames(iii)[[1]]
-			matColNames<-dimnames(iii)[[2]]
-			matDimNames=paste(deparse(dimnames(iii),width.cutoff=500),collapse=" ")
-			if (is.null(matRowNames)) matRowNames <- ""
-			if (is.null(matColNames)) matColNames <- ""
-			if (is.null(matDimNames)) matDimNames=""
+		else if( is.matrix( iii ) ) {
+			#print colnames
+			matColNames <- colnames( iii )
+			matRowNames <- rownames( iii )
+			if (is.null(matColNames))
+				matColNames <- ""
+			if (is.null(matRowNames))
+				matRowNames <- ""
 			matColNames <- .addslashes(matColNames)
 			matRowNames <- .addslashes(matRowNames)
-			matDimNames <- .addslashes(matDimNames)
-			if (nd==2) {
-				cat(paste("$$matrix mode=\"", typeof(iii), "\" rownames=", matRowNames,
-					" colnames=", matColNames, " ncol=", nc, "\n", sep="")) 
-				for(j in 1:nr) {
-					cat(iii[j,]); cat("\n") } }
-			else if (nd>2) {
-				cat(paste("$$array mode=\"", typeof(iii), "\" dim=\"",deparse(d),"\" byright=FALSE",
-					" byrow=TRUE dimnames=",matDimNames,"\n",sep="")) 
-				dhi=d[3:nd]; nhi=length(dhi) # extra dimensions above 2
-				idx=1:nhi; index=letters[10+(idx)]
-				ex1=paste(paste("for(",rev(index)," in 1:",dhi[rev(idx)],"){",sep=""),collapse=" ")
-				ex2="for(j in 1:nr){"
-				ex3=paste("cat(iii[j,,",paste(index,collapse=","),"]); cat(\"\\n\")",sep="")
-				ex4=paste(rep("}",nhi+1),collapse="")
-				expr=paste(ex1,ex2,ex3,ex4,collapse=" ")
-#if(ii=="n") {browser();return()} 
-				eval(parse(text=expr)) }
+			cat(paste("$$matrix mode=\"", typeof( iii ), "\" rownames=", matRowNames, " colnames=", matColNames, " ncol=", ncol( iii ), "\n", sep=""))
+
+			for(j in 1:dim(x[[i]])[1]) {
+				cat(iii[j,]); cat("\n")
+			}
+			
+		}
+		else if ( is.array(iii) ) {
+
+
+			d=dim(iii); nr=d[1]; nc=d[2]; nd=length(d) # dimension info
+
+			#get the dimensional names
+			dim_names_flat <- c() #single dimension vector
+			dim_names <- dimnames( iii ) #note: dimnames may also have a names attribute
+			if( is.null( dim_names ) ) {
+				dim_names_flat <- ""
+			} else {
+				#ensure a name exists, assign an index value otherwise
+				if( is.null( names( dim_names ) ) )
+					names( dim_names ) <- 1:length(dim_names)
+				#flatten into a vector c( 1st_dimname, 1st_dim_element_1, 2, ... n, 2nd_dimname, ... )
+				for( i in 1:length(dim_names) ) 
+					dim_names_flat <- c( dim_names_flat, names(dim_names)[i], dim_names[[i]] )
+			}
+			dim_names_flat <- .addslashes( dim_names_flat )
+
+			cat(paste("$$array mode=\"", typeof(iii), "\" dim=",.addslashes(d)," byright=FALSE",
+				" byrow=TRUE dimnames=", dim_names_flat, "\n", sep="")) 
+			dhi=d[3:nd]; nhi=length(dhi) # extra dimensions above 2
+			idx=1:nhi; index=letters[10+(idx)]
+			ex1=paste(paste("for(",rev(index)," in 1:",dhi[rev(idx)],"){",sep=""),collapse=" ")
+			ex2="for(j in 1:nr){"
+			ex3=paste("cat(iii[j,,",paste(index,collapse=","),"]); cat(\"\\n\")",sep="")
+			ex4=paste(rep("}",nhi+1),collapse="")
+			expr=paste(ex1,ex2,ex3,ex4,collapse=" ")
+			eval(parse(text=expr)) 
 		}
 		else if (class(iii)=="data.frame") {
 			cat("$$data "); 
@@ -109,7 +127,7 @@ writeList <- function(x, fname="", format="D", comments="") {
 			cat("modes=\"")
 			for (j in 1:length(iii)) {
 				if (j>1) cat(" ")
-				cat(typeof(iii[[j]])) }
+					cat(typeof(iii[[j]])) }
 			cat("\" ")
 			#rownames
 			cat("rownames="); cat(.addslashes(rownames(iii))); cat(" ")
@@ -337,24 +355,37 @@ readList <- function(fname) {
 		}
 		#check dims works
 		if (length(x)!=prod(opts$dim)) {
-			.catError(paste("dims [product ",prod(opts$dim),"] do not match the length of object [",length(x),"]", sep=""), fname, 
+			.catError(paste("dim [product ",prod(opts$dim),"] do not match the length of object [",length(x),"]", sep=""), fname, 
 			          varOptions$line.start, varData[[length(varData)]]$line.end, 
 			          sourcefile, "readList error")
 			return(NULL)
 		}
-		#if (opts$byright) x <- .convertVecToArray(x,opts$dim,byright=FALSE)
-		#else dim(x) <- opts$dim #could use convertVecToArray, but this is faster
 		x=.convertVecToArray(x,opts$dim,byright=opts$byright,byrow=opts$byrow)
-		s=opts$.debug$sourceCode
-		apars=sapply(.pFormatDefs$array,function(x){x[1]$param})
-		apos= sapply(apars,regexpr,s); apos=sort(apos[apos>0])
-		if (any(names(apos)=="dimnames")) {
-			posDN=match("dimnames",names(apos)); pos0=apos[posDN]; pos1=apos[posDN+1]
-			if (is.na(pos1)) pos1=nchar(s) else pos1=pos1-1
-			strDN=substring(s,pos0,pos1); eval(parse(text=strDN)) # extract list expression of dimnames
-			dimnames(x)=eval(parse(text=dimnames))                # apply the dimnames to x
+
+		if( all( opts$dimnames == "" ) )
+			return( x )
+
+		#restore dimnames
+		# example: dimnames(Titanic) -> there are 4 dimensions (class, sex, age, survived)
+		# these dimensions have different number of names: i.e. Sex has two: male, female
+		# dimnames contains first the name of the element "sex", followed by the labels for the each dimension
+		# "male", "female". dim(Titanic)[2] tells us sex only has two labels, so the next label is a dimension name
+		# ex: dimnames="Class 1st 2nd 3rd Crew Sex Male Female Age Child Adult Survived No Yes" dim="4 2 2 2"
+		dim_name_dimensions <- length( opts$dim )
+		dim_names <- list()
+
+		for( i in 1:dim_name_dimensions ) {
+			#j points to name of the dimension
+			if( i == 1 )
+				j <- 1
+			else
+				j <- sum( opts$dim[ 1:(i-1) ] + 1 ) + 1
+			#dim_name_elements are the element names for a particular dimension
+			dim_name_elements <- ( j + 1 ) : ( j + opts$dim[ i ] )
+			dim_names[[ i ]] <- opts$dimnames[ dim_name_elements ]
+			names( dim_names )[ i ] <- opts$dimnames[ j ]
 		}
-#browser();return()
+		dimnames( x ) <- dim_names
 		return(x)
 	}
 	else if(opts$type=="data") {
