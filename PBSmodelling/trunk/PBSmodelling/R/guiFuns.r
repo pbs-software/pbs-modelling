@@ -1536,9 +1536,9 @@ parseWinFile <- function(fname, astext=FALSE)
 				argName <- argOrder[[j]]$param
 				#special case where unquoted NULL is converted to a real NULL, but can't work for ALL values because of NULL widget type.
 				if( !quoted && value == "NULL" ) {
-					paramData[key] <- list( NULL )
+					paramData[ argName ] <- list( NULL )
 				} else {
-					paramData[[key]] <- value
+					paramData[[ argName ]] <- value
 				}
 			}
 		}
@@ -2210,7 +2210,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	nLabels <- length(labels)
 
 	if (n==0) {
-		if (nNames != nLabels && nNames != 1 && nLabels != 1)
+		if (nNames != nLabels && nNames != 1 && nLabels > 1)
 			.stopWidget('"labels" and "names" arguments should have the same amount of substrings.', widget$.debug, winName)
 		if (nNames == 1 && nLabels == 1) {
 			n<-1
