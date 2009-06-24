@@ -1506,9 +1506,11 @@ parseWinFile <- function(fname, astext=FALSE)
 				}
 			} else {
 				#special case where unquoted NULL is converted to a real NULL, but can't work for ALL values because of NULL widget type.
-				if( !quoted && value == "NULL" )
-					value <- list(NULL) #assign NULL, rather than delete (
-				paramData[[key]] <- value
+				if( !quoted && value == "NULL" ) {
+					paramData[key] <- list( NULL )
+				} else {
+					paramData[[key]] <- value
+				}
 			}
 		}
 		#argument is not named (no key was given)
@@ -1533,9 +1535,11 @@ parseWinFile <- function(fname, astext=FALSE)
 				#determine the name of the second argument
 				argName <- argOrder[[j]]$param
 				#special case where unquoted NULL is converted to a real NULL, but can't work for ALL values because of NULL widget type.
-				if( !quoted && value == "NULL" )
-					value <- NA #use NA instead - to signify user gave NULL rather than ommitted it
-				paramData[[argName]] <- value
+				if( !quoted && value == "NULL" ) {
+					paramData[key] <- list( NULL )
+				} else {
+					paramData[[key]] <- value
+				}
 			}
 		}
 		#error - unnamed arg given after named arg
@@ -1575,7 +1579,7 @@ parseWinFile <- function(fname, astext=FALSE)
 				names(paramData)[i] <- fullParamName
 			}
 			#check supplied argument data matches grep pattern (if defined)
-			if (!is.null(argOrder[[pos]]$grep) && !all( is.na( paramData[[i]] ) ) ) {
+			if (!is.null(argOrder[[pos]]$grep) && !all( is.null( paramData[[i]] ) ) ) {
 				if (!any(grep(argOrder[[pos]]$grep, paramData[[i]]))) {
 					#supplied data is not formatted correctly
 					.catError(paste('argument \'', givenNames[i], '\': value \'', paramData[[i]], '\' is not accepted. It should match', argOrder[[pos]]$grep , sep=""), 	fname, line.start, line.end, sourcefile)
@@ -1583,7 +1587,7 @@ parseWinFile <- function(fname, astext=FALSE)
 				}
 			}
 			#check argument for user-specified NULL options (represented by an NA)
-			if( all( is.na( paramData[[i]] ) ) ) {
+			if( all( is.null( paramData[[i]] ) ) ) {
 				if ( is.null( argOrder[[pos]][["allow_null"]] ) || argOrder[[pos]]$allow_null == FALSE ) {
 					#NULL is not valid for this option
 					.catError(paste('argument \'', givenNames[i], '\': NULL is not accepted. To specify the word use "NULL"', sep=""), fname, line.start, line.end, sourcefile)
@@ -1591,7 +1595,7 @@ parseWinFile <- function(fname, astext=FALSE)
 				}
 			}
 			#some strings - if character need to be stripped of slashes, or sub-divided
-			if (errorFound == 0 && !is.null(argOrder[[pos]][["class"]]) && !is.na(paramData[[i]]) ) {
+			if (errorFound == 0 && !is.null(argOrder[[pos]][["class"]]) && !is.null(paramData[[i]]) ) {
 				if (argOrder[[pos]]$class=="character") {
 					#convert value to either a single string (.stripSlashes)
 					tmp <- .stripSlashes(paramData[[i]], fname, line.start, line.end, sourcefile)
@@ -1983,7 +1987,6 @@ parseWinFile <- function(fname, astext=FALSE)
 
 .createWidget.matrix <- function(tk, widget, winName)
 {
-
 	nrow <- widget$nrow
 	ncol <- widget$ncol
 
@@ -2170,11 +2173,11 @@ parseWinFile <- function(fname, astext=FALSE)
 	if (!length(wid$.widgets[[i]]))
 		wid$.widgets[[i]] <- NULL
 
-	if (all(rowlabels=="NULL")) {
+	if (is.null(rowlabels)) {
 		wid$sidetitle <- ""
 		wid$toptitle.offset <- NULL
 	}
-	if (all(collabels=="NULL")) {
+	if (is.null(collabels)) {
 		wid$toptitle <- ""
 		wid$sidetitle.offset <- NULL
 	}
