@@ -559,6 +559,20 @@ testWidgets <- function () {
 		return(invisible(NULL))
 	}
 }
+
+.dUpdateDesc <- function() {
+	demo.id <- getWinVal()$demo.id
+	package <- .trimWhiteSpace( getWinVal("package")$package )
+	x <- demo(package = .packages(all.available = TRUE))
+	x <- x$results[x$results[,"Package"]==package,]
+	if (is.null(dim(x))) {
+		tmp<-names(x)
+		dim(x)<-c(1,4)
+		colnames(x)<-tmp
+	}
+
+	setWinVal( list( demo_desc=x[demo.id,"Title"] ) )
+}
 #.dClose--------------------------------2006-08-28
 # Function to execute on closing runDemos().
 #----------------------------------------------ACB
@@ -584,22 +598,26 @@ runDemos <- function (package) {
 		pkgDemo <- unique(x$results[,"Package"])
 		radios <- list(list(list(type="label", text="Select a package to view available demos:",
 			sticky="W",padx=12,font="bold 10")))
-		i <- 2
+		i <- 3
+		#create droplist labels with counts
+		pkg_labels <- c()
 		for(pkg in pkgDemo) {
 			len <- length(x$results[,"Package"][x$results[,"Package"]==pkg])
 			if (len==1)
 				items <- "(1 demo)"
 			else
 				items <- paste("(",len," demos)", sep="")
-			radios[[i]] <- list(list(type="radio",
-			                    name="pkg",
-			                    value=pkg,
-			                    text=paste(pkg, items),
-			                    mode="character",
-			                    sticky="w",
-			                    padx=12))
-			i <- i+1
+			pkg_labels <- c( pkg_labels, paste( pkg, items ) )
 		}
+
+
+		radios[[ 2 ]] <- list(list(type = "droplist",
+		                           name = "pkg",
+		                           values = pkgDemo,
+								   labels = pkg_labels,
+		                           add = FALSE,
+		                           mode = "character"
+		                           ) )
 		win <- list(title = "R Demos", windowname = "pbs.demo", onclose=".dClose", 
 			.widgets = list(list(type="grid", .widgets=c( #mixing the c() and lists() become really akward - watch out!
 			#the c() requires an extra level of list() which are later stripped out
@@ -623,39 +641,49 @@ runDemos <- function (package) {
 		showAlert(mess); stop(mess) }
 	x <- x$results[x$results[,"Package"]==package,]
 	radios <- list(list(list(type="label", text="Select a Demo to view:", sticky="W", padx=12,font="bold 10")))
-	i <- 2
+
+	#i <- 3
 	if (is.null(dim(x))) {
 		tmp<-names(x)
 		dim(x)<-c(1,4)
 		colnames(x)<-tmp
 	}
+
+	droplist_data <- c()
 	for(j in 1:length(x[,1])) {
 		demoDir <- file.path(x[j,"LibPath"], package, "demo")
 		path <- tools::list_files_with_type(demoDir, "demo")
 		path <- path[x[j,"Item"]==tools::file_path_sans_ext(basename(path))]
-		if (length(path)==0)
-			stop("error - could not find the path for demo - this is most likely a bug!")
-		radios[[i]] <- list(list(type="radio",
-		                    name="demo",
-		                    value=path,
-		                    text=x[j,"Item"],
-		                    mode="character",
-		                    font="underline",
-		                    sticky="w",
-		                    padx=12))
-		i <- i+1
-		radios[[i]] <- list(list(type="label",
-		                    text=x[j,"Title"],
-		                    sticky="w",
-		                    wraplength=500,
-		                    padx=20
-		                    ))
-		i <- i+1
+		droplist_data[ j ] <- path
 	}
+	titles <- x[,"Title"]
+	title_cut_off <- 50 #cut off titles longer than this
+	labels <- paste( x[,"Item"], " ::: ", substring( titles, 1, title_cut_off ), ifelse( nchar(titles) > title_cut_off, "...", "" ), sep="" )
+
+	radios[[ 2 ]] <- list(list(type = "droplist",
+	                           name = "demo",
+	                           values = droplist_data,
+	                           labels = labels,
+	                           add = FALSE,
+	                           mode = "character",
+							   sticky = "W",
+							   padx = 20,
+							   width = 55,
+							   "function" = ".dUpdateDesc"
+	                           ) )
+	radios[[ 3 ]] <- list(list(type="label",
+	                           name="demo_desc",
+	                           text=x[1,"Title"],
+	                           sticky="w",
+	                           wraplength=500,
+	                           padx=20,
+							   pady=c(20,0)
+	                           ) )
+
 	win <- list(title = paste("R Demos:", package), windowname = "pbs.demo", onclose=".dClose",
 		.widgets = list(list(type="grid", .widgets=c(
 			list(list(
-				list(type="label",text=paste(package,paste(rep(" ",times=100),collapse="")),
+				list(type="label",name="package",text=paste(package,paste(rep(" ",times=100),collapse="")),
 					font="bold underline",fg="red3",sticky="W")
 			)),
 			radios,

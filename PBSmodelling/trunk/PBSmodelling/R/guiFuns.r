@@ -388,7 +388,15 @@
 			tk_widget <- data[[ wid$name ]]$tclwidget
 			
 			#get selected index (not value)
-			retData[[wid_name]] <- as.integer( tcl( tk_widget, "getvalue" ) ) + 1
+			selected_i <- as.integer( tcl( tk_widget, "getvalue" ) ) + 1
+			retData[[wid_name]] <- selected_i
+
+			#get stored values (useful if labels were applied)
+			wid_name <- paste( wid$name, ".values", sep="" )
+			values <- data[[ wid$name ]]$droplist_values
+			retData[[wid_name]] <- data[[ wid$name ]]$droplist_values
+
+			retData[[ wid$name ]] <- values[ selected_i ]
 		}
 	}
 	
@@ -671,7 +679,7 @@ createWin <- function(fname, astext=FALSE)
 					rm(list = ID, envir = parent$env)
 				tkbind(w, "<Destroy>", "")
 				
-				if( widget$remove == TRUE )
+				if( !is.null( widget[["remove"]] ) && widget$remove == TRUE )
 					.PBSmod[[ widget$windowname ]] <<- NULL
 			})
 			w
@@ -3130,8 +3138,12 @@ parseWinFile <- function(fname, astext=FALSE)
 .createWidget.droplist <- function(tk, widget, winName)
 {
 	values <- .getValueForWidgetSetup( widget, winName )
+	labels <- widget[[ "labels" ]]
+	if( is.null( labels ) ) labels <- values
+	if ( length( labels ) != length( values ) )
+		.stopWidget( paste( "values and labels must be the same size (or NULL)", sep="" ), widget$.debug, winName )
 	#create real tk widget below
-	argList <- list(parent=tk, type="ComboBox", editable=widget$add,values=values)
+	argList <- list(parent=tk, type="ComboBox", editable=widget$add,values=labels)
 	if (!is.null(widget[["fg"]]) && widget$fg!="") {
 		#see http://tcltk.free.fr/Bwidget/ComboBox.html for possible options
 		argList$foreground=widget$fg
@@ -3147,7 +3159,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 	if (!is.null(widget[["font"]]) && widget$font!="")
 		argList$font <- .createTkFont(widget$font)
-	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(values[ widget$selected ]))$tclvar
+	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(labels[ widget$selected ]))$tclvar
 	argList$width<-widget$width
 
 	#callback
@@ -3156,6 +3168,7 @@ parseWinFile <- function(fname, astext=FALSE)
 
 	#save widget - so we can use tcl( drop_widget, "getvalue" ) at a later time
 	.map.set(winName, widget$name, tclwidget=drop_widget )
+	.map.set(winName, widget$name, droplist_values=widget$values )
 
 	if( widget$edit == FALSE )
 		tkconfigure( drop_widget, state="disabled" )
