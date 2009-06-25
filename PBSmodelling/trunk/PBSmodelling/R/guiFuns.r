@@ -1507,9 +1507,9 @@ parseWinFile <- function(fname, astext=FALSE)
 			} else {
 				#special case where unquoted NULL is converted to a real NULL, but can't work for ALL values because of NULL widget type.
 				if( !quoted && value == "NULL" ) {
-					paramData[key] <- list( NULL )
+					paramData[ key ] <- list( NULL )
 				} else {
-					paramData[[key]] <- value
+					paramData[[ key ]] <- value
 				}
 			}
 		}
@@ -1638,7 +1638,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 	if (errorFound != 0)
 		return(NULL)
-	#check that all required arguments have been supplied
+	#check that all required arguments have been supplied, and fill in any missing values with defaults
 	for(i in 1:length(argOrder)) {
 		if (argOrder[[i]]$required) {
 			if( is.null( paramData[[ argOrder[[i]][["param"]] ]] ) ) {
@@ -1647,8 +1647,9 @@ parseWinFile <- function(fname, astext=FALSE)
 			}
 		}
 		else if (!is.null(argOrder[[i]][["default"]])) {
-			#fill in any default values if applicible
-			if (is.null(paramData[[argOrder[[i]][["param"]]]])) {
+			#if argument name (from widgetdefs) != any names set in paramData, then no value was given by the user.
+			#note: can't use is.null since a user can set a value to equal null (which will set a arg name)
+			if( all( argOrder[[ i ]][[ "param" ]] != names( paramData ) ) ) {
 				#set it to default value
 				paramData[[argOrder[[i]]$param]] <- argOrder[[i]]$default
 			}
@@ -2797,13 +2798,13 @@ parseWinFile <- function(fname, astext=FALSE)
 	
 	#array also holds labels - if they are wanted, then put labels in [[0,*]] and [[*,0]]
 	#and start elements at [[1,*]] and [[*,1]]. If labels aren't required, start data at [[0,*]] and [[*,0]]
-	row_label_offset <- ifelse( widget$collabels=="NULL", 1, 0 )[1]
-	col_label_offset <- ifelse( widget$rowlabels=="NULL", 1, 0 )[1]
-	show_rowtitle <- ifelse( widget$rowlabels=="NULL", 0, 1 )[1]
-	show_coltitle <- ifelse( widget$collabels=="NULL", 0, 1 )[1]
+	row_label_offset <- ifelse( is.null( widget[[ "collabels" ]] ), 1, 0 )[1]
+	col_label_offset <- ifelse( is.null( widget[[ "rowlabels" ]] ), 1, 0 )[1]
+	show_rowtitle <- ifelse( is.null( widget[[ "rowlabels" ]] ), 0, 1 )[1]
+	show_coltitle <- ifelse( is.null( widget[[ "collabels" ]] ), 0, 1 )[1]
 	
 	#fill in titles
-	if( widget$rowlabels!="NULL" ) {
+	if( !is.null( widget$rowlabels ) ) {
 		for (i in (1:nrows)) {
 			if( all( widget$rowlabels == "" ) )
 				tcl_array[[i-row_label_offset,0]] <- rownames( userObject )[i]

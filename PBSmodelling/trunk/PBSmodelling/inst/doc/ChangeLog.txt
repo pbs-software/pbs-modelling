@@ -1,7 +1,14 @@
 PBSmodelling Changes
 ====================
+2.12  trunk version(release date to be put here when we decide to upload to CRAN)
+	- Inroduced four new widget objects: 'droplist', 'spinbox', 'superobject', 'table'.
+	  These can be demoed via testWidgets()
+	- read/write list bug fix for array objects (introduced dimnames arg)
+	- introduced setWidgetState
+	- label widget text can be modified by get/setWinVal (and has a new name argument)
+
 2.11  2009-06-08  Alex
-  - Inroduced four new widget objects: 'droplist', 'spinbox', 'superobject', 'table'.
+  
   - Alex migrated PBSmodelling to googlecode.com's SVN system.
 
 2.10  2009-05-14  Rowan

@@ -1,0 +1,3 @@
+window title="Widget = droplist"
+droplist name=junk values="one two 'thirty three'" mode=character selected=3 width=30
+droplist name=state.name

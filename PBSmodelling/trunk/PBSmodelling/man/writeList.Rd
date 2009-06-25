@@ -30,6 +30,16 @@ writeList(x, fname, format="D", comments="")
 	to describe the object's structure - object type, mode(s), names (if vector), 
 	rownames (if matrix or data), and colnames (if matrix or data); and 
 	(iii) subsequent lines of data (one line for vector, multiple lines for matrix or data).
+	
+	Arrays with three or more dimensions have dim and dimnames arguments. Dim is the dimension
+	of the data, a vector as returned by \code{dim(some_array)}, and dimnames is a vector of length
+	\code{sum(dim(some_array)+1)} and is constructed as follows:
+	
+	\code{
+		foreach dimension d
+			first append the name of the dimension d
+			then append all labels within that dimension
+	}
 
 	Multiple rows of data for matrices or data frames must have equal 
 	numbers of entries (separated by whitespace).
@@ -57,6 +67,10 @@ writeList(test,"test.txt",format="P",
 	comments=" Scalar, Vector, Matrix, Data Frame")
 openFile("test.txt")
 }
+
+##Example of dimnames for Arrays
+dimnames(Titanic)
+writeList( list( Titanic ), format="P")
 }
 \keyword{file}
 \keyword{list}

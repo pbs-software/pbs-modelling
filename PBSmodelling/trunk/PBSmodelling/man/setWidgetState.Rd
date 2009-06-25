@@ -5,12 +5,13 @@
 	Update the read-only state of a widget.
 }
 \usage{
-setWidgetState( varname, state, winName )
+setWidgetState( varname, state, radiovalue, winname )
 }
 \arguments{
 	\item{varname}{the name of the widget}
 	\item{state}{"normal" or "disabled"}
-	\item{winName}{window from which to select the GUI widget. The default 
+	\item{radiovalue}{if specified, disable a particular radio option, as identified by the value, rather than the complete set (identified by the common name)}
+	\item{winname}{window from which to select the GUI widget. The default 
 		takes the window that has most recently received new user input.}
 }
 \details{
