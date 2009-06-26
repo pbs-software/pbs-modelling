@@ -1,0 +1,19 @@
+window title="Lissajous Curve"
+grid 1 4
+  label text=View: font=bold
+  button text=Docs func=openFile action=LissFigDoc.pdf
+  button text="R Code" func=openFile action=LissFig.r
+  button text=Window func=openFile action=LissFigWin.txt
+grid 1 2
+  label text=Pars: font=bold
+  vector length=4 names="m n phi k" \
+    labels="'x cycles' 'y cycles' 'y phase' points" \
+    values="2 3 0 1000" vertical=T func=drawLiss
+grid 1 2
+  label text=History: font=bold
+  history func=drawLiss
+grid 1 2
+  grid 2 1
+    radio name=ptype text=lines  value="l" mode=character sticky=W
+    radio name=ptype text=points value="p" mode=character sticky=W
+  button text=Plot func=drawLiss font=bold

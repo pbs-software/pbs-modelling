@@ -1,0 +1,43 @@
+# The function "presentTalk" in this version has a number of bugs, including
+# - a comment sometimes sometimes requires "#" in column 1
+# - a final unused segment must appear at the end of the description file
+# - a single file can have only one <talk>
+
+<talk name="Chat" button=T>
+
+# SECTION 1-----------------------------
+<section name="Mummery" button=T>
+# State the talk's purpose in text
+<text> 
+I love to go a maundering
+Along the mountain trails
+And if I go a maundering
+I like to snack on snails.
+# Run some code
+<code show=T print=T break=print> acf(sleep)
+<code print=T break=print>
+x=split(iris$Sepal.Length,iris$Species)
+boxplot(x)
+# Open some files
+<text break=F> Open da test funcs man...
+<file name="Funky" button=T> Testfuns.r
+<text break=F> Cha Cha Cha
+
+# SECTION 2-----------------------------
+<section name="Flummery" button=T>
+<code break=print> search()
+<code print=F break=none>
+x=rnorm(5000,10,3); y=-x+rnorm(5000,1,4); z=x+rnorm(5000,1,3); A=data.frame(x=x,y=y,z=z)
+plotFriedEggs(A,eggs=T,rings=F)
+
+<text> How cool is that? Thanks Herr Dr Prof Steve Martell.
+
+# SECTION 3-----------------------------
+<section name=Magic button=T>
+<text break=F> Vote for a vole
+<code print=F> runExamples()
+<code print=F break=none> resetGraph()
+<text> THE END .. THANKS FOR WATCHING!
+
+# Due to a current bug, the file needs a final unused block
+<text> ---need this as a throw away---

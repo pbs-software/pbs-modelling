@@ -1,0 +1,8 @@
+window name=widWin title="Widget = menu"
+menu nitems=1 label="Widgets"
+   menuitem label="Show arguments" func=showArgs
+menu nitems=4 label="Test functions"
+   menuitem label="Colours" func=testCol
+   menuitem label="Line types" func=testLty
+   menuitem label="Line widths" func=testLwd
+   menuitem label="Point symbols" func=testPch

@@ -1,0 +1,7 @@
+window name=widWin title="Widget = object"
+label text="Vector: euro" font="bold 12" fg=blue
+object euro vertical=F
+label text="Matrix: VADeaths" font="bold 12" fg=red
+object VADeaths
+label text="Data.frame: longley" font="bold 12" fg=forestgreen
+object longley

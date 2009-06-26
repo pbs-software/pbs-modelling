@@ -1,0 +1,9 @@
+# For a list of all functions, exported and hidden, see the files 
+# PBSMobjects.txt and INDEX in the R libary directory for PBSmodelling.
+
+# Export all functions that do NOT begin with a dot (period)
+exportPattern("^[^\\.]")
+#exportPattern("^[^\\*]")
+
+# Import all functions from the package tcltk, which is heavily used by PBSmodelling
+import(tcltk)
