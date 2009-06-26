@@ -434,25 +434,25 @@
 	if (is.null(rownames)) rownames <- ""
 	if (is.null(colnames)) colnames <- ""
 
-	if (length(rownames)>1)
+	nRows <- dim[1]
+	if( length(rownames)>1 || nRows == 1 )
 		rName <- rownames
 	else if (length(rownames)==0)
 		rName <- NULL
 	else if (rownames=="")
 		rName <- NULL
 	else {
-		nRows <- dim[1]
 		rName <- paste(rownames, 1:nRows, sep="")
 	}
 
-	if (length(colnames)>1)
+	nCols <- dim[2]
+	if (length(colnames)>1 || nCols == 1)
 		cName <- colnames
 	else if (length(colnames)==0)
 		cName <- NULL
 	else if (colnames=="")
 		cName <- NULL
 	else {
-		nCols <- dim[2]
 		cName <- paste(colnames, 1:nCols, sep="")
 	}
 	return(list(rName, cName))
