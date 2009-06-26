@@ -4,9 +4,9 @@ PBSmodelling Changes
 	- Inroduced four new widget objects: 'droplist', 'spinbox', 'superobject', 'table'.
 	  These can be demoed via testWidgets()
 	- read/write list bug fix for array objects (introduced dimnames arg)
-	- introduced setWidgetState
 	- label widget text can be modified by get/setWinVal (and has a new name argument)
 	- converted runDemos to use droplist widget (to allow for packages with many examples which can overflow screen height)
+	- widgets can be disabled with setWidgetState
 
 2.11  2009-06-08  Alex
     - Alex migrated PBSmodelling to googlecode.com's SVN system.

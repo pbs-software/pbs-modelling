@@ -219,6 +219,9 @@
 # -----------------------------------------------------------
 .extractVar <- function(winName)
 {
+	# list of regular expressions of keys which should NOT be returned to the user
+	keys_to_skip <- c( "\\[rowlabel\\]\\[[0-9]+\\]$" )
+
 	#data is a list containing sub-lists in the form:
 	#list(type="tcl", tclvar="tcl_var_ptr", mode="numeric")
 	data <- .map.getAll(winName)
@@ -233,6 +236,14 @@
 
 	#extract values from tcl into an R list whose index corresponds to the data list
 	for(i in 1:length(data)) {
+		skip <- FALSE
+		for( ignore_pattern in keys_to_skip ) {
+			if( any( grep( ignore_pattern, keys[i] ) ) ) {
+				skip <- TRUE
+				break
+			}
+		}
+		if( skip == TRUE ) next
 		if( any( grep( "^\\[superobject\\]",  keys[i] ) ) ) {
 			#skip superobjects
 			#get superobject name
@@ -246,15 +257,15 @@
 		if (!is.null(data[[i]][[ "tclvar" ]])) {
 			values[[i]] <- tclvalue(data[[i]]$tclvar)
 		}
-		else if (!is.null(data[[i]][["tclwidget"]])) {
-			#special case for text widgets
-			values[[i]] <- tclvalue(tkget(data[[i]]$tclwidget,"0.0","end"))
-			wid$mode <- "character"
-		}
 		else if (!is.null(data[[i]][["tclarray"]])) {
 			#special case for table matrix
 			tables_to_process[[ data[[i]]$widgetname ]] = TRUE
 			next
+		}
+		else if (!is.null(data[[i]][["tclwidget"]])) {
+			#special case for text widgets
+			values[[i]] <- tclvalue(tkget(data[[i]]$tclwidget,"0.0","end"))
+			wid$mode <- "character"
 		}
 		else {
 			stop(paste("unknown type:", data[[i]]))
@@ -270,6 +281,7 @@
 	}
 
 	retData <- list()
+	if( length( values ) )
 	for(i in 1:length(values)) {
 		#look for any vectors (arrays, matrices)
 		#vector names end in [1,4,2...]
@@ -2730,8 +2742,8 @@ parseWinFile <- function(fname, astext=FALSE)
 	
 	mat <- list() #data.frame( nrow = nrows, ncol = ncols, dimnames = widget$.dimnames )
 	
-	row_label_offset <- ifelse( widget$collabels=="NULL", 1, 0 )
-	col_label_offset <- ifelse( widget$rowlabels=="NULL", 1, 0 )
+	row_label_offset <- ifelse( is.null( widget[["collabels"]] ), 1, 0 )
+	col_label_offset <- ifelse( is.null( widget[["rowlabels"]] ), 1, 0 )
 	
 	#extract data
 	for (j in (1:ncols)) {
@@ -2758,8 +2770,8 @@ parseWinFile <- function(fname, astext=FALSE)
 	
 	if( any( dim( value ) != widget$.dim ) ) stop( "value for table is not the correct dimension" )
 	
-	row_label_offset <- ifelse( widget$collabels=="NULL", 1, 0 )
-	col_label_offset <- ifelse( widget$rowlabels=="NULL", 1, 0 )
+	row_label_offset <- ifelse( is.null( widget[["collabels"]] ), 1, 0 )
+	col_label_offset <- ifelse( is.null( widget[["rowlabels"]] ), 1, 0 )
 	
 	#extract data
 	for (i in (1:nrows))
@@ -4204,6 +4216,11 @@ setWinVal <- function(vars, winName="")
 		return(value)
 	}
 
+	#special case for table arrays
+	else if( !is.null(x[["tclarray"]]) ) {
+		return( .table.setvalue( winName, wid$name, value ) )
+	}
+
 	#otherwise if tclwidget is known (only text widget)
 	else if (!is.null(x[["tclwidget"]])) {
 		#special case for text boxes
@@ -4224,11 +4241,6 @@ setWinVal <- function(vars, winName="")
 		stop(paste("unhandled widget type", x$tclwidget))
 	}
 	
-	#special case for table arrays
-	else if( !is.null(x[["tclarray"]]) ) {
-		return( .table.setvalue( winName, wid$name, value ) )
-	}
-
 	#catch any special "high level" widgets that do not have
 	#tclvar or tclwidget. If however no wid is defined, we are doomed
 	if (is.null(wid)) {
