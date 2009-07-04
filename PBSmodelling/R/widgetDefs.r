@@ -147,7 +147,8 @@
 
 .widgetDefs$include <- list(
 	list(param='type', required=TRUE, class="character"),
-	list(param='file', required=TRUE, class="character")
+	list(param='file', required=FALSE, class="character", default=NULL ),
+	list(param='name', required=FALSE, class="character", default=NULL )
 	)
 
 .widgetDefs$entry <- list(
