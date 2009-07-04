@@ -1934,7 +1934,22 @@ parseWinFile <- function(fname, astext=FALSE)
 
 .createWidget.include <- function(tk, widget, winName)
 {
-	gui_desc <- parseWinFile( widget$file )
+	if( !is.null( widget[[ "file" ]] ) && !is.null( widget[[ "name" ]] ) )
+    		.stopWidget( "both file and name can not be set at the same time", widget$.debug, winName)
+	if( is.null( widget[[ "file" ]] ) && is.null( widget[[ "name" ]] ) )
+    		.stopWidget( "either file or name must be supplied", widget$.debug, winName)
+
+	file <- widget[[ "file" ]]
+	if( is.null( file ) ) {
+		if( exists( widget[[ "name" ]] ) == FALSE )
+			.stopWidget( paste( "unable to load included filename from variable \"", widget[[ "name" ]], "\" - variable not found", sep="" ), widget$.debug, winName )
+		file <- get( widget[[ "name" ]] )
+	}
+
+	if( file.exists( file ) == FALSE )
+		.stopWidget( paste( "unable to load included filename \"", file, "\" - file does not exist", sep="" ), widget$.debug, winName )
+
+	gui_desc <- parseWinFile( file )
 	if( length( gui_desc ) == 0 )
 		return( tkframe( tk ) )
 	if( length( gui_desc ) > 1 ) warning( "Multiple windows found in the window description file - only the first will be included (and displayed)" )
