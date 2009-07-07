@@ -27,6 +27,9 @@ getWinVal(v=NULL, scope="", asvector=FALSE, winName="")
 \value{
 	A list (or vector) with named components, where names and values are defined by GUI widgets.
 }
+\details{
+	TODO talk about scope=G/L and side effects of overwriting existing variables
+}
 \author{
   Alex Couture-Beil, Malaspina University-College, Nanaimo BC
 }
