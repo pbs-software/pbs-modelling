@@ -425,7 +425,6 @@
 	for( k in names( tables_to_process ) ) {
 		retData[[ k ]] <- .table.getvalue( winName, k )
 	}
-
 	return(retData)
 }
 
@@ -2003,6 +2002,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$justify <- widget$justify
 	if (!is.null(widget[["wraplength"]]) && widget$wraplength > 0)
 		argList$wraplength <- widget$wraplength 
+	if (!is.null(widget[["width"]]) && widget$width > 0)
+		argList$width <- widget$width 
 
 	tkWidget<-do.call("tklabel", argList)
 	if( !is.null(widget[["name"]]) && widget$name != "" ) {
@@ -2484,7 +2485,9 @@ parseWinFile <- function(fname, astext=FALSE)
 					#define a row label (per each row)
 					row_number = tmp_i - 1 #for renaming row labels
 					label_name <- paste( widget$name, "[rowlabel][", row_number, "]", sep="" )
-					wid$.widgets[[tmp_i]][[j]] <- list(type='label', text=text, name=label_name, mode="character", font=widget$font, bg=widget$bg, fg=widget$fg)
+					wid$.widgets[[tmp_i]][[j]] <- list(type='label', text=text, name=label_name, mode="character", font=widget$font, bg=widget$bg, fg=widget$fg )
+					if( !is.null( widget[[ ".rowlabelwidth" ]] ) )
+						wid$.widgets[[tmp_i]][[j]]$width <- widget$.rowlabelwidth
 				}
 			}
 			else {
@@ -2656,6 +2659,8 @@ parseWinFile <- function(fname, astext=FALSE)
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$rows_to_display <<- rows_to_display
 	ncols <- ncol( userObject )
 	nrows <- nrow( userObject )
+
+	widget$.rowlabelwidth <- max( nchar( rownames( userObject ) ) )
 
 	new_widget_name <- paste( "[superobject]", widget$name, sep="" ) 
 	assign( new_widget_name, userObject[1:rows_to_display,], envir = .GlobalEnv )
@@ -2985,7 +2990,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		            borderwidth=widget$borderwidth,
 		            padx=widget$padx,
 		            pady=widget$pady,
-		            edit=widget$edit
+		            edit=widget$edit,
+		            .rowlabelwidth=widget$.rowlabelwidth
 		            );
 		if( widget$rowlabels == FALSE ) wid$rowlabels <- NULL
 		if( widget$collabels == FALSE ) wid$collabels <- NULL
@@ -3468,10 +3474,12 @@ parseWinFile <- function(fname, astext=FALSE)
 #as if a power-user created history
 .createWidget.history <- function(tk, widget, winName)
 {
+	#FIXME TODO figure out a better naming convension for what vars should be returned, or hidden by getWinVal
+	#currently, anything with "PBS." is NOT returned. maybe we want PBS.hidden.XXXXX
 	indexname=paste("PBS.history.", widget$name, ".index", sep="") #widget name that stores/displays the index number
 	sizename=paste("PBS.history.", widget$name, ".size", sep="") #widget name that displays the size of history
 	modename=paste("PBS.history.", widget$name, ".mode", sep="") #widget name that displays the size of history
-	textname=paste("PBS.history.", widget$name, ".text", sep="") #widget name that displays text
+	textname=paste( "PBShistory.", widget$name, ".caption", sep="") #widget name that displays text
 
 	widget$name <- paste(winName, widget$name, sep=".")
 
@@ -3521,15 +3529,15 @@ parseWinFile <- function(fname, astext=FALSE)
 	)
 	
 	if( !is.null( widget[[ "text" ]] ) ) {
-		widget$textpos <- tolower( widget$textpos )
+		widget$text <- tolower( widget$text )
 		text_wid <- list(type = "text", name = textname, height = 6, width = 18, 
     	                 edit = TRUE, scrollbar = TRUE, fg = "black", bg = "white", 
-    	                 mode = "character", font = "", value = widget$text, borderwidth = 0, 
+    	                 mode = "character", font = "", value = "", borderwidth = 0, 
     	                 relief = "sunken", sticky = "", padx = 0, pady = 0 )
     	
-    	if( widget$textpos == "n" || widget$textpos == "s" ) {
+    	if( widget$text == "n" || widget$text == "s" ) {
     		historyGrid$nrow <- historyGrid$nrow + 1
-    		if( widget$textpos == "s" ) {
+    		if( widget$text == "s" ) {
     			historyGrid$.widgets[[3]] <- list( text_wid )
     		} else { #North
     			historyGrid$.widgets[[ 3 ]] <- historyGrid$.widgets[[ 2 ]]
@@ -3542,7 +3550,7 @@ parseWinFile <- function(fname, astext=FALSE)
     		historyGrid$pady <- 0
     		newGrid <- list(type="grid", nrow=1, ncol=2, font="", fg=widget$fg, bg=widget$bg, byrow=TRUE, borderwidth=1, relief="sunken", padx=widget$padx, pady=widget$pady )
 			
-			if( widget$textpos == "w" )
+			if( widget$text == "w" )
 				newGrid$.widgets = list( list( text_wid, historyGrid ) )
 			else
 				newGrid$.widgets = list( list( historyGrid, text_wid ) )
