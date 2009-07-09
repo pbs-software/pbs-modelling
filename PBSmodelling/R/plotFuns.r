@@ -8,46 +8,15 @@
 #===========================================================
 
 #resetGraph-----------------------------2009-02-24
-# Resets par() values to R default (or close anyway)
-#-------------------------------------------ACB/RH
-resetGraph <- function() {
-	warn <- options()$warn
-	options(warn = -1)
-	defaultVals <-
-	structure(list(xlog = FALSE, ylog = FALSE, adj = 0.5, ann = TRUE, 
-	ask = FALSE, bg = "transparent", bty = "o", cex = 1, cex.axis = 1, 
-	cex.lab = 1, cex.main = 1.2, cex.sub = 1, cin = c(0.15, 
-	0.2), col = "black", col.axis = "black", col.lab = "black", 
-	col.main = "black", col.sub = "black", cra = c(14.4, 19.2),
-	crt=0, csi=0.2, cxy=c(0.026, 0.039), din=c(7.0, 7.0), err=0L, 
-	family = "", fg = "black", fig = c(0, 1, 0, 1), fin = c(7.0, 
-	7.0), font = 1L, font.axis = 1L, font.lab = 1L, 
-	font.main = 2L, font.sub = 1L, lab = c(5L, 5L, 7L), las = 0L, 
-	lend = "round", lheight = 1, ljoin = "round", lmitre = 10, 
-	lty = "solid", lwd = 1, mai = c(1.02, 0.82, 0.82, 0.42), 
-	mar = c(5.1, 4.1, 4.1, 2.1), mex = 1, mfcol = c(1L, 1L), 
-	mfg = c(1L, 1L, 1L, 1L), mfrow = c(1L, 1L), mgp = c(3, 1, 
-	0), mkh = 0.001, new = FALSE, oma = c(0, 0, 0, 0), omd = c(0, 
-	1, 0, 1), omi = c(0, 0, 0, 0), pch = 1L, pin = c(5.76, 
-	5.15), plt = c(0.115, 0.94, 0.145, 0.88), ps = 12L, pty = "m", 
-	smo = 1, srt = 0, tck = NA_real_, tcl = -0.5, usr = c(0, 
-	1, 0, 1), xaxp = c(0, 1, 5), xaxs = "r", xaxt = "s", xpd = FALSE, 
-	yaxp = c(0, 1, 5), yaxs = "r", yaxt = "s"), .Names = c("xlog", 
-	"ylog", "adj", "ann", "ask", "bg", "bty", "cex", "cex.axis", 
-	"cex.lab", "cex.main", "cex.sub", "cin", "col", "col.axis", "col.lab", 
-	"col.main", "col.sub", "cra", "crt", "csi", "cxy", "din", "err", 
-	"family", "fg", "fig", "fin", "font", "font.axis", "font.lab", 
-	"font.main", "font.sub", "lab", "las", "lend", "lheight", "ljoin", 
-	"lmitre", "lty", "lwd", "mai", "mar", "mex", "mfcol", "mfg", 
-	"mfrow", "mgp", "mkh", "new", "oma", "omd", "omi", "pch", "pin", 
-	"plt", "ps", "pty", "smo", "srt", "tck", "tcl", "usr", "xaxp", 
-	"xaxs", "xaxt", "xpd", "yaxp", "yaxs", "yaxt"))
-	#if (R.Version()$os!="mingw32")
-	frame()
-	par(defaultVals)
-	frame()
-	options(warn = warn)
-	invisible() }
+# Resets par() values to R default
+#-------------------------------------------ACB
+resetGraph <- function()
+{
+	dev.new()
+	p <- par( no.readonly = TRUE )
+	dev.off()
+	par( p )
+}
 #---------------------------------------resetGraph
 
 #expandGraph----------------------------2006-08-16
