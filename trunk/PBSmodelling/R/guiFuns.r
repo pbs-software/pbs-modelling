@@ -425,6 +425,19 @@
 	for( k in names( tables_to_process ) ) {
 		retData[[ k ]] <- .table.getvalue( winName, k )
 	}
+
+	#convert factors to characters
+	for( i in 1:length( retData ) ) {
+		if( is.factor( retData[[ i ]] ) )
+			retData[[ i ]] <- as.character( retData[[ i ]] )
+		else if( is.data.frame( retData[[ i ]] ) ) {
+			for( j in 1:length( retData[[ i ]] ) ) {
+				if( is.factor( retData[[ i ]][,j] ) )
+					retData[[ i ]][,j] <- as.character( retData[[ i ]][,j] )
+			}
+		}
+	}
+
 	return(retData)
 }
 
@@ -2807,7 +2820,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	if( !is.null( tmp ) )
 		return( tmp )
 	
-	userObject <- get(widget$name, pos=find(widget$name))
+	userObject <- .getValueForWidgetSetup( widget$name, widget, winName )
 	if( !is.matrix( userObject ) && !is.data.frame( userObject ) )
 		stop( "table only supports matrix" )
 		
@@ -3156,21 +3169,36 @@ parseWinFile <- function(fname, astext=FALSE)
 # -> or global var matching widget$name when value is NULL
 # widget: widget list passed to .creatWidget.XXX
 # winName: name of window being created
-.getValueForWidgetSetup <- function( widget, winName )
+.getValueForWidgetSetup <- function( varname, widget, winName )
 {
-	#return user set value (if set)
-	if( !is.null( widget[["values"]] ) )
-		return( widget$values )
-	
-	if (!exists(widget$name, env = .GlobalEnv))
+	if( !exists( varname, env = .GlobalEnv ) )
 		.stopWidget( paste( "unable to find variable \"", widget$name, "\" in global memory - this search happend since value=NULL", sep="" ), widget$.debug, winName )
-	
-	return( get( widget$name, env = .GlobalEnv ) )
+
+	var <- get( varname, env = .GlobalEnv )
+	if( is.factor( var ) )
+		var <- as.character( var )
+	else if( is.data.frame( var ) ) {
+		for( i in 1:length( var ) ) {
+			if( is.factor( var[,i] ) )
+				var[,i] <- as.character( var[,i] )
+		}
+	}
+	return( var )
 }
 
 .createWidget.droplist <- function(tk, widget, winName)
 {
-	values <- .getValueForWidgetSetup( widget, winName )
+	#assert( choices != NULL xor values != NULL )
+	if( is.null( widget[[ "choices" ]] ) && is.null( widget[[ "values" ]] ) )
+		.stopWidget( paste( "either choices or values must be specified", sep="" ), widget$.debug, winName )
+
+	if( !is.null( widget[[ "choices" ]] ) && !is.null( widget[[ "values" ]] ) )
+		.stopWidget( paste( "only one of choices or values can be specified", sep="" ), widget$.debug, winName )
+
+	if( !is.null( widget[[ "choices" ]] ) )
+		values <- .getValueForWidgetSetup( widget$choices, widget, winName )
+	else
+		values <- widget$values
 	labels <- widget[[ "labels" ]]
 	if( is.null( labels ) ) labels <- values
 	if ( length( labels ) != length( values ) )
