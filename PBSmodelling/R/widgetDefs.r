@@ -80,6 +80,7 @@
 	list(param='type', required=TRUE, class="character"),
 	list(param='name', required=TRUE, class="character"),
 	list(param='values', required=FALSE, class="characterVector", default=NULL, allow_null=TRUE),
+	list(param='choices', required=FALSE, class="character", default=NULL, allow_null=TRUE),
 	list(param='labels', required=FALSE, class="characterVector", default=NULL, allow_null=TRUE),
 	list(param='selected', required=FALSE, class="integer", default=1, grep="^[0-9]+$"),
 	list(param='add', required=FALSE, class="logical", default=FALSE),
