@@ -3198,7 +3198,14 @@ parseWinFile <- function(fname, astext=FALSE)
 	if ( length( labels ) != length( values ) )
 		.stopWidget( paste( "values and labels must be the same size (or NULL)", sep="" ), widget$.debug, winName )
 	#create real tk widget below
-	argList <- list(parent=tk, type="ComboBox", editable=widget$add,values=labels)
+
+	#tk splits on " " if only one string is given - but the \ escape isn't working great.
+	if( length( labels ) == 1 ) 
+		new_labels <- gsub( " ", "\\\\ ", labels ) #should replace with "\\\\ ", but it still doesn't work well
+	else
+		new_labels <- labels
+
+	argList <- list(parent=tk, type="ComboBox", editable=widget$add,values=new_labels)
 	if (!is.null(widget[["fg"]]) && widget$fg!="") {
 		#see http://tcltk.free.fr/Bwidget/ComboBox.html for possible options
 		argList$foreground=widget$fg
@@ -3217,9 +3224,13 @@ parseWinFile <- function(fname, astext=FALSE)
 	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(labels[ widget$selected ]))$tclvar
 	argList$width<-widget$width
 
+
 	#callback
 	argList$modifycmd = function(...) { .extractData(widget[["function"]], widget$action, winName)}
 	drop_widget <- do.call( "tkwidget", argList )
+	if( length( labels ) == 1 )
+		tclvalue( argList$textvariable ) <- labels
+
 
 	#save widget - so we can use tcl( drop_widget, "getvalue" ) at a later time
 	.map.set(winName, widget$name, tclwidget=drop_widget )
