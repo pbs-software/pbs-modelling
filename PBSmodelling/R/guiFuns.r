@@ -3229,7 +3229,7 @@ parseWinFile <- function(fname, astext=FALSE)
 
 	#save widget - so we can use tcl( drop_widget, "getvalue" ) at a later time
 	.map.set(winName, widget$name, tclwidget=drop_widget )
-	.map.set(winName, widget$name, droplist_values=widget$values )
+	.map.set(winName, widget$name, droplist_values=values )
 
 	if( widget$edit == FALSE )
 		tkconfigure( drop_widget, state="disabled" )
