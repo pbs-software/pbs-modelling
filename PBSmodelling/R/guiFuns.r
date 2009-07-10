@@ -3553,6 +3553,12 @@ parseWinFile <- function(fname, astext=FALSE)
     	                 edit = TRUE, scrollbar = TRUE, fg = "black", bg = "white", 
     	                 mode = "character", font = "", value = "", borderwidth = 0, 
     	                 relief = "sunken", sticky = "", padx = 0, pady = 0 )
+		if( widget[[ "textsize" ]] > 0 ) {
+			if( widget$text == "n" || widget$text == "s" )
+				text_wid$height = widget$textsize
+			else
+				text_wid$width = widget$textsize
+		}
     	
     	if( widget$text == "n" || widget$text == "s" ) {
     		historyGrid$nrow <- historyGrid$nrow + 1

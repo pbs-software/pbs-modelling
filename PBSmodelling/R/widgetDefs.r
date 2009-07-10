@@ -404,6 +404,7 @@
 	list(param='entryfg', required=FALSE, class="character", default="black"),
 	list(param='entrybg', required=FALSE, class="character", default="white"),
 	list(param='text', required=FALSE, class="character", default=NULL, allow_null=TRUE, grep="^(n|s|N|S|e|w|E|W)$"),
+	list(param='textsize', required=FALSE, class="integer", default=0 ),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
 	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
 	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
