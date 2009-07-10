@@ -267,7 +267,10 @@
 			values[[i]] <- tclvalue(tkget(data[[i]]$tclwidget,"0.0","end"))
 			wid$mode <- "character"
 		}
-		else {
+		else if( !is.null( data[[i]][[ "droplist_widget" ]] ) ) {
+			#nothing to extract for this one - only here for setting vars
+			next
+		} else {
 			stop(paste("unknown type:", data[[i]]))
 		}
 
@@ -3222,8 +3225,11 @@ parseWinFile <- function(fname, astext=FALSE)
 	.map.set(winName, widget$name, tclwidget=drop_widget )
 	.map.set(winName, widget$name, droplist_values=values )
 
+	.map.set( winName, paste( widget$name, ".values", sep="" ), droplist_widget=drop_widget )
+
 	if( widget$edit == FALSE )
 		tkconfigure( drop_widget, state="disabled" )
+
 
 	#TODO FIXME this should fire as a user types in new data when "add=T" but this doesn't work
 	#enter <- !is.null(widget$enter)
@@ -4287,6 +4293,11 @@ setWinVal <- function(vars, winName="")
 			return(value)
 		}
 		stop(paste("unhandled widget type", x$tclwidget))
+	}
+
+	else if( !is.null( x[[ "droplist_widget" ]] ) ) {
+		tkconfigure( x[[ "droplist_widget" ]], values = value )
+		return( value )
 	}
 	
 	#catch any special "high level" widgets that do not have
