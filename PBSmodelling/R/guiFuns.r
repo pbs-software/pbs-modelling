@@ -2241,9 +2241,6 @@ parseWinFile <- function(fname, astext=FALSE)
 	names <- widget$names
 	labels <- widget$labels
 
-	if (!is.null( labels ) && all(labels==""))
-		labels <- names
-
 	if (all(widget$values==""))
 		values <- ""
 	else
@@ -2256,12 +2253,10 @@ parseWinFile <- function(fname, astext=FALSE)
 	wid$byrow = widget$vertical #pass byrow param to grid
 
 	nNames <- length(names)
-	nVecnames <- length(widget$vecnames)
 	nLabels <- length(labels)
+	nVecnames <- length(widget$vecnames)
 
 	if (n==0) {
-		if (nNames != nLabels && nNames != 1 && nLabels > 1)
-			.stopWidget('"labels" and "names" arguments should have the same amount of substrings.', widget$.debug, winName)
 		if (nNames == 1 && nLabels == 1) {
 			n<-1
 		}
@@ -2290,15 +2285,14 @@ parseWinFile <- function(fname, astext=FALSE)
 	if (nVecnames!=n && widget$vecnames!="")
 		.stopWidget(paste('vecnames argument should contain',n,'vector names.'), widget$.debug, winName)
 
-
 	#count labels
-	if (nLabels!=1 && !is.null(labels) && nLabels!=n)
-		.stopWidget(paste('labels argument should contain 1 or',n,'labels.'), widget$.debug, winName)
-
-	#single labels should be displayed as the title
-	if (nLabels==1 && n!=1 && !is.null(labels) ) {
-		wid$toptitle=labels[1]
-		wid$topfont<-widget$font
+	if( !is.null( labels ) ) {
+		if( labels[1] != "" || nLabels > 1 )
+			labels <- rep( labels, length = n )
+		else if( nNames > 1 || n == 1 )
+			labels <- rep( names, length = n )
+		else
+			labels <- 1:n
 	}
 
 	nValues <- length(values)
@@ -2315,10 +2309,7 @@ parseWinFile <- function(fname, astext=FALSE)
 			entryIndex <- 1
 		} else {
 			entryIndex <- 2
-			if (nLabels==1 && n!=1)
-				text <- as.character(i)
-			else
-				text <- labels[i]
+			text <- labels[i]
 			wid$.widgets[[i]][[1]] <- list(type='label', text=text, font=widget$font, fg=widget$fg, bg=widget$bg)
 		}
 
