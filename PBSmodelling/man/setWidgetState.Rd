@@ -9,13 +9,13 @@ setWidgetState( varname, state, radiovalue, winname )
 }
 \arguments{
 	\item{varname}{the name of the widget}
-	\item{state}{"normal" or "disabled"}
+	\item{state}{"normal" or "disabled"; entry and text widgets also support "readonly"}
 	\item{radiovalue}{if specified, disable a particular radio option, as identified by the value, rather than the complete set (identified by the common name)}
 	\item{winname}{window from which to select the GUI widget. The default 
 		takes the window that has most recently received new user input.}
 }
 \details{
-	The \code{varname} argument expects a name which corresponds to a widget name.
+	The \code{varname} argument expects a name which corresponds to some widget with the same corresponding name value.
 	Alternatively, any element can be updated by appending its index in square brackets 
 	to the end of the \code{name}. The \code{data} widget is indexed differently 
 	than the \code{matrix} widget by adding "d" after the brackets. This tweak is necessary 
@@ -31,7 +31,7 @@ setWidgetState( varname, state, radiovalue, winname )
 \examples{
 \dontrun{
 winDesc <- c('vector length=3 name=vec labels="normal disabled readonly" values="1 2 3"',
-             "matrix nrow=2 ncol=2 name=mat" );
+             "matrix nrow=2 ncol=2 name=mat", "button name=but_name" );
 createWin(winDesc, astext=TRUE)
 
 setWidgetState( "vec[1]", "normal" )
@@ -40,6 +40,9 @@ setWidgetState( "vec[3]", "readonly" )
 
 setWidgetState( "mat", "readonly" )
 setWinVal( list( mat = matrix( 1:4, 2, 2 ) ) )
+
+#works for buttons too
+setWidgetState( "but_name", "disabled" )
 }
 }
 \keyword{methods}
