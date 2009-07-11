@@ -254,6 +254,8 @@
 			next
 		}
 		wid <- .PBSmod[[winName]]$widgets[[keys[i]]]
+		if( wid$type == "button" )
+			next #no data to extract
 		if (!is.null(data[[i]][[ "tclvar" ]])) {
 			values[[i]] <- tclvalue(data[[i]]$tclvar)
 		}
@@ -262,7 +264,7 @@
 			tables_to_process[[ data[[i]]$widgetname ]] = TRUE
 			next
 		}
-		else if (!is.null(data[[i]][["tclwidget"]])) {
+		else if( wid$type == "text" ) {
 			#special case for text widgets
 			values[[i]] <- tclvalue(tkget(data[[i]]$tclwidget,"0.0","end"))
 			wid$mode <- "character"
@@ -3520,10 +3522,16 @@ parseWinFile <- function(fname, astext=FALSE)
 	modename=paste("PBS.history.", widget$name, ".mode", sep="") #widget name that displays the size of history
 	textname=paste( "PBShistory.", widget$name, ".caption", sep="") #widget name that displays text
 
+	button_names <- list( 
+		first = paste("PBS.history.", widget$name, ".button.first", sep=""),
+		back = paste("PBS.history.", widget$name, ".button.back", sep=""),
+		"next" = paste("PBS.history.", widget$name, ".button.next", sep=""),
+		last = paste("PBS.history.", widget$name, ".button.last", sep="") )
+
 	widget$name <- paste(winName, widget$name, sep=".")
 
 	#initialize a list to be used once the window is created
-	initHistory(widget$name, indexname=indexname, sizename=sizename, modename=modename, func=widget[["function"]])
+	initHistory(widget$name, indexname=indexname, sizename=sizename, buttonnames=button_names, modename=modename, func=widget[["function"]])
 
 	historyGrid <- 
 	list(type="grid", nrow=2, ncol=1, font="", fg=widget$fg, bg=widget$bg, byrow=TRUE, borderwidth=1, relief="sunken", padx=widget$padx, pady=widget$pady, .widgets=
@@ -3532,10 +3540,10 @@ parseWinFile <- function(fname, astext=FALSE)
 				list(type="grid", nrow=3, ncol=4, font="", fg=widget$fg, bg=widget$bg, byrow=TRUE, borderwidth=1, relief="flat", padx=0, pady=0, sticky="we", .widgets=
 			    	list(
 						list(
-							list(type="button", text="<<", font="", fg=widget$fg, bg=widget$bg, width=5, "function"="firstHistory", action=widget$name, sticky="", padx=0, pady=0),
-							list(type="button", text="<", font="", fg=widget$fg, bg=widget$bg, width=5, "function"="backHistory", action=widget$name, sticky="", padx=0, pady=0),
-							list(type="button", text=">", font="", fg=widget$fg, bg=widget$bg, width=5, "function"="forwHistory", action=widget$name, sticky="", padx=0, pady=0),
-							list(type="button", text=">>", font="", fg=widget$fg, bg=widget$bg, width=5, "function"="lastHistory", action=widget$name, sticky="", padx=0, pady=0)
+							list(type="button", text="<<", name=button_names[["first"]], font="", fg=widget$fg, bg=widget$bg, width=5, "function"="firstHistory", action=widget$name, sticky="", padx=0, pady=0),
+							list(type="button", text="<",  name=button_names[["back"]], font="", fg=widget$fg, bg=widget$bg, width=5, "function"="backHistory", action=widget$name, sticky="", padx=0, pady=0),
+							list(type="button", text=">",  name=button_names[["next"]], font="", fg=widget$fg, bg=widget$bg, width=5, "function"="forwHistory", action=widget$name, sticky="", padx=0, pady=0),
+							list(type="button", text=">>", name=button_names[["last"]], font="", fg=widget$fg, bg=widget$bg, width=5, "function"="lastHistory", action=widget$name, sticky="", padx=0, pady=0)
 						),
 						list(
 							#list(type="label", text="Index", font="", fg=widget$fg, bg=widget$bg, sticky="", padx=0, pady=0),
@@ -3612,6 +3620,42 @@ parseWinFile <- function(fname, astext=FALSE)
 	return(tmp)
 }
 
+.updateHistoryButtons <- function( hisname )
+{
+	i <- PBS.history[[hisname]][[1]]$index
+	n <- length(PBS.history[[hisname]])-1
+
+	first_name <- PBS.history[[hisname]][[1]]$buttonnames[["first"]]
+	back_name <- PBS.history[[hisname]][[1]]$buttonnames[["back"]]
+	next_name <- PBS.history[[hisname]][[1]]$buttonnames[["next"]]
+	last_name <- PBS.history[[hisname]][[1]]$buttonnames[["last"]]
+
+
+	if( i == n ) {
+		#last position
+		setWidgetState( next_name, "disabled" )
+		setWidgetState( last_name, "disabled" )
+	}
+	if( i == 1 ) {
+		#first position
+		setWidgetState( back_name, "disabled" )
+		setWidgetState( first_name, "disabled" )
+	}
+
+	#enabled buttons
+	if( i < n ) {
+		setWidgetState( next_name, "normal" )
+		setWidgetState( last_name, "normal" )
+	}
+	if( i > 1 ) {
+		setWidgetState( back_name, "normal" )
+		setWidgetState( first_name, "normal" )
+	}
+
+	#if( i == ( length(PBS.history[[hisname]]) ) - 1 ) {
+	#}
+
+}
 
 # ***********************************************************
 # backHistory:
@@ -3636,6 +3680,7 @@ backHistory <- function(hisname="")
 		return()
 	}
 	PBS.history[[hisname]][[1]]$index <<- i <- i-1
+	.updateHistoryButtons( hisname )
 	setWinVal(PBS.history[[hisname]][[i+1]], winName=win) #i is always one lower
 	.updateHistory(hisname)
 	if (!is.null(PBS.history[[hisname]][[1]]$func))
@@ -3666,6 +3711,8 @@ forwHistory <- function(hisname="")
 		return()
 	}
 	PBS.history[[hisname]][[1]]$index <<- i <- i+1
+	.updateHistoryButtons( hisname )
+
 	setWinVal(PBS.history[[hisname]][[i+1]], winName=win) #i is always one lower
 	.updateHistory(hisname)
 	if (!is.null(PBS.history[[hisname]][[1]]$func))
@@ -3685,6 +3732,7 @@ lastHistory <- function(hisname="")
 		hisname <- getWinAct()[1]
 	if(length(PBS.history[[hisname]])-1>0)
 		jumpHistory(hisname, length(PBS.history[[hisname]])-1)
+	.updateHistoryButtons( hisname )
 }
 
 
@@ -3700,6 +3748,7 @@ firstHistory <- function(hisname="")
 		hisname <- getWinAct()[1]
 	if(length(PBS.history[[hisname]])>1)
 		jumpHistory(hisname, 1)
+	.updateHistoryButtons( hisname )
 }
 
 
@@ -3733,11 +3782,13 @@ jumpHistory <- function(hisname="", index="")
 		return()
 	}
 
+
 	PBS.history[[hisname]][[1]]$index <<- i #update index
 	setWinVal(PBS.history[[hisname]][[i+1]], winName=win) #i is always one lower
 	.updateHistory(hisname)
 	if (!is.null(PBS.history[[hisname]][[1]]$func))
 		do.call(PBS.history[[hisname]][[1]]$func, list())
+	.updateHistoryButtons( hisname )
 }
 
 
@@ -3792,6 +3843,7 @@ addHistory <- function(hisname="")
 		stop(paste("unknown insert mode:", insertMode))
 	}
 	.updateHistory(hisname)
+	.updateHistoryButtons( hisname )
 }
 
 # ***********************************************************
@@ -3837,6 +3889,7 @@ rmHistory <- function(hisname="", index="")
 	}
 
 	.updateHistory(hisname)
+	.updateHistoryButtons( hisname )
 }
 
 
@@ -3870,6 +3923,7 @@ clearHistory <- function(hisname="")
 #	}
 
 	.updateHistory(hisname)
+	.updateHistoryButtons( hisname )
 }
 
 
@@ -3905,7 +3959,7 @@ clearHistory <- function(hisname="")
 #   sizename  - customized size widget name
 #   overwrite - retain old history?
 # -----------------------------------------------------------
-initHistory <- function(hisname, indexname=NULL, sizename=NULL, modename=NULL, func=NULL, overwrite=TRUE)
+initHistory <- function(hisname, indexname=NULL, sizename=NULL, buttonnames=NULL, modename=NULL, func=NULL, overwrite=TRUE)
 {
 
 	if (!exists("PBS.history", env = .GlobalEnv))
@@ -3931,6 +3985,7 @@ initHistory <- function(hisname, indexname=NULL, sizename=NULL, modename=NULL, f
 	}
 	#save names of entry boxes
 	PBS.history[[hisname]][[1]]$indexname <- indexname
+	PBS.history[[hisname]][[1]]$buttonnames <- buttonnames
 	PBS.history[[hisname]][[1]]$sizename <- sizename
 	PBS.history[[hisname]][[1]]$modename <- modename
 	PBS.history[[hisname]][[1]]$func <- func

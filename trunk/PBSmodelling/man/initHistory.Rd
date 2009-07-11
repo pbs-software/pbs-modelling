@@ -18,7 +18,7 @@
 }
 
 \usage{
-initHistory(hisname,indexname=NULL,sizename=NULL,modename=NULL,
+initHistory(hisname,indexname=NULL,sizename=NULL,buttonnames=NULL,modename=NULL,
   func=NULL,overwrite=TRUE)
 rmHistory(hisname="", index="")
 addHistory(hisname="")
@@ -39,6 +39,8 @@ clearHistory(hisname="")
 		If \code{NULL}, then the current index feature will be disabled.}
 	\item{sizename}{name of the current size entry widget. If \code{NULL}, then the 
 		current size feature will be disabled.}
+	\item{buttonnames}{named list of names of the first, prev, next, and last buttons. If \code{NULL}, then the 
+		buttons are not disabled ever}
 	\item{modename}{name of the radio widgets used to change addHistory\'s mode. If \code{NULL}, then the 
 		default mode will be to insert after the current index.}
 	\item{index}{index to the history item. The default (\code{""}) causes the value to be 
