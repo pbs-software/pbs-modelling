@@ -3469,7 +3469,10 @@ parseWinFile <- function(fname, astext=FALSE)
 		param$width=widget$width
 	if (widget[["function"]]!="")
 		param$command=function(...) { .extractData(widget[["function"]], widget$action, winName) }
-	return(do.call(tkbutton, param))
+	button <- do.call(tkbutton, param)
+	if( !is.null( widget[[ "name" ]] ) )
+		.map.add(winName, widget$name, tclwidget=button)
+	return( button )
 }
 
 .createWidget.text <- function(tk, widget, winName)

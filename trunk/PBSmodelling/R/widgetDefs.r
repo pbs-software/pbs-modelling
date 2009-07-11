@@ -183,6 +183,7 @@
 	list(param='fg', required=FALSE, class="character", default="black"),
 	list(param='bg', required=FALSE, class="character", default=""),
 	list(param='width', required=FALSE, class="integer", default=0),
+	list(param='name', required=FALSE, class="character", default=NULL, allow_null=TRUE),
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='action', required=FALSE, class="character", default="button"),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
