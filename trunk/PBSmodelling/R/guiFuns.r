@@ -415,7 +415,9 @@
 			values <- data[[ wid$name ]]$droplist_values
 			retData[[wid_name]] <- data[[ wid$name ]]$droplist_values
 
-			retData[[ wid$name ]] <- values[ selected_i ]
+			#overwrite label values with real values (except when the user input their own choice)
+			if( selected_i > 0 )
+				retData[[ wid$name ]] <- values[ selected_i ]
 		}
 	}
 	
@@ -3274,17 +3276,16 @@ parseWinFile <- function(fname, astext=FALSE)
 		tkconfigure( drop_widget, state="disabled" )
 
 
-	#TODO FIXME this should fire as a user types in new data when "add=T" but this doesn't work
-	#enter <- !is.null(widget$enter)
-	#if (enter)
-	#	enter <- widget$enter
-	#if (enter) {
-	#	#dont update it (unless an return was pressed) as it can slow it down a lot
-	#	tkbind(spinbox_widget,"<KeyPress-Return>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
-	#}
-	#else
-	#	tkbind(spinbox_widget,"<KeyRelease>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
-	
+	enter <- !is.null(widget$enter)
+	if (enter) enter <- widget$enter
+	if (enter == FALSE) {
+		#not sure what to bind to get a key by key update, validatecommand looks like an interesting hack, but return value isn't working
+		.stopWidget( paste( "enter=F is not implemented", sep="" ), widget$.debug, winName )
+	}
+	#command will return after user hits enter
+	tkconfigure( drop_widget, command=function(...) { .extractData(widget[["function"]], widget$action, winName) } )
+
+
 	return(drop_widget)
 }
 
