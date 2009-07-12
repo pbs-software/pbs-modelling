@@ -254,9 +254,9 @@
 			next
 		}
 		wid <- .PBSmod[[winName]]$widgets[[keys[i]]]
-		if( is.null( wid ) )
+		if( is.null( wid ) || is.null( wid[["type"]] ) )
 			next
-		if( !is.null( wid[["type"]] ) && wid$type == "button" )
+		if( wid$type == "button" )
 			next #no data to extract
 		if (!is.null(data[[i]][[ "tclvar" ]])) {
 			values[[i]] <- tclvalue(data[[i]]$tclvar)
@@ -266,7 +266,7 @@
 			tables_to_process[[ data[[i]]$widgetname ]] = TRUE
 			next
 		}
-		else if( wid$type == "text" ) {
+		else if( !is.null( wid[["type"]] ) && wid$type == "text" ) {
 			#special case for text widgets
 			values[[i]] <- tclvalue(tkget(data[[i]]$tclwidget,"0.0","end"))
 			wid$mode <- "character"
@@ -390,6 +390,7 @@
 
 	#assign vecnames to any vectors
 	for(wid in .PBSmod[[winName]]$widgets) {
+		if( is.null( wid[["type"]] ) ) next
 		if (wid$type=="vector") {
 			if (!is.null(retData[[ wid$names ]])) {
 				if (any(wid$vecnames!=""))
@@ -400,6 +401,7 @@
 	
 	#droplist widget - get position of selected item (and possibly the complete set of possible choices)
 	for(wid in .PBSmod[[winName]]$widgets) {
+		if( is.null( wid[["type"]] ) ) next
 		if (wid$type=="droplist") {
 			wid_name <- paste( wid$name, ".id", sep="" )
 			
@@ -3271,6 +3273,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	.map.set(winName, widget$name, droplist_values=values )
 
 	.map.set( winName, paste( widget$name, ".values", sep="" ), droplist_widget=drop_widget )
+	.map.set( winName, paste( widget$name, ".id", sep="" ), droplist_widget=FALSE )
 
 	if( widget$edit == FALSE )
 		tkconfigure( drop_widget, state="disabled" )
@@ -3648,6 +3651,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	tmp <- .createWidget.grid(tk, historyGrid, winName)
 	if (widget$import!="")
 		importHistory(widget$name, widget$import, FALSE)
+	.updateHistoryButtons( widget$name )
 	return(tmp)
 }
 
@@ -3667,7 +3671,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		setWidgetState( next_name, "disabled" )
 		setWidgetState( last_name, "disabled" )
 	}
-	if( i == 1 ) {
+	if( i <= 1 ) {
 		#first position
 		setWidgetState( back_name, "disabled" )
 		setWidgetState( first_name, "disabled" )
@@ -4396,7 +4400,10 @@ setWinVal <- function(vars, winName="")
 	}
 
 	else if( !is.null( x[[ "droplist_widget" ]] ) ) {
+		if( is.logical( x[[ "droplist_widget" ]] ) ) #hack to only set values, and not .id
+			return( value )
 		tkconfigure( x[[ "droplist_widget" ]], values = value )
+		.PBSmod[[winName]]$widgets[[varname]]$labels <<- value #there's no way to specify different labels via setWinVal, so assume the same
 		return( value )
 	}
 	
