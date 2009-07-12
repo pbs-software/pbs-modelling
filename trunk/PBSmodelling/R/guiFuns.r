@@ -2558,6 +2558,10 @@ parseWinFile <- function(fname, astext=FALSE)
 						  type='entry', 
 						  name=name,
 						  "function"=widget[["function"]],
+						  .up_func=widget[[".up_func"]],
+						  .down_func=widget[[".down_func"]],
+						  .pageup_func=widget[[".pageup_func"]],
+						  .pagedown_func=widget[[".pagedown_func"]],
 						  action=widget$action,
 						  enter=widget$enter,
 						  value=value,
@@ -2640,7 +2644,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 }
 
-.createWidget.superobject <- function(tk, widget, winName)
+.createWidget.object.scrolling <- function(tk, widget, winName)
 {
 	#check for existance
 	tmp <- .check.object.exists( tk, widget, winName )
@@ -2725,6 +2729,12 @@ parseWinFile <- function(fname, astext=FALSE)
 	widget$vertical <- FALSE #superobject doesn't really do anything for vectors
 
 	frame <- tkframe( tk )
+	rowshow <- ceiling( widget$rowshow / 2 )
+	widget$rowshow <- 0 #now we are just creating a regular object, if this was > 0, then we would get inf recursion
+	widget$.up_func <- function(...) { scroll_callback( "scroll", "-1", "units" ) }
+	widget$.down_func <- function(...) { scroll_callback( "scroll", "1", "units" ) }
+	widget$.pageup_func <- function(...) { scroll_callback( "scroll", as.character( -rowshow ), "units" ) }
+	widget$.pagedown_func <- function(...) { scroll_callback( "scroll", as.character( rowshow ), "units" ) }
 	obj_tk <- .createWidget.object( frame, widget, winName )
 	
 	#TODO make scroll grow to size of object
@@ -2926,6 +2936,9 @@ parseWinFile <- function(fname, astext=FALSE)
 	tmp <- .check.object.exists( tk, widget, winName )
 	if( !is.null( tmp ) )
 		return( tmp )
+	
+	if( widget$rowshow > 0 )
+		return( .createWidget.object.scrolling( tk, widget, winName ) )
 
 	userObject <- get(widget$name, pos=find(widget$name))
 
@@ -2991,6 +3004,10 @@ parseWinFile <- function(fname, astext=FALSE)
 		            entryfg=widget$entryfg,
 		            entrybg=widget$entrybg,
 		            "function"=widget[["function"]],
+		            ".up_func"=widget[[".up_func"]],
+		            ".down_func"=widget[[".down_func"]],
+		            ".pageup_func"=widget[[".pageup_func"]],
+		            ".pagedown_func"=widget[[".pagedown_func"]],
 		            enter=widget$enter,
 		            action=widget$action,
 		            width=widget$width,
@@ -3089,6 +3106,14 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 	else
 		tkbind(tkWidget,"<KeyRelease>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+	if( !is.null( widget[[".up_func"]] ) ) {
+		tkbind(tkWidget,"<Up>",widget[[".up_func"]] );
+		tkbind(tkWidget,"<Prior>",widget[[".pageup_func"]] );
+	}
+	if( !is.null( widget[[".down_func"]] ) ) {
+		tkbind(tkWidget,"<Down>",widget[[".down_func"]] );
+		tkbind(tkWidget,"<Next>",widget[[".pagedown_func"]] );
+	}
 	return(tkWidget)
 }
 
