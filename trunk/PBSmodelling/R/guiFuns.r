@@ -254,7 +254,9 @@
 			next
 		}
 		wid <- .PBSmod[[winName]]$widgets[[keys[i]]]
-		if( wid$type == "button" )
+		if( is.null( wid ) )
+			next
+		if( !is.null( wid[["type"]] ) && wid$type == "button" )
 			next #no data to extract
 		if (!is.null(data[[i]][[ "tclvar" ]])) {
 			values[[i]] <- tclvalue(data[[i]]$tclvar)
