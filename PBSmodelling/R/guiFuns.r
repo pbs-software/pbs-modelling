@@ -2676,7 +2676,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	widget$.rowlabelwidth <- max( nchar( rownames( userObject ) ) )
 
 	new_widget_name <- paste( "[superobject]", widget$name, sep="" ) 
-	assign( new_widget_name, userObject[1:rows_to_display,], envir = .GlobalEnv )
+	sub_object_value <- userObject[1:rows_to_display,]
 	
 	widget$name <- new_widget_name
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject
@@ -2735,7 +2735,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	widget$.down_func <- function(...) { scroll_callback( "scroll", "1", "units" ) }
 	widget$.pageup_func <- function(...) { scroll_callback( "scroll", as.character( -rowshow ), "units" ) }
 	widget$.pagedown_func <- function(...) { scroll_callback( "scroll", as.character( rowshow ), "units" ) }
-	obj_tk <- .createWidget.object( frame, widget, winName )
+	obj_tk <- .createWidget.object( frame, widget, winName, userObject = sub_object_value )
 	
 	#TODO make scroll grow to size of object
 	scroll <- tkscrollbar( frame, repeatinterval=5, command=function(...)scroll_callback(...))
@@ -2931,16 +2931,19 @@ parseWinFile <- function(fname, astext=FALSE)
 	return( frame )
 }
 
-.createWidget.object <- function(tk, widget, winName)
+.createWidget.object <- function(tk, widget, winName, userObject = NULL )
 {
-	tmp <- .check.object.exists( tk, widget, winName )
-	if( !is.null( tmp ) )
-		return( tmp )
+	if( is.null( userObject ) ) {
+		tmp <- .check.object.exists( tk, widget, winName )
+		if( !is.null( tmp ) )
+			return( tmp )
+	}
 	
 	if( widget$rowshow > 0 )
 		return( .createWidget.object.scrolling( tk, widget, winName ) )
 
-	userObject <- get(widget$name, pos=find(widget$name))
+	if( is.null( userObject ) )
+		userObject <- get(widget$name, pos=find(widget$name))
 
 	#matrix
 	if (is.matrix(userObject)) {
