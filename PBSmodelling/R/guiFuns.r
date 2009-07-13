@@ -2658,7 +2658,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		return( tmp )
 
 	widget_name <- widget$name	
-	userObject <- get(widget$name, pos=find(widget$name))
+	userObject <- .getValueForWidgetSetup( widget$name, widget, winName )
+	
 	if( is.matrix( userObject ) ) {
 		userObject <- as.data.frame( userObject )
 		.PBSmod[[ winName ]]$widgets[[ widget_name ]]$class <<- "matrix"
