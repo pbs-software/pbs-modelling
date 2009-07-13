@@ -1,12 +1,19 @@
 PBSmodelling Changes
 ====================
 2.12  trunk version(release date to be put here when we decide to upload to CRAN)
-	- Inroduced four new widget objects: 'droplist', 'spinbox', 'superobject', 'table'.
+	- Inroduced three new widget objects: 'droplist', 'spinbox', 'table'.
 	  These can be demoed via testWidgets()
 	- read/write list bug fix for array objects (introduced dimnames arg)
 	- label widget text can be modified by get/setWinVal (and has a new name argument)
 	- converted runDemos to use droplist widget (to allow for packages with many examples which can overflow screen height)
 	- widgets can be disabled with setWidgetState
+	- history widget next/prev buttons get disabled when index reaches either end
+	- getWinVal no longer returns factors, and converts to character instead
+	- object widget has scrollable rows, see rowshow argument
+	- updated resetGraph
+	- changed vector labelling behaviour - to only label indexes when no label is given and only one name is given
+	- introduced 'include' widget for including window description files from other description files
+	- history widget caption - see text and textsize arguments
 
 2.11  2009-06-08  Alex
     - Alex migrated PBSmodelling to googlecode.com's SVN system.
