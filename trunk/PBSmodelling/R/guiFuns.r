@@ -2500,6 +2500,7 @@ parseWinFile <- function(fname, astext=FALSE)
 					#define a row label (per each row)
 					row_number = tmp_i - 1 #for renaming row labels
 					label_name <- paste( widget$name, "[rowlabel][", row_number, "]", sep="" )
+					if( nNames != 1 ) label_name <- ""
 					wid$.widgets[[tmp_i]][[j]] <- list(type='label', text=text, name=label_name, mode="character", font=widget$font, bg=widget$bg, fg=widget$fg )
 					if( !is.null( widget[[ ".rowlabelwidth" ]] ) )
 						wid$.widgets[[tmp_i]][[j]]$width <- widget$.rowlabelwidth
