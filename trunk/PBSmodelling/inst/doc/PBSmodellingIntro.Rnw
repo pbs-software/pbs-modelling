@@ -53,7 +53,7 @@ We update the package more frequently than we update the User's Guide. For the l
 
 \vspace*{4ex} \noindent {\bf \Large Reference}
 
-\vspace*{2ex} \noindent Schnute, J.T., Couture-Beil, A., Haigh, R., and Egeli, A. 2008. PBS Modelling 1.72: user's guide \red{revised from} \ital{Canadian Technical Report of Fisheries and Aquatic Sciences} \bold{2674}: v + 135 pp.
+\vspace*{2ex} \noindent Schnute, J.T., Couture-Beil, A., Haigh, R., and Egeli, A. 2009. PBS Modelling 2.20: user's guide \red{revised from} \ital{Canadian Technical Report of Fisheries and Aquatic Sciences} \bold{2674}: vi + 170 pp.
 
 
 \end{document}
