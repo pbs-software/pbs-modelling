@@ -45,6 +45,8 @@ The initials \bold{PBS} refer to the Pacific Biological Station, a major fisheri
 
 The R directory \code{../library/PBSmodelling/doc} includes a complete User's Guide \code{PBSmodelling-UG.pdf}. To use this package effectively, please consult the Guide.
 
+We update the package more frequently than we update the User's Guide. For the latest information, see \code{PBSmodelling-Updates.pdf} in the same directory.
+
 \section{Demos}
 
 \pbsm{} includes numerous examples, many of which appear in the User's Guide. To see them, run the function \code{runExamples()}. More generally, a user can view all demos available from locally installed packages with the function \code{runDemos()}.

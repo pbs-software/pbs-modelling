@@ -19,7 +19,7 @@ rmdir /S %Temp%\%1.Rcheck
 Rem Hidden .svn directories won't get copied
 xcopy /E /I %1 %Temp%\%1
 Rem Change to the destination for checking and building
-cd %Temp%
+cd /d %Temp%
 Goto Exit
 
 :NoTemp
