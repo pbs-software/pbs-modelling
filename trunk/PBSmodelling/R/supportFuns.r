@@ -1033,7 +1033,7 @@ setPBSoptions <- function(option, value, sublist=FALSE) {
 	keep = l[!is.element(names(l),items)]
 	return(keep) }
 
-#.initPBSoptions------------------------2006-09-16
+#.initPBSoptions------------------------2009-07-17
 # Called from zzz.R's .First.lib() intialization function
 #-----------------------------------------------AE
 .initPBSoptions <- function() {
@@ -1043,6 +1043,8 @@ setPBSoptions <- function(option, value, sublist=FALSE) {
 		packList(".options",".PBSmod",list()) #.PBSmod$.options <<- list()
 	if (is.null(.PBSmod$.options$openfile))
 		packList("openfile",".PBSmod$.options",list()) #.PBSmod$.options$openfile <<- list()
+	grDevices::dev.new(); par.default=par(no.readonly=TRUE); grDevices::dev.off()
+	packList("par.default",".PBSmod$.options") # for resetGraph
 }
 
 #getPBSoptions--------------------------2006-09-16
