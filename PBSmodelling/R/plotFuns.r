@@ -7,17 +7,14 @@
 #  Anisa Egeli <EgeliA@pac.dfo-mpo.gc.ca>                  |
 #===========================================================
 
-#resetGraph-----------------------------2009-02-24
+#resetGraph-----------------------------2009-07-17
 # Resets par() values to R default
-#-------------------------------------------ACB
+#-------------------------------------------ACB/RH
 resetGraph <- function()
 {
-	dev.new()
-	p <- par( no.readonly = TRUE )
-	dev.off()
-	par( p )
+	par(.PBSmod$.options$par.default)
+	frame()
 }
-#---------------------------------------resetGraph
 
 #expandGraph----------------------------2006-08-16
 #  Tweaks values to expand margins for multiple graphs
