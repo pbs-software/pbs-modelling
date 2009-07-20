@@ -7,11 +7,12 @@
 #  Anisa Egeli <EgeliA@pac.dfo-mpo.gc.ca>                  |
 #===========================================================
 
-#resetGraph-----------------------------2009-07-17
+#resetGraph-----------------------------2009-07-20
 # Resets par() values to R default
 #-------------------------------------------ACB/RH
 resetGraph <- function()
 {
+	.checkParDefault()
 	par(.PBSmod$.options$par.default)
 	frame()
 }
