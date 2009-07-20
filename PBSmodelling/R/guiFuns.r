@@ -2727,10 +2727,17 @@ parseWinFile <- function(fname, astext=FALSE)
 			}
 		}
 		
+		#if using a scrollbar, use the following code to reposition scrollbar
 		#update position of scroll bar
-		beg <- (display_top-1) / ( nrows - rows_to_display )
-		end <- beg
-		tkset( scroll, beg , end )
+		#beg <- (display_top-1) / ( nrows - rows_to_display )
+		#end <- beg
+		#tkset( scroll, beg , end )
+		tkconfigure( button_up, state=ifelse( display_top == 1, "disabled", "normal" ) )
+		tkconfigure( button_pageup, state=ifelse( display_top == 1, "disabled", "normal" ) )
+
+		tkconfigure( button_down, state=ifelse( display_top + rows_to_display - 1 >= nrows, "disabled", "normal" ) )
+		tkconfigure( button_pagedown, state=ifelse( display_top + rows_to_display - 1 >= nrows, "disabled", "normal" ) )
+
 
 	}
 
@@ -2746,11 +2753,35 @@ parseWinFile <- function(fname, astext=FALSE)
 	obj_tk <- .createWidget.object( frame, widget, winName, userObject = sub_object_value )
 	
 	#TODO make scroll grow to size of object
-	scroll <- tkscrollbar( frame, repeatinterval=5, command=function(...)scroll_callback(...))
+	#scroll <- tkscrollbar( frame, repeatinterval=5, command=function(...)scroll_callback(...))
 
 	if( enable_scrolling == TRUE ) {
-		tkgrid( obj_tk, scroll )
-		tkgrid.configure( scroll,rowspan=4,sticky="nsw" )
+		#create left side button grid
+		#scroll <- tkframe( frame )
+		button_pageup <- tkbutton( parent = frame, text = "<<", command=function(...) { scroll_callback( "scroll", as.character( -rowshow ), "units" ) } )
+		button_up <- tkbutton( parent = frame, text = "<", command=function(...) { scroll_callback( "scroll", "-1", "units" ) } )
+		button_down <- tkbutton( parent = frame, text = ">", command=function(...) { scroll_callback( "scroll", "1", "units" ) } )
+		button_pagedown <- tkbutton( parent = frame, text = ">>", command=function(...) { scroll_callback( "scroll", as.character( rowshow ), "units" ) } )
+		#tkgrid( button_up )
+		#tkgrid( button_down )
+		#tkgrid.configure( button_up, sticky="n" )
+		#tkgrid.configure( button_down, sticky="s" )
+
+		tkgrid( obj_tk, column = 0, row = 0 )
+		tkgrid.configure( obj_tk, rowspan = 2 )
+		#tkgrid.configure( scroll, rowspan = 4, sticky="ns" )
+		tkgrid( button_pageup, column = 1, row = 0 )
+		tkgrid( button_up, column = 2, row = 0 )
+		tkgrid( button_down, column = 2, row = 1 )
+		tkgrid( button_pagedown, column = 1, row = 1 )
+		tkgrid.configure( button_up, sticky="n" )
+		tkgrid.configure( button_pageup, sticky="n" )
+		tkgrid.configure( button_pagedown, sticky="s" )
+		tkgrid.configure( button_down, sticky="s" )
+
+		#disable up arrows (since we start on row 1)
+		tkconfigure( button_up, state="disabled" )
+		tkconfigure( button_pageup, state="disabled" )
 	} else {
 		tkgrid( obj_tk )
 	}
