@@ -12,7 +12,17 @@
 #-------------------------------------------ACB/RH
 resetGraph <- function()
 {
-	.checkParDefault()
+	#ensure init has been called (to pass R check)
+	.initPBSoptions()
+
+	#cache value on first run
+	if( is.null( .PBSmod[[ ".options" ]][[ "par.default" ]] ) ) {
+		dev.new()
+		p <- graphics::par( no.readonly = TRUE )
+		dev.off()
+		.PBSmod$.options$par.default <<- p
+	}
+
 	par(.PBSmod$.options$par.default)
 	frame()
 }
