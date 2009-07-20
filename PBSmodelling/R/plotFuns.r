@@ -23,8 +23,8 @@ resetGraph <- function()
 		.PBSmod$.options$par.default <<- p
 	}
 
-	par(.PBSmod$.options$par.default)
 	frame()
+	par(.PBSmod$.options$par.default)
 }
 
 #expandGraph----------------------------2006-08-16
