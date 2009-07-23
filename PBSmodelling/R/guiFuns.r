@@ -2743,11 +2743,40 @@ parseWinFile <- function(fname, astext=FALSE)
 
 	widget$vertical <- FALSE #superobject doesn't really do anything for vectors
 
+	#selected_widget_name is of the form "[superobject]somewidgetname[i,j]d"
+	#move the tk focus up/down by y_offset (negative values up, postive down)
+	set_widget_row_focus <- function( selected_widget_name, y_offset )
+	{
+		row <- as.integer( sub( "^\\[superobject\\].+\\[([0-9]+),[0-9]+\\]d$", "\\1", selected_widget_name ) )
+		col <- as.integer( sub( "^\\[superobject\\].+\\[[0-9]+,([0-9]+)\\]d$", "\\1", selected_widget_name ) )
+
+		#get new row to move to
+		new_row <- row + y_offset
+		if( new_row < 1 ) new_row <- 1
+		if( new_row > rows_to_display ) new_row <- rows_to_display
+		
+		focus_to <- paste( "[superobject]", widget_name, "[", new_row, ",", col, "]d", sep="" )
+		tkfocus( .PBSmod[[ winName ]]$widgetPtrs[[ focus_to ]]$tclwidget )
+	}
+
 	frame <- tkframe( tk )
 	rowshow <- ceiling( widget$rowshow / 2 )
 	widget$rowshow <- 0 #now we are just creating a regular object, if this was > 0, then we would get inf recursion
-	widget$.up_func <- function(...) { scroll_callback( "scroll", "-1", "units" ) }
-	widget$.down_func <- function(...) { scroll_callback( "scroll", "1", "units" ) }
+	widget$.up_func <- function( selected_widget_name, ...) { 
+		if( .PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top == 1 ) {
+			#no more hidden rows to scroll, change focus
+			set_widget_row_focus( selected_widget_name, -1 )
+		}
+		scroll_callback( "scroll", "-1", "units" )
+	}
+	widget$.down_func <- function( selected_widget_name,...) { 
+		display_top <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top
+		if( display_top + rows_to_display - 1 >= nrows ) {
+			#no more hidden rows to scroll, change focus
+			set_widget_row_focus( selected_widget_name, 1 )
+		}
+		scroll_callback( "scroll", "1", "units" )
+	}
 	widget$.pageup_func <- function(...) { scroll_callback( "scroll", as.character( -rowshow ), "units" ) }
 	widget$.pagedown_func <- function(...) { scroll_callback( "scroll", as.character( rowshow ), "units" ) }
 	obj_tk <- .createWidget.object( frame, widget, winName, userObject = sub_object_value )
@@ -3152,17 +3181,17 @@ parseWinFile <- function(fname, astext=FALSE)
 		enter <- widget$enter
 	if (enter) {
 		#dont update it (unless an return was pressed) as it can slow it down a lot
-		tkbind(tkWidget,"<KeyPress-Return>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+		tkbind(tkWidget,"<KeyPress-Return>",function(...) { .extractData(widget[["function"]], widget$action, winName)})
 	}
 	else
-		tkbind(tkWidget,"<KeyRelease>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+		tkbind(tkWidget,"<KeyRelease>",function(...) { .extractData(widget[["function"]], widget$action, winName)})
 	if( !is.null( widget[[".up_func"]] ) ) {
-		tkbind(tkWidget,"<Up>",widget[[".up_func"]] );
-		tkbind(tkWidget,"<Prior>",widget[[".pageup_func"]] );
+		tkbind(tkWidget,"<Up>",function(...) { do.call( widget[[".up_func"]], list( selected_widget_name = widget$name, ... ) ) } )
+		tkbind(tkWidget,"<Prior>",function(...) { do.call( widget[[".pageup_func"]], list( selected_widget_name = widget$name, ... ) ) } )
 	}
 	if( !is.null( widget[[".down_func"]] ) ) {
-		tkbind(tkWidget,"<Down>",widget[[".down_func"]] );
-		tkbind(tkWidget,"<Next>",widget[[".pagedown_func"]] );
+		tkbind(tkWidget,"<Down>",function(...) { do.call( widget[[".down_func"]], list( selected_widget_name = widget$name, ... ) ) } )
+		tkbind(tkWidget,"<Next>",function(...) { do.call( widget[[".pagedown_func"]], list( selected_widget_name = widget$name, ... ) ) } )
 	}
 	return(tkWidget)
 }
