@@ -1,0 +1,14 @@
+#summary list of tasks required before posting a CRAN release
+
+= Introduction =
+
+A growing list of manual tasks required before releasing to CRAN
+
+
+= Details =
+
+* Modify Description for new release version
+* Update change log - ideally cross reference user reported bugs fixes with issue tickets
+* Update testWidgets.Rd with new content from showArgs()
+* Update user guide pdf
+* create a SVN tag once tar.gz is uploaded to cran FTP
