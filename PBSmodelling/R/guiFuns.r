@@ -2758,26 +2758,34 @@ parseWinFile <- function(fname, astext=FALSE)
 	if( enable_scrolling == TRUE ) {
 		#create left side button grid
 		#scroll <- tkframe( frame )
-		button_pageup <- tkbutton( parent = frame, text = "<<", command=function(...) { scroll_callback( "scroll", as.character( -rowshow ), "units" ) } )
-		button_up <- tkbutton( parent = frame, text = "<", command=function(...) { scroll_callback( "scroll", "-1", "units" ) } )
-		button_down <- tkbutton( parent = frame, text = ">", command=function(...) { scroll_callback( "scroll", "1", "units" ) } )
-		button_pagedown <- tkbutton( parent = frame, text = ">>", command=function(...) { scroll_callback( "scroll", as.character( rowshow ), "units" ) } )
-		#tkgrid( button_up )
-		#tkgrid( button_down )
-		#tkgrid.configure( button_up, sticky="n" )
-		#tkgrid.configure( button_down, sticky="s" )
 
-		tkgrid( obj_tk, column = 0, row = 0 )
-		tkgrid.configure( obj_tk, rowspan = 2 )
-		#tkgrid.configure( scroll, rowspan = 4, sticky="ns" )
-		tkgrid( button_pageup, column = 1, row = 0 )
-		tkgrid( button_up, column = 2, row = 0 )
-		tkgrid( button_down, column = 2, row = 1 )
-		tkgrid( button_pagedown, column = 1, row = 1 )
-		tkgrid.configure( button_up, sticky="n" )
-		tkgrid.configure( button_pageup, sticky="n" )
-		tkgrid.configure( button_pagedown, sticky="s" )
-		tkgrid.configure( button_down, sticky="s" )
+		#two frames - one for the top two buttson, one for the bottom two
+		f1 <- tkframe( frame )
+		f2 <- tkframe( frame )
+
+		#keys for pageup, up, down, pagedown keys
+		if( .Platform$OS == "windows" ) {
+			keys <- c( "ã", "p", "q", "ä" )
+			font <- tkfont.create( family = "wingdings 3", size = 6 )
+		} else {
+			keys <- c( "|<", "<", ">", ">|" )
+			font <- .createTkFont( "7" )
+		}
+
+		button_pageup <- tkbutton( parent = f1, text = keys[1], font = font, width=1, command=function(...) { scroll_callback( "scroll", as.character( -rowshow ), "units" ) } )
+		button_up <- tkbutton( parent = f1, text = keys[2], font = font, width=1, command=function(...) { scroll_callback( "scroll", "-1", "units" ) } )
+		button_down <- tkbutton( parent = f2, text = keys[3], font = font, width=1, command=function(...) { scroll_callback( "scroll", "1", "units" ) } )
+		button_pagedown <- tkbutton( parent = f2, text = keys[4], font = font, width=1, command=function(...) { scroll_callback( "scroll", as.character( rowshow ), "units" ) } )
+
+		#attach buttons to correct frame
+		if( widget[["collabels"]] != FALSE )
+			tkgrid( tklabel( parent = f1, text = "" ) ) #align with rows
+		tkgrid( button_pageup ); tkgrid( button_up );
+		tkgrid( button_down ); tkgrid( button_pagedown );
+
+		tkgrid( obj_tk, column = 0, row = 0, rowspan = 2 )
+		tkgrid( f1, column = 1, row = 0, sticky = "N" )
+		tkgrid( f2, column = 1, row = 1, sticky = "S" )
 
 		#disable up arrows (since we start on row 1)
 		tkconfigure( button_up, state="disabled" )
