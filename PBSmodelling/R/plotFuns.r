@@ -10,22 +10,33 @@
 #resetGraph-----------------------------2009-07-20
 # Resets par() values to R default
 #-------------------------------------------ACB/RH
-resetGraph <- function()
+resetGraph=function(reset.mf=TRUE)
 {
 	#ensure init has been called (to pass R check)
-	.initPBSoptions()
+	PBSmodelling:::.initPBSoptions()
 
 	#cache value on first run
-	if( is.null( .PBSmod[[ ".options" ]][[ "par.default" ]] ) ) {
+	if (is.null(.PBSmod[[".options"]][["par.default"]])) {
 		dev.new()
-		p <- graphics::par( no.readonly = TRUE )
+		p <- graphics::par(no.readonly = TRUE)
 		dev.off()
 		.PBSmod$.options$par.default <<- p
 	}
-
-	frame()
-	par(.PBSmod$.options$par.default)
+	if (dev.cur()==1) frame()
+	else {
+		p=.PBSmod$.options$par.default
+		if (reset.mf) {
+			par(p) ; frame()
+		} else {
+			keep=c("mfrow","mfcol","mfg") #keep these settings
+			#keep=c("mfrow","mfg") #keep only mfrow
+			fixed=par(keep)
+			reset=p[setdiff(names(p),keep)]
+			par(reset); par(fixed); par(new=FALSE)
+		}
+	}
 }
+
 
 #expandGraph----------------------------2006-08-16
 #  Tweaks values to expand margins for multiple graphs
