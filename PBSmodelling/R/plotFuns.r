@@ -35,6 +35,7 @@ resetGraph=function(reset.mf=TRUE)
 			par(reset); par(fixed); par(new=FALSE)
 		}
 	}
+	invisible(par())
 }
 
 
