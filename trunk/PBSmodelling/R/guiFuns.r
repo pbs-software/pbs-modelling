@@ -2683,11 +2683,11 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 	if( !is.data.frame( userObject ) )
 		stop( "superobjects only support data.frames" )
-	
+
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <<- 1
 	rows_to_display <- widget$rowshow #num of rows visible
 	enable_scrolling <- TRUE
-	if( rows_to_display <= 0 || rows_to_display > nrow( userObject ) ) {
+	if( rows_to_display <= 0 || rows_to_display >= nrow( userObject ) ) {
 		rows_to_display = nrow( userObject )
 		enable_scrolling <- FALSE
 	}
@@ -2698,7 +2698,8 @@ parseWinFile <- function(fname, astext=FALSE)
 	widget$.rowlabelwidth <- max( nchar( rownames( userObject ) ) )
 
 	new_widget_name <- paste( "[superobject]", widget$name, sep="" ) 
-	sub_object_value <- userObject[1:rows_to_display,]
+	cols <- 1:ncol( userObject )
+	sub_object_value <- userObject[1:rows_to_display, cols, drop = FALSE ]
 	
 	widget$name <- new_widget_name
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject
@@ -2754,8 +2755,6 @@ parseWinFile <- function(fname, astext=FALSE)
 
 
 	}
-
-	widget$vertical <- FALSE #superobject doesn't really do anything for vectors
 
 	#selected_widget_name is of the form "[superobject]somewidgetname[i,j]d"
 	#move the tk focus up/down by y_offset (negative values up, postive down)
