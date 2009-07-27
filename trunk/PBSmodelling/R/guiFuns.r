@@ -2577,6 +2577,8 @@ parseWinFile <- function(fname, astext=FALSE)
 						  entryfont=widget$entryfont,
 						  entrybg=widget$entrybg,
 						  entryfg=widget$entryfg,
+						  noeditbg=widget$noeditbg,
+						  noeditfg=widget$noeditfg,
 						  edit=widget$edit
 					)
 				}
@@ -3170,8 +3172,16 @@ parseWinFile <- function(fname, astext=FALSE)
 	tkWidget<-do.call("tkentry", argList)
 	.map.set( winName, widget$name, tclwidget=tkWidget )
 	
-	if( widget$edit == FALSE )
+	if( widget$edit == FALSE ) {
 		tkconfigure( tkWidget, state="readonly" )
+		if (!is.null(widget[["noeditfg"]]) && widget$noeditfg!="") {
+			tkconfigure( tkWidget, foreground=widget$noeditfg )
+		}
+	}
+	if (!is.null(widget[["noeditbg"]]) && widget$noeditbg!="") {
+		tkconfigure( tkWidget, disabledbackground=widget$noeditbg )
+		tkconfigure( tkWidget, readonlybackground=widget$noeditbg )
+	}
 		
 	if( !is.null( widget[["password"]] ) && widget$password == TRUE )
 		tkconfigure( tkWidget, show="*")
@@ -4632,6 +4642,10 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 	#if tclwidget is known - set it directly here
 	if( !is.null( x[["tclwidget"]] ) ) {
 		tkconfigure( x$tclwidget, state=state )
+		#get correct foreground
+		fg <- ifelse( any( wid$type == c( "entry", "spinbox" ) ), wid$entryfg, wid$fg )
+		#reset widget colors
+		tkconfigure( x$tclwidget, foreground=ifelse( state == "normal", fg, wid$noeditfg ) )
 		return(invisible(NULL))
 	}
 	
