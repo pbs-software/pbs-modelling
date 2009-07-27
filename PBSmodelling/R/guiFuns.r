@@ -1846,9 +1846,11 @@ parseWinFile <- function(fname, astext=FALSE)
 # Arguments:
 #   fontStr - string describing a font and colour
 # -----------------------------------------------------------
-.createTkFont <- function(fontStr)
+.createTkFont <- function( fontstr )
 {
-	fontstr <- .convertParamStrToVector(casefold(fontStr))
+	#print( fontStr )
+	#fontstr <- .convertParamStrToVector(casefold(fontStr))
+	#print( fontstr )
 
 	#default options
 	fontparam<-list()
