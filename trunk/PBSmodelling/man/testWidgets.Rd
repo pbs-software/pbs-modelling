@@ -28,9 +28,9 @@ check name mode="logical" checked=FALSE text="" font="" fg="black"
 
 data nrow ncol names modes="numeric" rowlabels="" collabels=""
    rownames="X" colnames="Y" font="" fg="black" bg="" entryfont=""
-   entryfg="black" entrybg="white" values="" byrow=TRUE function=""
-   enter=TRUE action="data" edit=TRUE width=6 borderwidth=0 sticky=""
-   padx=0 pady=0
+   entryfg="black" entrybg="white" noeditfg="black" noeditbg="gray"
+   values="" byrow=TRUE function="" enter=TRUE action="data"
+   edit=TRUE width=6 borderwidth=0 sticky="" padx=0 pady=0
 
 droplist name values=NULL choices=NULL labels=NULL selected=1
    add=FALSE font="" fg="black" bg="white" function="" enter=TRUE
@@ -38,9 +38,9 @@ droplist name values=NULL choices=NULL labels=NULL selected=1
    padx=0 pady=0
 
 entry name value="" width=20 label=NULL font="" fg="" bg=""
-   entryfont="" entryfg="black" entrybg="white" edit=TRUE
-   password=FALSE function="" enter=TRUE action="entry"
-   mode="numeric" sticky="" padx=0 pady=0
+   entryfont="" entryfg="black" entrybg="white" noeditfg="black"
+   noeditbg="gray" edit=TRUE password=FALSE function="" enter=TRUE
+   action="entry" mode="numeric" sticky="" padx=0 pady=0
 
 grid nrow=1 ncol=1 toptitle="" sidetitle="" topfont="" sidefont=""
    topfg=NULL sidefg=NULL fg="black" topbg=NULL sidebg=NULL bg=""
@@ -57,9 +57,9 @@ label text="" name="" mode="character" font="" fg="black" bg=""
 
 matrix nrow ncol names rowlabels="" collabels="" rownames=""
    colnames="" font="" fg="black" bg="" entryfont="" entryfg="black"
-   entrybg="white" values="" byrow=TRUE function="" enter=TRUE
-   action="matrix" edit=TRUE mode="numeric" width=6 borderwidth=0
-   sticky="" padx=0 pady=0
+   entrybg="white" noeditfg="black" noeditbg="gray" values=""
+   byrow=TRUE function="" enter=TRUE action="matrix" edit=TRUE
+   mode="numeric" width=6 borderwidth=0 sticky="" padx=0 pady=0
 
 menu nitems=1 label font="" fg="" bg=""
 
@@ -68,9 +68,10 @@ menuitem label font="" fg="" bg="" function action="menuitem"
 null bg="" padx=0 pady=0
 
 object name rowshow=0 font="" fg="black" bg="" entryfont=""
-   entryfg="black" entrybg="white" vertical=FALSE collabels=TRUE
-   rowlabels=TRUE function="" enter=TRUE action="data" edit=TRUE
-   width=6 borderwidth=0 sticky="" padx=0 pady=0
+   entryfg="black" entrybg="white" noeditfg="black" noeditbg="gray"
+   vertical=FALSE collabels=TRUE rowlabels=TRUE function=""
+   enter=TRUE action="data" edit=TRUE width=6 borderwidth=0 sticky=""
+   padx=0 pady=0
 
 radio name value text="" font="" fg="black" bg="" function=""
    action="radio" edit=TRUE mode="numeric" selected=FALSE sticky=""
@@ -99,12 +100,12 @@ text name height=8 width=30 edit=FALSE scrollbar=TRUE fg="black"
 
 vector names length=0 labels="" values="" vecnames="" font=""
    fg="black" bg="" entryfont="" entryfg="black" entrybg="white"
-   vertical=FALSE function="" enter=TRUE action="vector" edit=TRUE
-   mode="numeric" width=6 borderwidth=0 sticky="" padx=0 pady=0
+   noeditfg="black" noeditbg="gray" vertical=FALSE function=""
+   enter=TRUE action="vector" edit=TRUE mode="numeric" width=6
+   borderwidth=0 sticky="" padx=0 pady=0
 
 window name="window" title="" vertical=TRUE bg="#D4D0C8" fg="#000000"
    onclose="" remove=FALSE
-
 
 }
 }
