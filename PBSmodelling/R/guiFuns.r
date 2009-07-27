@@ -4557,7 +4557,7 @@ setWinVal <- function(vars, winName="")
 		return( value )
 	}
 
-	stop(paste("unable to update\"", varname, "\" - no widget found.", sep=""))
+	stop(paste("unable to update \"", varname, "\" - no widget found.", sep=""))
 }
 
 
@@ -4712,14 +4712,13 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 			return(NULL)
 		}
 	}
-	
-	#special case for superobject
-	if( wid$type == "superobject" ) {
+
+	#scrolling object
+	if (wid$type=="object") {
 		return( setWidgetState(paste("[superobject]", varname,sep=""), state, winname) )
-		stop( "SUPEROBJECT setwidgetstate not implemented" )
 	}
 
-	stop(paste("unable to update\"", varname, "\" - no widget found.", sep=""))
+	stop(paste("unable to update \"", varname, "\" - no widget found.", sep=""))
 }
 
 
