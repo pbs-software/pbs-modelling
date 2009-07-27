@@ -3304,7 +3304,7 @@ parseWinFile <- function(fname, astext=FALSE)
 .getValueForWidgetSetup <- function( varname, widget, winName )
 {
 	if( !exists( varname, env = .GlobalEnv ) )
-		.stopWidget( paste( "unable to find variable \"", widget$name, "\" in global memory - this search happend since value=NULL", sep="" ), widget$.debug, winName )
+		.stopWidget( paste( "unable to find variable \"", varname, "\" in global memory - this search happend since value=NULL", sep="" ), widget$.debug, winName )
 
 	var <- get( varname, env = .GlobalEnv )
 	if( is.factor( var ) )
@@ -4644,15 +4644,16 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 	
 	if( any( state == c( "disabled", "normal", "readonly", "active" ) ) == FALSE ) 
 		stop( "state must be disabled, normal, readonly (for entry), or active( for radio)" )
-	
+
 	x<-.map.get(winname, varname)
 	wid<-.PBSmod[[winname]]$widgets[[varname]]
 	if( is.null( wid ) ) stop(paste("supplied widget \"",varname,"\" name not found", sep=""))
 
+	if( any( wid$type == c( "table" ) ) )
+		stop( "table widget is not supported" )
+
 	#change readonly -> disabled for widgets which dont support readonly
-	if( wid$type == "check" && state == "readonly" )
-		state <- "disabled"
-	if( wid$type == "radio" && state == "readonly" )
+	if( any( wid$type == c( "check", "radio", "droplist", "spinbox" ) ) && state == "readonly" )
 		state <- "disabled"
 	
 	#special case since radio has several widgets with the same name
@@ -4671,11 +4672,13 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 	if( !is.null( x[["tclwidget"]] ) ) {
 		tkconfigure( x$tclwidget, state=state )
 		#get correct foreground
-		fg <- ifelse( any( wid$type == c( "entry", "spinbox" ) ), wid$entryfg, wid$fg )
-		fg <- ifelse( state == "normal", fg, wid$noeditfg )
-		#reset widget colors
-		tkconfigure( x$tclwidget, disabledforeground=fg )
-		tkconfigure( x$tclwidget, foreground=fg ) #no readonlyforeground
+		if( !is.null( wid[[ "noeditfg" ]] ) && !is.null( wid[[ "noeditbg" ]] ) ) {
+			fg <- ifelse( any( wid$type == c( "entry", "spinbox" ) ), wid$entryfg, wid$fg )
+			fg <- ifelse( state == "normal", fg, wid$noeditfg )
+			#reset widget colors
+			tkconfigure( x$tclwidget, disabledforeground=fg )
+			tkconfigure( x$tclwidget, foreground=fg ) #no readonlyforeground
+		}
 		return(invisible(NULL))
 	}
 	
