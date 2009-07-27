@@ -2199,6 +2199,8 @@ parseWinFile <- function(fname, astext=FALSE)
 						  checked=checked,
 						  bg=widget$bg,
 						  fg=widget$entryfg,
+						  noeditbg=widget$noeditbg,
+						  noeditfg=widget$noeditfg,
 						  edit=widget$edit
 					)
 				}
@@ -2216,6 +2218,8 @@ parseWinFile <- function(fname, astext=FALSE)
 						  entryfont=widget$entryfont,
 						  entrybg=widget$entrybg,
 						  entryfg=widget$entryfg,
+						  noeditbg=widget$noeditbg,
+						  noeditfg=widget$noeditfg,
 						  edit=widget$edit
 					)
 
@@ -2358,6 +2362,8 @@ parseWinFile <- function(fname, astext=FALSE)
 				  checked=checked,
 				  bg=widget$bg,
 				  fg=widget$entryfg,
+				  noeditbg=widget$noeditbg,
+				  noeditfg=widget$noeditfg,
 				  edit=widget$edit,
 				  .name=vname
 			)
@@ -2376,6 +2382,8 @@ parseWinFile <- function(fname, astext=FALSE)
 				  entryfont=widget$entryfont,
 				  entrybg=widget$entrybg,
 				  entryfg=widget$entryfg,
+				  noeditbg=widget$noeditbg,
+				  noeditfg=widget$noeditfg,
 				  edit=widget$edit,
 				  .name=vname
 			)
@@ -2547,7 +2555,7 @@ parseWinFile <- function(fname, astext=FALSE)
 					else
 						checked=FALSE
 					wid$.widgets[[i]][[j]] <- list(
-						  type='check',
+						  type="check",
 						  mode="logical",
 						  name=name,
 						  text="",
@@ -2556,6 +2564,8 @@ parseWinFile <- function(fname, astext=FALSE)
 						  checked=checked,
 						  bg=widget$bg,
 						  fg=widget$entryfg,
+						  noeditbg=widget$noeditbg,
+						  noeditfg=widget$noeditfg,
 						  edit=widget$edit
 					)
 				}
@@ -3041,6 +3051,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		            entryfont=widget$entryfont,
 		            entryfg=widget$entryfg,
 		            entrybg=widget$entrybg,
+		            noeditfg=widget$noeditfg,
+		            noeditbg=widget$noeditbg,
 		            "function"=widget[["function"]],
 		            enter=widget$enter,
 		            action=widget$action,
@@ -3084,6 +3096,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		            entryfont=widget$entryfont,
 		            entryfg=widget$entryfg,
 		            entrybg=widget$entrybg,
+		            noeditfg=widget$noeditfg,
+		            noeditbg=widget$noeditbg,
 		            "function"=widget[["function"]],
 		            ".up_func"=widget[[".up_func"]],
 		            ".down_func"=widget[[".down_func"]],
@@ -3120,6 +3134,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		            entryfont=widget$entryfont,
 		            entryfg=widget$entryfg,
 		            entrybg=widget$entrybg,
+		            noeditfg=widget$noeditfg,
+		            noeditbg=widget$noeditbg,
 		            vertical=widget$vertical,
 		            "function"=widget[["function"]],
 		            enter=widget$enter,
@@ -3175,13 +3191,19 @@ parseWinFile <- function(fname, astext=FALSE)
 	if( widget$edit == FALSE ) {
 		tkconfigure( tkWidget, state="readonly" )
 		if (!is.null(widget[["noeditfg"]]) && widget$noeditfg!="") {
-			tkconfigure( tkWidget, foreground=widget$noeditfg )
+			tkconfigure( tkWidget, disabledforeground=widget$noeditfg )
+			tkconfigure( tkWidget, foreground=widget$noeditfg ) #no readonlyforeground
 		}
 	}
 	if (!is.null(widget[["noeditbg"]]) && widget$noeditbg!="") {
 		tkconfigure( tkWidget, disabledbackground=widget$noeditbg )
 		tkconfigure( tkWidget, readonlybackground=widget$noeditbg )
 	}
+
+	#if (!is.null(widget[["noeditfg"]]) && widget$noeditfg!="") {
+	#	tkconfigure( tkWidget, disabledforeground="red" )
+	#	tkconfigure( tkWidget, foreground="red" )
+	#}
 		
 	if( !is.null( widget[["password"]] ) && widget$password == TRUE )
 		tkconfigure( tkWidget, show="*")
@@ -4626,6 +4648,12 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 	x<-.map.get(winname, varname)
 	wid<-.PBSmod[[winname]]$widgets[[varname]]
 	if( is.null( wid ) ) stop(paste("supplied widget \"",varname,"\" name not found", sep=""))
+
+	#change readonly -> disabled for widgets which dont support readonly
+	if( wid$type == "check" && state == "readonly" )
+		state <- "disabled"
+	if( wid$type == "radio" && state == "readonly" )
+		state <- "disabled"
 	
 	#special case since radio has several widgets with the same name
 	if( wid$type == "radio" ) {
@@ -4644,8 +4672,10 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 		tkconfigure( x$tclwidget, state=state )
 		#get correct foreground
 		fg <- ifelse( any( wid$type == c( "entry", "spinbox" ) ), wid$entryfg, wid$fg )
+		fg <- ifelse( state == "normal", fg, wid$noeditfg )
 		#reset widget colors
-		tkconfigure( x$tclwidget, foreground=ifelse( state == "normal", fg, wid$noeditfg ) )
+		tkconfigure( x$tclwidget, disabledforeground=fg )
+		tkconfigure( x$tclwidget, foreground=fg ) #no readonlyforeground
 		return(invisible(NULL))
 	}
 	
