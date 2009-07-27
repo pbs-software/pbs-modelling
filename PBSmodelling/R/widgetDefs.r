@@ -165,6 +165,8 @@
 	list(param='entryfont', required=FALSE, class="character", default=""),
 	list(param='entryfg', required=FALSE, class="character", default="black"),
 	list(param='entrybg', required=FALSE, class="character", default="white"),
+	list(param='noeditfg', required=FALSE, class="character", default="black"),
+	list(param='noeditbg', required=FALSE, class="character", default="gray"),
 	list(param='edit', required=FALSE, class="logical", default=TRUE),
 	list(param='password', required=FALSE, class="logical", default=FALSE),
 	list(param='function', required=FALSE, class="character", default=""),
@@ -336,6 +338,8 @@
 	list(param='entryfont', required=FALSE, class="character", default=""),
 	list(param='entryfg', required=FALSE, class="character", default="black"),
 	list(param='entrybg', required=FALSE, class="character", default="white"),
+	list(param='noeditfg', required=FALSE, class="character", default="black"),
+	list(param='noeditbg', required=FALSE, class="character", default="gray"),
 	list(param='values', required=FALSE, class="characterVector", default=""), #variable names (or name)
 	list(param='byrow', required=FALSE, class="logical", default=TRUE),
 	list(param='function', required=FALSE, class="character", default=""),
