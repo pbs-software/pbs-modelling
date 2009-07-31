@@ -774,7 +774,7 @@ createWin <- function(fname, astext=FALSE)
 						eval(parse(text=paste('command=function(...) .extractData("',widget$.widgets[[i]][["function"]],'", "',widget$.widgets[[i]][["action"]],'", "',winName,'")', sep="")))
 						
 							argList <- list( subMenu, "command", label=widget$.widgets[[i]]$label, command=command )
-							if( widget$.widgets[[i]]$font != "" )
+							if( any( widget$.widgets[[i]]$font != "" ) )
 								argList$font <- .createTkFont( widget$.widgets[[i]]$font )
 							if( widget$.widgets[[i]]$fg != "" )
 								argList$foreground <- widget$.widgets[[i]]$fg
@@ -788,7 +788,7 @@ createWin <- function(fname, astext=FALSE)
 
 				}
 				argList <- list( topMenu, "cascade", label=label, menu=subMenu )
-				if( widget$font != "" )
+				if( any( widget$font != "" ) )
 					argList$font <- .createTkFont( widget$font )
 				if( widget$fg != "" )
 					argList$foreground <- widget$fg
@@ -1777,7 +1777,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		}
 		if (!is.null(grid[["topbg"]]) && grid$topbg!="")
 			argList$background <- grid$topbg
-		if (topfont!="")
+		if (any( topfont!="" ) )
 			argList$font <- .createTkFont(topfont)
 		mytklabel<-do.call("tklabel", argList)
 		tkgrid(mytklabel, columnspan=colspan, row=0, column=1+grid$toptitle.offset)
@@ -1791,7 +1791,7 @@ parseWinFile <- function(fname, astext=FALSE)
 			argList$foreground=grid$sidefg
 		if (!is.null(grid[["sidebg"]]) && grid$sidebg!="")
 			argList$background=grid$sidebg
-		if (topfont!="")
+		if (any(topfont!=""))
 			argList$font <- .createTkFont(sidefont)
 		mytklabel<-do.call("tklabel", argList)
 		tkgrid(mytklabel, rowspan=rowspan, row=1+grid$sidetitle.offset, column=0)
@@ -1946,7 +1946,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	argList <- list(parent=tk, borderwidth=widget$borderwidth,relief=widget$relief)
 	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		argList$background=widget$bg
-	if (!is.null(widget[["font"]]) && widget$font!="")
+	if (!is.null(widget[["font"]]) && any(widget$font!=""))
 		argList$font <- .createTkFont(widget$font)
 
 	tkWidget<-do.call("tkframe", argList)
@@ -1996,7 +1996,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$foreground=widget$fg
 	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		argList$background=widget$bg
-	if (!is.null(widget[["font"]]) && widget$font!="")
+	if (!is.null(widget[["font"]]) && any( widget$font!=""))
 		argList$font <- .createTkFont(widget$font)
 
 	argList$variable <- .map.add(winName, widget$name, tclvar=tclVar(val))$tclvar
@@ -2022,7 +2022,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$foreground=widget$fg
 	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		argList$background=widget$bg
-	if (!is.null(widget[["font"]]) && widget$font!="")
+	if (!is.null(widget[["font"]]) && any(widget$font!=""))
 		argList$font <- .createTkFont(widget$font)
 	if (!is.null(widget[["justify"]]) && widget$justify!="")
 		argList$justify <- widget$justify
@@ -2987,7 +2987,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	#if( length( widget$width ) > 1 )
 	#	argList$width <- 
 
-	if (!is.null(widget[["font"]]) && widget$font!="")
+	if (!is.null(widget[["font"]]) && any(widget$font!=""))
 		argList$font <- .createTkFont(widget$font)
 
 	
@@ -3181,7 +3181,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$foreground=widget$entryfg
 	if (!is.null(widget[["entrybg"]]) && widget$entrybg!="")
 		argList$background=widget$entrybg
-	if (!is.null(widget[["entryfont"]]) && widget$entryfont!="")
+	if (!is.null(widget[["entryfont"]]) && any(widget$entryfont!=""))
 		argList$font <- .createTkFont(widget$entryfont)
 	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
 	argList$width<-widget$width
@@ -3262,7 +3262,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$entrybg=widget$entrybg
 		
 	}
-	if (!is.null(widget$entryfont) && widget$entryfont!="") 
+	if (!is.null(widget$entryfont) && any(widget$entryfont!=""))
 		argList$font <- .createTkFont(widget$entryfont)
 		
 	if( is.na( widget$value ) )
@@ -3358,7 +3358,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$highlightbackground=widget$bg
 		argList$entrybg=widget$bg
 	}
-	if (!is.null(widget[["font"]]) && widget$font!="")
+	if (!is.null(widget[["font"]]) && any(widget$font!=""))
 		argList$font <- .createTkFont(widget$font)
 	argList$textvariable<-.map.add(winName, widget$name, tclvar=tclVar(labels[ widget$selected ]))$tclvar
 	argList$width<-widget$width
@@ -3402,7 +3402,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$foreground=widget$fg
 	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		argList$background=widget$bg
-	if (!is.null(widget[["font"]]) && widget$font!="")
+	if (!is.null(widget[["font"]]) && any(widget$font!=""))
 		argList$font <- .createTkFont(widget$font)
 	argList$variable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
 	if (!is.null(widget[["selected"]]) && widget$selected==TRUE)
@@ -3433,7 +3433,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$foreground<-widget$fg
 	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		argList$background<-widget$bg
-	if (!is.null(widget[["font"]]) && widget$font!="")
+	if (!is.null(widget[["font"]]) && any(widget$font!=""))
 		argList$font <- .createTkFont(widget$font)
 	argList$variable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
 	argList$command<-function(...) { .extractData(widget[["function"]], widget$action, winName)}
@@ -3525,7 +3525,7 @@ parseWinFile <- function(fname, astext=FALSE)
 			argList$fg <- widget$fg
 		if( !is.null( widget[["bg"]] ) && widget$bg != "" )
 			argList$bg <- widget$bg
-		if ( !is.null( widget[["font"]] ) && widget$font != "")
+		if ( !is.null( widget[["font"]] ) && any( widget$font != "" ) )
 			argList$font=.createTkFont(widget$font)
 		return( do.call( type, argList ) )
 	}
@@ -3598,7 +3598,7 @@ parseWinFile <- function(fname, astext=FALSE)
 .createWidget.button <- function(tk, widget, winName)
 {
 	param <- list(parent=tk, text=widget$text)
-	if (widget$font != "")
+	if ( any( widget$font != "" ) )
 		param$font=.createTkFont(widget$font)
 	if (!is.null(widget[["fg"]]) && widget$fg!="")
 		param$foreground=widget$fg
@@ -3627,7 +3627,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	              relief=widget$relief,
 	              yscrollcommand=function(...)tkset(scrollBar,...)
 	              )
-	if (widget$font != "")
+	if ( any( widget$font != "" ) )
 		param$font=.createTkFont(widget$font)
 
 	scrollBar <- tkscrollbar(tk, repeatinterval=5, command=function(...)tkyview(txtBox,...))
