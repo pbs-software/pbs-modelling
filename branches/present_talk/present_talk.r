@@ -71,7 +71,6 @@ processBreak <- function( node )
 	return( new( "break" ) )
 }
 
-setwd("d:/home/projects/dfo/tmp")
 talk_xml <- xmlTreeParse( "swisstalk.xml" )
 
 stopifnot( !is.null( talk_xml$doc$children$talk ) )
