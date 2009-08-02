@@ -1,7 +1,0 @@
-window name=widWin title="Widget = null"
-grid 2 2 relief=raised toptitle=Top sidetitle=Side \
-   topfont="Courier 10 bold" sidefont="courier 10 bold" padx=30 pady=20
-   label text="Here" font="courier 8" padx=10
-   null
-   null
-   label text="There" font="courier 8" padx=10

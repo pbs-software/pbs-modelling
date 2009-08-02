@@ -1,2 +1,0 @@
-window name=widWin title="Widget = label"
-label text="A bit too big?" font="30 bold"

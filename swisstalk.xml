@@ -1,0 +1,116 @@
+<!-- we will use xml comments - there can only be ONE document root -->
+<talk name="Swiss">
+	<section name="first section" foo="bar">
+	Welcome to this example talk for the new presentTalk function and xml schema
+	<break/>
+This talk is presented as a collection of slides. The slides are organized into
+different sections. The current section will be indicated by the contents of the
+drop down list. You may select a new value from this list to change sections at
+any time.
+
+Slides can be selected with any of the four buttons above:
+-section start: will bring you back to the first slide in the current section
+-prev slide: reverses one slide
+-replay current slide: will redisplay the currently selected slide (useful for
+replaying sample code)
+-next slide: will advance to the next slide
+
+The overall progress of the talk is identified in the status bar in the lower 
+right corner
+	<break/>
+In this version, there is no &lt;text&gt; block; but rather, text is simply
+entered under a section block.
+
+text can be broken up into different slides with the &lt;break/&gt; command.
+<break/>
+
+Code can be embedded into sections with the &lt;code&gt; block
+The only tricky (current unresolved) issue is dealing with the &lt;- opperator
+which must be escapped, since it contains reserved XML characters.
+
+
+Sample plotting code:
+<code>
+x &lt;- seq( 0, 10, by = 0.01 )
+y &lt;- sin( x )
+plot( x, y )
+</code>
+
+the code blocks support print="TRUE" and show="TRUE" arguments (which must be quoted)
+
+<break/>
+
+Comments can be embeded in the talk XML file with standard XML comments.
+&lt;!-- Sample comment --&gt;
+
+<break/> <!-- optional break, since all slides break before a new section -->
+</section>
+	
+	<section name="la section numero deux">
+
+The following shows code arguments and their effects.
+
+
+&lt;code show="true" print="true" &gt;sum( 1:10 )&lt;/code&gt;
+<code show="true" print="true" >sum( 1:10 )</code>
+
+&lt;code show="false" print="true" &gt;sum( 1:10 )&lt;/code&gt;
+<code show="false" print="true" >sum( 1:10 )</code>
+
+&lt;code show="true" print="false" &gt;sum( 1:10 )&lt;/code&gt;
+<code show="true" print="false" >sum( 1:10 )</code>
+
+&lt;code show="false" print="false" &gt;sum( 1:10 )&lt;/code&gt;
+<code show="false" print="false" >sum( 1:10 )</code>
+
+
+	<break />
+The previous slide shows a potential bug with inconsistent newlines
+	<break />
+	Print a function: <code>get</code>
+	<break />
+An invisible cat, won't appear in the text (or consol):
+&lt;code show="false" print="false" &gt;cat(1:10)&lt;/code&gt;
+	<code show="false" print="false" >cat(1:10)</code>
+	<break />
+	Hope you liked the talk
+	</section>
+</talk>
+
+<!--
+<section name="Methods" button=TRUE>
+
+<text> 
+This short talk examines the "summary" method
+and applies it to the "swiss" dataset.
+The talk itself comes from a talk description file ...
+
+<file name="swissTalk" button=TRUE>
+  swissTalk.txt
+
+# Discuss "summary"
+<text break=F>
+"summary" is a function (class function):
+<code break=print>
+isWhat(summary) # isWhat() from PBSmodelling
+<text break=F> "summary" is generic:
+<code break=print> summary
+<text break=F> "summary" has many methods:
+<code break=print> methods(summary)
+
+# SECTION 2. The "swiss" data
+<section name="Data" button=TRUE>
+<text break=F> "swiss" is a data frame (class data.frame):
+<code> isWhat(swiss)
+<text break=F> You can read about the data here:
+<code> help(swiss) # open the help file
+<text break=F> Apply "summary" to Swiss:
+<code break=print> summary(swiss)
+<text break=F> Print the first 3 records:
+<code break=print> head(swiss,3)
+<text break=F> Display the data with the "plot" method . . .
+<code print=F> plot(swiss,gap=0)
+<text> THE END .. THANKS FOR WATCHING!
+
+</talk>
+-->

@@ -1,3 +1,0 @@
-require(PBSmodelling)
-local({
-	runExamples() })

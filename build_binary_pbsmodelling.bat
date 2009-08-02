@@ -1,2 +1,0 @@
-call RbuildBinary PBSmodelling
-pause

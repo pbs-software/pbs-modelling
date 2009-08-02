@@ -1,2 +1,0 @@
-call Rcheck PBSmodelling
-pause
