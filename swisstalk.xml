@@ -30,11 +30,11 @@ which must be escapped, since it contains reserved XML characters.
 
 
 Sample plotting code:
-<code>
-x &lt;- seq( 0, 10, by = 0.01 )
-y &lt;- sin( x )
+<code><![CDATA[
+x <- seq( 0, 10, by = 0.01 )
+y <- sin( x )
 plot( x, y )
-</code>
+]]></code>
 
 the code blocks support print="TRUE" and show="TRUE" arguments (which must be quoted)
 
