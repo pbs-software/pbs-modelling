@@ -476,7 +476,7 @@ unpackList <- function(x, scope="L") {
 	}
 	namx[namx != ""] }
 
-#packList-------------------------------2009-06-23
+#packList-------------------------------2009-08-04
 # Pack a list with (i) existing objects using their 
 # names or (ii) one explicit value.
 #-----------------------------------------------RH
@@ -510,11 +510,16 @@ packList=function(stuff, target="PBSlist", value,
 			if (!exists(s,envir=lenv)) next
 			eval(parse(text=paste("objet=get(\"",s,"\",envir=lenv)",sep=""))) #grab the local object
 			if (is.list(objet) && !is.data.frame(objet)) {
-				lclass=sapply(objet,class,simplify=FALSE)
+				atts=attributes(objet)
 				objet=deparseBO(objet)
-				# applying original class can cause a display error if underlying objects 
-				# (e.g., functions, calls) have been converted to strings.
-				# for(i in 1:length(objet)) attr(objet[[i]],"class")=lclass[[i]]
+				natts=setdiff(names(atts),names(attributes(objet)))
+				# retain additional attributes of the original list
+				if (length(natts)>0) { 
+					for (i in natts) attr(objet,i)=atts[[i]] }
+				# Reminder: applying original class can cause a display error if 
+				# underlying objects (e.g., functions, calls) have been converted to strings.
+				#lclass=sapply(objet,class,simplify=FALSE)
+				#for(i in 1:length(objet)) attr(objet[[i]],"class")=lclass[[i]]
 			}
 			objet=paste(deparse(objet),collapse="\n")
 			eval(parse(text=paste(target,"[[\"",s,"\"]]=",objet,sep="")),envir=tenv) } #pack into the list
