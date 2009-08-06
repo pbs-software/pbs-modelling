@@ -177,7 +177,6 @@ getIndexForSection <- function( section_id )
 
 getButton <- function( obj )
 {
-	print( obj )
 	if( inherits( obj, "section" ) ) {
 		b <- paste( "button text=", obj@name, " function=setsection action=", obj@section_id," padx=4 pady=4 fg=red3 bg=whitesmoke",sep="")
 		return( b )
@@ -206,7 +205,7 @@ getButtons <- function( talk )
 		}
 		sect_id <- sect_id + 1
 	}
-	w <- "grid 1 3"
+	w <- "grid 1 3 relief=groove pady=4"
 	for( i in 1:3 ) {
 		l <- length( but[[ i ]] )
 		if( l == 0 ) {
@@ -221,13 +220,43 @@ getButtons <- function( talk )
 	return( w )
 }
 
+getMenus <- function( talk )
+{
+	sections <- c()
+	files <- c()
+	sect_id <- 1
+	for( s in talk@sections ) {
+		#save section under menu
+		i <- length( sections ) + 1
+		sections[ i ] <- paste( "menuitem label=", s@name, " function=setsection action=", sect_id, sep="" )
+
+		#look for files
+		for( item in s@items ) {
+			if( inherits( item, "file" ) ) {
+				i <- length( files ) + 1
+				files[ i ] <- paste( "menuitem label=", item@name, " function=openFile action=", item@filename, sep="" )
+			}
+		}
+		sect_id <- sect_id + 1
+	}
+
+	w <- paste( "menu nitems=", length( sections ), " label=Sections", sep="" )
+	w <- append( w, sections )
+
+	w <- append( w, paste( "menu nitems=", length( files ), " label=Files", sep="" ) )
+	w <- append( w, files )
+
+	return( w )
+}
+
 
 
 
 #create a GUI for it
 createWin( c(
 "window name=presentwin",
-"droplist name=section values=\"\" function=sectiondrop",
+getMenus( talk ),
+# "droplist name=section values=\"\" function=sectiondrop",
 
 		"grid 1 7",
 		"button name=start text=\"<<<\\nStart\" bg=lightblue1 sticky=S function=setsection action=1",
@@ -250,9 +279,9 @@ createWin( c(
 ), astext = TRUE )
 
 #initialize droplist
-section_names <- getSectionNames( talk )
-setWinVal( list( section.values = section_names ) )
-setWinVal( list( section = section_names[1] ) )
+#section_names <- getSectionNames( talk )
+#setWinVal( list( section.values = section_names ) )
+#setWinVal( list( section = section_names[1] ) )
 
 updateSlide <- function()
 {
@@ -263,7 +292,7 @@ updateSlide <- function()
 	num_sections <- length( talk@sections )
 
 	#make sure the correct section is visible
-	setWinVal( list( section = section_names[ section_id ] ) )
+	# setWinVal( list( section = section_names[ section_id ] ) )
 
 	#set slide label
 	setWinVal( list( slide_num = paste( "slide: ", index, "/", length( indicies ) ) ) )
@@ -341,7 +370,7 @@ index <- 0
 
 startSlide <- function() {
 	index <<- 1
-	index <<- getIndexForSection( getWinVal()$section.id )
+	#index <<- getIndexForSection( getWinVal()$section.id )
 	updateSlide()
 }
 prevSlide <- function() {
