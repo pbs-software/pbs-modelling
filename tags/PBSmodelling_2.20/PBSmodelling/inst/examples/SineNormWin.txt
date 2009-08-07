@@ -1,0 +1,26 @@
+window title="Sine (Normal)"
+grid 1 4
+  label text=View: font=bold
+  button text=Docs func=openFile action=SineNormDoc.txt
+  button text="R Code" func=openFile action=SineNorm.r
+  button text=Window func=openFile action=SineNormWin.txt
+grid 1 2
+  label text=Pars: font=bold
+  vector length=3 names="mu sig n" \
+    labels="mean 's.d.' points"    \
+    values="0 0.1 500" vertical=T func=plotSN
+matrix nrow=2 ncol=2 width=14                \
+  names="mx sx          \ # x: sample mean and sd
+         my sy"         \ # y: sample mean and sd
+  rowlabels="x y"       \
+  collabels="mean sd"   \
+  values="0 0 0 0"
+grid 1 2
+  label text=History: font=bold
+  history
+grid 1 2
+  grid 3 1
+    radio name=ptype text=curve  value="c" mode=character sticky=W
+    radio name=ptype text=pairs  value="p" mode=character sticky=W
+    radio name=ptype text=histogram  value="h" mode=character sticky=W
+  button text=Plot func=plotSN font=bold

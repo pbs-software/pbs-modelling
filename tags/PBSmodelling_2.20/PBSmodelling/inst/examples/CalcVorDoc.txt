@@ -1,0 +1,17 @@
+Calculates the Voronoi (Dirichlet) tesselation for a set of points. 
+
+Depends on the R-package deldir:
+-------------------------------
+The function "deldir" computes the Delaunay triangulation (and hence the 
+Dirichlet tesselation) of a planar point set according to the second 
+(iterative) algorithm of Lee and Schacter (1980). The triangulation is made to 
+be with respect to the whole plane by suspending it from so-called ideal points 
+(-Inf,-Inf), (Inf,-Inf) (Inf,Inf), and (-Inf,Inf). The triangulation is also 
+enclosed in a finite rectangular window. A set of dummy points may be added, 
+in various ways, to the set of data points being triangulated.
+
+Reference
+Lee, D.T., and Schacter, B.J. 1980. Two algorithms for constructing a 
+Delaunay triangulation. International Journal of Computer and Information 
+Sciences 9(3): 219–242.
+

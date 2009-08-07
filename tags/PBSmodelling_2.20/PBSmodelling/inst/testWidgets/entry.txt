@@ -1,0 +1,3 @@
+window name=widWin title="Widget = entry"
+entry name=junk value="Enter something here" width=30 mode=character
+entry name=junk2 value=5.23-2.13i width=30 mode=complex

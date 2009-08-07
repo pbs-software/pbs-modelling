@@ -1,0 +1,20 @@
+# Linear regression model to illustrate the use of BRugs.
+
+# Data in a separate file:
+# n = number of points
+# x = vector of n x-values
+# y = vector of n y-values
+
+model{
+  # vague prior distribtuions
+  a ~ dunif(-1000,1000)
+  b ~ dunif(-10,10)
+  sig ~ dunif(.01,1000)
+
+  # linear predictions for n observations
+  tau <- 1/(sig*sig)
+  for (i in 1:n){
+    yp[i] <- a + b*x[i]
+    y[i] ~ dnorm(yp[i], tau)
+    }  # end loop
+  }

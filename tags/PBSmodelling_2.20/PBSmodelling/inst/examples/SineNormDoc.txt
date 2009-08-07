@@ -1,0 +1,9 @@
+This example illustrates the transformation of a random variable.
+In this case:
+
+  x ~ normal(mu,sigma)
+  y = sin(2*pi*x)
+
+If mu=0 and sigma is small, the transformation is nearly linear.
+
+If sigma is large, the transformation concentrates y near 0 and 1.

@@ -1,0 +1,4 @@
+window name=widWin title="Widget = button"
+grid 1 2
+button text="Push Me" font="20 Helvetica overstrike"
+button text="Pull You" font="20 Times underline"
