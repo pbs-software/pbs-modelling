@@ -975,10 +975,24 @@ openFile <- function(fname="") {
 
 		ext <- sub("^.*\\.", "", fname)
 		if ( is.null( .PBSmod$.options$openfile[[ ext ]] ) ) {
-			if (!exists("shell.exec", mode="function")) 
-				stop(paste("There is no program associated with the extension '", ext, "'\n",
-				           "Please set an association with the setPBSext command\n"))
-			shell.exec(fname); return(fname)
+			if ( exists("shell.exec", mode="function" ) )  {
+				shell.exec(fname)
+				return(fname)
+			}
+			if( file.exists( "/usr/bin/open" ) ) {
+				system( paste( "open", fname ) )
+				return(fname)
+			}
+			if( file.exists( "/usr/bin/xdg-open" ) ) {
+				system( paste( "xdg-open", fname ) )
+				return(fname)
+			}
+			if( file.exists( "/usr/bin/gnome-open" ) ) {
+				system( paste( "gnome-open", fname ) )
+				return(fname)
+			}
+			stop(paste("There is no program associated with the extension '", ext, "'\n",
+			           "Please set an association with the setPBSext command\n"))
 		} else {
 			cmd <- getPBSext(ext)
 			cmd <- gsub("%f", fname, cmd)
