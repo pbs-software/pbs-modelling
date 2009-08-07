@@ -1,6 +1,6 @@
 PBSmodelling Changes
 ====================
-2.12  trunk version(release date to be put here when we decide to upload to CRAN)
+2.20  2009-08-07
 	- Inroduced three new widget objects: 'droplist', 'spinbox', 'table'.
 	  These can be demoed via testWidgets()
 	- read/write list bug fix for array objects (introduced dimnames arg)
@@ -14,6 +14,7 @@ PBSmodelling Changes
 	- changed vector labelling behaviour - to only label indexes when no label is given and only one name is given
 	- introduced 'include' widget for including window description files from other description files
 	- history widget caption - see text and textsize arguments
+	- openFile works on OSX, gnome
 
 2.11  2009-06-08  Alex
     - Alex migrated PBSmodelling to googlecode.com's SVN system.

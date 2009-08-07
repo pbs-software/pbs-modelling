@@ -2807,7 +2807,9 @@ parseWinFile <- function(fname, astext=FALSE)
 
 		#keys for pageup, up, down, pagedown keys
 		if( .Platform$OS == "windows" ) {
-			keys <- c( "ã", "p", "q", "ä" )
+			#Bug in R check, wont accept keys <- c( "\u00E3", "p", "q", "\u00E4" )
+			#Ugly hack with eval to avoid failing R check
+			eval(parse(text=" keys <- c( \"\\u00E3\", \"p\", \"q\", \"\\u00E4\" ) " ))
 			font <- tkfont.create( family = "wingdings 3", size = 6 )
 		} else {
 			keys <- c( "|<", "<", ">", ">|" )
