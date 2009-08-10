@@ -12,7 +12,7 @@ setClass( "code", representation( show = "logical", print = "logical", code = "c
 setClass( "break", representation( "NULL" ) ) #this prints a message - wtf R?!!! give me an empty class that isn't virtual
 
 setClass( "section", representation( name = "character", items = "list", button = "logical", col = "integer", section_id = "integer" ) ) #items should be a list of the above 4 s4 classes
-setClass( "talk", representation( name = "character", sections = "list" ) )
+setClass( "talk", representation( name = "character", sections = "list", files = "list" ) )
 
 
 #given a talk, return a vector of all section names
@@ -134,10 +134,16 @@ stopifnot( !is.null( name ) )
 talk <- new( "talk", name = name )
 
 for( i in xmlChildren( talk_node ) ) {
-	if( xmlName( i ) == "comment" ) next
-	stopifnot( xmlName( i ) == "section" )
-	section <- processSection( i )
-	talk@sections[[ length( talk@sections ) + 1 ]] <- section
+	if( xmlName( i ) == "comment" ) {
+		next
+	} else if( xmlName( i ) == "file" ) {
+		talk@files[[ length( talk@files ) + 1 ]] <- processFile( i )
+	} else if( xmlName( i ) == "section" ) {
+		section <- processSection( i )
+		talk@sections[[ length( talk@sections ) + 1 ]] <- section
+	} else {
+		stop( paste( "unhandled xml tag:", xmlName( i ) ) )
+	}
 }
 
 #retuns a list of 2 element vectors (i,j) where i is the section index, and j is the items index
@@ -178,18 +184,27 @@ getIndexForSection <- function( section_id )
 getButton <- function( obj )
 {
 	if( inherits( obj, "section" ) ) {
-		b <- paste( "button text=", obj@name, " function=setsection action=", obj@section_id," padx=4 pady=4 fg=red3 bg=whitesmoke",sep="")
+		b <- paste( "button text=\"", obj@name, "\" function=setsection action=\"", obj@section_id,"\" padx=4 pady=4 fg=red3 bg=whitesmoke",sep="")
 		return( b )
 	}
 	if( inherits( obj, "file" ) ) {
-		b <- paste( "button text=", obj@name, " function=openFile action=", obj@filename," padx=4 pady=4 fg=blue bg=whitesmoke",sep="")
+		b <- paste( "button text=\"", obj@name, "\" function=presentTalkOpenFile action=\"", obj@filename,"\" padx=4 pady=4 fg=blue bg=whitesmoke",sep="")
 		return( b )
 	}
 }
 
 getButtons <- function( talk )
 {
+	#create a list of buttons
 	but <- list( list(), list(), list() )
+
+	#process top level buttons (under talk)
+	for( f in talk@files ) {
+		i <- length( but[[ f@col ]] ) + 1
+		but[[ f@col ]][[ i ]] <- f
+	}
+
+	#process buttons under sections
 	sect_id <- 1
 	for( s in talk@sections ) {
 		if( s@button == TRUE ) {
@@ -205,9 +220,11 @@ getButtons <- function( talk )
 		}
 		sect_id <- sect_id + 1
 	}
-	w <- "grid 1 3 relief=groove pady=4"
+
+	#create win desc corresponding to list of buttons
+	w <- "grid 1 3 relief=groove sticky=NEW"
 	for( i in 1:3 ) {
-		l <- length( but[[ i ]] )
+		l <- length( but[[ i ]] ) + 1
 		if( l == 0 ) {
 			w <- append( w, "null" )
 			next
@@ -216,6 +233,7 @@ getButtons <- function( talk )
 		for( b in but[[ i ]] ) {
 			w <- append( w, getButton( b ) )
 		}
+		w <- append( w, "null pady=30" )
 	}
 	return( w )
 }
@@ -249,6 +267,13 @@ getMenus <- function( talk )
 	return( w )
 }
 
+presentTalkOpenFile <- function()
+{
+	f <- getWinAct()[ 1 ]
+	f <- strsplit( f, "\\s+" )
+	print( f )
+	sapply( f, openFile )
+}
 
 
 
@@ -256,32 +281,65 @@ getMenus <- function( talk )
 createWin( c(
 "window name=presentwin",
 getMenus( talk ),
-# "droplist name=section values=\"\" function=sectiondrop",
 
-		"grid 1 7",
-		"button name=start text=\"<<<\\nStart\" bg=lightblue1 sticky=S function=setsection action=1",
-		"button name=prev text=\"<<\\nPrev\" bg=lightskyblue1 sticky=S function=setsection action=-1",
-		"button name=curr text=\" < \\nCurr\" bg=skyblue sticky=S function=setsection action=\"\"",
-		"button name=next text=\">\\nNext\" bg=skyblue sticky=S function=setsection action=+1",
-		"null",
-		"button name=back text=\" < \\nBack\" function=prevSlide bg=greenyellow sticky=S font=\"bold 10\" width=4",
-		"button name=go text=\">\\nGO\" function=nextSlide bg=greenyellow font=\"bold 10\" width=4",
+# "grid 1 2 pady=\"0 5\"",
+# 	"grid 2 1 relief=groove",
+# 	"grid 1 2 sticky=E",
+# 	"label \"section:\" font=8 sticky=W",
+# 	"droplist name=section values=\"\" function=sectiondrop bg=skyblue width=15",
+# 	"grid 1 3",
+# 	"button name=prev text=\"< Prev\" bg=skyblue sticky=S function=setsection action=-1 width=7",
+# 	"button name=curr text=\"Restart\" bg=skyblue sticky=S function=setsection action=\"\" width=7",
+# 	"button name=next text=\"Next >\" bg=skyblue sticky=S function=setsection action=+1 width=7",
+# 
+# 	"grid 2 1 relief=groove padx=\"5 0\"",
+# 	"grid 1 3 sticky=E",
+# 	"label \"slide:\" font=\"8\" sticky=W",
+#  	"droplist name=slides values=\"\" function=sectiondrop bg=greenyellow width=9",
+# 	"label \"/ n\" name=slidecount font=\"8\" sticky=W",
+# 	"grid 1 2",
+# 	"button name=back text=\"< Back\" bg=greenyellow sticky=S function=prevSlide action=-1 width=10",
+# 	"button name=go text=\"> Go\" bg=greenyellow sticky=S function=nextSlide action=+1 width=10",
+# 
+# 	getButtons( talk ),
 
-		getButtons( talk ),
 
-#  "grid 1 4 sticky=w",
-#    "button name=start text=\"section start\" function=startSlide",
-#    "button name=prev text=\"prev slide\" function=prevSlide",
-#    "button name=replay text=\"replay current slide\" function=replaySlide",
-#    "button name=next text=\"next slide\" function=nextSlide",
+"grid 1 2",
+	getButtons( talk ),
+	"grid 2 1 borderwidth=0 sticky=N",
+		"grid 2 1 relief=groove sticky=EW padx=\"5 0\"",
+		"grid 1 3 sticky=E",
+		"label \"slide:\" font=\"8\" sticky=W",
+	 	"droplist name=slides values=\"\" function=sectiondrop bg=greenyellow width=9 function=slidedrop",
+		"label \"/ n\" name=slidecount font=\"8\" sticky=w",
+		"grid 1 2",
+		"button name=back text=\"< Back\" bg=greenyellow sticky=S function=prevSlide action=-1 width=11",
+		"button name=go text=\"> Go\" bg=greenyellow sticky=S function=nextSlide action=+1 width=11",
+	
+		"grid 2 1 relief=groove pady=\"5 0\" sticky=EW padx=\"5 0\"",
+		"grid 1 2 sticky=E",
+		"label \"section:\" font=8 sticky=W",
+		"droplist name=section values=\"\" function=sectiondrop bg=skyblue width=15",
+		"grid 1 3",
+		"button name=prev text=\"< Prev\" bg=skyblue sticky=S function=setsection action=-1 width=7",
+		"button name=curr text=\"Restart\" bg=skyblue sticky=S function=setsection action=\"\" width=7",
+		"button name=next text=\"Next >\" bg=skyblue sticky=S function=setsection action=+1 width=7",
 
-"label name=slide_num text=\"slide: 1/n\" sticky=E"
+
+""
 ), astext = TRUE )
 
 #initialize droplist
-#section_names <- getSectionNames( talk )
-#setWinVal( list( section.values = section_names ) )
-#setWinVal( list( section = section_names[1] ) )
+section_names <- getSectionNames( talk )
+setWinVal( list( section.values = section_names ) )
+setWinVal( list( section = section_names[1] ) )
+
+
+indicies <- getTalkIndexes( talk )
+vals <- 1:(length( indicies ) )
+setWinVal( list( slides.values = vals ) )
+setWinVal( list( slides = vals[1] ) )
+setWinVal( list( slidecount = paste( "/", length( indicies ) ) ) )
 
 updateSlide <- function()
 {
@@ -292,10 +350,11 @@ updateSlide <- function()
 	num_sections <- length( talk@sections )
 
 	#make sure the correct section is visible
-	# setWinVal( list( section = section_names[ section_id ] ) )
+	setWinVal( list( section = section_names[ section_id ] ) )
 
 	#set slide label
-	setWinVal( list( slide_num = paste( "slide: ", index, "/", length( indicies ) ) ) )
+	#setWinVal( list( slide_num = paste( "slide: ", index, "/", length( indicies ) ) ) )
+	setWinVal( list( slides = index ) )
 
 	if( index > length( indicies ) ) {
 		cat( "end of talk" )
@@ -308,7 +367,7 @@ updateSlide <- function()
 
 	setWidgetState( "prev", ifelse( section_id == 1, "disabled", "normal" ) );
 	setWidgetState( "next", ifelse( section_id == num_sections, "disabled", "normal" ) );
-	setWidgetState( "start", ifelse( section_id == 1 && item_id == 1, "disabled", "normal" ) );
+	#setWidgetState( "start", ifelse( section_id == 1 && item_id == 1, "disabled", "normal" ) );
 
 	setWidgetState( "go", ifelse( index >= length( indicies ), "disabled", "normal" ) );
 	setWidgetState( "back", ifelse( index <= 1, "disabled", "normal" ) );
@@ -383,6 +442,17 @@ replaySlide <- function() {
 }
 nextSlide <- function() {
 	index <<- index + 1
+	updateSlide()
+}
+slidedrop <- function() {
+	section_id <- getTalkIndexes( talk )[[ index ]][ 1 ]
+	new_index <- getWinVal()$slides.id
+
+	#do nothing if current section is re-selected
+	if( index == new_index )
+		return()
+
+	index <<- new_index
 	updateSlide()
 }
 sectiondrop <- function() {
