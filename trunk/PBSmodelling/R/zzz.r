@@ -21,6 +21,20 @@ Pacific Biological Station, Nanaimo
 ")
 
 	#TODO find a better place
-	tclRequire("BWidget")
-	tclRequire("Tktable")
+	bwidget <- tclRequire("BWidget")
+	tktable <- tclRequire("Tktable")
+	if( is.logical( bwidget ) || is.logical( tktable ) ) {
+		cat( "-------------------------------------------------------------\n" )
+	}
+	if( is.logical( bwidget ) ) {
+		cat( "ERROR: PBS Modelling requires the tcl package \"BWidget\"\nand cannot proceed until it is installed.\n" )
+		cat( "Ubuntu (apt) users can install via the command:\n\tapt-get install bwidget\n\n" )
+	}
+	if( is.logical( tktable ) ) {
+		cat( "ERROR: PBS Modelling requires the tcl package \"Tktable\"\nand cannot proceed until it is installed.\n" )
+		cat( "Ubuntu (apt) users can install via the command:\n\tapt-get install libtktable2.9\n\n" )
+	}
+	if( is.logical( bwidget ) || is.logical( tktable ) ) {
+		cat( "-------------------------------------------------------------\n" )
+	}
 }
