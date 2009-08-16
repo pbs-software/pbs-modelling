@@ -2,7 +2,7 @@ window name="window" title="Yield per Recruit"
 
 grid 1 4 sticky=W pady=5
 	label text=View: font="bold" sticky=W padx=10
-	button text="Docs" func=openFile action=yprDoc.pdf
+	button text="Docs" func=openFile action=YPRDoc.pdf
 	button text="R Code" func=openFile action=ypr.r
 	button text=Window func=openFile action=yprWin.txt
 

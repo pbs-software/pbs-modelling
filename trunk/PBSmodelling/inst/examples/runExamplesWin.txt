@@ -20,7 +20,7 @@ grid 4 2 sticky=W byrow=F
 	grid 3 1 sticky=NW
 		radio name=eN value=31 sticky=W padx=10 text=FishRes   function=.runExHelper action=FishRes
 		radio name=eN value=32 sticky=W padx=10 text=PopSim    function=.runExHelper action=PopSim
-		radio name=eN value=33 sticky=W padx=10 text=YPR       function=.runExHelper action=YPR
+		radio name=eN value=33 sticky=W padx=10 text=YPR       function=.runExHelper action=ypr
 	label text="Novelty" font="bold 10" fg=purple sticky=NW pady=2 padx=10
 	grid 5 1 sticky=NW
 		radio name=eN value=41 sticky=W padx=10 text=LissFig   function=.runExHelper action=LissFig
