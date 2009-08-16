@@ -12,7 +12,7 @@
 #
 # Details:
 #     The aim of the puzzle is to enter the digits 1 through 9 in each cell of a 
-#   9×9 grid made up of 3×3 subgrids (called "regions") so that each row, column, 
+#   9x9 grid made up of 3x3 subgrids (called "regions") so that each row, column, 
 #   and region contains exactly one instance of each digit. A set of clues, or 
 #   "givens", constrain the puzzle such that there is only one way to correctly 
 #   fill in the remainder.
@@ -216,7 +216,7 @@ sudokuHelp <- function()
 cat("-------------------------------------------------------------------------------
 Sudoku, also known as Number Place or Nanpure, is a logic-based placement 
 puzzle. The aim of the puzzle is to enter the digits 1 through 9 in each cell 
-of a 9×9 grid made up of 3×3 subgrids (called \"regions\") so that each row, 
+of a 9x9 grid made up of 3x3 subgrids (called \"regions\") so that each row, 
 column, and region contains exactly one instance of each digit. A set of clues, 
 or \"givens\", constrain the puzzle such that there is only one way to 
 correctly fill in the remainder.
@@ -238,11 +238,11 @@ international hit in 2005.
 	}
 	if (section=="usage") {
 		cat("-------------------------------------------------------------------------------
-The sudoku puzzle is represented as a 9×9 matrix, which contains 81 variables. 
+The sudoku puzzle is represented as a 9x9 matrix, which contains 81 variables. 
 The solver attempts to solve this constraint satisfaction problem by using a 
 depth-first search technique. Since this problem can be expressed as a graph 
 colouring problem, it should be no surprise that this algorithm requires 
-exponential time. (given the matrix was an n×n matrix)
+exponential time. (given the matrix was an n x n matrix)
 
 The solver saves all the defined constraints, as displayed in the GUI, as the 
 initial state of the sudoku puzzle. This state is saved as the first element of 

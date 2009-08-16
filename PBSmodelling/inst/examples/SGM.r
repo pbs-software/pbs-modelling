@@ -121,5 +121,5 @@ show8 <- function(xy=1.5) {
 
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 require("PBSmodelling");
-createWin("sgmWin.txt");
+createWin("SGMWin.txt");
 remove(list=ls(1)[is.element(ls(1),c("FP","SGlist","SGdata","SGpars","PBSmin"))]); SGinit();
