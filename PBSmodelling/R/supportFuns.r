@@ -915,7 +915,10 @@ runExamples <- function () {
 		} else {
 			if (act!="TestFuns")
 				closeWin(name=setdiff(allWin,c("runE","window")))
-			source(paste(act, ".r", sep = ""))
+			f <- paste(act, ".r", sep = "" )
+			#assert that files match case
+			stopifnot( any( dir() == f ) == TRUE )
+			source( f )
 			wnam <- paste(act, "Win.txt", sep = "") # window description file
 			wtxt <- paste(readLines(wnam), collapse = "\n")
 		}
