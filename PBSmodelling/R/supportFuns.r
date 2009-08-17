@@ -908,6 +908,7 @@ runExamples <- function () {
 			createWin(winDesc, astext = TRUE)
 			return()
 		} else if (act=="swissTalk") {
+			#TODO refactor this - should be more generic
 			closeWin(name=setdiff(allWin,"runE"))
 			tnam=paste(act,".txt",sep="") # talk description file
 			wtxt <- paste(readLines(tnam), collapse = "\n")
