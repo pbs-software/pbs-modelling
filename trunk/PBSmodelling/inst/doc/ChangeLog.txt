@@ -1,5 +1,9 @@
 PBSmodelling Changes
 ====================
+2.21  2009-08-16
+	- fixed case sensitive issues for runExamples (linux support)
+	- fixed title issue in description file
+	- added warning when bwidget and tktable tk packages are missing
 2.20  2009-08-07
 	- Inroduced three new widget objects: 'droplist', 'spinbox', 'table'.
 	  These can be demoed via testWidgets()
