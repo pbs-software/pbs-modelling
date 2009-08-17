@@ -1,0 +1,4 @@
+window name=widWin title="scrolling object: longley"
+label text="Longley\'s Economic Regression Data" font="bold 12" \
+fg="#400080" pady=0 sticky=S
+object name=longley rowshow=5 width="5 7 6 6 7 4 6" pady=5

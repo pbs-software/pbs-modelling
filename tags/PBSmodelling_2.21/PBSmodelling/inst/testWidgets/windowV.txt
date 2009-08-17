@@ -1,0 +1,4 @@
+window name=widWin title="window vertical widgets"
+label "Un perro" font=20 
+label "Dos gatos" font=20 padx=50
+label "Tres loros" font=20

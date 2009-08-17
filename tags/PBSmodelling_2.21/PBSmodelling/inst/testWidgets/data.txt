@@ -1,0 +1,4 @@
+window name=widWin title="Widget = data"
+data nrow=3 ncol=3 names=Census modes="character logical numeric" \
+   width=10 rowlabels="Rec1 Rec2 Rec3" collabels="City Smell Popn" \
+   values="Nanaimo Vancouver Spuzzum T T F 80000 600000 50" byrow=F

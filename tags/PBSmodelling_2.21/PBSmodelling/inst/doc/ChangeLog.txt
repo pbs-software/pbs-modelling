@@ -1,0 +1,597 @@
+PBSmodelling Changes
+====================
+2.21  2009-08-16
+	- fixed case sensitive issues for runExamples (linux support)
+	- fixed title issue in description file
+	- added warning when bwidget and tktable tk packages are missing
+2.20  2009-08-07
+	- Inroduced three new widget objects: 'droplist', 'spinbox', 'table'.
+	  These can be demoed via testWidgets()
+	- read/write list bug fix for array objects (introduced dimnames arg)
+	- label widget text can be modified by get/setWinVal (and has a new name argument)
+	- converted runDemos to use droplist widget (to allow for packages with many examples which can overflow screen height)
+	- widgets can be disabled with setWidgetState
+	- history widget next/prev buttons get disabled when index reaches either end
+	- getWinVal no longer returns factors, and converts to character instead
+	- object widget has scrollable rows, see rowshow argument
+	- updated resetGraph
+	- changed vector labelling behaviour - to only label indexes when no label is given and only one name is given
+	- introduced 'include' widget for including window description files from other description files
+	- history widget caption - see text and textsize arguments
+	- openFile works on OSX, gnome
+
+2.11  2009-06-08  Alex
+    - Alex migrated PBSmodelling to googlecode.com's SVN system.
+
+2.10  2009-05-14  Rowan
+  - Added Norm's functions for clearing ('clearRcon')and focusing on ('focusRcon') the R console.
+  - Revised Rd files to include original authors of all functions.
+  - Revised 'packList()' to deal composite expressions in recursive list objects (lists within lists within lists...).
+
+2.09  2009-05-01  Rowan
+  - Transferred function 'clipVector()' from PBSfishery to PBSmodelling.
+  - Revised 'packList()' to deal with composite expressions (calls, expressions, etc.) within list objects (see 'deparse()').
+
+2.08  2009-04-21  Rowan
+  - Revised (yet again) 'RmakePDF.bat' to follow the R developers' shifting code.
+  - Fixed bug in '.doClean()'.
+  - Modified function 'viewCode()' to see functions in namespace.
+  - Modified function 'viewCode()' to allow user to specify explicit functions.
+
+2.07  2009-04-20  Rowan
+  - Added new function 'updateGUI()' to write any available values from R's memory to the active GUI.
+  - First build under R-2.9.0.
+
+2.06  2009-03-06  Rowan
+  - POSTED ON CRAN
+  - Changed 'convSlashes.Rd' & 'doAction.Rd' to reflect new functionality of '\code{}' in R.2.9.0.
+
+2.05  2009-03-05  Rowan
+  - Added 'PBSmodelling-Updates.pdf' to the vignettes.
+  - Added 'testAlpha' and 'viewCode' to 'TestFuns' for 'runExamples()'.
+
+2.04  2009-03-04  Rowan
+  - Added new function 'testAlpha()' to display transparency values.
+  - Added new hidden function '.findSquare()' to determine rows m and columns n from a vector N.
+  - Revised 'runDemos()' to require packages as needed.
+  - Revised 'packList()' to pack an explicit value instead of object values.
+  - Revised 'evalCall()' to optionally check additional arguments in '.default()' functions and 'par()'.
+  - Revised function '.makeCleanVec()' to allow file names with spaces.
+  - Removed easy-to-change isntances of "<<-", replaced with either 'assign()' or 'packList()'.
+
+2.03  2009-02-24  Rowan
+  - Revised functions 'cleanProj()', '.doClean()', 'cleanWD()' and '.doCleanWD()'.
+  - Added new function 'packList()' that packs objects from one environment (typically local) into a list object in another environment (typically global).
+  - Revised the 'par()' defaults in 'resetGraph()'.
+  - Revised the BRugs plotting functions to use 'evalCall()' and to use an expanded colour vector.
+  - Implemented 'evalCall()' in 'plotCsum'
+
+2.02  2009-02-23  Rowan
+  - Revised functions 'cleanProj()' and '.doClean()' to delete project junk files.
+  - Added new functions 'cleanWD()' and '.doCleanWD()' to delete specified files.
+  - Revised 'showArgs()' to display the widget arguments in a more visible manner.
+  - Added new non-GUI functions 'getPrefix()' and 'getSuffix()' to search for and return all prefixes/suffixes of system files on the specified path.
+  - Revised 'plotBubbles()' to increase its versatility.
+  - Added new function 'evalCall()' to evaluate function calls with pontentially duplicated arguments due to '...'.
+  - Added new function 'showPacks()' to check if specified packages are missing from a user's system (Jon).
+  - Added new function 'convSlashes()' to convert slashes depending on OS.
+	(duplicates somewhat the functionality of '.addSlashes()')
+  - Added new function 'viewCode()' to collect the R-code of all functions in a specified package on the user's system.
+  - Added new function 'doAction()' which executes the action created by a widget.
+  - Added new function '.forceMode()' to coerce modes into those specified, if possible (relpaces '.convertMode()' in 'readList()').
+	Note: I could not use this algorithm to replace '.convertMode()' generally because this affects logical values derived from GUIs.
+  - Changed the definition of '.pFormatDefs$array' (formerly not used) in '.widgetDefs.r'.
+  - Revised 'writeList()' and 'readList()' to handle n-dimensional arrays in PBS format.
+  - Changed the grouping of functions within existing and new *.r files (only relevant to the package builders).
+
+2.01  2008-10-24  Jon
+  - POSTED ON CRAN
+
+2.00  2008-10-23  Rowan
+  - Bumped up the vesion for CRAN
+
+1.92  2008-10-23  Jon/Rowan
+  - Revised the User's Guide, the example document 'vonBDoc.pdf', and the talk description file 'SwissTalk.txt'.
+
+1.91  2008-10-09  Rowan
+  - Revised 'presentTalk()' to clean up a few bugs and quirks.
+
+1.90  2008-10-08  Rowan
+  - Revised 'presentTalk()' to restore some semblance of functionality.
+	Will need to be completely recoded in future.
+
+1.89  2008-10-07  Rowan
+  - Standardised 'ChangeLog.txt' of PBS packages for viewing in HTML.
+	Header lines comprise:  version  date  builder
+  - Revised 'openFile()' to use 'shell()' on Windows systems and 'system()' on UNIX systems.
+  - Revised 'setPBSoptions()' to allow the setting of list components within an 'option'.
+  - Revised 'presentTalk()' to take advantage of the revised 'setPBSoptions()' for code clarity.
+  - Revised the GUI in 'presentTalk()'.
+  - Attempted to implement backwards steps through 'chunks'
+	(still buggy due to hazy grasp of variables like 'mustEval' and 'midChunks').
+  - Temporarily disabled export of dot functions to namespace (for debugging).
+
+1.88  2008-09-22  Rowan
+  - Anisa revised 'presentTalk.r' to include a 'back one step' button.
+  - Revised 'openFile()' to work under 'windows' and 'unix'.
+
+1.87  2008-09-10  Rowan
+  - Anisa revised 'presentTalk.r'.
+
+1.86  2008-09-09  Rowan
+  - Fixed small bug in 'runExamples()'.
+  - Revised 'TestFuns.r'.
+  - Revised 'openFile()' to use 'shell()' instead of 'system()' (latter no longer seems to work).
+
+1.85  2008-09-08  Rowan
+  - Revised Anisa's 'presentTalk.r' (reorganised the GUI).
+  - Updated 'runExamples()' to handle the 'swissTalk' presentation.
+  - Revised 'isWhat()'.
+
+1.84  2008-09-07  Jon
+  - Incorporated Anisa's revised 'presentTalk.r'.
+
+1.83  2008-09-05  Rowan
+  - Revised (again) 'getChoice()' and 'chooseWinVal()'.
+  - Tweaked 'presentTalk.r' (to no avail).
+
+1.82  2008-09-04  Rowan
+  - Revised a whole swack of Rd files.
+  - Revised 'getChoice()' and 'chooseWinVal()' to resolve a closing issue.
+  - Revised 'TestFuns.r' to have 'plotFriedEggs' example use par(ask=TRUE).
+
+1.81  2008-09-03  Jon
+  - Added Anisa's revised 'presentTalk.r' and 'tagDefs.r'
+
+1.80  2008-09-03  Rowan
+  - Revised 'plotFriedEggs()', 'TestFuns.r' 'TestFunsWin.txt', and 'runExamplesWin.txt'
+
+1.79  2008-08-26  Rowan
+  - User Guide updated
+  - AE: '.presentTalk()' has been moved into .PBSmod$.options (accessed directly).
+  - AE: Talk names must be alphanumeric and the first character cannot be a digit.
+  - AE: eval break option is now print; can now break after show when nothing shown.
+  - RH: Added a modified version of Steve Martell's 'plotFriedEggs'.
+
+1.78  2008-08-26  Rowan
+  - Added function 'showRes()'.
+  - Repaired 'index.html'
+  - Added revised 'FishRes.r' and 'FishResWin.txt' to deal with PBSddesolve.
+  - User's Guide updated (Jon & Rowan).
+
+1.75-1.77  2008-08-25  Anisa
+  - Added 'presentTalk()'.
+  - Fixed history widget.
+  - Added html index.
+  - Talk names in 'presentTalk()' are now restricted to alphanumeric characters.
+  - Made change to '.optionsNotUpdated()'.
+  - Fixed problem with 'setPBSoptions()' handling data frames.
+
+1.78  2008-08-21  Anisa
+  - Fixed .Rd files for -declareGUIoptions, getGUIoptions, openProjFiles.Rd.
+  - Fixed bad keywords in various .Rd files.
+  - Removed extraneous argument from 'getGUIoptions()' function.
+  - Removed ADOL-C examples.
+  - Removed non-source files from '.../src' directory.
+  - Fixed call to 'setGUIoptions()' in 'loadC()' GUI.
+  - 'loadC()' now calls 'readPBSoptions()'.
+  - Changed shell call in 'openFile()' to use the 'system()' function.
+  - Added html index, fixed history widget.
+
+1.73  2008-08-11  Anisa
+  - Added function 'isWhat()' and .Rd file for it (need to add to User's Guide).
+  - Changed name of 'promptSave()' to 'promptWriteOptions()', changing .Rd file and calls to the function.
+  - 'promptWriteOptions()' now does not have an error when no windows have been created.
+  - 'writePBSoptions()' .Rd file now  has a link to 'promptWriteOptions()'.
+  - 'writePBSoptions()' now unsets '.optionsChanged()'.
+  - 'readPBSoptions()' and 'writePBSoptions()' now properly set '.optionsFile()'.
+  - Removed 'fname' argument from '.getGUIoptions()' (it now does not call 'readPBSoptions()').
+  - Updated .Rd files for 'promptWriteOptions()', 'readPBSoptions()', '.getGUIoptions()', and 'setwdGUI()'.
+
+1.72  2008-07-31  Anisa
+  - Updated incomplete change log entries.
+  - Fixed bug in 'loadC()' window description file.
+  - Setting a file extension with 'setPBSext()' now counts as an option being changed for 'promptSave()'.
+  - Updated user's guide (Rowan).
+
+1.70-1.71  2008-07-30  Anisa
+  - Minor changes (not tracked).
+
+1.69  2008-07-25  Anisa
+  - Minor changes/bug fixes/changes to .Rd files.
+  - Changed row labels for 'testPch()'.
+  - Changed layout of 'loadC()' GUI.
+
+1.68  2008-07-24  Anisa
+  - Minor changes, .Rd files added.
+
+1.67  2008-07-23  Anisa
+  - Replaced old clean functions with new function 'cleanProj()'.
+  - Made various function name changes.
+  - Changed functionality of 'setwdGUI()' and 'openProjFiles()'.
+  - Added helper function '.formatStrToLineLen()' for usage in message boxes;
+	'.showAlert() and 'getYes()' have a 'lineLen' argument for automatic formatting.
+  - Changed 'compileC()' to use the .so extension for non-Windows platforms.
+  - Fixed bug in '.guiCompileC()'.
+  - Fixed problem with garbage collection in comparison.
+
+1.66  2008-07-21  Anisa
+  - Changed description file to reflect Anisa's correct DFO email.
+  - Renamed PBSc.r to cSupport.r, PBSc.txt to embedC.txt, PBScSetup.pdf to embedCSetup.pdf.
+  - Added header to 'cSupport.r'.
+  - Changed references to the name 'PBSc' in functions/comments/widgets/etc.
+  - Removed 'setPBSoptions()', 'readList()' from cSupport.r (they were duplicated in supportFuns.r)
+  - '.log' is now a clean option.
+  - Changed '.embedCRunComparison()' to use 'system.time()' and return when prefix is blank.
+  - Made changes so that the compilation log includes the compile command.
+  - Added '.getHome() which returns HOMEDRIVE on Windows or HOME on Unix (not tested on Unix).
+  - Modified 'grabPrefix()' to  change prefix if the current one cannot be found in the working
+	directory for the given suffix. It also now returns a vector of all matching prefixes.
+  - Changed 'compileC()' to take different arguments.
+  - '.guiCompileC()' now constructs the file name.
+  - Added 'fname' argument to 'promptSave()'.
+  - Allocated new functions to either cSupport.r or projectFuns.r.
+  - 'openExamples()' now does not show an error if a prefix widget does not exist.
+  - Changed 'setPBSext()' and 'clearPBSext()' to set the changed flag so that a user will be 
+	prompted to save changes when exiting a GUI if any extension associations were changed.
+  - Removed function '.parsePackAction()'.
+  - Created generic 'openExamples()' function and updated accordingly.
+  - Changed 'guiOpenPackageFile()' to 'openPackageFile', which now doesn't require a GUI.
+  - Changed 'guiOpenProjFile()' to 'openProjFiles()', which now doesn't require a GUI and
+	can be used to open multiple files.
+  - Changed '.tryOpen()' to check if the file exists.
+
+1.65  2008-07-14  Rowan
+  - Added Anisa's 'embedC()' code and support functions.
+  - AE: Revised 'setPBSoptions()', 'readList()', 'writeList()'.
+
+1.64  2008-07-10  Rowan
+  - Added a vignette '00ReadMe.Rnw'.
+  - Added function 'showVignettes()' (author Anisa Egeli) to show available vignettes for installed packages.
+
+1.63  2008-05-29  Rowan
+  - Changed references to location of the user's guide.
+  - Added function 'showHelp()' to show Help Pages for packages that match the supplied pattern.
+  - Modified 'openFile()' to use 'sapply()' rather than call itself; functionality should be the same.
+  - POSTED ON CRAN.
+
+1.62  2008-05-22  Rowan
+  - Moved 'ChangeLog.txt' and 'PBSmodelling-UG.pdf' to '.../inst/doc' folder of the build.
+  - Changed 'Rd2dvi' to 'RD2dvi$' in 'RmakePDF.bat' and 'RmakePDF2.bat'.
+  - Revised 'resetGraph()' to hide warnings about 'gamma'.
+  - Revised 'view()' to better handle object types, and to allow selection of 'last' and 'random' n elements/rows.
+  - Transferred 'DeveloperGuide.pdf' from 'developers' folder to '.../inst/doc' folder. Updated '00ReadMe.txt'.
+
+1.61  2007-40-09  Rowan
+  - Removed extended ASCII characters from 'CCA.qbr.Rd' and 'testPch.Rd'.
+  - Removed old batch files ('check.bat', 'build.bat', 'pack.bat', 'unpack.bat', 'makePDF.bat').
+  - Updated User's Guide regarding batch files.
+  - POSTED ON CRAN.
+
+1.60  2007-10-02  Alex
+  - Addressed the C warnings introduced by the new R C api.
+  - Modified one of the strings???
+
+1.59  2007-08-30  Rowan
+  - Fixed bugs in plotBubbles: to handle 1-column matrices, to handle null dimnames if dnam=T.
+  - POSTED ON CRAN.
+
+1.58  2007-08-28  Rowan
+  - Corrected User's Guide to reflect proper history function names
+	(e.g, correct = 'initHistory()', incorrect = 'initPBShistory()').
+
+1.57  2007-08-24  Rowan
+  - Altered the 'PopSim' GUI to make clear that 'Age measurement error' is the only error 
+	affected by choice of Dirichlet vs. logistic-normal.
+
+1.56  2007-08-23  Rowan
+  - Altered the 'PopSim' GUI to better reflect the impact of Dirichlet vs. logistic-normal.
+
+1.55  2007-08-22  Rowan
+  - Fixed 'addArrows()', 'addLabel()', 'addLegend()' to recognise logarithmic axes.
+
+1.54  2007-08-15  Rowan
+  - Fixed bug in 'plotBubbles()' in '.../R/supportFuns.r' to handle NaNs after division by 0 when 'cpro=TRUE'.
+  - Added new argument to 'plotBubbles(hide0=FALSE)': if TRUE, hides zero-value bubbles.
+  - Added new argument to 'plotBubbles(dnam=FALSE)' : if TRUE, attempts to use matrix dimnames as x- and y-values.
+
+1.53  2007-08-09  Rowan
+  - Revised PopSim.r to accept random proportions from the Dirichlet distribution.
+  - Revised PopSim.r to store all non-GUI data objects in one global object called '.PBSpopsim'.
+  - Revised PopSimWin.txt to rearrange the GUI.
+  - Revised 'getChoice()' to accept an argument 'quiet' for no reflection of choice on command line.
+
+1.52  2007-07-31  Rowan
+  - Revised 'getChoice()' and 'chooseWinVal()' in '.../R/guiFuns.r'.
+  - Added 'getChoice()' and 'chooseWinVal()' to '.../inst/examples/TestFuns.r'.
+  - Updated the User's Guide.
+  - Revised 'runExamples()' in '.../R/supportFuns.r'.
+
+1.51  2007-07-27  Rowan
+  - Revised 'resetGraph()' in '.../R/supportFuns.r'.
+  - Added 'getChoice()' and 'chooseWinVal()' to '.../R/guiFuns.r'.
+  - Added 'getChoice.Rd' and 'chooseWinVal.Rd' to '.../man'.
+  - Added Jon's revised R*.bat files to '.../inst/PBStools'. (Retained old *.bat for now.)
+
+1.50  2007-06-26  Rowan
+  - Revised '.widgetDefs$text' in '.../R/widgetDefs.r to include a logical argument called 'scrollbar'.
+  - Altered '.createWidget.text()' in '.../R/guiFuns.r' to create a text widget with or without a scrollbar.
+  - Revised '.widgetDefs$text' in '.../R/widgetDefs.r' to include the 'sticky' argument.
+  - Updated User's Guide (text widget in App.A, App.C.1-2).
+  - Modified 'makePDF.bat' slightly (replaced PBSmodelling with %1 in a few forgotten places).
+  - POSTED ON CRAN (version number promoted).
+
+1.25  2007-06-21  Rowan
+  - Altered resetGraph() slightly: moved call to frame() after call to par().
+  - Updated User's Guide.
+  - Revised 'makePDF.bat'; added newer version called 'makePDF2.bat' (.../inst/PBStools).
+  - Revised 'runExamplesWin.txt'; added new 'PopSim' example (.../inst/examples).
+
+1.24  2007-06-13  Rowan
+  - Changed 'system()' to 'shell()' in 'openFile()' located in '.../R/supportFuns.r'.
+  - Updated PBSmodelling-UG.pdf.
+  - Replaced 'FishRes' example with new one from recent Malaspina University-College collaboration.
+  - Modified 'runExamples()' and 'testWidgets()' to resolve conflicting window names.
+  - Changed 'makePDF.bat' for easy PDF creation of *.Rd files (to append to UG).
+  - Modified various Rd files.
+
+1.23  2007-05-09  Alex
+  - Fixed bug (data handling of modes) in '.createWidget.object'.
+
+1.22  2007-05-05  Alex
+  - Rewrote list merging in 'importHistory()'.
+
+1.21  2007-04-30  Alex
+  - 'writeList()' rolledback 'dput' control to default value: showAttributes
+
+1.20  2007-04-25  Alex
+  - Applied changes in 1.19 to affect radio widgets.
+
+1.19  2007-04-23  Alex
+  - Fixed logical radio 'setWinVal()' bug by changing '.getParamFromStr()' to convert widget 
+	values from character to the user-supplied mode.
+
+1.18  2007-03-13  Rowan
+  - Revised 'runDemos()' and '.viewPkgDemo()' to retain working directory focus and 
+	to clean up files spawned by the demos.
+  - Added the function '.dClose()' to provide the cleanup upon closing 'pbs.demo' window.
+  - Modified 'runDemos.Rd'.
+  - POSTED ON CRAN.
+
+1.17  2007-03-13  Rowan
+  - Revised 'runDemos()' to retain focus of project location.
+  - Revised 'runExamples()' to close only 'window' and 'runE' windows on exit.
+
+1.16  2007-03-05  Jon
+  - 'sortHistory()' new order taken as ascending real numbers.
+
+1.15  2007-03-03  Alex
+  - Added 'wrap' argument to the 'label' widget.
+  - Added 'runDemos()'.
+  - Added a call to 'runExamples()' under 'demo'.
+
+1.14  2007-03-03  Alex
+  - Fixed a bug in 'addHistory()'.
+
+1.13  2007-03-02  Alex
+  - Fixed 'history' widget.
+  - 'writeList()' - dput control="useSource"
+  - Added argument 'selected=FALSE' to 'radio' widget.
+
+1.12  2007-02-22  Alex
+  - Fixed bug in '.validateWindowDescWidgets()' that didn't check 'grid' children widgets.
+  - Fixed bug due to 'history' widget changes from v.1.11.
+  - Renamed '*PBShistory' functions to '*History' (e.g., 'initPBShistory()' => 'initHistory()').
+
+1.11  2007-02-19  Alex
+  - Changed behaviour and look of 'history' widget.
+  - Added 'rewritePBShistory()' function.
+
+1.10  2007-02-14  Alex
+  - Fixed bug in 'GT0()'.
+
+1.09  2007-02-02  Alex
+  - Re-introduced ChangeLog.
+  - Created developers directory containing Developer's Guide.
+
+1.08  2007-02-01  Alex
+  - Removed link to 'shell.exec()' from 'openFile.Rd'.
+  - Reinstated ChangeLog which was dropped in v.0.58.
+
+1.07  2007-01-26  Alex
+  - Removed global 'PBS.win' variable and replaced with accessor functions:
+	'getWinVal()', 'setWinVal()', 'getWinAct()', 'setWinAct()', 'getWinFun()'.
+  - Introduced the 'object' widget.
+  - Added more examples to 'runExamples()'.
+  - Added the function minimization suite (e.g., 'calcMin()').
+  - POSTED ON CRAN.
+
+0.60  2006-08-28  Alex
+  - POSTED ON CRAN.
+
+0.57  2006-08-16  Alex
+  - Fixed 'expandGraph()'.
+  - Fixed the example for 'addLabel()'.
+  - Changed some .Rd files.
+  - Added instructions for building PDFs from .RDs.
+
+0.55  2006-08-16  Alex
+  - Added new batch files for building packages.
+  - Changed 'ranVars' example to include a legend.
+  - Added required package 'check' to examples.
+  - Added 'CCA.qbr.hl' data object and .Rd file.
+
+0.54  2006-08-10  Alex
+  - Included new 'testWidget()' function and examples.
+
+0.53  2006-08-10  Alex
+  - Removed images from examples directory.
+  - Modified build batch files to include SETLOCAL.
+
+0.52  2006-08-09  Alex
+  - Removed md5 code.
+  - Added fibonacci C code using .C and .Call and R code.
+  - Changed 'testCol()' to accept palette index and hex colours.
+  - Changed .bat files for building packages.
+
+0.51  2006-08-08  Alex
+  - Added argument 'returnValue=TRUE' to 'pickCol()'.
+  - Aadded 'frame()' call in 'resetGraph()'.
+
+0.50  2006-08-03  Alex
+  - Added 'expandGraph() function and documentation.
+  - Added 'getMD5()' function (R and C code) and documentation.
+
+0.48  2006-07-31  Alex
+  - Revised 'testPch()', 'testLwd()', 'genMatrix()' functions (with new source from Rowan).
+
+0.47  2006-07-26  Alex
+  - Revised 'plotCsum()' code (from Rowan).
+  - Revised .Rd examples for 'resetGraph()' and 'plotCsum()'.
+
+0.46  2006-07-21  Alex
+  - Changed 'testCol()' function to Rowan's function.
+  - Added 'pickCol()'.
+
+0.45  2006-07-17  Alex
+  - Changed 'is.null' to '.isReallyNull' in hash$add function to fix issue of existence:
+	if 'fooXYZ' exists, then 'foo' points to 'fooXYZ' instead of a new variable.
+
+0.44  2006-07-16  Alex
+  - Worked on documentation for funtions from utils15.r.
+  - Made minor changes and bug fixes to these functions.
+
+0.43  2006-07-14  Alex
+  - Added 'resetGraph()'.
+
+0.41  2006-07-09  Alex
+  - Fixed bug in 'setWinVal()' dealing with matrix and vectors.
+  - Updated the docs.
+
+0.40  2006-07-04  Alex
+  - Changed behaviour of matrix row and col labels when nrow or ncol=1 
+	to stop the number 1 from appearing next to the row or column.
+  - Fixed 'vector' widget font issue where 'toptitle' of 'vector' and 'matrix' did not have
+	font applied, but numbering did.
+
+0.39  2006-07-02  Alex
+  - Added files from Jon's 'utils15.r', and created basic Rd files, which might have to be expanded.
+
+0.37  2006-06-25  Alex
+  - Changed Rd files, cleaned up old unused functions ('.addlist()', '.writeListOut()').
+
+0.36  2006-06-23  Alex
+  - Added namespace to only export non-dot functions, and to import tcltk functions,
+	rather than use 'require()' in 'createWin()'.
+  - Modified 'writeList()' to handle the 'P' format.
+
+0.35  2006-06-19  Alex
+  - Added arguments 'padx' and 'pady' to 'text' widget.
+  - Worked on P format for 'readList()'.
+
+0.34  2006-06-09  Alex
+  - Worked on 'writeList()' R format to include comments and strip off structure so the first word is list(...).
+
+0.33  2006-06-05  Alex
+  - Fixed 'byrow' option in 'writeList()'.
+
+0.32  2006-06-04  Alex
+  - Worked on 'writeList()' to allow 'byrow' option for use with Brugs package.
+
+0.31  2006-05-30  Alex
+  - Modified 'createWin()' to accept a vector of strings representing the contents of a window description file.
+
+0.30  2006-05-23  Alex
+  - Fixed '.getArguments()' to reflect new 'characterVector' types.
+  - Added better error messages for 'createWidget()'.
+  - Fixed bug in slidePlus/getWinVal().
+
+0.29  2006-05-19  Alex
+  - Changed syntax for quoting (and sub-strings).
+
+0.28  2006-05-18  Alex
+  - Added "$" format support to 'readList()' and 'writeList()'.
+  - Added arguments 'rowname' and 'colname' to 'data' and 'matrix' widgets, affecting the dimnames of the R objects.
+
+0.27  2006-05-12  Alex
+  - Fixed 'text' widget - can set/get values from it.
+  - Added "Clear All" button to 'history' widget.
+
+0.26  2006-05-10  Alex
+  - Added 'data' widget which represents a data.frame (like 'matrix' but takes a vector called 'modes').
+  - Fixed bug: 'toptitle' wasn't showing up for 'matrix' and 'data' widgets
+	renamed 'title.offset' to 'toptitle.offset'.
+
+0.25  2006-05-07  Alex
+  - Introduced named windows for working with multiple windows.
+  - Added functions 'closeWin()' and 'clearPBSHistory()'.
+  - Worked on 'openFile()' and 'PBS.options'.
+
+0.24  2006-04-14  Alex
+  - 'writeList()' scientific argument - which can disable floating point numbers (ie 1e-10).
+
+0.23  2006-04-13  Alex
+  - Changed 'PBShistory' functions and Rd files.
+  - Added 'importPBShistory()' and 'exportPBShistory()'.
+  - Created a 'text' widget - still very buggy.
+  - Created 'promptOpenFile()' and 'promptSaveFile()'.
+  - Modified 'check' widget to use logical mode only.
+  - 'writeList()' can append custom comments to the top of files.
+
+0.21  2006-04-10  Alex
+  - Created 'history' widget, and supporting functions: 
+	'initPBShistory()', 'updatePBShistory()', 'rmPBShistory()', 'addPBShistory()',
+	'forwPBShistory()', 'backPBShistory()', 'jumpPBShistory().
+  - Created 'null' widget (think label text="").
+  - Created 'openFile()' function.
+
+0.19  2006-04-08  Alex
+  - Removed all bold options, and introduced new font="bold italic 25 courier"
+
+0.18  2006-04-06  Alex
+  - Changed 'vector' & 'matrix' widgets to display 'checks' when 'mode=logical'.
+  - Added 'mode' to 'check' widget to support logical, integer,...
+
+0.17  2006-04-01  Alex
+  - Added 'menu' and 'menuitem' widgets. Documentation is still lacking.
+	There is an example file for creating menus.
+
+0.16  2006-03-30  Alex
+  - Added 'createVector()' function & documentation.
+
+0.14  2006-03-15  Alex
+  - Changed error checking to print out widget description source when an error is found.
+
+0.13  2006-03-14  Alex
+  - Fixed bug: Warning message "the condition has length > 1 and only the first element
+	will be used in: if (labels == "") labels <- names"
+  - Revised function 'getWinVal(v=PBS.win$vals, frame="" (or "L", "G") vector=F)' :
+	takes a vectors of strings and returns a list with named components or a vector with named components
+	(vector=T). When frame="L" ("G"), local (global) variables are created with the relevant names. 
+	Rowan:  assign(i,PBS.win$var[[i]],pos=parent.frame(1))
+  - Revised 'setWinVal()' that takes a vector or list with named components. 
+  - Check into 'padx', 'pady', 'sticky', etc. Do we need grids? Include a "top" grid.
+  - Added  argument 'vertical=TRUE' to 'window'.
+  - Similarly, use 'vertical' in 'vector' (and other widgets?).
+  - Allow upper/lower case in window descriptions.
+
+0.11  2006-03-03  Alex
+  - Renamed 'coltitle' to 'sidetitle' ('grid' widget).
+  - Renamed 'boldtitle' to 'bold' ('matrix', 'vector').
+  - Changed argument ordering to conform to specs (except for 3 additions above: 'by', 'func', and 'action').
+  - Added 'func' and 'action' support to 'matrix' and 'vector' widgets.
+
+0.10b  2006-01-15  Alex
+  - Added beta.r and beta.txt to pbsmodelling/inst/examples.
+
+0.10a  2006-01-14  Alex
+  - Removed commented out combo widget code.
+  - Removed 'action' argument from 'matrix' and 'widget' (since there is no function support).
+
+0.10  2006-01-13  Alex
+  - create.slideplus:
+	Added fractional values support to slideplus enter=TRUE|FALSE parameter added, for updating min/max values.
+  - parseWinFile, createWin: Multiple windows per file support added.
+  - create.entry: added enter=TRUE|FALSE, for entry widgets
+  - 'window_markup.doc'
+  - Updated changes

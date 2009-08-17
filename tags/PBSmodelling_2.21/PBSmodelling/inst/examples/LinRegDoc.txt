@@ -1,0 +1,5 @@
+Linear regression from a frequentist and Bayesian perspective.
+
+Frequentist code: native to R
+
+Bayesian code: implemented with a WinBUGS model

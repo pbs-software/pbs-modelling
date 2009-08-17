@@ -1,0 +1,5 @@
+window name=widWin title="Widget = text"
+text name=mytext height=2 width=55 bg="#FFD18F" \
+   font="times 11" borderwidth=1 relief="sunken" edit=TRUE \
+   value="You can edit the text here and change the value of \
+   \"mytext\"" 
