@@ -1,8 +1,8 @@
 \name{promptOpenFile}
 \alias{promptOpenFile}
-\title{Display Dialogue: Open File}
+\title{Depricated: Display Dialogue: Open File}
 \description{
-	Display the default \bold{Open} prompt provided by the Operating System.
+	Depricated: use \code{\link{selectFile}} instead
 }
 \usage{
 promptOpenFile(initialfile="", filetype=list(c("*","All Files")), 
@@ -26,16 +26,7 @@ promptOpenFile(initialfile="", filetype=list(c("*","All Files")),
   Alex Couture-Beil, Malaspina University-College, Nanaimo BC
 }
 \seealso{
-	\code{\link{promptSaveFile}}
+	\code{\link{selectFile}}
 }
-\examples{
-\dontrun{
-# Open a filename, and return it line by line in a vector
-scan(promptOpenFile(),what=character(),sep="\n")
 
-# Illustrates how to set filetype.
-promptOpenFile("intial_file.txt", filetype=list(c(".txt", "text files"), 
-               c(".r", "R files"), c("*", "All Files")))
-}
-}
 \keyword{file}

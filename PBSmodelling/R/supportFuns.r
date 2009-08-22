@@ -209,6 +209,7 @@ createVector <- function (vec, vectorLabels=NULL, func="", windowname="vectorwin
 #                 c(".r", "R files"), c("*", "All Files")))
 #----------------------------------------------ACB
 promptOpenFile <- function(initialfile="", filetype=list(c("*", "All Files")), open=TRUE) {
+	warning( "promptOpenFile is depricated - use selectFile instead" )
 	filetypes <- ""
 	for(i in 1:length(filetype)) {
 		filetype[[i]]
@@ -218,8 +219,8 @@ promptOpenFile <- function(initialfile="", filetype=list(c("*", "All Files")), o
 			filetype[[i]][1] <- paste(".", filetype[[i]][1], sep="")
 		filetypes <- paste(filetypes, " {{", filetype[[i]][2], "} {", filetype[[i]][1], "}}", sep="")
 	}
-
 	filetypes <- .trimWhiteSpace(filetypes)
+	
 	if (open)
 		return(tclvalue(tkgetOpenFile(initialfile=initialfile, filetypes=filetypes)))
 	else
@@ -232,7 +233,102 @@ promptOpenFile <- function(initialfile="", filetype=list(c("*", "All Files")), o
 #----------------------------------------------ACB
 promptSaveFile <- function(initialfile="", filetype=list(c("*", "All Files")), save=TRUE)
 {
+	warning( "promptSaveFile is depricated - use selectFile instead" )
 	return(promptOpenFile(initialfile, filetype, !save))
+}
+
+#prompts a user to open/save a file(s) #ACB
+selectFile <- function(
+	initialfile="", 
+	initialdir=getwd(), 
+	filetype=list(c("*", "All Files")), 
+	mode="open", 
+	multiple = FALSE, 
+	title="",
+	defaultextension=""
+	)
+{
+	mode <- tolower( mode )
+	stopifnot( mode == "open" || mode == "save" )
+	
+	#prepare filetypes to correct format for tk
+	filetypes <- ""
+	for(i in 1:length(filetype)) {
+		filetype[[i]]
+		if (is.na(filetype[[i]][2]))
+			filetype[[i]][2] <- filetype[[i]][1]
+		if (filetype[[i]][1] != "*" && substr(filetype[[i]][1],1,1)!=".")
+			filetype[[i]][1] <- paste(".", filetype[[i]][1], sep="")
+		filetypes <- paste(filetypes, " {{", filetype[[i]][2], "} {", filetype[[i]][1], "}}", sep="")
+	}
+	filetypes <- .trimWhiteSpace(filetypes)
+	
+	#prepare common args
+	args <- list(
+		initialdir=initialdir,
+		initialfile=initialfile,
+		filetypes=filetypes,
+		title=title,
+		defaultextension=defaultextension
+	)
+	
+	if( mode == "open" ) {
+		args[[ "multiple" ]] <- multiple
+		files <- tclvalue(do.call( tkgetOpenFile, args ))
+	} else if( mode == "save" ) {
+		if( multiple == TRUE ) stop( "multiple=TRUE is not supported by \"save\" mode" )
+		files <- tclvalue(tkgetSaveFile( initialdir=initialdir, initialfile=initialfile, filetypes=filetypes ))
+	} else {
+		stop("mode not supported")
+	}
+	
+	#split up string
+	if( files == "" )
+		return( c() )
+
+	#strings (when multiple) are encoded as "{c:/program files/somefile.txt} c:/nospaces/isok.txt"
+	file_vector <- c()
+	quoted <- FALSE
+	start <- -1 #negative means no current start
+	chars <- strsplit( files, "" )[[ 1 ]]
+	for( i in 1:nchar( files ) ) {
+		if( quoted == TRUE ) {
+			if( chars[ i ] == "}" ) {
+				end <- i - 1
+				s <- substr( files, start, end )
+				file_vector <- c( file_vector, s )
+				quoted <- FALSE
+				start <- -1
+			}
+			#do nothing otherwise - just accecpt the input
+		} else {
+			#not quoted
+			if( chars[ i ] == " " ) {
+				end <- i - 1
+				s <- substr( files, start, end )
+				file_vector <- c( file_vector, s )
+				start <- -1
+			} else if( chars[ i ] == "{" ) {
+				quoted <- TRUE
+				start <- i + 1
+			} else if( start < 0 ) {
+				start <- i
+			}
+		}
+	}
+	if( start > 0 ) {
+		end <- nchar( files )
+		s <- substr( files, start, end )
+		file_vector <- c( file_vector, s )
+	}
+	return( file_vector )
+}
+
+
+#prompts user to select a directory - and returns it    #ACB
+selectDir <- function( initialdir = getwd(), mustexist = TRUE, title = "" )
+{
+	return( tclvalue( tkchooseDirectory( initialdir = initialdir, mustexist = mustexist, title = title ) ) )
 }
 
 #showArgs-------------------------------2009-02-23
