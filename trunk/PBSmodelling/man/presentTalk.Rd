@@ -33,6 +33,7 @@ presentTalk(talk)
   Anisa Egeli, Vancouver Island University, Nanaimo BC
 }
 \examples{
+\dontrun{
 wd <- getwd() #save current directory
 talk_dir <- system.file("examples", package = "PBSmodelling" )
 setwd( talk_dir )
@@ -40,6 +41,7 @@ presentTalk( "swisstalk.xml" )
 	
 #restore working directory once talk GUI is closed
 setwd( wd )
+}
 }
 \note{
 	TODO - I don't see the relavence

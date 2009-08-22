@@ -1,8 +1,8 @@
 \name{promptSaveFile}
 \alias{promptSaveFile}
-\title{Display Dialogue: Save File}
+\title{Depricated: Display Dialogue: Save File}
 \description{
-	Display the default \bold{Save As} prompt provided by the Operating System.
+	Depricated: use \code{\link{selectFile}} instead
 }
 \usage{
 promptSaveFile(initialfile="", filetype=list(c("*", "All Files")), 
@@ -26,13 +26,7 @@ promptSaveFile(initialfile="", filetype=list(c("*", "All Files")),
   Alex Couture-Beil, Malaspina University-College, Nanaimo BC
 }
 \seealso{
-	\code{\link{promptOpenFile}}
+	\code{\link{selectFile}}
 }
-\examples{
-\dontrun{
-#illustrates how to set filetype.
-promptSaveFile("intial_file.txt", filetype=list(c(".txt", "text files"), 
-               c(".r", "R files"), c("*", "All Files")))
-}
-}
+
 \keyword{file}
