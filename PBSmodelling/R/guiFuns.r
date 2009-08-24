@@ -651,7 +651,7 @@ focusWin <- function(winName, winVal=TRUE)
 # createWin:
 #   creates a GUI window from a given file, or GUI description list
 # -----------------------------------------------------------
-createWin <- function(fname, astext=FALSE)
+createWin <- function( fname, astext=FALSE, env=globalenv() )
 {
 	#must be called here for examples in rd to pass check
 	.initPBSoptions()
@@ -735,6 +735,9 @@ createWin <- function(fname, astext=FALSE)
 
 		#store the TK handle (so we can destroy it at a later time via closeWin)
 		.PBSmod[[winName]]$tkwindow <<- tt
+
+		#store environment to look for functions under
+		.PBSmod[[winName]]$env <<- env
 
 		#set window title
 		tkwm.title(tt,guiDesc[[i]]$title)
@@ -4384,7 +4387,7 @@ sortHistory <- function(file="",outfile=file,hisname="")
 		return()
 
 	if (exists(command,mode="function"))
-		do.call(command, list())
+		do.call(command, list(), env=.PBSmod[[ winName ]]$env )
 	else
 		cat(paste("Warning: cannot find function '", command, "'.\n", sep=""))
 }
