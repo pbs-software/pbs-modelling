@@ -7,7 +7,7 @@
 	Window Description (markup) File.
 }
 
-\usage{createWin(fname, astext=FALSE)}
+\usage{createWin(fname, astext=FALSE, env=globalenv())}
 
 \arguments{
 	\item{fname}{name of \emph{window description file} 
@@ -15,6 +15,7 @@
 	\item{astext}{logical: if \code{TRUE}, interpret \code{fname} 
 	  as a vector of strings with each element representing a line 
 	  in a \emph{window description file}.}
+	\item{env}{an environment in which to evaluate widget callback functions; see example.}
 }
 
 \details{
@@ -50,6 +51,8 @@
 	\code{\link{closeWin}}, \code{\link{compileDescription}}, \code{\link{createVector}}
 
 	\code{\link{initHistory}} for an example of using \code{astext=TRUE}
+	
+	\code{\link{environment}}
 }
 
 \examples{
@@ -63,6 +66,44 @@ drawLiss <- function() {
    plot(x,y,type=ptype); invisible(NULL); };
 createWin(system.file("testWidgets/LissWin.txt",package="PBSmodelling"));
 }
+
+
+############################################################
+# Environment example:
+
+#function in global
+hello <- function()
+{
+	stop( "I shouldn't be called" )
+}
+
+
+newNameGreeter <- function( name )
+{
+	#method to display window
+	greet <- function()
+	{
+		createWin( c( "button \"say hello\" func=hello" ), astext=TRUE, env = parent.env( environment() ) )
+	}
+	
+	#hello method will refer to the name in this local scope
+	hello <- function()
+	{
+		cat( "Hello", name, "\n" )
+	}
+	
+	#return functions which the user can call directly
+	return( list( greet = greet, hello = hello ) )
+}
+
+alex <- newNameGreeter( "Alex" )
+jon <- newNameGreeter( "Jon" )
+
+alex$hello() #prints hello Alex
+jon$hello() #hello Jon
+
+alex$greet() #creates a GUI with a button, which will print "hello Alex" when pushed
+
 }
 
 \keyword{utilities}
