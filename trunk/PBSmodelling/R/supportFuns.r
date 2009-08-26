@@ -245,11 +245,19 @@ selectFile <- function(
 	mode="open", 
 	multiple = FALSE, 
 	title="",
-	defaultextension=""
+	defaultextension="",
+	usewidget = NULL
 	)
 {
 	mode <- tolower( mode )
 	stopifnot( mode == "open" || mode == "save" )
+
+	if( is.null( usewidget ) == FALSE ) {
+		#value in widget should be used as file
+		initialfile <- getWinVal()[[ usewidget ]]
+		if( multiple == TRUE )
+			stop( "multiple and usewidget can not be used together" )
+	}
 	
 	#prepare filetypes to correct format for tk
 	filetypes <- ""
@@ -285,6 +293,15 @@ selectFile <- function(
 	#split up string
 	if( files == "" )
 		return( c() )
+
+	if( is.null( usewidget ) == FALSE ) {
+		#store value in widget
+		stopifnot( multiple == FALSE )
+		val <- list()
+		val[[ usewidget ]] <- files
+		setWinVal( val )
+		return( files )
+	}
 
 	#strings (when multiple) are encoded as "{c:/program files/somefile.txt} c:/nospaces/isok.txt"
 	file_vector <- c()
@@ -326,9 +343,22 @@ selectFile <- function(
 
 
 #prompts user to select a directory - and returns it    #ACB
-selectDir <- function( initialdir = getwd(), mustexist = TRUE, title = "" )
+selectDir <- function( initialdir = getwd(), mustexist = TRUE, title = "", usewidget = NULL )
 {
-	return( tclvalue( tkchooseDirectory( initialdir = initialdir, mustexist = mustexist, title = title ) ) )
+	#get val from widget
+	if( is.null( usewidget ) == FALSE )
+		initialdir <- getWinVal()[[ usewidget ]]
+
+	d <- tclvalue( tkchooseDirectory( initialdir = initialdir, mustexist = mustexist, title = title ) )
+
+	#set val to widget
+	if( is.null( usewidget ) == FALSE ) {
+		val <- list()
+		val[[ usewidget ]] <- d
+		setWinVal( val )
+	}
+		
+	return( d )
 }
 
 #showArgs-------------------------------2009-02-23
