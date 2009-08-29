@@ -352,7 +352,7 @@ selectDir <- function( initialdir = getwd(), mustexist = TRUE, title = "", usewi
 	d <- tclvalue( tkchooseDirectory( initialdir = initialdir, mustexist = mustexist, title = title ) )
 
 	#set val to widget
-	if( is.null( usewidget ) == FALSE ) {
+	if( is.null( usewidget ) == FALSE && d != "" ) {
 		val <- list()
 		val[[ usewidget ]] <- d
 		setWinVal( val )
