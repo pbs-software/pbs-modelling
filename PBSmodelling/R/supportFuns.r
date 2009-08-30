@@ -1088,6 +1088,27 @@ isWhat <- function(x) {
   if (!is.null(att)) print(att)
   invisible() }
 
+#given string name of a program - return the complete path to program
+#equivalent to "which" but works for windows too
+findProgram <- function( name )
+{
+	if( .Platform$OS.type=="windows" ) {
+		name <- paste( name, ".exe", sep="" ) #TODO could iterate over .exe, .bat, ...
+		path <- Sys.getenv("PATH")
+		paths <- unlist( strsplit( path, ";" ) )
+		for( p in paths ) {
+			f <- paste( p, "\\", name, sep="" )
+			if( file.exists( f ) )
+				return( f )
+		}
+		return( NULL )
+	}
+	cmd <- system( paste( "which ", name, sep="" ), intern = TRUE )
+	if( length( cmd ) == 0 )
+		return( NULL )
+	return( cmd )
+}
+
 #openFile-------------------------------2008-09-22
 # Opens a file for viewing based on System file
 # extension association or .PBSmod$.options$openfile
