@@ -757,7 +757,7 @@ runDemos <- function (package) {
 			))
 			))))
 		assign("xxy",win,envir=.GlobalEnv)
-		createWin(list(win))
+		createWin(list(win), env = parent.env( environment() ) )
 		return(invisible(NULL))
 	}
 	#display demos from a certain package
@@ -828,7 +828,7 @@ runDemos <- function (package) {
 			)
 		)))
 	assign("xx",win,envir=.GlobalEnv)
-	createWin(list(win))
+	createWin(list(win), env=parent.env( environment() ) )
 	return(invisible(NULL))
 }
 #-----------------------------------------runDemos
