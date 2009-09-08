@@ -6,12 +6,10 @@
   written as an \samp{action} by a widget.
 }
 \usage{
-doAction(act, envir=.GlobalEnv)
+doAction(act)
 }
 \arguments{
   \item{act}{string representing an expression that can be executed}
-  \item{envir}{the R environment in which to evaluate the action; 
-  the default is the global environment or user's workspace. }
 }
 \details{
   If \code{act} is missing, \code{doAction} looks for it in the action
@@ -23,8 +21,14 @@ doAction(act, envir=.GlobalEnv)
   double quote \samp{"} character. For example,
   \preformatted{"openFile(paste(getWinVal()$prefix,`.tpl`,sep=``))"}
 }
+\note{
+  The action is 
+}
 \value{
   Invisibly returns the string expression \code{act}.
+}
+\examples{
+  createWin("button text=\"list directory files\" func=doAction action=print(ls())", astext=TRUE)
 }
 \author{
   Rowan Haigh, Pacific Biological Station, Nanaimo BC

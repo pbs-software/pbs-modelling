@@ -1,48 +1,38 @@
 \name{findPrefix}
 \alias{findPrefix}
+\alias{findSuffix}
 \title{Find a Prefix Based on Names of Existing Files}
 
 \description{
-  Find the prefixes of files with a given suffix in the working directory.
+  Find the prefixes or suffixes of files with a given suffix or prefix in a directory.
 }
 \usage{
-findPrefix(suffix)
+findPrefix(suffix,path=".")
+findSuffix(prefix,path=".")
 }
 \arguments{
   \item{suffix}{character vector of suffixes}
+  \item{prefix}{character vector of prefixes}
+  \item{path}{directory to look for files in}
 }
 \details{
-  The function \code{findPrefix} locates all files in the working directory that end with
-  one of the provided suffixes. The suffixes may contain wildcards (\code{"*"} to match 0
-  or more characters, \code{"?"} to match any single character).
-
-  If \code{findPrefix} was called from a widget as specified in a 
-  \emph{window description file}, then the value of a widget named 
-  \code{prefix} will be set to the prefix of the first matching file 
-  found, with an exception: if the value of the prefix widget
-  matches one of the file prefixes found, it will not be changed.
-
-  To use this function in a \emph{window description file}, the action of the widget is
-  used to specify the suffixes to match, with the suffixes separated by commas.
-  For example, \code{action=.c,.cpp} would set a prefix widget to the first file found
-  with an extension \code{.c} or \code{.cpp}.
+  The function \code{findPrefix} locates all files in a directory that end with
+  one of the provided suffixes; where as \code{findSuffix} locates all files
+  that start with the given prefixes.
 }
 \value{
-  A character vector of all the prefixes of files in the working directory that
+  A character vector of all the prefixes or sufixes of files in the working directory that
   matched to one of the given suffixes.
 }
 \author{
   Anisa Egeli, Vancouver Island University, Nanaimo BC
 }
-\seealso{
-  \code{\link{setwdGUI}}
-}
 \examples{
-\dontrun{
-# Match files that end with '.a' followed by 0 or more characters,
-# '.b' followed by any single character, '.c', or '-old.d'
-# (a suffix does not have to be a file extension)
-findPrefix(".a*", ".b?", ".c", "-old.d")
-}
+#TODO give better examples from the library's example dir
+findPrefix( c(".txt", ".r") )
+
+#or use R's dir for similar functionality
+dir(pattern="\\.txt$")
+dir(pattern="$prefix")
 }
 \keyword{file}

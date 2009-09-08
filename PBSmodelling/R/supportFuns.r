@@ -1398,23 +1398,6 @@ evalCall=function(fn,argu,...,envir=parent.frame(),checkdef=FALSE,checkpar=FALSE
 	invisible(expr) }
 #-----------------------------------------evalCall
 
-#getPrefix------------------------------2009-02-23
-# Search for and gather all prefixes with the specified suffix.
-#-----------------------------------------------RH
-getPrefix=function(suffix,path="."){
-	spat=gsub("\\.","\\\\\\.",suffix)
-	sfiles=list.files(path,pattern=paste(spat,"$",sep=""),ignore.case=TRUE)
-	pref=substring(sfiles,1,nchar(sfiles)-nchar(suffix))
-	return(pref) }
-
-#getSuffix------------------------------2009-02-23
-# Search for and gather all suffixes with the specified prefix.
-#-----------------------------------------------RH
-getSuffix=function(prefix,path="."){
-	ppat=gsub("\\.","\\\\\\.",prefix)
-	pfiles=list.files(path,pattern=paste("^",ppat,sep=""),ignore.case=TRUE)
-	pref=substring(pfiles,nchar(prefix)+1)
-	return(pref) }
 
 .findSquare=function(nc) {
 	sqn=sqrt(nc); m=ceiling(sqn); n=ceiling(nc/m)

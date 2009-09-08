@@ -5,7 +5,7 @@
 	Display the default directory chooser prompt provided by the Operating System.
 }
 \usage{
-selectFile <- function( initialdir=getwd(), mustexist = TRUE, title="", usewidget = NULL )
+selectDir(initialdir=getwd(),mustexist=TRUE,title="",usewidget=NULL)
 }
 \arguments{
 	\item{initialdir}{initially selected directory}

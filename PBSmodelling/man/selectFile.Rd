@@ -5,7 +5,7 @@
 	Display the default \bold{Open} or  \bold{Save} prompt provided by the Operating System.
 }
 \usage{
-selectFile <- function( initialfile="", initialdir=getwd(), filetype=list(c("*", "All Files")), mode="open", multiple = FALSE, title="", defaultextension="", usewidget = NULL )
+selectFile(initialfile="",initialdir=getwd(),filetype=list(c("*","All Files")),mode="open",multiple=FALSE,title="",defaultextension="",usewidget=NULL)
 }
 \arguments{
 	\item{initialfile}{initially selected file}
