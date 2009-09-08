@@ -4386,8 +4386,8 @@ sortHistory <- function(file="",outfile=file,hisname="")
 	if (command=="")
 		return()
 
-	if (exists(command,mode="function"))
-		do.call(command, list(), env=.PBSmod[[ winName ]]$env )
+	if (exists(command,mode="function", env=.PBSmod[[ winName ]]$env))
+		do.call(command, list(), envir=.PBSmod[[ winName ]]$env )
 	else
 		cat(paste("Warning: cannot find function '", command, "'.\n", sep=""))
 }
@@ -4897,11 +4897,19 @@ chooseWinVal <- function(choice,varname,winname="window") {
 #doAction-------------------------------2009-02-03
 # Executes the action created by a widget.
 #-----------------------------------------------RH
-doAction=function(act,envir=.GlobalEnv){
+doAction=function(act){
 	if (missing(act)) {
 		if(is.null(.PBSmod$.activeWin)) return()
 		act=getWinAct()[1] }
 	if(is.null(act) || act=="") return()
+	
+	#get win's environment
+	winName <- .PBSmod$.activeWin
+	if( !is.null( winName ) )
+		envir <- .PBSmod[[ winName ]]$env
+	else
+		envir <- globalenv() #maybe parent.frame() is better
+
 	expr=gsub("`","\"",act)
 	eval(parse(text=expr),envir=envir)
 	invisible(act) }
