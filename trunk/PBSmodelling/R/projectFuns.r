@@ -619,33 +619,6 @@ showAlert=function(message, title="Alert", icon="warning"){
 	setWinVal(vecList)
 }
 
-#.old.doClean---------------------------2008-08-25
-# This is used by cleanProj. It is the function that is called when the Clean button is pressed.
-# Note: this function has been rewritten (see '.doClean').
-#-----------------------------------------------AE
-.old.doClean=function(){
-	prefix=getWinVal("cleanPrefix")[[1]]
-	vecList=.removeFromList(getWinVal(), "cleanPrefix")
-	filenames=character(0)
-	for(i in names(vecList)){
-		type=sub("[[:digit:]]*$", "", i)
-		if(type=="suff")
-			filenames=c(filenames, Sys.glob(paste(prefix,
-					names(vecList[[i]])[vecList[[i]]], sep="")))
-		else
-			filenames=c(filenames, Sys.glob(names(vecList[[i]])[vecList[[i]]]))
-	}
-	if(!length(filenames))
-		showAlert("No files to delete.")
-	else if(getYes(paste("Delete ", paste(filenames, collapse=", "), "?",
-			sep="")))
-		file.remove(filenames)
-	remaining=file.exists(filenames)
-	if(sum(remaining))
-		showAlert(paste("Failed to delete", paste(filenames[remaining],
-				collapse=", ")))
-}
-
 #.makeCleanVec--------------------------2009-03-03
 # This is used by cleanProj() to create the strings describing checkbox vectors.
 #--------------------------------------------AE/RH
