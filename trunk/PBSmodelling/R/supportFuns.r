@@ -1090,7 +1090,7 @@ isWhat <- function(x) {
 
 #given string name of a program - return the complete path to program
 #equivalent to "which" but works for windows too
-findProgram <- function( name )
+findProgram <- function( name, includename = FALSE )
 {
 	if( .Platform$OS.type=="windows" ) {
 		name <- paste( name, ".exe", sep="" ) #TODO could iterate over .exe, .bat, ...
@@ -1098,14 +1098,23 @@ findProgram <- function( name )
 		paths <- unlist( strsplit( path, ";" ) )
 		for( p in paths ) {
 			f <- paste( p, "\\", name, sep="" )
-			if( file.exists( f ) )
+			if( file.exists( f ) ) {
+				if( includename == TRUE )
+					return( paste( f, "/", name, sep="" ) )
 				return( f )
+			}
 		}
 		return( NULL )
 	}
 	cmd <- system( paste( "which ", name, sep="" ), intern = TRUE )
 	if( length( cmd ) == 0 )
 		return( NULL )
+	if( includename == TRUE )
+		return( cmd )
+	#remove filename
+	tmp <- strsplit( cmd, "/" )[[ 1 ]]
+	tmp[ length(tmp) ] <- "" #last item is filename
+	cmd <- paste( tmp, collapse="/" ) #put back together
 	return( cmd )
 }
 
