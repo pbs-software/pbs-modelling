@@ -3,6 +3,9 @@
 \title{Open a File from a Package Subdirectory}
 
 \description{
+
+	***this function will be depricated - use \link{openFile} or doAction with openFile***
+
   Open a file from a package in the R library, given the package 
   name and the file path relative to the package root directory.
 }
@@ -38,7 +41,12 @@ openPackageFile(package, filepath)
 
 \examples{
 \dontrun{
-openPackageFile("myPackage", "/doc/help.pdf")
+#use openFile directly:
+openFile( "doc/PBSmodelling-UG.pdf", package="PBSmodelling" )
+
+#via doAction in a window description file:
+createWin( "button text=help func=doAction action=\"openFile( `doc/PBSmodelling-UG.pdf`, package=`PBSmodelling` )\"", astext=TRUE )
+	
 }
 }
 \keyword{file}

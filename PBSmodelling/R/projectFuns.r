@@ -24,12 +24,13 @@
 #  filepath - filepath of file, relative from package root
 # -----------------------------------------------------------
 openPackageFile=function(package, filepath){
+	warning( "this function is depricated - use openFile" )
   if(missing(package) && missing(filepath)){
     action=strsplit(getWinAct()[1], ",")
     package=action[[1]][1]
     filepath=action[[1]][2]
   }
-  openFile(system.file(filepath, package=package))
+  openFile( filepath, package=package )
 }
 
 # ***********************************************************
@@ -228,30 +229,13 @@ findSuffix=function( prefix, path = "." ) {
 
 # ***********************************************************
 # setwdGUI:
-#  Allows user to browse a directory tree to set the working
-#  directory. The suffix argument is passed to call to
-#  findPrefix after the working directory is changed.
-# Input:
-#  suffix: suffixes to pass to findPrefix after the directory
-#          is changed, or "" to not call findPrefix
+#  change the working directory via a GUI
 # -----------------------------------------------------------
-setwdGUI=function(suffix){
+setwdGUI=function(){
   wd=as.character(tkchooseDirectory())
   if(!length(wd))
     return()
   setwd(wd)
-  if(missing(suffix)){
-    suffix=try(getWinAct(), silent=TRUE)
-    if(class(suffix)!="try-error")
-      suffix=suffix[[1]]
-    else
-      suffix=","
-		suffix=strsplit(suffix, ",")[[1]]
-  }
-  
-  if(length(suffix)>1 || suffix!="")
-    return(findPrefix(suffix))
-	return(invisible())
 }
 
 # ***********************************************************

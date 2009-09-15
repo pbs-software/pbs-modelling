@@ -1122,11 +1122,18 @@ findProgram <- function( name, includename = FALSE )
 # Opens a file for viewing based on System file
 # extension association or .PBSmod$.options$openfile
 #----------------------------------------------ACB
-openFile <- function(fname="") {
-	.openFile=function(fname) {
+openFile <- function(fname="", package=NULL)
+{
+	.openFile=function(fname, package)
+	{
 		if (!exists(".PBSmod"))  .initPBSoptions()
 		if (fname=="")  fname=getWinAct()[1]
-		if (any(grep("^~", fname)))
+		if( is.null( package ) == FALSE ) {
+			pkg_file <- system.file( fname, package=package)
+			if( pkg_file == "" )
+				stop(paste("File \"", fname, "\" does not exist in package \"", package, "\"", sep=""))
+			fname <- pkg_file
+		} else if (any(grep("^~", fname)))
 			fname <- path.expand(fname)
 		else if (!any(grep("^([a-z]:(\\\\|/)|\\\\\\\\|/)", fname, ignore.case = TRUE)))
 			fname <- paste(getwd(), "/", fname, sep="")
@@ -1163,7 +1170,7 @@ openFile <- function(fname="") {
 			return(cmd)
 		}
 	}
-	ops=sapply(fname,.openFile)
+	ops=sapply(fname,.openFile, package=package)
 	invisible(ops) }
 #-----------------------------------------openFile
 
