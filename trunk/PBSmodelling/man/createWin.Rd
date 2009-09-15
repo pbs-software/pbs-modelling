@@ -7,7 +7,9 @@
 	Window Description (markup) File.
 }
 
-\usage{createWin(fname, astext=FALSE, env=globalenv())}
+\usage{
+	createWin( fname, astext=FALSE, env=parent.frame() )
+}
 
 \arguments{
 	\item{fname}{name of \emph{window description file} 

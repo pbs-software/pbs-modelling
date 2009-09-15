@@ -651,7 +651,7 @@ focusWin <- function(winName, winVal=TRUE)
 # createWin:
 #   creates a GUI window from a given file, or GUI description list
 # -----------------------------------------------------------
-createWin <- function( fname, astext=FALSE, env=globalenv() )
+createWin <- function( fname, astext=FALSE, env=parent.frame() ) #globalenv() )
 {
 	#must be called here for examples in rd to pass check
 	.initPBSoptions()
@@ -2860,7 +2860,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		return(.createWidget(tk, wid, winName))
 	}
 
-	if (!exists(widget$name, env = .GlobalEnv)) {
+	if (!exists(widget$name, env = .PBSmod[[ winName ]]$env )) {
 		return(.dispError(paste("Error: variable \"", widget$name, "\" could not be found.", sep="")))
 	}
 	return( NULL )
@@ -3037,7 +3037,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		return( .createWidget.object.scrolling( tk, widget, winName ) )
 
 	if( is.null( userObject ) )
-		userObject <- get(widget$name, pos=find(widget$name))
+		userObject <- get( widget$name, env = .PBSmod[[ winName ]]$env )
 
 	#matrix
 	if (is.matrix(userObject)) {
@@ -3309,10 +3309,9 @@ parseWinFile <- function(fname, astext=FALSE)
 # winName: name of window being created
 .getValueForWidgetSetup <- function( varname, widget, winName )
 {
-	if( !exists( varname, env = .GlobalEnv ) )
+	if( !exists( varname, env = .PBSmod[[ winName ]]$env ) )
 		.stopWidget( paste( "unable to find variable \"", varname, "\" in global memory - this search happend since value=NULL", sep="" ), widget$.debug, winName )
-
-	var <- get( varname, env = .GlobalEnv )
+	var <- get( varname, env = .PBSmod[[ winName ]]$env )
 	if( is.factor( var ) )
 		var <- as.character( var )
 	else if( is.data.frame( var ) ) {
