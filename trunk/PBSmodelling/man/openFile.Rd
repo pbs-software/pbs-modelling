@@ -8,10 +8,11 @@
   program association using \code{setPBSext}.
 }
 \usage{
-openFile(fname)
+openFile(fname, package=NULL)
 }
 \arguments{
-	\item{fname}{name of file to open.}
+	\item{fname}{name(s) of file(s) to open.}
+	\item{package}{(optional) open files relative to this package}
 }
 \value{
   An invisible string vector of the file names and/or commands + file names.
@@ -30,7 +31,15 @@ openFile(fname)
 }
 \examples{
 \dontrun{
-# Set up firefox to open .html files
+
+#use openFile directly:
+openFile( "doc/PBSmodelling-UG.pdf", package="PBSmodelling" )
+
+#via doAction in a window description file:
+createWin( "button text=help func=doAction action=\"openFile( `doc/PBSmodelling-UG.pdf`, package=`PBSmodelling` )\"", astext=TRUE )
+
+#############################
+# Set up firefox to open .html files (only applicable if firefox is NOT the default web browser
 setPBSext("html", '"c:/Program Files/Mozilla Firefox/firefox.exe" file://\%f')
 openFile("foo.html")
 }

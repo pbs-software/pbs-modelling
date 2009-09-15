@@ -3,6 +3,8 @@
 \title{Open Files with a Common Prefix}
 
 \description{
+  ***warning: this function is buggy - see examples for an alternative***
+
   Open one or more files from the working directory, given one 
   file prefix and one or more file suffixes.
 }
@@ -55,6 +57,12 @@ openProjFiles(prefix, suffix, package=NULL, warn=NULL, alert=TRUE)
 \examples{
 \dontrun{
 openProjFiles("foo", c(".r", ".c"), package="myPackage")
+
+#use openFile directly:
+openFile( dir(pattern="^prefix.*\\.suffix$") )
+
+#example with multiple suffixes (prefix=foo, suffix=.r, .c)
+openFile( dir(pattern="^foo.*\\.(r|c)$") )
 }
 }
 \keyword{file}
