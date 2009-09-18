@@ -1102,9 +1102,9 @@ findProgram <- function( name, includename = FALSE )
 		for( p in paths ) {
 			f <- paste( p, "\\", name, sep="" )
 			if( file.exists( f ) ) {
-				if( includename == TRUE )
-					return( paste( f, "/", name, sep="" ) )
-				return( f )
+				if( includename == FALSE )
+					return( dirname( f ) )
+				return( gsub("\\\\", "/", f ) )
 			}
 		}
 		return( NULL )
