@@ -302,17 +302,21 @@ selectFile <- function(
 		setWinVal( val )
 		return( files )
 	}
+	return( .tclArrayToVector( files ) )
+}
 
+.tclArrayToVector <- function( str )
+{
 	#strings (when multiple) are encoded as "{c:/program files/somefile.txt} c:/nospaces/isok.txt"
 	file_vector <- c()
 	quoted <- FALSE
 	start <- -1 #negative means no current start
-	chars <- strsplit( files, "" )[[ 1 ]]
-	for( i in 1:nchar( files ) ) {
+	chars <- strsplit( str, "" )[[ 1 ]]
+	for( i in 1:nchar( str ) ) {
 		if( quoted == TRUE ) {
 			if( chars[ i ] == "}" ) {
 				end <- i - 1
-				s <- substr( files, start, end )
+				s <- substr( str, start, end )
 				file_vector <- c( file_vector, s )
 				quoted <- FALSE
 				start <- -1
@@ -320,9 +324,9 @@ selectFile <- function(
 			#do nothing otherwise - just accecpt the input
 		} else {
 			#not quoted
-			if( chars[ i ] == " " ) {
+			if( chars[ i ] == " " && start != -1 ) {
 				end <- i - 1
-				s <- substr( files, start, end )
+				s <- substr( str, start, end )
 				file_vector <- c( file_vector, s )
 				start <- -1
 			} else if( chars[ i ] == "{" ) {
@@ -334,13 +338,12 @@ selectFile <- function(
 		}
 	}
 	if( start > 0 ) {
-		end <- nchar( files )
-		s <- substr( files, start, end )
+		end <- nchar( str )
+		s <- substr( str, start, end )
 		file_vector <- c( file_vector, s )
 	}
 	return( file_vector )
 }
-
 
 #prompts user to select a directory - and returns it    #ACB
 selectDir <- function( initialdir = getwd(), mustexist = TRUE, title = "", usewidget = NULL )
