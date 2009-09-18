@@ -2,6 +2,9 @@ PBSmodelling Changes
 ====================
 2.XX  XXXXXXXXXX
 	- createWin: environment argument to search while calling widget callback functions
+	- fix droplist bug where values returned by getWinVal aren't correct if droplist's values were changed via setWinVal (after window creation)
+	- setWidgetColor - dynamically change fg/bg for entry,button,label,radio,check widgets
+	- (internal) created .tclArrayToVector()
 	
 2.21  2009-08-16
 	- fixed case sensitive issues for runExamples (linux support)
