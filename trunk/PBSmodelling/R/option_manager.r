@@ -91,8 +91,10 @@ createOptionManager <- function( filename, initial_options = list(), gui_prefix 
 		m <- match( widgets, opts )
 		to_update = widgets[ !is.na( m ) ] #names of widgets which correspond to a value
 
-		for( w in to_update )
-			options[[ w ]] <<- values[[ w ]]
+		for( w in to_update ) {
+			k <- substring( w, nchar(gui_prefix)+1 ) #remove prefix to get option key
+			options[[ k ]] <<- values[[ w ]]
+		}
 			
 	}
 
