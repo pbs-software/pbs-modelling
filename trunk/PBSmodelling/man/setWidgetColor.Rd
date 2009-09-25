@@ -9,7 +9,7 @@ setWidgetColor( name, winName, ... )
 }
 \arguments{
 	\item{name}{the name of the widget}
-	\item{winname}{window from which to select the GUI widget. The default 
+	\item{winName}{window from which to select the GUI widget. The default 
 		takes the window that has most recently received new user input.}
 	\item{...}{ any combination of "fg", "bg", "entryfg", "entrybg" depending on type of widget - see details}
 }
