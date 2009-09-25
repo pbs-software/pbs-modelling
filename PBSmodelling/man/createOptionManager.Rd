@@ -116,7 +116,8 @@ cat( "today is", ifelse( silly, "silly hat day!", "monday" ), "\n" )
 #create a GUI which works with options
 createWin( c( 
 	"check name=optionsillyhatday text=\"silly hat day\"",
-	"entry name=optionphotos mode=character label=\"photos directory\"" ), astext = TRUE )
+	"entry name=optionphotos mode=character label=\"photos directory\"",
+	"button func=doAction text=save action=.mypkg$savegui()" ), astext = TRUE )
 
 #update GUI values based on values stored in .mypkg's options
 .mypkg$loadgui()
