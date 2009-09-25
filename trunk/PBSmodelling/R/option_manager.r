@@ -106,9 +106,10 @@ createOptionManager <- function( filename, initial_options = list(), gui_prefix 
 		to_update = widgets[ !is.na( m ) ] #names of widgets which correspond to a value
 
 		opts <- list()
-		for( w in to_update )
-			opts[[ w ]] <- get( w )
-
+		for( w in to_update ) {
+			k <- substring( w, nchar(gui_prefix)+1 ) #remove prefix to get option key
+			opts[[ w ]] <- get( k )
+		}
 		setWinVal( opts )
 	}
 	
