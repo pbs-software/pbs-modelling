@@ -1,6 +1,3 @@
-require(PBSmodelling)
-#returns name of this package -> inside a function to make it const
-
 #taken from R Curl - merge x and y, keeping x elements if it exists in y too
 .mergeLists <- function( x, y ) 
 {
@@ -15,11 +12,20 @@ require(PBSmodelling)
     x
 }
 
+setClass ("option", representation( instance = "list" ) )
 
-createOptionManager <- function( filename, initial_options = list(), gui_prefix = "option" )
+setMethod( f="initialize", signature="option",
+definition=function(.Object, filename, initial.options = list(), gui.prefix = "option" )
 {
-	options <- initial_options
+	if( missing( filename ) ) stop( "class initializer requires a filename" )
+	if( is.character( filename ) == FALSE ) stop( "filename must be a character vector (string)" )
+	if( is.list( initial.options ) == FALSE ) stop( "initial.options must be a list" )
+	if( is.character( gui.prefix ) == FALSE ) stop( "GUI prefix must be a character vector (string)" )
 
+	options <- initial.options
+
+	#create functions within this namespace - so that each time a new instance of this class is created
+	#these functions will point to a new set of variables (i.e. just how non-static variables of a c++ class work)
 	load <- function( fname )
 	{
 		if( missing( fname ) == FALSE )
@@ -40,7 +46,7 @@ createOptionManager <- function( filename, initial_options = list(), gui_prefix 
 		return( filename )
 	}
 
-	saveas <- function() #prompts user to select a file name
+	saveAs <- function() #prompts user to select a file name
 	{
 		selected <- selectFile( mode="save")
 		if( length( selected ) == 0 || selected == "" )
@@ -83,42 +89,43 @@ createOptionManager <- function( filename, initial_options = list(), gui_prefix 
 	}
 
 	#save GUI values to this option list (R)
-	savegui <- function()
+	saveGUI <- function()
 	{
 		values <- getWinVal()
 		widgets <- names( values )
-		opts <- paste( gui_prefix, names( get() ), sep="" )
+		opts <- paste( gui.prefix, names( get() ), sep="" )
 		m <- match( widgets, opts )
 		to_update = widgets[ !is.na( m ) ] #names of widgets which correspond to a value
 
 		for( w in to_update ) {
-			k <- substring( w, nchar(gui_prefix)+1 ) #remove prefix to get option key
+			k <- substring( w, nchar(gui.prefix)+1 ) #remove prefix to get option key
 			options[[ k ]] <<- values[[ w ]]
 		}
 			
 	}
 
 	#load GUI values from this option list (R)
-	loadgui <- function()
+	loadGUI <- function()
 	{
 		values <- getWinVal()
 		widgets <- names( values )
-		opts <- paste( gui_prefix, names( get() ), sep="" )
+		opts <- paste( gui.prefix, names( get() ), sep="" )
 		m <- match( widgets, opts )
 		to_update = widgets[ !is.na( m ) ] #names of widgets which correspond to a value
 
 		opts <- list()
 		for( w in to_update ) {
-			k <- substring( w, nchar(gui_prefix)+1 ) #remove prefix to get option key
+			k <- substring( w, nchar(gui.prefix)+1 ) #remove prefix to get option key
 			opts[[ w ]] <- get( k )
 		}
 		setWinVal( opts )
 	}
-	
-	getenv <- function()
-	{
-		return( parent.env( environment() ) )
-	}
+
+	#get the gui prefix
+	getPrefix <- function() { return( gui.prefix ) }
+
+	#set the gui prefix
+	setPrefix <- function( prefix ) { gui.prefix <<- prefix }
 
 	#load all functions into the instance list to return
 	instance <- list()
@@ -129,8 +136,93 @@ createOptionManager <- function( filename, initial_options = list(), gui_prefix 
 		instance[[ i ]] <- v
 	}
 
-	instance$load()
-	return( instance )
+	.Object@instance <- instance
+	return( .Object )
+}
+)
+
+.showOptions <- function( object )
+{
+	cat( "filename:", object@instance$getFileName(), "\n" )
+	cat( "GUI.prefix:", object@instance$getPrefix(), "\n" )
+	opts <- object@instance$get()
+	if( length( opts ) == 0 )
+		cat( "Options: None\n" )
+	else {
+		cat( "Options:\n" )
+		str( opts, no.list=T)
+	}
+}
+
+setMethod( "print", signature="option",
+definition=function( x, ... )
+{
+	.showOptions( x )
+}
+)
+
+setMethod( "show", signature="option",
+definition=function( object )
+{
+	.showOptions( object )
+}
+)
+
+
+getOptions <-function( option.object, key )
+{
+	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	option.object@instance$get( key )
+}
+getOptionsFileName <-function( option.object )
+{
+	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	option.object@instance$getFileName()
+}
+getOptionsPrefix <-function( option.object )
+{
+	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	option.object@instance$getPrefix()
+}
+loadOptions <-function( option.object, fname )
+{
+	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	option.object@instance$load()
+}
+loadOptionsGUI <-function( option.object )
+{
+	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	option.object@instance$loadGUI()
+}
+saveOptions <-function( option.object, fname )
+{
+	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	option.object@instance$save()
+}
+saveOptionsAs <-function( option.object )
+{
+	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	option.object@instance$saveAs()
+}
+saveOptionsGUI <-function( option.object )
+{
+	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	option.object@instance$saveGUI()
+}
+setOptions <-function( option.object, ... )
+{
+	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	option.object@instance$set( ... )
+}
+setOptionsFileName <-function( option.object, name )
+{
+	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	option.object@instance$setFileName( name )
+}
+setOptionsPrefix <-function( option.object, prefix )
+{
+	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	option.object@instance$setPrefix( prefix )
 }
 
 
