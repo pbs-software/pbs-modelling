@@ -11,9 +11,9 @@ The prefix is used for determining which GUI variables are associated with a use
 getOptionsPrefix(option.object)
 setOptionsPrefix(option.object, prefix)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-  \item{option.object}{TODO}
+  \item{option.object}{options class object used for storing package options}
   \item{prefix}{new prefix to use}
 }
 \value{

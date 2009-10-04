@@ -4,17 +4,17 @@
 \alias{option-class}
 \alias{print,option-method}
 
-\title{Class "option" ~~~ }
+\title{Project Options Class}
 \description{
 	Projects commonly involve various settings or options such as paths to C compilers or other third-party tools.
 	PBSmodelling provides a set of option management functions for managing user specific options. Options can be 
-	modified through the provided set of functions on the command line, or through a custom made GUI.
+	modified through the provided set of functions on the command line, or through a custom GUI.
 	These options can be saved to disk for use in subsequent R sessions.
 	
-	To use PBSmodelling's suite of option manangement functions, an instance of an \code{option} class must be
-	created for each of your projects. Each \code{option} instance contains a distinct R environment where 
+	To use PBSmodelling's suite of option management functions, an \code{option} object must be
+	created for each of your projects. Each \code{option} object contains a distinct R environment where 
 	option values are stored; this allows different projects to use overlapping option names without conflicts
-	(provided each project has its own \code{option} instance).
+	(provided each project has its own \code{option} class object).
 
 }
 \section{Objects from the Class}{
@@ -27,7 +27,7 @@ Objects can be created by calls of the form \code{new("option", filename, initia
 }
 \section{Slots}{
   \describe{
-    \item{\code{instance}:}{The R environment used to store options. Please do not use this directly; use functions listed under the "see also" section. }
+    \item{\code{instance}:}{The R environment used to store options. Please do not use this directly; use the functions listed under the "see also" section. }
   }
 }
 \section{Methods}{
@@ -35,17 +35,31 @@ Objects can be created by calls of the form \code{new("option", filename, initia
     \item{print}{\code{signature(x = "option")}: prints the list of options }
   }
 }
+\details{
+  When an \code{option} object is created with the \code{new} function, the \code{initial.options} list, if supplied, is stored
+  as initial user options in the object. The initialization routine then attempts to load user set options from the \code{filename} file. If such a file exists,
+  these values are stored in the \code{option} object overwriting any initial values as specified by \code{initial.options}
+  
+  Option values are not directly stored in the object, but rather in an environment stored in the \code{instance} slot.
+  Using an environment rather than slots for storing options allows us to pass option object by reference rather than value; that is,
+  we can save options in the object without the need of returning a new modified class object. It is therefore necessary that users
+  use the functions listed in the "see also" section to effectively manage user options.
+}
 \author{ Alex Couture-Beil }
 
 \section{Warning }{
 Do not use the slots - use our functions instead. TODO explain why breifly
 }
 \seealso{
-  \code{\link{getOptions}}
-  \code{\link{getOptionsFileName}}
-  \code{\link{getOptionsPrefix}}
-  \code{\link{loadOptions}}
-  \code{\link{loadOptionsGUI}}
+  \code{\link{getOptions}} for retrieving and modifying user options
+  
+  \code{\link{getOptionsFileName}} for retrieving and modifying the default options file name
+  
+  \code{\link{loadOptions}} for loading and saving options from and to disk
+
+  \code{\link{getOptionsPrefix}} for retrieving and modifying the GUI prefix (for custom GUI interfaces)
+  
+  \code{\link{loadOptionsGUI}} for setting GUI values to reflect user options and vice-versa
 }
 \examples{
 #initialize an option manager with a single logical option
