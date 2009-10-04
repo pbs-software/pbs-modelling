@@ -12,7 +12,7 @@ getOptionsFileName(option.object)
 setOptionsFileName(option.object, name)
 }
 \arguments{
-  \item{option.object}{class object - TODO}
+  \item{option.object}{options class object used for storing package options}
   \item{name}{new name for default filename}
 }
 \value{

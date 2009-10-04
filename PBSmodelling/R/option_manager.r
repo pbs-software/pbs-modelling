@@ -1,4 +1,4 @@
-#taken from R Curl - merge x and y, keeping x elements if it exists in y too
+#taken from R Curl - merge x and y, if elements match in both x and y, then elements from y are stored (overwriting x's elements)
 .mergeLists <- function( x, y ) 
 {
     if (length(x) == 0) 
@@ -26,14 +26,23 @@ definition=function(.Object, filename, initial.options = list(), gui.prefix = "o
 
 	#create functions within this namespace - so that each time a new instance of this class is created
 	#these functions will point to a new set of variables (i.e. just how non-static variables of a c++ class work)
-	load <- function( fname )
+	load <- function( fname, prompt = FALSE )
 	{
+		old_filename <- filename
 		if( missing( fname ) == FALSE )
 			setFileName( fname )
+		if( prompt == TRUE ) {
+			f <- selectFile( initialfile=filename, mode="open" )
+			if( is.null( f ) == TRUE ) {
+				setFileName( old_filename ) #restore old filename if user cancels
+				return()
+			}
+			setFileName( f )
+		}
 		if( file.exists( filename ) == FALSE )
 			return()
 		tmp <- readList( filename )
-		options <<- .mergeLists( tmp, options )
+		options <<- .mergeLists( options, tmp )
 	}
 
 	setFileName <- function( name )
@@ -57,12 +66,21 @@ definition=function(.Object, filename, initial.options = list(), gui.prefix = "o
 		filename <<- selected
 		save()
 	}
-
+	
 	#silent save
-	save <- function( fname )
+	save <- function( fname, prompt = FALSE )
 	{
+		old_filename <- filename
 		if( missing( fname ) == FALSE )
 			setFileName( fname )
+		if( prompt == TRUE ) {
+			f <- selectFile( initialfile=filename, mode="save" )
+			if( is.null( f ) == TRUE ) {
+				setFileName( old_filename ) #restore old filename if user cancels
+				return()
+			}
+			setFileName( f )
+		}
 		writeList( options, fname = filename )
 	}
 
@@ -136,6 +154,7 @@ definition=function(.Object, filename, initial.options = list(), gui.prefix = "o
 		instance[[ i ]] <- v
 	}
 
+	load()
 	.Object@instance <- instance
 	return( .Object )
 }
@@ -184,25 +203,20 @@ getOptionsPrefix <-function( option.object )
 	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$getPrefix()
 }
-loadOptions <-function( option.object, fname )
+loadOptions <-function( option.object, fname, prompt = FALSE )
 {
 	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
-	option.object@instance$load()
+	option.object@instance$load( fname, prompt )
 }
 loadOptionsGUI <-function( option.object )
 {
 	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$loadGUI()
 }
-saveOptions <-function( option.object, fname )
+saveOptions <-function( option.object, fname, prompt = FALSE )
 {
 	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
-	option.object@instance$save()
-}
-saveOptionsAs <-function( option.object )
-{
-	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
-	option.object@instance$saveAs()
+	option.object@instance$save( fname, prompt )
 }
 saveOptionsGUI <-function( option.object )
 {
@@ -224,5 +238,4 @@ setOptionsPrefix <-function( option.object, prefix )
 	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$setPrefix( prefix )
 }
-
 
