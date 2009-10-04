@@ -1,10 +1,15 @@
 <!-- we will use xml comments - there can only be ONE document root -->
 <talk name="Swiss">
 <section name="Methods" button="TRUE">
-<text> 
-This sssshort talk examines the "summary" method
+<text break="T"> 
+This short talk examines the "summary" method
 and applies it to the "swiss" dataset.
 The talk itself comes from a talk description file ...
+</text>
+<text>
+Talks are capable of opening files, in this case an attempt 
+has been made to open swissTalk.xml, which should open provided
+a program is associated with xml files
 </text>
 <file name="swissTalk" button="TRUE">swissTalk.xml</file>
 <text break="F">
