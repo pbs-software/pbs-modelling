@@ -48,7 +48,7 @@ Objects can be created by calls of the form \code{new("option", filename, initia
 \author{ Alex Couture-Beil }
 
 \section{Warning }{
-Do not use the slots - use our functions instead. TODO explain why breifly
+Do not use the slots - use our functions instead.
 }
 \seealso{
   \code{\link{getOptions}} for retrieving and modifying user options
