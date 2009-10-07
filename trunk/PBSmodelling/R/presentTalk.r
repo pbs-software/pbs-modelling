@@ -76,7 +76,7 @@ setClass( "talk", representation( name = "character", sections = "list", files =
 	
 	.processText <- function( node )
 	{
-		return( new( "text", text = xmlValue( node ), "break" = as.logical( xmlGetAttr( node, "break", FALSE ) ) ) )
+		return( new( "text", text = xmlValue( node ), "break" = as.logical( xmlGetAttr( node, "break", TRUE ) ) ) )
 	}
 	
 	.processFile <- function( node )
@@ -385,7 +385,7 @@ setClass( "talk", representation( name = "character", sections = "list", files =
 			break
 		}
 	}
-	cat( "-----------------------------------< Press next slide >---------\n" )
+	cat( "-----------------------------------< Press Go to continue >---------\n" )
 }
 
 

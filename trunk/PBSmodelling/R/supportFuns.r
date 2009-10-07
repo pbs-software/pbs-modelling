@@ -1039,9 +1039,7 @@ runExamples <- function () {
 		} else if (act=="swissTalk") {
 			#TODO refactor this - should be more generic
 			closeWin(name=setdiff(allWin,"runE"))
-			tnam=paste(act,".txt",sep="") # talk description file
-			wtxt <- paste(readLines(tnam), collapse = "\n")
-			presentTalk(tnam)
+			presentTalk( "swissTalk.xml" )
 		} else {
 			if (act!="TestFuns")
 				closeWin(name=setdiff(allWin,c("runE","window")))
