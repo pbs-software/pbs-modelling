@@ -385,7 +385,11 @@ setClass( "talk", representation( name = "character", sections = "list", files =
 			break
 		}
 	}
-	cat( "-----------------------------------< Press Go to continue >---------\n" )
+
+	if( index < length( indicies ) )
+		cat( "-----------------------------------< Press Go to continue >---------\n" )
+	else
+		cat( "--------------------------------------------< End of talk >---------\n" )
 }
 
 
@@ -482,7 +486,7 @@ presentTalk <- function( talk )
 
 	#create a GUI for it
 	createWin( c(
-	"window name=presentwin",
+	paste( "window name=presentwin title=\"", .addslashes( name ), "\"", sep="" ),
 	.getMenus( talk ),
 	"grid 1 2 pady=\"0 5\"",
 		"grid 1 1 relief=groove",
