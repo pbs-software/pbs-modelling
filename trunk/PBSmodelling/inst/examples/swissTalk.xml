@@ -6,7 +6,7 @@
 
 <text break="T">
 This short talk examines the "summary" method
-and applies it to the "swiss" dataset.</text>.
+and applies it to the "swiss" dataset.</text>
 <text break="T">
 The talk itself comes from a talk description file.
 The next step should open that file (swissTalk.xml),
