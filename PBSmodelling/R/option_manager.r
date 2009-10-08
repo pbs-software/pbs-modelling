@@ -12,9 +12,9 @@
     x
 }
 
-setClass ("option", representation( instance = "list" ) )
+setClass ("PBSoptions", representation( instance = "list" ) )
 
-setMethod( f="initialize", signature="option",
+setMethod( f="initialize", signature="PBSoptions",
 definition=function(.Object, filename, initial.options = list(), gui.prefix = "option" )
 {
 	if( missing( filename ) ) stop( "class initializer requires a filename" )
@@ -173,14 +173,14 @@ definition=function(.Object, filename, initial.options = list(), gui.prefix = "o
 	}
 }
 
-setMethod( "print", signature="option",
+setMethod( "print", signature="PBSoptions",
 definition=function( x, ... )
 {
 	.showOptions( x )
 }
 )
 
-setMethod( "show", signature="option",
+setMethod( "show", signature="PBSoptions",
 definition=function( object )
 {
 	.showOptions( object )
@@ -190,52 +190,52 @@ definition=function( object )
 
 getOptions <-function( option.object, key )
 {
-	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	if( is( option.object, "PBSoptions" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$get( key )
 }
 getOptionsFileName <-function( option.object )
 {
-	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	if( is( option.object, "PBSoptions" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$getFileName()
 }
 getOptionsPrefix <-function( option.object )
 {
-	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	if( is( option.object, "PBSoptions" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$getPrefix()
 }
 loadOptions <-function( option.object, fname, prompt = FALSE )
 {
-	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	if( is( option.object, "PBSoptions" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$load( fname, prompt )
 }
 loadOptionsGUI <-function( option.object )
 {
-	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	if( is( option.object, "PBSoptions" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$loadGUI()
 }
 saveOptions <-function( option.object, fname, prompt = FALSE )
 {
-	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	if( is( option.object, "PBSoptions" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$save( fname, prompt )
 }
 saveOptionsGUI <-function( option.object )
 {
-	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	if( is( option.object, "PBSoptions" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$saveGUI()
 }
 setOptions <-function( option.object, ... )
 {
-	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	if( is( option.object, "PBSoptions" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$set( ... )
 }
 setOptionsFileName <-function( option.object, name )
 {
-	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	if( is( option.object, "PBSoptions" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$setFileName( name )
 }
 setOptionsPrefix <-function( option.object, prefix )
 {
-	if( is( option.object, "option" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
+	if( is( option.object, "PBSoptions" ) == FALSE ) stop( "option.object must be a pbsmodelling option class" )
 	option.object@instance$setPrefix( prefix )
 }
 

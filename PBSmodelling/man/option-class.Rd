@@ -1,8 +1,8 @@
-\name{option-class}
+\name{PBSoptions-class}
 \Rdversion{1.1}
 \docType{class}
-\alias{option-class}
-\alias{print,option-method}
+\alias{PBSoptions-class}
+\alias{print,PBSoptions-method}
 
 \title{Project Options Class}
 \description{
@@ -11,14 +11,14 @@
 	modified through the provided set of functions on the command line, or through a custom GUI.
 	These options can be saved to disk for use in subsequent R sessions.
 	
-	To use PBSmodelling's suite of option management functions, an \code{option} object must be
-	created for each of your projects. Each \code{option} object contains a distinct R environment where 
+	To use PBSmodelling's suite of option management functions, a \code{PBSoptions} object must be
+	created for each of your projects. Each \code{PBSoptions} object contains a distinct R environment where 
 	option values are stored; this allows different projects to use overlapping option names without conflicts
-	(provided each project has its own \code{option} class object).
+	(provided each project has its own \code{PBSoptions} class object).
 
 }
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("option", filename, initial.options = list(), gui.prefix = "option")}.
+Objects can be created by calls of the form \code{new("PBSoptions", filename, initial.options = list(), gui.prefix = "option")}.
   \describe{
     \item{\code{filename:}}{ default filename to use when saving and loading options to and from disk }
     \item{\code{initial.options:}}{ a list with distinctly named initial options to use if no previously saved file exists }
@@ -32,13 +32,13 @@ Objects can be created by calls of the form \code{new("option", filename, initia
 }
 \section{Methods}{
   \describe{
-    \item{print}{\code{signature(x = "option")}: prints the list of options }
+    \item{print}{\code{signature(x = "PBSoptions")}: prints the list of options }
   }
 }
 \details{
-  When an \code{option} object is created with the \code{new} function, the \code{initial.options} list, if supplied, is stored
+  When a \code{PBSoptions} object is created with the \code{new} function, the \code{initial.options} list, if supplied, is stored
   as initial user options in the object. The initialization routine then attempts to load user set options from the \code{filename} file. If such a file exists,
-  these values are stored in the \code{option} object overwriting any initial values as specified by \code{initial.options}
+  these values are stored in the \code{PBSoptions} object overwriting any initial values as specified by \code{initial.options}
   
   Option values are not directly stored in the object, but rather in an environment stored in the \code{instance} slot.
   Using an environment rather than slots for storing options allows us to pass option object by reference rather than value; that is,
@@ -63,7 +63,7 @@ Do not use the slots - use our functions instead.
 }
 \examples{
 #initialize an option manager with a single logical option
-.mypkg <<- new( "option", filename = "my_pkg.txt", initial.options = list( sillyhatday = FALSE ) )
+.mypkg <<- new( "PBSoptions", filename = "my_pkg.txt", initial.options = list( sillyhatday = FALSE ) )
 
 #retrieving an option
 silly <- getOptions( .mypkg, "sillyhatday" )
