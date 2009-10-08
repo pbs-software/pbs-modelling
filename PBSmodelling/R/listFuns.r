@@ -495,7 +495,7 @@ packList=function(stuff, target="PBSlist", value,
 		}
 	}
 	if (!is.vector(stuff) || !is.character(stuff))
-		showError("Provide a vector of names denoting objects")
+		showAlert("Provide a vector of names denoting objects")
 	target=deparse(substitute(target))
 	target=gsub("^\"","",gsub("\"$","",target)) # strip leading and ending escaped quotes
 	endpos=regexpr("[\\[$]",target)-1; if (endpos<=0) endpos=nchar(target)
