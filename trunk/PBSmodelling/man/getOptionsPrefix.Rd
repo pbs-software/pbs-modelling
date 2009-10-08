@@ -20,7 +20,7 @@ setOptionsPrefix(option.object, prefix)
   \code{getOptionsPrefix}: a prefix string used to reference GUI variables
 }
 \examples{
-.mypkg <<- new( "option", filename = "my_pkg.txt", initial.options = list( pi = 3.14 ), gui.prefix = "opt" )
+.mypkg <<- new( "PBSoptions", filename = "my_pkg.txt", initial.options = list( pi = 3.14 ), gui.prefix = "opt" )
 
 #prefix the option "pi" with "opt" to get "optpi"
 createWin( "entry name=optpi", astext = TRUE )
