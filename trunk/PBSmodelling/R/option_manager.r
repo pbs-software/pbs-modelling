@@ -163,7 +163,7 @@ definition=function(.Object, filename, initial.options = list(), gui.prefix = "o
 .showOptions <- function( object )
 {
 	cat( "filename:", object@instance$getFileName(), "\n" )
-	cat( "GUI.prefix:", object@instance$getPrefix(), "\n" )
+	cat( "gui.prefix:", object@instance$getPrefix(), "\n" )
 	opts <- object@instance$get()
 	if( length( opts ) == 0 )
 		cat( "Options: None\n" )
