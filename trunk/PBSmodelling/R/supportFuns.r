@@ -1420,10 +1420,10 @@ evalCall=function(fn,argu,...,envir=parent.frame(),checkdef=FALSE,checkpar=FALSE
 	sqn=sqrt(nc); m=ceiling(sqn); n=ceiling(nc/m)
 	return(c(m,n)) }
 
-#viewCode-------------------------------2009-04-21
+#viewCode-------------------------------2009-10-09
 # View package R code on the fly.
 #-----------------------------------------------RH
-viewCode=function(pkg="PBSmodelling", funs){
+viewCode=function(pkg="PBSmodelling", funs, output=4){
 	eval(parse(text=paste("if(!require(",pkg,",quietly=TRUE)) stop(\"",pkg," package is required\")",sep="")))
 	tdir <- tempdir(); tdir <- gsub("\\\\","/",tdir)                    # temporary directory for R
 	if (is.element(pkg,loadedNamespaces())){
@@ -1451,9 +1451,27 @@ viewCode=function(pkg="PBSmodelling", funs){
 		showAlert("Your choices yield no functions")
 		return(invisible("Error: choices for 'funs' yield no functions")) }
 	for (i in c(seeFuns)) {
-		expr=paste("fun=deparse(",pkg,delim,i,"); fun[1]=paste(\"",i,"\",fun[1],sep=\" = \",collapse=\"\"); code=c(code,fun)",sep="")
+		if (output %in% c(1,2)) {
+			expr=paste("fun=\"",i,"\"; ",sep="")
+			if (output==2) {
+				expr=c(expr,paste("helploc=utils::help(\"",i,"\",package=\"",pkg,"\",htmlhelp=TRUE,chmhelp=FALSE); ",sep=""))
+				expr=c(expr,"if (length(helploc)!=0) {")
+				expr=c(expr,"helpdoc=readLines(helploc); ")
+				expr=c(expr,"helptit=helpdoc[grep(\"<title>\",helpdoc)[1]]; ")
+				expr=c(expr,"fun=paste(fun,substring(helptit,23,nchar(helptit)-8),sep=\"\\t\") }; ") }
+		}
+		else if (output %in% c(3)) {
+			expr=paste("fun=deparse(args(",pkg,delim,i,")); fun=fun[!fun%in%\"NULL\"]; ",sep="")
+			expr=c(expr,"fun=paste(fun,collapse=\"\"); ")
+			expr=c(expr,"fun=gsub(\" \",\"\",x=fun); ")
+			expr=c(expr,paste("fun=gsub(\"function\",\"",i," \",x=fun); ",sep="")) }
+		else if (output %in% c(4)) {
+			expr=paste("fun=deparse(",pkg,delim,i,"); ",sep="")
+			expr=c(expr,paste("fun[1]=paste(\"",i,"\",fun[1],sep=\" = \",collapse=\"\"); ",sep="")) }
+		else expr="fun=\"\"; "
+		expr=paste(c(expr,"code=c(code,fun)") ,collapse="")
 		eval(parse(text=expr)) }
-	fname=paste(tdir,"/",pkg,".r",sep="")
+	fname=paste(tdir,"/",pkg,ifelse(output %in% 1:2,".txt",".r"),sep="")
 	writeLines(code, fname); openFile(convSlashes(fname))
 	invisible(code) }
 #----------------------------------------viewCode
