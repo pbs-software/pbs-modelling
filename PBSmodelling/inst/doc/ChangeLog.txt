@@ -1,6 +1,7 @@
 PBSmodelling Changes
 ====================
 2.XX  XXXXXXXXXX
+	- modified viewCode to summarize package functions in four ways.
 	- createWin: environment argument to search while calling widget callback functions
 	- fix droplist bug where values returned by getWinVal aren't correct if droplist's values were changed via setWinVal (after window creation)
 	- setWidgetColor - dynamically change fg/bg for entry,button,label,radio,check widgets

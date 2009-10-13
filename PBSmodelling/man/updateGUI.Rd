@@ -31,8 +31,8 @@ updateGUI(scope = "L")
 \examples{
   #law of free food: http://www.phdcomics.com/comics.php?f=1223
   createWin( c( 
-  	"vector names=\"foodquality hunger cost\" values=\"0.6 0.8 0.1\" width=10",
-  	"entry name=taste edit=F label=taste:" ), astext=TRUE )
+    "vector names=\"foodquality hunger cost\" values=\"0.6 0.8 0.1\" width=10",
+    "entry name=taste edit=F label=taste:" ), astext=TRUE )
   getWinVal( scope="L" )
   taste <- foodquality * hunger / cost
   updateGUI()

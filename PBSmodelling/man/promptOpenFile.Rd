@@ -1,8 +1,8 @@
 \name{promptOpenFile}
 \alias{promptOpenFile}
-\title{Depricated: Display Dialogue: Open File}
+\title{Deprecated: Display Dialogue: Open File}
 \description{
-	Depricated: use \code{\link{selectFile}} instead
+	Deprecated: use \code{\link{selectFile}} instead
 }
 \usage{
 promptOpenFile(initialfile="", filetype=list(c("*","All Files")), 
