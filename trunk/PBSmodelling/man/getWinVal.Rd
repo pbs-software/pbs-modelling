@@ -1,6 +1,6 @@
 \name{getWinVal}
 \alias{getWinVal}
-\title{Retreive Widget Values for Use in R Code}
+\title{Retrieve Widget Values for Use in R Code}
 
 \description{
 	Get a list of variables defined and set by the GUI widgets. An optional 

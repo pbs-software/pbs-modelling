@@ -1,6 +1,6 @@
 \name{getWinAct}
 \alias{getWinAct}
-\title{Retreive the Last Window Action}
+\title{Retrieve the Last Window Action}
 
 \description{
 	Get a string vector of actions (latest to earliest).

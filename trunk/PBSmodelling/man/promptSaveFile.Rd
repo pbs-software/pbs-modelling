@@ -1,8 +1,8 @@
 \name{promptSaveFile}
 \alias{promptSaveFile}
-\title{Depricated: Display Dialogue: Save File}
+\title{Deprecated: Display Dialogue: Save File}
 \description{
-	Depricated: use \code{\link{selectFile}} instead
+	Deprecated: use \code{\link{selectFile}} instead
 }
 \usage{
 promptSaveFile(initialfile="", filetype=list(c("*", "All Files")), 

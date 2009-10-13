@@ -1,6 +1,6 @@
 \name{getPBSoptions}
 \alias{getPBSoptions}
-\title{Retreive A User Option}
+\title{Retrieve A User Option}
 
 \description{
 	Get a previously defined user option.
