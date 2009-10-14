@@ -209,7 +209,7 @@ createVector <- function (vec, vectorLabels=NULL, func="", windowname="vectorwin
 #                 c(".r", "R files"), c("*", "All Files")))
 #----------------------------------------------ACB
 promptOpenFile <- function(initialfile="", filetype=list(c("*", "All Files")), open=TRUE) {
-	warning( "promptOpenFile is depricated - use selectFile instead" )
+	warning( "promptOpenFile is deprecated - use selectFile instead" )
 	filetypes <- ""
 	for(i in 1:length(filetype)) {
 		filetype[[i]]
@@ -233,7 +233,7 @@ promptOpenFile <- function(initialfile="", filetype=list(c("*", "All Files")), o
 #----------------------------------------------ACB
 promptSaveFile <- function(initialfile="", filetype=list(c("*", "All Files")), save=TRUE)
 {
-	warning( "promptSaveFile is depricated - use selectFile instead" )
+	warning( "promptSaveFile is deprecated - use selectFile instead" )
 	return(promptOpenFile(initialfile, filetype, !save))
 }
 

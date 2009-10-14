@@ -24,7 +24,7 @@
 #  filepath - filepath of file, relative from package root
 # -----------------------------------------------------------
 openPackageFile=function(package, filepath){
-	warning( "this function is depricated - use openFile" )
+	warning( "this function is deprecated - use openFile" )
   if(missing(package) && missing(filepath)){
     action=strsplit(getWinAct()[1], ",")
     package=action[[1]][1]
