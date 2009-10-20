@@ -5,7 +5,10 @@
 	.initPBSoptions()
 	
 	pkg_info <- utils::sessionInfo( package="PBSmodelling" )$otherPkgs$PBSmodelling
-	pkg_date <- strsplit( pkg_info$Packaged, " " )[[1]][1]
+	if( is.character( pkg_info$Packaged ) )
+		pkg_date <- strsplit( pkg_info$Packaged, " " )[[1]][1]
+	else
+		pkg_date  <- "unkown"
 	
 	userguide_path <- system.file( "doc/PBSmodelling-UG.pdf", package = "PBSmodelling" )
 	
