@@ -9,10 +9,10 @@ This short talk examines the "summary" method
 and applies it to the "swiss" dataset.</text>
 <text break="T">
 The talk itself comes from a talk description file.
-The next step should open that file (swissTalk.xml),
+The next step should open that file (swisstalk.xml),
 provided that a program is associated with xml files. </text>
 
-<file name="swissTalk" button="TRUE">swissTalk.xml</file>
+<file name="swissTalk" button="TRUE">swisstalk.xml</file>
 
 <text break="F">
 "summary" is a function (class function). </text>

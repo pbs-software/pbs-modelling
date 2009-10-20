@@ -1039,7 +1039,7 @@ runExamples <- function () {
 		} else if (act=="swissTalk") {
 			#TODO refactor this - should be more generic
 			closeWin(name=setdiff(allWin,"runE"))
-			presentTalk( "swissTalk.xml" )
+			presentTalk( "swisstalk.xml" )
 		} else {
 			if (act!="TestFuns")
 				closeWin(name=setdiff(allWin,c("runE","window")))
