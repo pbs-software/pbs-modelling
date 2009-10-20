@@ -31,7 +31,6 @@ presentTalk(talk)
   that accomplish similar purposes.
 }
 \examples{
-\dontrun{
 wd <- getwd() #save current directory
 talk_dir <- system.file("examples", package = "PBSmodelling" )
 setwd( talk_dir )
@@ -39,7 +38,6 @@ presentTalk( "swisstalk.xml" )
 	
 #restore working directory once talk GUI is closed
 setwd( wd )
-}
 }
 \note{
   See the PBSmodelling User's Guide for more information.
