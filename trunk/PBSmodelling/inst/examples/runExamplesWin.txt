@@ -26,7 +26,7 @@ grid 4 2 sticky=W byrow=F
 		radio name=eN value=41 sticky=W padx=10 text=LissFig   function=.runExHelper action=LissFig
 		radio name=eN value=42 sticky=W padx=10 text=FishTows  function=.runExHelper action=FishTows
 		radio name=eN value=43 sticky=W padx=10 text=Sudoku    function=.runExHelper action=sudokuSolver
-		radio name=eN value=44 sticky=W padx=10 text=SwissTalk function=.runExHelper action=swissTalk
+		radio name=eN value=44 sticky=W padx=10 text=swisstalk function=.runExHelper action=swisstalk
 		radio name=eN value=99 sticky=W padx=10 text=TestFuns  function=.runExHelper action=TestFuns
 label
 text name=wtxt height=15 width=60 relief=solid edit=TRUE value="" font="helvetica 8" bg=mintcream

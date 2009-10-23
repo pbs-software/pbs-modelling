@@ -507,7 +507,7 @@ presentTalk <- function( talk )
 		"label \"/ n\" name=slidecount font=\"8\" sticky=W",
 		"grid 1 2",
 		paste( "button name=back text=\"< Back\" bg=greenyellow sticky=S function=.prevSlide action=\"",name,"\" width=10", sep="" ),
-		paste( "button name=go text=\"> Go\" bg=greenyellow sticky=S function=.nextSlide action=\"",name,"\" width=10", sep="" ),
+		paste( "button name=go text=\"Go >\" bg=greenyellow sticky=S function=.nextSlide action=\"",name,"\" width=10", sep="" ),
 	
 	.getButtons( talk ),
 	""
