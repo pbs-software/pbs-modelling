@@ -1036,7 +1036,7 @@ runExamples <- function () {
 			winDesc <- strsplit(wtxt, "\n")[[1]]
 			createWin(winDesc, astext = TRUE)
 			return()
-		} else if (act=="swissTalk") {
+		} else if (act=="swisstalk") {
 			#TODO refactor this - should be more generic
 			closeWin(name=setdiff(allWin,"runE"))
 			presentTalk( "swisstalk.xml" )
