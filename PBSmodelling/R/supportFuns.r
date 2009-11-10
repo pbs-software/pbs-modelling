@@ -302,6 +302,8 @@ selectFile <- function(
 		setWinVal( val )
 		return( files )
 	}
+	if( multiple == FALSE )
+		return( files )
 	return( .tclArrayToVector( files ) )
 }
 
