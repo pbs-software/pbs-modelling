@@ -472,6 +472,9 @@ setClass( "talk", representation( name = "character", sections = "list", files =
 
 presentTalk <- function( talk )
 {
+	if( require( "XML" ) == FALSE ) {
+		stop( "the XML R package is required to use presentTalk - please install it first. Linux users might have to install libxml-dev (via apt) before installing the R XML package." )
+	}
 	PBSmodelling:::.initPBSoptions()
 	#setup .PBSmod$.talk (should be seperate package)
 	if( !is.null( .PBSmod[[ ".presentTalk" ]] ) )
