@@ -1,24 +1,28 @@
 \name{showHelp}
 \alias{showHelp}
-\title{Display Help Pages for Packages in HTML Browser}
+\title{Display HTML Help Pages for Packages in Browser}
 \description{
   Display the help pages for installed packages that match the 
   supplied pattern in an HTML browser window.
 }
 \usage{
-showHelp(pat="methods")
+showHelp(pattern="methods", ...)
 }
 \arguments{
-  \item{pat}{string pattern to match to package names}
+  \item{pattern}{string pattern to match to package names}
+  \item{...}{allows user to specify two additional arguments: \cr
+    \code{remote} - character string giving a valid URL for the \code{R_HOME}
+    directory on a remote location; \cr
+    \code{update} - logical: if \code{TRUE}, attempt to update the package
+    index to reflect the currently available packages. 
+    (Not attempted if \code{remote} is non-\code{NULL}.) }
 }
 \details{
   The specified pattern is matched to R-packages installed on 
-  the user's system. The code uses the \code{PBSmodelling} 
-  function \code{openFile} to display the HTML Help Pages using 
-  a program that the system associates with \code{html} 
-  extensions. On systems that do not support file extension 
-  associations, the function \code{setPBSext} can temporarily 
-  set a command to associate with an extension.
+  the user's system. The code uses the \code{utils} 
+  function \code{browseURL} to display the HTML Help Pages using 
+  a browser that the system associates with \code{html} 
+  extensions. (See help for \code{browseURL} for other operating systems.
 }
 \value{
   A list is invisibly returned, comprising:
@@ -37,7 +41,7 @@ showHelp(pat="methods")
   subsequent calls to \code{showHelp} should show all matches.
 }
 \seealso{ 
-	\code{\link{openFile}}, \code{\link{setPBSext}}, \code{\link{getPBSext}}
+	\code{\link{viewCode}}, \code{\link{showPacks}}
 }
 \keyword{device}
 \keyword{utilities}
