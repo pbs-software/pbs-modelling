@@ -6,13 +6,19 @@
   installed on the user's system.
 }
 \usage{
-viewCode(pkg="PBSmodelling", funs, output=4)
+viewCode(pkg="PBSmodelling", funs, output=4, ...)
 }
 \arguments{
   \item{pkg}{ string name of a package installed on the user's computer. }
   \item{funs}{ string vector of explicit function names from \code{pkg} to view. }
   \item{output}{ numeric value: 1 = function names only, 2 = function names with brief description,
     3 = functions and their arguments, and 4 = function R-code (default). }
+  \item{...}{allows user to specify two additional arguments for \code{output=2}: \cr
+    \code{remote} - character string giving a valid URL for the \code{R_HOME}
+    directory on a remote location; \cr
+    \code{update} - logical: if \code{TRUE}, attempt to update the package
+    index to reflect the currently available packages. 
+    (Not attempted if \code{remote} is non-\code{NULL}.) }
 }
 \details{
   If \code{funs} is not specified, then all functions, including
@@ -25,6 +31,9 @@ viewCode(pkg="PBSmodelling", funs, output=4)
 }
 \author{
   Rowan Haigh, Pacific Biological Station, Nanaimo BC
+}
+\seealso{ 
+	\code{\link{showHelp}}, \code{\link{view}}
 }
 \keyword{ character }
 \keyword{ package }

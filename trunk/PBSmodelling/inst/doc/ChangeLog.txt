@@ -1,5 +1,8 @@
 PBSmodelling Changes
 ====================
+2.xx  2009-xx-xx  Rowan
+  - Modified 'showHelp' and 'viewCode' to work with the new 'HTTP service running in the R process'.
+
 2.51  2009-10-23  Rowan
   - Further standardised "SwissTalk" and "swissTalk" to "swisstalk".
 
