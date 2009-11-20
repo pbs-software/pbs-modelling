@@ -15,6 +15,8 @@ if "%2"=="" (
 	) else (
 	set page=%2)
 
+set R_PAPERSIZE=letter
+set R_OSTYPE=windows
 set dviP=.Rd2dvi$
 set ext=aux;dvi;idx;ilg;ind;log;out;pdf;tex;toc
 SET PBS_NO_PAUSE=1
@@ -35,9 +37,7 @@ if not defined PBSERROR (
 	makeindex %dviP%\%1
 	pdflatex %dviP%\%1 -output-directory=%dviP%
 
-	%wzzip% %1-Manual.zip %dviP%\%1.*
 	cp -f %dviP%\%1.pdf %1.pdf
-	rem rm -f temp.txt
 )
 
 :end
