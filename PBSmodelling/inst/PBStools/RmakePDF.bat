@@ -26,7 +26,7 @@ if not defined PBSERROR (
 			rm -f "%1.%%a" ) )
 	if exist %dviP% (rm -rf %dviP%)
 	sed 's/\${\$}\"/\$\"\nR_PAPERSIZE=%R_PAPERSIZE%\nR_OSTYPE=%R_OSTYPE%/g' %R_PATH%\Rd2dvi.sh > %R_PATH%\Rd2dvi4pbs.sh
-	R CMD Rd2dvi4pbs.sh --pdf --no-clean --no-preview %1
+	R CMD %R_Path%\Rd2dvi4pbs.sh --pdf --no-clean --no-preview %1
 	sed 's/makeindex{}/makeindex{}\n\\\topmargin -0.25in \\\oddsidemargin 0in \\\evensidemargin 0in\n\\\textheight 9in \\\textwidth 6.5in/g' %dviP%\Rd2.tex > %dviP%\temp01.tex
 	sed 's/begin{document}/begin{document}\n\\\setcounter{page}{%page%}/g' %dviP%\temp01.tex > %dviP%\%1.tex
 	
@@ -35,8 +35,9 @@ if not defined PBSERROR (
 	makeindex %dviP%\%1
 	pdflatex %dviP%\%1 -output-directory=%dviP%
 
-	rem %wzzip% %1-Manual.zip %dviP%\%1.*
+	%wzzip% %1-Manual.zip %dviP%\%1.*
 	cp -f %dviP%\%1.pdf %1.pdf
+	rem rm -f temp.txt
 )
 
 :end
