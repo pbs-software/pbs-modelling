@@ -286,13 +286,13 @@ setClass( "talk", representation( name = "character", sections = "list", files =
 	for( s in talk@sections ) {
 		#save section under menu
 		i <- length( sections ) + 1
-		sections[ i ] <- paste( "menuitem label=", s@name, " function=.setsection action=", talk@name, ":", sect_id, sep="" )
+		sections[ i ] <- paste( "menuitem label=\"", s@name, "\" function=.setsection action=\"", talk@name, ":", sect_id, "\"", sep="" )
 
 		#look for files
 		for( item in s@items ) {
 			if( inherits( item, "file" ) ) {
 				i <- length( files ) + 1
-				files[ i ] <- paste( "menuitem label=", item@name, " function=.presentTalkOpenFile action=", item@filename, sep="" )
+				files[ i ] <- paste( "menuitem label=\"", item@name, "\" function=.presentTalkOpenFile action=\"", item@filename, "\"", sep="" )
 			}
 		}
 		sect_id <- sect_id + 1
