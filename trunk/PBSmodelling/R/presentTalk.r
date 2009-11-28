@@ -25,9 +25,13 @@ setClass( "talk", representation( name = "character", sections = "list", files =
 			else if( xmlName( i ) == "code" ) item <- .processCode( i )
 			#else if( xmlName( i ) == "break" ) item <- processBreak( i )
 			else if( xmlName( i ) == "comment" ) { next } #do nothing
-			else stop( paste( "not implmented:", xmlName(i) ) )
+			else stop( paste( "Error unhandled xml tag found:", xmlName(i) ) )
 			
 			x@items[[ length( x@items ) + 1 ]] <- item
+		}
+
+		if( length( x@items ) == 0 ) {
+			stop( paste( "Error parsing ", talk_fname, ": section \"", x@name, "\" does not contain any children (text,file,code) items", sep="" ) )
 		}
 	
 		#scan through items, and place breaks accordingly (it would be easier to just have a <break/>)
@@ -294,11 +298,15 @@ setClass( "talk", representation( name = "character", sections = "list", files =
 		sect_id <- sect_id + 1
 	}
 
-	w <- paste( "menu nitems=", length( sections ), " label=Sections", sep="" )
-	w <- append( w, sections )
+	if( length( sections ) > 0 ) {
+		w <- paste( "menu nitems=", length( sections ), " label=Sections", sep="" )
+		w <- append( w, sections )
+	}
 
-	w <- append( w, paste( "menu nitems=", length( files ), " label=Files", sep="" ) )
-	w <- append( w, files )
+	if( length( files ) > 0 ) {
+		w <- append( w, paste( "menu nitems=", length( files ), " label=Files", sep="" ) )
+		w <- append( w, files )
+	}
 
 	return( w )
 }
@@ -488,7 +496,7 @@ presentTalk <- function( talk )
 	.PBSmod[[ ".presentTalk" ]][[ name ]] <<- list( index = 0, talk = talk )
 
 	#create a GUI for it
-	createWin( c(
+	win_desc <- c(
 	paste( "window name=presentwin title=\"", .addslashes( name ), "\"", sep="" ),
 	.getMenus( talk ),
 	"grid 1 2 pady=\"0 5\"",
@@ -514,7 +522,8 @@ presentTalk <- function( talk )
 	
 	.getButtons( talk ),
 	""
-	), astext = TRUE )
+	)
+	createWin( win_desc, astext = TRUE )
 	
 	#initialize section droplist
 	section_names <- .getSectionNames( talk )
