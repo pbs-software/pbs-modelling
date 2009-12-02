@@ -1,6 +1,8 @@
 PBSmodelling Changes
 ====================
 2.xx  2009-xx-xx  Rowan
+  - Updated Developer's Guide (new 'Appendix C: Adding a New Widget'). Also numerous formatting changes.
+  - Fixed very tiny bug (microscopic) in the 'check' widget WDF of 'testWidget'.
   - Modified 'showHelp' and 'viewCode' to work with the new 'HTTP service running in the R process'.
 
 2.51  2009-10-23  Rowan
