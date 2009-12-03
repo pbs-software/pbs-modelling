@@ -1,6 +1,7 @@
 PBSmodelling Changes
 ====================
-2.xx  2009-xx-xx  Rowan
+2.55  2009-12-02  Rowan and Jon
+  - Advanced to version 2.55 for posting on CRAN (Google version will be added: 2.55.xxx)
   - Updated Developer's Guide (new 'Appendix C: Adding a New Widget'). Also numerous formatting changes.
   - Fixed very tiny bug (microscopic) in the 'check' widget WDF of 'testWidget'.
   - Modified 'showHelp' and 'viewCode' to work with the new 'HTTP service running in the R process'.
