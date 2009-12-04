@@ -1555,4 +1555,13 @@ clearRcon <- function(os=.Platform$OS.type) {
 	system(paste("cscript //NoLogo", fname), minimized=TRUE)
 	invisible(fname) }
 
+#openUG---------------------------------2009-12-04
+# Open package User Guide 'pkg-UG.pdf' if it exists.
+# Essentially a wrapper for 'openFile'.
+#-----------------------------------------------RH
+openUG = function(pkg="PBSmodelling"){
+	pkgnam = as.character(substitute(pkg))
+	openFile(paste("/doc/",pkgnam,"-UG.pdf",sep=""),pkgnam)
+}
+
 
