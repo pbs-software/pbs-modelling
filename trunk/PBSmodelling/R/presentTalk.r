@@ -7,6 +7,17 @@ setClass( "break", representation( "NULL" ) ) #this prints a message - wtf R?!!!
 setClass( "section", representation( name = "character", items = "list", button = "logical", col = "integer", section_id = "integer" ) ) #items should be a list of the above 4 s4 classes
 setClass( "talk", representation( name = "character", sections = "list", files = "list" ) )
 
+
+setValidity ("code", function( object )
+{
+	valid_breaks <- c( "show", "print", "all", "none" )
+	if( any( object@"break" == valid_breaks ) == FALSE )
+		return( paste( "code's break arugment must be one of: ", paste( valid_breaks, collapse=" " ), sep="" ) )
+	return( TRUE )
+}
+)
+
+
 #returns a talk s4 class - given a filename to an xml talk
 .parseTalkFile <- function( talk_fname )
 {
@@ -100,7 +111,7 @@ setClass( "talk", representation( name = "character", sections = "list", files =
 				show = as.logical( xmlGetAttr( node, "show", TRUE ) ), 
 				print = as.logical( xmlGetAttr( node, "print", TRUE ) ), 
 				code = xmlValue( node ), 
-				"break" = xmlGetAttr( node, "break", "print" )
+				"break" = tolower( xmlGetAttr( node, "break", "print" ) )
 				) )
 	}
 
