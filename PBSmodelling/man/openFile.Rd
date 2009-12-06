@@ -25,6 +25,10 @@ openFile(fname, package=NULL)
   \code{openFile} will replace all occurrences of \code{"\%f"} 
   with the absolute path of the filename, before executing the command.
 }
+\section{Warning}{
+	Windows only: \code{openFile( ".." )} does not work as expected, but openFile( "../.." ) only opens the first parent directory.
+}
+
 \seealso{
   \code{\link{getPBSext}}, \code{\link{setPBSext}}, \code{\link{clearPBSext}},
   \code{\link{writePBSoptions}}
