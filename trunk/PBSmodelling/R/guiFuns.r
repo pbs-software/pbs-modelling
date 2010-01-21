@@ -2047,6 +2047,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$font <- .createTkFont(widget$font)
 
 	notebook <- do.call( "tkwidget", argList )
+	if( !is.null( widget[["name"]] ) )
 	.map.set( winName, widget$name, tclwidget=notebook )
 
 
@@ -2159,14 +2160,43 @@ parseWinFile <- function(fname, astext=FALSE)
 	widget <- widgetList[[ 1 ]]
 	argList <- list(parent=tk)
 
-	image = widget$file
+	#one must be given, the other must be null
+	if( is.null( widget[["file"]] ) == is.null( widget[["varname"]] ) )
+    	.stopWidget("a value must be specified for one of either `file' or `varname'", widget$.debug, winName)
+	
+	if( is.null( widget[["varname"]] ) == FALSE ) {
+		#get image from variable
+		if( !exists( widget$varname, envir=.PBSmod[[ winName ]]$env ) ) {
+			msg <- paste( "unable to load image from variable \"", widget[["varname"]], "\" - variable not found", sep="" )
+			#R is crashing here.... wtf? .stopWidget( msg, widget$.debug, winName ) #maybe its crashing when the window is closed by tkclose
+			stop( msg )
+		}
+		image <- get( widget$varname, env = .PBSmod[[ winName ]]$env )
+	} else {
+		image = widget$file
+	}
+
+	#check file exists
+	if( file.exists( image ) == FALSE ) {
+		msg <- paste( "unable to open image \"", image, "\" - file does not exist", sep="" )
+		stop( msg )
+	}
+
 	image.id = paste( "PBSmodelling::", image, sep="" )
 
 	x = try(tcl("image","create","photo", image.id, file=image ),silent=TRUE)
 	if( inherits( x, "try-error" ) ) {
     	.stopWidget(paste("unable to open file", widget$file, " - only gif is supported"), widget$.debug, winName)
 	}
-	argList$image = image.id
+	if( !is.null( widget[["subsample"]] ) && widget$subsample > 1 ) {
+		#subsample the image (not a true resize, but the closest we'll get without using any fancy img libs
+		image.sized = paste( image.id, "::subsample", sep="" )
+		sized_img <- tcl("image","create","photo", image.sized )
+		tcl( sized_img, "copy", x, subsample=widget$subsample )
+		argList$image = image.sized #use subsampled image
+	} else {
+		argList$image = image.id #use original image
+	}
 
 	tkWidget<-do.call("tklabel", argList)
 	return( list( widget = tkWidget, widgetList = widgetList[ -1 ] ) )
@@ -2174,7 +2204,14 @@ parseWinFile <- function(fname, astext=FALSE)
 
 .createWidget.progressbar <- function(tk, widgetList, winName)
 {
+	#example using ttk instead of bwidget
+	#widget <- widgetList[[ 1 ]]
+	#variable <- .map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
+	#tkwidget <- tkwidget(tk, "ttk::progressbar", variable = variable )
+	#return( list( widget = tkwidget, widgetList = widgetList[ -1 ] ) )
+
 	widget <- widgetList[[ 1 ]]
+	#usualy I would use tkwidget(.....), but we need to pass `type' to the widget creation (unfortuantly type is used by tkwidget too)
 	win <- .Tk.subwin( tk )
 	argList <- list( "ProgressBar", win )
 	#used to change progress value
@@ -2183,17 +2220,23 @@ parseWinFile <- function(fname, astext=FALSE)
 	if (!is.null(widget[["fg"]]) && widget$fg!="")
 		argList$foreground=widget$fg
 	if (!is.null(widget[["bg"]]) && widget$bg!="")
-		argList$background=widget$bg
+		argList$troughcolor=widget$bg
 	if (!is.null(widget[["maximum"]]) && widget$maximum > 0)
 		argList$maximum <- widget$maximum
+	if (!is.null(widget[["height"]]) && widget$height > 0)
+		argList$height <- widget$height 
 	if (!is.null(widget[["width"]]) && widget$width > 0)
 		argList$width <- widget$width 
+	if (!is.null(widget[["borderwidth"]]))
+		argList$borderwidth <- widget$borderwidth 
+	if (!is.null(widget[["relief"]]) && widget$width != "")
+		argList$relief <- widget$relief 
 	if (!is.null(widget[["vertical"]]) && widget$vertical == TRUE)
-		argList$orrient <- "vertical"
+		argList$orient <- "vertical"
 	if (!is.null(widget[["style"]]) && widget$style!="")
 		argList$type <- widget$style
 
-	do.call( "tcl", argList )
+	tmp <- do.call( "tcl", argList )
 
 	return( list( widget = win, widgetList = widgetList[ -1 ] ) )
 }
