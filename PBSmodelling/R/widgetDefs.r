@@ -62,7 +62,12 @@
 
 .widgetDefs$image <- list(
 	list(param='type', required=TRUE, class="character"),
-	list(param='file', required=TRUE, class="character")
+	list(param='file', required=FALSE, class="character", default=NULL),
+	list(param='varname', required=FALSE, class="character", default=NULL),
+	list(param='subsample', required=FALSE, class="integer", default=NULL),
+	list(param='sticky', required=FALSE, class="character", default="we", grep="^(n|s|N|S|e|w|E|W)*$"),
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 .widgetDefs$progressbar <- list(
@@ -71,11 +76,16 @@
 	list(param='value', required=FALSE, class="numeric", default=0),
 	list(param='maximum', required=FALSE, class="numeric", default=100),
 	list(param='style', required=FALSE, class="character", default="normal", grep="^(normal|incremental|infinite|nonincremental_infinite)$"),
-	list(param='width', required=FALSE, class="integer" ),
+	list(param='width', required=FALSE, class="integer", default=NULL ),
+	list(param='height', required=FALSE, class="integer", default=NULL ),
 	list(param='vertical', required=FALSE, class="logical", default=FALSE ),
-	list(param='fg', required=FALSE, class="character"),
-	list(param='bg', required=FALSE, class="character"),
-	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$")
+	list(param='fg', required=FALSE, class="character", default=NULL),
+	list(param='bg', required=FALSE, class="character", default=NULL),
+	list(param='relief', required=FALSE, class="character", default="sunken", grep="^(raised|sunken|flat|ridge|groove|solid)$"),
+	list(param='borderwidth', required=FALSE, class="integer", default=2),
+	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
 
