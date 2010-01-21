@@ -41,6 +41,44 @@
 	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
 
+.widgetDefs$notebook <- list(
+	list(param='type', required=TRUE, class="character"),
+	list(param='tabs', required=TRUE, class="characterVector"),
+	list(param='name', required=FALSE, class="character", default=NULL),
+	list(param='selected', required=FALSE, class="integer", default=1),
+	list(param='tabpos', required=FALSE, class="character", default="top", grep="^(top|bottom)$"),
+	list(param='font', required=FALSE, class="character", default=""),
+#fg/bg don't change tab colours
+#	list(param='fg', required=FALSE, class="character", default=NULL),
+#	list(param='bg', required=FALSE, class="character", default=NULL),
+	list(param='width', required=FALSE, class="integer", default=0),
+	list(param='height', required=FALSE, class="integer", default=0),
+	list(param='function', required=FALSE, class="character", default=NULL),
+	list(param='action', required=FALSE, class="character", default="notebook"),
+	list(param='sticky', required=FALSE, class="character", default="we", grep="^(n|s|N|S|e|w|E|W)*$"),
+	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
+	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
+	)
+
+.widgetDefs$image <- list(
+	list(param='type', required=TRUE, class="character"),
+	list(param='file', required=TRUE, class="character")
+	)
+
+.widgetDefs$progressbar <- list(
+	list(param='type', required=TRUE, class="character"),
+	list(param='name', required=TRUE, class="character"),
+	list(param='value', required=FALSE, class="numeric", default=0),
+	list(param='maximum', required=FALSE, class="numeric", default=100),
+	list(param='style', required=FALSE, class="character", default="normal", grep="^(normal|incremental|infinite|nonincremental_infinite)$"),
+	list(param='width', required=FALSE, class="integer" ),
+	list(param='vertical', required=FALSE, class="logical", default=FALSE ),
+	list(param='fg', required=FALSE, class="character"),
+	list(param='bg', required=FALSE, class="character"),
+	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$")
+	)
+
+
 .widgetDefs$menu <- list(
 	list(param='type', required=TRUE, class="character"),
 	list(param='nitems', required=FALSE, class="integer", default=1),
