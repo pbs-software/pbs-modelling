@@ -118,6 +118,7 @@
 	list(param='bg', required=FALSE, class="character", default=""),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
 	list(param='justify', required=FALSE, class="character", default="left", grep="^(l|r|c|left|right|center)?$"),
+	list(param='anchor', required=FALSE, class="character", default="center", grep="^(N|NE|E|SE|S|SW|W|NW|CENTER|n|ne|e|se|s|sw|w|nw|center)$"),
 	list(param='wraplength', required=FALSE, class="integer", default=0, grep="^[0-9]+$"),
 	list(param='width', required=FALSE, class="integerVector", default=0, grep="^[0-9]+$"),
 	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),

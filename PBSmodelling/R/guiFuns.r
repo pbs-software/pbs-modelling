@@ -2256,6 +2256,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$background=widget$bg
 	if (!is.null(widget[["font"]]) && any(widget$font!=""))
 		argList$font <- .createTkFont(widget$font)
+	if (!is.null(widget[["anchor"]]) && widget$anchor!="")
+		argList$anchor <- tolower( widget$anchor )
 	if (!is.null(widget[["justify"]]) && widget$justify!="")
 		argList$justify <- widget$justify
 	if (!is.null(widget[["wraplength"]]) && widget$wraplength > 0)
