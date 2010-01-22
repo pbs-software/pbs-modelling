@@ -653,10 +653,21 @@ testWidgets <- function () {
 		else {
 			pckg <- "PBSmodelling"; dnam <- "testWidgets";
 			act  <- getWinAct()[1];
+
+			#get window descript
 			wtmp <- paste(dnam,"/",act,".txt",sep="");
 			wnam <- system.file(wtmp,package=pckg)
 			wtxt <- paste(readLines(wnam),collapse="\n");
+
+			#source r file if appropriate (can I source it under a different environment to protect myself?)
+			rtmp <- paste(dnam,"/",act,".r",sep="");
+			rnam <- system.file(rtmp,package=pckg)
+
+			if( file.exists( rnam ) )
+				source( rnam )
+
 			createWin(wnam);
+
 		}
 		setWinVal(list(wtxt=wtxt), winName="testW");
 	}

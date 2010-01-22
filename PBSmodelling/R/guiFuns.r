@@ -854,8 +854,17 @@ createWin <- function( fname, astext=FALSE, env=parent.frame() ) #globalenv() )
 			sticky = ""
 			if( is.null( widgetList[[ 1 ]][[ "sticky" ]] ) == FALSE )
 				sticky = widgetList[[ 1 ]][[ "sticky" ]]
-			pady <- ifelse( is.null( widgetList[[ 1 ]][[ "pady" ]] ), 0, widgetList[[ 1 ]][[ "pady" ]] )
-			padx <- ifelse( is.null( widgetList[[ 1 ]][[ "padx" ]] ), 0, widgetList[[ 1 ]][[ "padx" ]] )
+
+			if( is.null( widgetList[[ 1 ]][[ "padx" ]] ) )
+				padx = 0
+			else
+				padx = widgetList[[ 1 ]][[ "padx" ]]
+
+			if( is.null( widgetList[[ 1 ]][[ "pady" ]] ) )
+				pady = 0
+			else
+				pady = widgetList[[ 1 ]][[ "pady" ]]
+			
 			vert <- guiDesc[[i]]$vertical
 			tkgrid( 
 					tmp[[ "widget" ]], 
@@ -1866,6 +1875,8 @@ parseWinFile <- function(fname, astext=FALSE)
 #		for(j in 1:grid$ncol) {
 	for( i in 0:(grid$nrow * grid$ncol - 1) ) {
 		#create Widget (here's the recursive widget creation call)
+		if( length( childWidgets ) == 0 )
+			.stopWidget( "not enough children widgets to build grid", grid$.debug, winName )
 		widget_def <- childWidgets[[ 1 ]]
 		tmp <- .createWidget(tk, childWidgets, winName)
 		widget <- tmp[[ "widget" ]]
@@ -2229,7 +2240,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$width <- widget$width 
 	if (!is.null(widget[["borderwidth"]]))
 		argList$borderwidth <- widget$borderwidth 
-	if (!is.null(widget[["relief"]]) && widget$width != "")
+	if (!is.null(widget[["relief"]]) && widget$relief != "")
 		argList$relief <- widget$relief 
 	if (!is.null(widget[["vertical"]]) && widget$vertical == TRUE)
 		argList$orient <- "vertical"
