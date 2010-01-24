@@ -4911,7 +4911,7 @@ clearWinVal <- function()
 # colours can be set (fg, bg) for and droplist, check widgets, (entryfg, entrybg) for entry widget
 # these are passed as ...
 
-setWidgetColor <- function( name, winName = .PBSmod$.activeWin, ... )
+setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... )
 {
 	configure.entry <- function( ptr, entryfg, entrybg )
 	{
@@ -4953,14 +4953,38 @@ setWidgetColor <- function( name, winName = .PBSmod$.activeWin, ... )
 			tkconfigure( ptr, bg = bg )
 	}
 
+	configure.text <- function( ptr, fg, bg )
+	{
+		if( !missing( fg ) )
+			tkconfigure( ptr, fg = fg )
+		if( !missing( bg ) )
+			tkconfigure( ptr, bg = bg )
+	}
+
+	configure.spinbox <- function( ptr, fg, bg )
+	{
+		if( !missing( fg ) )
+			tkconfigure( ptr, foreground = fg, selectforeground = fg, entryfg = fg )
+		if( !missing( bg ) )
+			tkconfigure( ptr, bg = bg, insertbackground = bg, selectbackground = bg, entrybg = bg )
+	}
+
 	#TODO need support for groups of radios or a single radio value
-	#	configure.radio <- function( ptr, fg, bg )
-	#	{
-	#		if( !missing( fg ) )
-	#			tkconfigure( ptr, fg = fg )
-	#		if( !missing( bg ) )
-	#			tkconfigure( ptr, bg = bg )
-	#	}
+	configure.radio <- function( name, radioValue, winName, fg, bg )
+	{
+		widget_list <- .map.get( winName, name )$tclwidgetlist
+		if( missing( radioValue ) )
+			radioValue <- names( widget_list ) #use all values (change state for every matching var name)
+		else
+			radioValue <- as.character( radioValue )
+		for( key in radioValue ) {
+			ptr = widget_list[[ key ]]
+			if( !missing( fg ) )
+				tkconfigure( ptr, fg = fg )
+			if( !missing( bg ) )
+				tkconfigure( ptr, bg = bg )
+		}
+	}
 
 
 	#### function starts here ####
@@ -4978,10 +5002,17 @@ setWidgetColor <- function( name, winName = .PBSmod$.activeWin, ... )
 	#get tcl ptr to tk widget
 	widget_ptr <- .PBSmod[[ winName ]]$widgetPtrs[[ name ]]$tclwidget
 
+	#special case for radio widgets
+	if( widget$type == "radio" ) {
+		configure.radio( name = name, radioValue = radioValue, winName = winName, ... )
+		return(invisible())
+	}
+
 	#call specific config method based on widget type
 	func <- paste( "configure.", widget$type, sep="" )
 	if( exists( func ) == FALSE )
 		stop( paste( "not supported for widget type:", widget$type ) )
+
 
 	do.call( func, list( ptr=widget_ptr, ... ) )
 
