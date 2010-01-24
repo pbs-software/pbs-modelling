@@ -65,7 +65,7 @@
 	list(param='file', required=FALSE, class="character", default=NULL),
 	list(param='varname', required=FALSE, class="character", default=NULL),
 	list(param='subsample', required=FALSE, class="integer", default=NULL),
-	list(param='sticky', required=FALSE, class="character", default="we", grep="^(n|s|N|S|e|w|E|W)*$"),
+	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),
 	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
 	list(param='pady', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$")
 	)
