@@ -1,0 +1,5 @@
+window name=widWin title="Widget = image"
+label "Pacific Biological Station" font=bold
+label "Nanaimo, BC"
+image varname=pbs_image_path 
+#value of pbs_image_path  used to open image
