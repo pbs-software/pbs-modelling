@@ -2052,6 +2052,12 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$foreground=widget$fg
 	if (!is.null(widget[["bg"]]) && widget$bg!="")
 		argList$bg=widget$bg
+	if (!is.null(widget[["arcradius"]]) && widget$arcradius!="")
+		argList$arcradius=widget$arcradius
+	if (!is.null(widget[["tabbevelsize"]]) && widget$tabbevelsize!="")
+		argList$tabbevelsize=widget$tabbevelsize
+	if (!is.null(widget[["homogeneous"]]) && widget$homogeneous!="")
+		argList$homogeneous=widget$homogeneous
 	if (!is.null(widget[["tabpos"]]) && widget$tabpos!="")
 		argList$side=widget$tabpos
 	if (!is.null(widget[["font"]]) && any(widget$font!=""))
@@ -2225,8 +2231,11 @@ parseWinFile <- function(fname, astext=FALSE)
 	#usualy I would use tkwidget(.....), but we need to pass `type' to the widget creation (unfortuantly type is used by tkwidget too)
 	win <- .Tk.subwin( tk )
 	argList <- list( "ProgressBar", win )
+
 	#used to change progress value
-	argList$variable <- .map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
+	if( widget$style == "incremental" )
+		widget$value = widget$value / 2 #there's a but in the bwidgets/tk that doubles this value
+	argList$variable <- .map.add(winName, widget$name, tclvar=tclVar( widget$value ))$tclvar
 
 	if (!is.null(widget[["fg"]]) && widget$fg!="")
 		argList$foreground=widget$fg
