@@ -3713,6 +3713,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	argList$variable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
 	argList$command<-function(...) { .extractData(widget[["function"]], widget$action, winName)}
 	tkWidget<-do.call("tkscale", argList)
+	.map.set( winName, widget$name, tclwidget=tkWidget )
 	return(list( widget = tkWidget, widgetList = widgetList[ -1 ] ) )
 }
 
@@ -5047,8 +5048,8 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 	wid<-.PBSmod[[winname]]$widgets[[varname]]
 	if( is.null( wid ) ) stop(paste("supplied widget \"",varname,"\" name not found", sep=""))
 
-	if( any( wid$type == c( "table" ) ) )
-		stop( "table widget is not supported" )
+	if( any( wid$type == c( "notebook" ) ) )
+		stop( paste( wid$type, "widget is not supported" ) )
 
 	#change readonly -> disabled for widgets which dont support readonly
 	if( any( wid$type == c( "check", "radio", "droplist", "spinbox" ) ) && state == "readonly" )
@@ -5119,7 +5120,7 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 		return( setWidgetState(paste("[superobject]", varname,sep=""), state, winname) )
 	}
 
-	stop(paste("unable to update \"", varname, "\" - no widget found.", sep=""))
+	stop(paste("unable to update \"", varname, "\" - unable to handle type:", wid$type, sep=""))
 }
 
 
