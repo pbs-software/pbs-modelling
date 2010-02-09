@@ -49,8 +49,8 @@
 	list(param='tabpos', required=FALSE, class="character", default="top", grep="^(top|bottom)$"),
 	list(param='font', required=FALSE, class="character", default=""),
 #fg/bg don't change tab colours
-#	list(param='fg', required=FALSE, class="character", default=NULL),
-#	list(param='bg', required=FALSE, class="character", default=NULL),
+	list(param='fg', required=FALSE, class="character", default=NULL),
+	list(param='bg', required=FALSE, class="character", default=NULL),
 	list(param='width', required=FALSE, class="integer", default=0),
 	list(param='height', required=FALSE, class="integer", default=0),
 	list(param='homogeneous', required=FALSE, class="logical", default=FALSE),
