@@ -2160,6 +2160,8 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$background=widget$bg
 	if (!is.null(widget[["font"]]) && any( widget$font!=""))
 		argList$font <- .createTkFont(widget$font)
+	if (!is.null(widget[["disablefg"]]) && widget$disablefg!="")
+		argList$disabledforeground = widget$disablefg
 
 	argList$variable <- .map.add(winName, widget$name, tclvar=tclVar(val))$tclvar
 	argList$command=function(...) { .extractData(widget[["function"]], widget$action, winName)}
@@ -3886,6 +3888,9 @@ parseWinFile <- function(fname, astext=FALSE)
 		param$width=widget$width
 	if (widget[["function"]]!="")
 		param$command=function(...) { .extractData(widget[["function"]], widget$action, winName) }
+	if (!is.null(widget[["disablefg"]]) && widget$disablefg!="")
+		param$disabledforeground = widget$disablefg
+
 	button <- do.call(tkbutton, param)
 	if( !is.null( widget[[ "name" ]] ) ) 
 		.map.add(winName, widget$name, tclwidget=button)
