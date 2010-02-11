@@ -2259,6 +2259,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		argList$type <- widget$style
 
 	tmp <- do.call( "tcl", argList )
+	.map.set( winName, widget$name, tclwidget=tmp )
 
 	return( list( widget = win, widgetList = widgetList[ -1 ] ) )
 }
@@ -4928,12 +4929,18 @@ clearWinVal <- function()
 
 setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... )
 {
-	configure.entry <- function( ptr, entryfg, entrybg )
+	configure.entry <- function( ptr, entryfg, entrybg, noeditfg, noeditbg )
 	{
 		if( !missing( entryfg ) )
 			tkconfigure( ptr, fg = entryfg )
 		if( !missing( entrybg ) )
 			tkconfigure( ptr, bg = entrybg )
+		if( !missing( noeditfg ) )
+			tkconfigure( ptr, disabledforeground=noeditfg )
+		if( !missing( noeditbg ) ) {
+			tkconfigure( ptr, disabledbackground=noeditbg )
+			tkconfigure( ptr, readonlybackground=noeditbg )
+		}
 	}
 
 	configure.droplist <- function( ptr, fg, bg )
@@ -4951,6 +4958,14 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 		if( !missing( bg ) )
 			tkconfigure( ptr, bg = bg )
 	}
+
+	configure.slide <- function( ptr, fg, bg )
+	{
+		if( !missing( fg ) )
+			tkconfigure( ptr, fg = fg )
+		if( !missing( bg ) )
+			tkconfigure( ptr, bg = bg )
+	}
 	
 	configure.label <- function( ptr, fg, bg )
 	{
@@ -4960,12 +4975,22 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 			tkconfigure( ptr, bg = bg )
 	}
 	
-	configure.button <- function( ptr, fg, bg )
+	configure.button <- function( ptr, fg, bg, disablefg )
 	{
 		if( !missing( fg ) )
 			tkconfigure( ptr, fg = fg )
 		if( !missing( bg ) )
 			tkconfigure( ptr, bg = bg )
+		if( !missing( disablefg ) )
+			tkconfigure( ptr, disabledforeground = disablefg )
+	}
+
+	configure.progressbar <- function( ptr, fg, bg )
+	{
+		if( !missing( fg ) )
+			tcl( ptr, "configure", fg = fg )
+		if( !missing( bg ) )
+			tcl( ptr, "configure", troughcolor = bg )
 	}
 
 	configure.text <- function( ptr, fg, bg )
@@ -4976,12 +5001,12 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 			tkconfigure( ptr, bg = bg )
 	}
 
-	configure.spinbox <- function( ptr, fg, bg )
+	configure.spinbox <- function( ptr, entryfg, entrybg )
 	{
-		if( !missing( fg ) )
-			tkconfigure( ptr, foreground = fg, selectforeground = fg, entryfg = fg )
-		if( !missing( bg ) )
-			tkconfigure( ptr, bg = bg, insertbackground = bg, selectbackground = bg, entrybg = bg )
+		if( !missing( entryfg ) )
+			tkconfigure( ptr, foreground = entryfg, selectforeground = entryfg, entryfg = entryfg )
+		if( !missing( entrybg ) )
+			tkconfigure( ptr, bg = entrybg, insertbackground = entrybg, selectbackground = entrybg, entrybg = entrybg )
 	}
 
 	#TODO need support for groups of radios or a single radio value
@@ -5000,7 +5025,6 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 				tkconfigure( ptr, bg = bg )
 		}
 	}
-
 
 	#### function starts here ####
 	
@@ -5023,21 +5047,55 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 		return(invisible())
 	}
 
+	#special case for matrix
+	if (widget$type=="matrix") {
+		if (length(widget$names)==1) {
+			for(i in 1:widget$nrow)
+				for(j in 1:widget$ncol)
+					setWidgetColor(paste(name,"[",i,",",j,"]",sep=""), winName = winName, ... )
+			return(NULL)
+		}
+	}
+
+	#special case for data
+	if (widget$type=="data") {
+		if (length(widget$names)==1) {
+			for(i in 1:widget$nrow)
+				for(j in 1:widget$ncol)
+					setWidgetColor(paste(name,"[",i,",",j,"]d",sep=""), winName = winName, ... )
+			return(NULL)
+		}
+	}
+
+	#special case for vector
+	if (widget$type=="vector") {
+		if (length(widget$names)==1) {
+			for(i in 1:widget$length)
+				setWidgetColor(paste(name,"[",i,"]",sep=""), winName = winName, ... )
+			return(NULL)
+		}
+	}
+
+	#scrolling object
+	if (widget$type=="object") {
+		return( setWidgetColor(paste("[superobject]", name,sep=""), winName = winName, ... ) )
+	}
+
+
+
 	#call specific config method based on widget type
 	func <- paste( "configure.", widget$type, sep="" )
 	if( exists( func ) == FALSE )
 		stop( paste( "not supported for widget type:", widget$type ) )
 
-
 	do.call( func, list( ptr=widget_ptr, ... ) )
-
 	return(invisible())
 }
 
 
 # ***********************************************************
 # 
-setWidgetState <- function( varname, state, radiovalue, winname )
+setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 {
 	if (!exists(".PBSmod"))
 		stop(".PBSmod was not found")
@@ -5057,8 +5115,11 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 		stop( paste( wid$type, "widget is not supported" ) )
 
 	#change readonly -> disabled for widgets which dont support readonly
-	if( any( wid$type == c( "check", "radio", "droplist", "spinbox" ) ) && state == "readonly" )
+	if( any( wid$type == c( "check", "radio", "droplist", "spinbox", "table", "text" ) ) && state == "readonly" ) {
 		state <- "disabled"
+		if( warn )
+			warning( paste( "setting readonly to disabled (readonly not supported by ", wid$type, " widgets)", sep="" ) )
+	}
 	
 	#special case since radio has several widgets with the same name
 	if( wid$type == "radio" ) {
@@ -5096,7 +5157,7 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 		if (length(wid$names)==1) {
 			for(i in 1:wid$nrow)
 				for(j in 1:wid$ncol)
-					setWidgetState(paste(varname,"[",i,",",j,"]",sep=""), state, winname)
+					setWidgetState(paste(varname,"[",i,",",j,"]",sep=""), state, winname, warn=FALSE)
 			return(NULL)
 		}
 	}
@@ -5106,7 +5167,7 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 		if (length(wid$names)==1) {
 			for(i in 1:wid$nrow)
 				for(j in 1:wid$ncol)
-					setWidgetState(paste(varname,"[",i,",",j,"]d",sep=""), state, winname)
+					setWidgetState(paste(varname,"[",i,",",j,"]d",sep=""), state, winname, warn=FALSE)
 			return(NULL)
 		}
 	}
@@ -5115,14 +5176,14 @@ setWidgetState <- function( varname, state, radiovalue, winname )
 	if (wid$type=="vector") {
 		if (length(wid$names)==1) {
 			for(i in 1:wid$length)
-				setWidgetState(paste(varname,"[",i,"]",sep=""), state, winname)
+				setWidgetState(paste(varname,"[",i,"]",sep=""), state, winname, warn=FALSE)
 			return(NULL)
 		}
 	}
 
 	#scrolling object
 	if (wid$type=="object") {
-		return( setWidgetState(paste("[superobject]", varname,sep=""), state, winname) )
+		return( setWidgetState(paste("[superobject]", varname,sep=""), state, winname, warn=FALSE) )
 	}
 
 	stop(paste("unable to update \"", varname, "\" - unable to handle type:", wid$type, sep=""))
