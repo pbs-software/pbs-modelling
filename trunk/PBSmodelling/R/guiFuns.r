@@ -1968,10 +1968,6 @@ parseWinFile <- function(fname, astext=FALSE)
 # -----------------------------------------------------------
 .createWidget <- function(tk, widgetList, winName)
 {
-#	print( "got:" )
-#	print( str( widgetList ) )
-	xxx <<- widgetList[[ 1 ]] #TODO remove me
-
 	widget <- widgetList[[ 1 ]]
 	#save functions
 	if (!is.null(widget[["function"]])) {
@@ -4951,12 +4947,18 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 			tkconfigure( ptr, selectbackground = bg, insertbackground = bg, highlightbackground = bg, entrybg = bg )
 	}
 
-	configure.check <- function( ptr, fg, bg )
+	configure.check <- function( ptr, fg, bg, disablefg, entryfg, entrybg )
 	{
+		if( !missing( entryfg ) )
+			fg <- entryfg
+		if( !missing( entrybg ) )
+			bg <- entrybg
 		if( !missing( fg ) )
 			tkconfigure( ptr, fg = fg )
 		if( !missing( bg ) )
 			tkconfigure( ptr, bg = bg )
+		if( !missing( disablefg ) )
+			tkconfigure( ptr, disabledforeground = disablefg )
 	}
 
 	configure.slide <- function( ptr, fg, bg )
@@ -5009,7 +5011,6 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 			tkconfigure( ptr, bg = entrybg, insertbackground = entrybg, selectbackground = entrybg, entrybg = entrybg )
 	}
 
-	#TODO need support for groups of radios or a single radio value
 	configure.radio <- function( name, radioValue, winName, fg, bg )
 	{
 		widget_list <- .map.get( winName, name )$tclwidgetlist
@@ -5051,8 +5052,17 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 	if (widget$type=="matrix") {
 		if (length(widget$names)==1) {
 			for(i in 1:widget$nrow)
-				for(j in 1:widget$ncol)
-					setWidgetColor(paste(name,"[",i,",",j,"]",sep=""), winName = winName, ... )
+				for(j in 1:widget$ncol) {
+					argList <- list(paste(name,"[",i,",",j,"]",sep=""), winName = winName, ... ) 
+					if( widget$mode == "logical" ) {
+						argList[[ "entrybg" ]] <- NULL
+						if( is.null( argList[[ "entryfg" ]] ) == FALSE ) {
+							argList[[ "fg" ]] <- argList[[ "entryfg" ]]
+							argList[[ "entryfg" ]] <- NULL
+						}
+					}
+					do.call( setWidgetColor, argList )
+				}
 			return(NULL)
 		}
 	}
@@ -5061,8 +5071,17 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 	if (widget$type=="data") {
 		if (length(widget$names)==1) {
 			for(i in 1:widget$nrow)
-				for(j in 1:widget$ncol)
-					setWidgetColor(paste(name,"[",i,",",j,"]d",sep=""), winName = winName, ... )
+				for(j in 1:widget$ncol) {
+					argList <- list(paste(name,"[",i,",",j,"]d",sep=""), winName = winName, ... ) 
+					if( widget$modes[ j ] == "logical" ) {
+						argList[[ "entrybg" ]] <- NULL
+						if( is.null( argList[[ "entryfg" ]] ) == FALSE ) {
+							argList[[ "fg" ]] <- argList[[ "entryfg" ]]
+							argList[[ "entryfg" ]] <- NULL
+						}
+					}
+					do.call( setWidgetColor, argList )
+				}
 			return(NULL)
 		}
 	}
@@ -5070,8 +5089,17 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 	#special case for vector
 	if (widget$type=="vector") {
 		if (length(widget$names)==1) {
-			for(i in 1:widget$length)
-				setWidgetColor(paste(name,"[",i,"]",sep=""), winName = winName, ... )
+			for(i in 1:widget$length) {
+				argList <- list(paste(name,"[",i,"]",sep=""), winName = winName, ... ) 
+				if( widget$mode == "logical" ) {
+					argList[[ "entrybg" ]] <- NULL
+					if( is.null( argList[[ "entryfg" ]] ) == FALSE ) {
+						argList[[ "fg" ]] <- argList[[ "entryfg" ]]
+						argList[[ "entryfg" ]] <- NULL
+					}
+				}
+				do.call( setWidgetColor, argList )
+			}
 			return(NULL)
 		}
 	}

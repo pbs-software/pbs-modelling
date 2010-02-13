@@ -5,25 +5,56 @@
 	Update the foreground and background colors of a widget
 }
 \usage{
-setWidgetColor( name, winName, ... )
+setWidgetColor( name, radioValue, winName = .PBSmod$.activeWin, ... )
 }
 \arguments{
 	\item{name}{the name of the widget}
-	\item{winName}{window from which to select the GUI widget. The default 
-		takes the window that has most recently received new user input.}
-	\item{...}{ any combination of "fg", "bg", "entryfg", "entrybg" depending on type of widget - see details}
+	\item{radioValue}{if specified, modify a particular radio option, as identified by the value, rather than the complete set (identified by the common name)}
+	\item{winName}{window from which to select the GUI widget. 
+	The window that most recently receive user input is used by default if winname is not supplied}
+	\item{...}{ any combination of "fg", "bg", "disablefg", "disablebg", "entryfg", "entrybg", "noeditfg", "noeditbg" arguments, depending on type of widget - see details}
 }
 \details{
-	Depending on the type of widget, different color options can be modified.
-	entry widgets accept entryfg, entrybg (but do not currently support fg/bg)
-	
-	droplist, check, label, button widgets accept fg/bg
+	The setWidgetColor function allows dynamic updating of widget colors during program execution.
+	However, two factors determine whether dynamic color updating is possible for a particular
+	widget: (i) the type of widget, and (ii) the nature of the Tk implementation in the underlying
+	widget library.  Thus, a given widget may not support all combinations of colour variables. 
+	The following widgets support the corresponding options:
+
+	\describe{
+		\item{button:}{fg, bg, disablefg}
+		\item{check:}{fg, bg, disablefg, entryfg, entrybg}
+		\item{data:}{entryfg, entrybg, noeditfg, noeditbg}
+		\item{droplist:}{fg, bg}
+		\item{entry:}{entryfg, entrybg, noeditfg, noeditbg}
+		\item{label:}{fg, bg}
+		\item{matrix:}{entryfg, entrybg, noeditfg, noeditbg}
+		\item{object:}{entryfg, entrybg, noeditfg, noeditbg}
+		\item{progressbar:}{fg, bg}
+		\item{radio:}{fg, bg}
+		\item{slide:}{fg, bg}
+		\item{spinbox:}{entryfg, entrybg}
+		\item{text:}{fg, bg}
+		\item{vector:}{entryfg, entrybg, noeditfg, noeditbg}
+	}
+
+	These options are described in the PBSmodelling User Guide under Appendix A.
+
+	Be aware that Tk uses gray for the highlight color during a selection operation.
+	This means that when the background colour is also gray, there is no visual clue
+	that the value has been selected for a copy operation.
+
 }
 \author{
-  Alex Couture-Beil
+  Alex Couture-Beil and Allen R. Kronlund
 }
 \examples{
 createWin("label \"hello world\" name=hello", astext=TRUE)
 setWidgetColor( "hello", bg="lightgreen", fg="purple" )
+
+createWin("vector names=v length=3 values=\"1 2 3\"", astext=TRUE)
+setWidgetColor( "v[1]", entrybg="lightgreen", entryfg="purple" )
+setWidgetColor( "v[2]", entrybg="green", entryfg="purple" )
+setWidgetColor( "v[3]", entrybg="forestgreen", entryfg="purple" )
 }
 \keyword{methods}
