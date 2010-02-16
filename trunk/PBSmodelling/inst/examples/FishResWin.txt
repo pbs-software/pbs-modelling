@@ -50,7 +50,7 @@ grid 1 2
 				values="0.7 15 80 0.2" sticky=NE width=6
 			# ode solver tolerances
 			vector length=2 vertical=T names="atol rtol" labels="'abs tol' 'rel tol'" values="1e-06 1e-04" sticky=NE width=6
-grid 3 2 sticky=W byrow=F
+grid 2 3 sticky=W byrow=F
 	grid 1 2
 		radio name=ptype text="Time Series" value="t" mode=character sticky=W
 		radio name=ptype text="Pairs" value="p" mode=character sticky=W func=runModel font="times italic 10" # hot button
@@ -74,7 +74,7 @@ grid 1 2
 		grid 1 2
 			entry name=Fbig value=1 width=6 label="max F" sticky=SE entrybg="#bbe2ff"
 			entry name=hbig value=0.632 width=6 label="" sticky=SE entrybg="#fff3b0"
-	grid 2 3 byrow=F
+	grid 3 2 byrow=F
 		entry name=qlev value=0.975 width=5 label="C/Cmax" sticky=SE
 		entry name=ncell value=100 width=5 label="grid cells" sticky=SE
 		entry name=nlev value=8 width=5 label="cntr levels" sticky=SE

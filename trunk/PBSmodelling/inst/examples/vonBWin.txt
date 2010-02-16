@@ -11,7 +11,7 @@ grid 1 2 sticky=W
 	label text="-------------------------------------------" font="courier 10"
 #label text="Inputs" font="bold 11" sticky="W"
 
-grid 3 2 sticky=W byrow=F
+grid 2 3 sticky=W byrow=F
 	label text="ParVec" font="bold 10" sticky=W
 	grid 2 1 sticky=NW
 		data nrow=3 ncol=4 names=parVec width=5 mode="numeric numeric numeric logical" sticky=N \
