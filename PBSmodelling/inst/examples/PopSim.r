@@ -348,7 +348,7 @@ plotResults <- function() {
 	pvec <- comp(pvec); # forces sum to 1
 	nA   <- length(pvec);
 	yvec <- rgamma(nA*nY,shape=N*pvec,scale=N);
-	ymat <- matrix(yvec,nrow=nA,ncol=nY,byrow=F);
+	ymat <- matrix(yvec,nrow=nA,ncol=nY,byrow=FALSE);
 	ysum <- apply(ymat,2,"sum");
 	Rdir <- sweep(ymat,2,ysum,"/");	
 	return(Rdir); };

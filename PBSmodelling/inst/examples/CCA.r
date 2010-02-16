@@ -51,7 +51,7 @@ Uget <- function() {# Get user's data
 	len  <- 5
 	flds <- dimnames(Afile)[[2]]; nflds <- length(flds); fldc <- paste(flds,",",sep="")
 	temp <- rep("",ceiling(nflds/len)*len); temp[1:nflds] <- fldc
-	temp <- matrix(temp,nrow=len,byrow=F);  temp <- rbind(temp,rep("\n",ncol(temp)))
+	temp <- matrix(temp,nrow=len,byrow=FALSE);  temp <- rbind(temp,rep("\n",ncol(temp)))
 	temp <- paste(as.vector(temp),collapse=""); temp <- substring(temp,1,nchar(temp)-2)
 	msg  <- paste("Dim = ",paste(dim(Afile),collapse=" x "),",  Years:",sep="")
 	msg  <- paste(msg,temp,sep="\n")

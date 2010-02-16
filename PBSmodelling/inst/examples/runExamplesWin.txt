@@ -2,7 +2,7 @@ window name=runE title="Run Examples" onClose=.runExHelperQuit
 grid 1 2 sticky=W
 	label text="Choose an Example" font="bold 12" sticky=W pady=5
 	radio name=eN value=0 sticky=W padx=20 text=CLEAR function=.runExHelper action=clear
-grid 4 2 sticky=W byrow=F
+grid 2 4 sticky=W byrow=F
 	label text="Random" font="bold 10" fg=red sticky=NW pady=2 padx=10
 	grid 4 1 sticky=NW
 		radio name=eN value=11  sticky=W padx=10 text=RanVars  function=.runExHelper action=RanVars
