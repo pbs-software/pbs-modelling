@@ -35,11 +35,12 @@ compileDescription <- function(descFile, outFile="") {
 #.addslashes----------------------------2006-08-28
 # Escapes special characters from a string, which can then be used in the "P" format
 # if x has more than one element, then it will returned a nested characterVector
-# ie: c("it's", "O K") becomes => "'it\'s' 'O K'"
+# eg: c("it's", "O K") becomes => "'it\'s' 'O K'"
 # Arguments:
 #  x - string to escape
+#  asvector - if true, always force strings to be printed as charactervector - e.g. "h w" => "'h w'"
 #----------------------------------------------ACB
-.addslashes <- function(x) {
+.addslashes <- function(x, asvector = FALSE ) {
 	#escape backslashes
 	x <- gsub("\\\\", "\\\\\\\\", x)
 	#escase doublequotes
@@ -47,7 +48,7 @@ compileDescription <- function(descFile, outFile="") {
 	#escase singlequotes
 	x <- gsub("'", "\\\\'", x)
 	#convert into substrings if applicable
-	if (length(x)>1) {
+	if (length(x)>1 || asvector == TRUE ) {
 		i<-append(grep("[ \t\\\\]+", x), grep("^$", x)) #indicies needing quotes
 		x[i]<-paste("'", x[i], "'", sep="")
 		x<-paste(x, collapse=" ")
@@ -703,8 +704,9 @@ testWidgets <- function () {
 }
 
 .dUpdateDesc <- function() {
-	demo.id <- getWinVal()$demo.id
-	package <- .trimWhiteSpace( getWinVal("package")$package )
+	vals <- getWinVal()
+	demo.id <- vals$demo.id
+	package <- .trimWhiteSpace( vals$package )
 	x <- demo(package = .packages(all.available = TRUE))
 	x <- x$results[x$results[,"Package"]==package,]
 	if (is.null(dim(x))) {
@@ -738,9 +740,10 @@ runDemos <- function (package) {
 	if (missing(package)) {
 		#display a list of packages to choose from
 		pkgDemo <- unique(x$results[,"Package"])
-		radios <- list(list(list(type="label", text="Select a package to view available demos:",
-			sticky="W",padx=12,font="bold 10")))
-		i <- 3
+		wintext <- c( "window title=\"R Demos\" name=pbsdemo onclose=.dClose",
+			"label text=\"R Demos                                                  \" font=\"bold underline\" fg=blue padx=10 sticky=w",
+			"label text=\"Select a package to view available demos:\" sticky=W padx=12 font=\"bold 10\"" )
+
 		#create droplist labels with counts
 		pkg_labels <- c()
 		for(pkg in pkgDemo) {
@@ -752,28 +755,11 @@ runDemos <- function (package) {
 			pkg_labels <- c( pkg_labels, paste( pkg, items ) )
 		}
 
+		wintext[ length(wintext) + 1 ] <- paste( "droplist name=pkg values=", .addslashes( pkgDemo, asvector=TRUE ), " labels=", .addslashes( pkg_labels, asvector = TRUE ), " add=FALSE mode=character", sep="" )
 
-		radios[[ 2 ]] <- list(list(type = "droplist",
-		                           name = "pkg",
-		                           values = pkgDemo,
-								   labels = pkg_labels,
-		                           add = FALSE,
-		                           mode = "character"
-		                           ) )
-		win <- list(title = "R Demos", windowname = "pbs.demo", onclose=".dClose", 
-			.widgets = list(list(type="grid", .widgets=c( #mixing the c() and lists() become really akward - watch out!
-			#the c() requires an extra level of list() which are later stripped out
-			#the reason is because of the way the radios list is merged into this list
-			list(list(
-			list(type="label",text=paste("R Demos",paste(rep(" ", times=50),collapse="")),font="bold underline",fg="blue",padx=10,sticky="w")
-			)),
-			radios,
-			list(list(
-			list(type="button", "function"=".viewPkgDemo", action="pkg", text="View Demos", sticky="w", padx=12, bg="aliceblue")
-			))
-			))))
-		assign("xxy",win,envir=.GlobalEnv)
-		createWin(list(win), env = parent.env( environment() ) )
+		wintext[ length(wintext) + 1 ] <- "button function=.viewPkgDemo action=pkg text=\"View Demos\" sticky=w padx=12 bg=aliceblue"
+
+		createWin(wintext, astext=TRUE, env = parent.env( environment() ) )
 		return(invisible(NULL))
 	}
 	#display demos from a certain package
@@ -782,9 +768,12 @@ runDemos <- function (package) {
 		mess=paste(package,"package is not available")
 		showAlert(mess); stop(mess) }
 	x <- x$results[x$results[,"Package"]==package,]
-	radios <- list(list(list(type="label", text="Select a Demo to view:", sticky="W", padx=12,font="bold 10")))
 
-	#i <- 3
+	#It is critical that the label widget named package *only* contain the package name + whitespace -> it is used by getWinVal() later
+	wintext <- c( paste( "window title=\"R Demos:", package, "\" name=pbsdemo onclose=.dClose", sep="" ),
+		paste( "label name=package text=", .addslashes( package ), " font=\"bold underline\" fg=red3 padx=10 sticky=w", sep="" ),
+		"label text=\"Select a demo to view:\" sticky=W padx=12 font=\"bold 10\"" )
+
 	if (is.null(dim(x))) {
 		tmp<-names(x)
 		dim(x)<-c(1,4)
@@ -802,49 +791,16 @@ runDemos <- function (package) {
 	title_cut_off <- 50 #cut off titles longer than this
 	labels <- paste( x[,"Item"], " ::: ", substring( titles, 1, title_cut_off ), ifelse( nchar(titles) > title_cut_off, "...", "" ), sep="" )
 
-	radios[[ 2 ]] <- list(list(type = "droplist",
-	                           name = "demo",
-	                           values = droplist_data,
-	                           labels = labels,
-	                           add = FALSE,
-	                           mode = "character",
-							   sticky = "W",
-							   padx = 20,
-							   width = 55,
-							   "function" = ".dUpdateDesc"
-	                           ) )
-	radios[[ 3 ]] <- list(list(type="label",
-	                           name="demo_desc",
-	                           text=x[1,"Title"],
-	                           sticky="w",
-	                           wraplength=500,
-	                           padx=20,
-							   pady=c(20,0)
-	                           ) )
+	wintext[ length( wintext ) + 1 ] <- paste( "droplist name=demo values=", .addslashes( droplist_data, asvector=TRUE ), " labels=", .addslashes( labels, asvector=TRUE ), " add=FALSE mode=character sticky=W padx=20 width=55 function=.dUpdateDesc", sep="" )
+	wintext[ length( wintext ) + 1 ] <- paste( "label name=demo_desc text=", .addslashes( x[1,"Title"] ), " sticky=W wraplength=500 padx=20 pady=\"20 0\"", sep="" )
 
-	win <- list(title = paste("R Demos:", package), windowname = "pbs.demo", onclose=".dClose",
-		.widgets = list(list(type="grid", .widgets=c(
-			list(list(
-				list(type="label",name="package",text=paste(package,paste(rep(" ",times=100),collapse="")),
-					font="bold underline",fg="red3",sticky="W")
-			)),
-			radios,
-			list(list(list(type="null", pady=4))),
-				list(list(
-					list(type="grid", sticky="w", pady=3, .widgets=
-						list(
-							list(
-								list(type="button", "function"=".viewPkgDemo", action="demo", text="Run Demo", sticky="w", padx=12, bg="greenyellow"),
-								list(type="button", "function"=".viewPkgDemo", action="source", text="View Source", sticky="w", padx=12),
-								list(type="button", "function"="runDemos", action="", text="All Packages", sticky="w", padx=12)
-							)
-						)
-					)
-				))
-			)
-		)))
-	assign("xx",win,envir=.GlobalEnv)
-	createWin(list(win), env=parent.env( environment() ) )
+	wintext[ length( wintext ) + 1 ] <- "grid 1 3 sticky=w pady=3"
+	wintext[ length( wintext ) + 1 ] <- "button function=.viewPkgDemo action=demo text=\"Run Demo\" sticky=w padx=12 bg=greenyellow"
+	wintext[ length( wintext ) + 1 ] <- "button function=.viewPkgDemo action=source text=\"View Source\" sticky=w padx=12"
+	wintext[ length( wintext ) + 1 ] <- "button function=runDemos action=\"\" text=\"All Packages\" sticky=w padx=12"
+
+	createWin( wintext, astext=TRUE, env=parent.env( environment() ) )
+
 	return(invisible(NULL))
 }
 #-----------------------------------------runDemos
