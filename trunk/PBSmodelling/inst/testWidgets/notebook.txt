@@ -1,5 +1,5 @@
 window name=widWin title="Widget = notebook"
-notebook tabs="iris vector grid" name=nb width=300 height=150
+notebook tabs="iris vector grid" name=nb width=500 height=200
   object iris rowshow=5
   vector length=5 name=vec
   grid 2 2

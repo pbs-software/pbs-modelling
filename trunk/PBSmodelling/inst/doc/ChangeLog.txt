@@ -1,6 +1,23 @@
 PBSmodelling Changes
 ====================
-2.55  2009-12-04  Rowan and Jon
+2.60  2020-02-18  Alex/Rowan/Jon
+  - Updated UG to v.2.60.
+  - Fixed 'runDemos' to work with refactored grid code.
+  - Fixed byrow=FALSE behaviour in 'grid'.
+	Fixed window description files that specified grids where dimensions were reversed when byrow=F.
+  - Made setWidgetColor work with logical modes of dataframes / matrix / vector.
+  - Added disablefg for check and button.
+  - Added arcradius, homogeneous, and tabbevelsize to notebook.
+  - Added support for setWidgetColor for spinbox, text, radio.
+  - Added notebook, image, progressbar to testWidgets().
+  - Added anchor arg for label widgets.
+  - Refactored parsewinfile to *not* nest grid items - now a single list of widgets
+	is passed to createWidget.XXX, which returns a tk pointer, *and* a left over set of widgets which still need to be parsed.
+  - Added a 'notebook' widget, which embeds different widgets under tabs.
+  - Added value checking for <code>'s 'break' argument, and made 'break' arg values case insensitive (presentTalk).
+  - Added small wrapper function 'showUG' to open User's Guide named '<pkg>-UG.pdf'.
+
+2.55  2009-12-04  Rowan/Jon
   - Advanced to version 2.55 for posting on CRAN (Google version will be added: 2.55.xxx)
   - Added small wrapper function 'openUG' to open a package user's guide with name format 'pkg-UG.pdf'.
   - Updated Developer's Guide (new 'Appendix C: Adding a New Widget'). Also numerous formatting changes.
