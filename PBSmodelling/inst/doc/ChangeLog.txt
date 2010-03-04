@@ -1,10 +1,13 @@
 PBSmodelling Changes
 ====================
-2.60  2020-02-18  Alex/Rowan/Jon
+2.60 2010-03-03 Jon
+  - Further revsions to the UG, particularly the preface.
+
+2.60  2010-02-18  Alex/Rowan/Jon
   - Updated UG to v.2.60.
   - Fixed 'runDemos' to work with refactored grid code.
   - Fixed byrow=FALSE behaviour in 'grid'.
-	Fixed window description files that specified grids where dimensions were reversed when byrow=F.
+  - Fixed window description files that specified grids where dimensions were reversed when byrow=F.
   - Made setWidgetColor work with logical modes of dataframes / matrix / vector.
   - Added disablefg for check and button.
   - Added arcradius, homogeneous, and tabbevelsize to notebook.
