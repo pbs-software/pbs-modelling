@@ -5030,14 +5030,29 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 	#### function starts here ####
 	
 	#get window
-	widget <- .PBSmod[[ winName ]]
-	if( is.null( widget ) ) 
+	winwidget <- .PBSmod[[ winName ]]
+	if( is.null( winwidget ) ) 
 		stop( paste( "unable to find window:", winName ) )
 	
 	#get widget
-	widget <- widget$widgets[[ name ]]
+	widget <- winwidget$widgets[[ name ]]
 	if( is.null( widget ) )
 		stop( paste( "unable to find widget: ", name ) )
+
+	#HACK to change initial values (as set in window desc file)
+	myargs = list( ... )
+	if( !is.null( myargs[[ "noeditfg" ]] ) ) {
+		widget$noeditfg = myargs[[ "noeditfg" ]]
+		.PBSmod[[ winName ]]$widgets[[ name ]] <<- widget
+	}
+	if( !is.null( myargs[[ "fg" ]] ) ) {
+		widget$fg = myargs[[ "fg" ]]
+		.PBSmod[[ winName ]]$widgets[[ name ]] <<- widget
+	}
+	if( !is.null( myargs[[ "entryfg" ]] ) ) {
+		widget$entryfg = myargs[[ "entryfg" ]]
+		.PBSmod[[ winName ]]$widgets[[ name ]] <<- widget
+	}
 
 	#get tcl ptr to tk widget
 	widget_ptr <- .PBSmod[[ winName ]]$widgetPtrs[[ name ]]$tclwidget
@@ -5056,9 +5071,14 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 					argList <- list(paste(name,"[",i,",",j,"]",sep=""), winName = winName, ... ) 
 					if( widget$mode == "logical" ) {
 						argList[[ "entrybg" ]] <- NULL
+						argList[[ "noeditbg" ]] <- NULL
 						if( is.null( argList[[ "entryfg" ]] ) == FALSE ) {
 							argList[[ "fg" ]] <- argList[[ "entryfg" ]]
 							argList[[ "entryfg" ]] <- NULL
+						}
+						if( is.null( argList[[ "noeditfg" ]] ) == FALSE ) {
+							argList[[ "disablefg" ]] <- argList[[ "noeditfg" ]]
+							argList[[ "noeditfg" ]] <- NULL
 						}
 					}
 					do.call( setWidgetColor, argList )
@@ -5075,9 +5095,14 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 					argList <- list(paste(name,"[",i,",",j,"]d",sep=""), winName = winName, ... ) 
 					if( widget$modes[ j ] == "logical" ) {
 						argList[[ "entrybg" ]] <- NULL
+						argList[[ "noeditbg" ]] <- NULL
 						if( is.null( argList[[ "entryfg" ]] ) == FALSE ) {
 							argList[[ "fg" ]] <- argList[[ "entryfg" ]]
 							argList[[ "entryfg" ]] <- NULL
+						}
+						if( is.null( argList[[ "noeditfg" ]] ) == FALSE ) {
+							argList[[ "disablefg" ]] <- argList[[ "noeditfg" ]]
+							argList[[ "noeditfg" ]] <- NULL
 						}
 					}
 					do.call( setWidgetColor, argList )
@@ -5093,9 +5118,14 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 				argList <- list(paste(name,"[",i,"]",sep=""), winName = winName, ... ) 
 				if( widget$mode == "logical" ) {
 					argList[[ "entrybg" ]] <- NULL
+					argList[[ "noeditbg" ]] <- NULL
 					if( is.null( argList[[ "entryfg" ]] ) == FALSE ) {
 						argList[[ "fg" ]] <- argList[[ "entryfg" ]]
 						argList[[ "entryfg" ]] <- NULL
+					}
+					if( is.null( argList[[ "noeditfg" ]] ) == FALSE ) {
+						argList[[ "disablefg" ]] <- argList[[ "noeditfg" ]]
+						argList[[ "noeditfg" ]] <- NULL
 					}
 				}
 				do.call( setWidgetColor, argList )
