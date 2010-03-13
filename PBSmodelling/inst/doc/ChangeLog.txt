@@ -1,5 +1,10 @@
 PBSmodelling Changes
 ====================
+
+2.60 2010-03-12 Alex/Jon
+  - Widget adjustments suggested by Rob (Alex)
+  - Further UG changes suggested by Rob (Jon)
+
 2.60 2010-03-03 Jon
   - Further revsions to the UG, particularly the preface.
 
