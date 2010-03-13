@@ -8,7 +8,8 @@ PBSmodellingIntro.pdf     Vignette introducing the broad scope of
                           the PBSmodelling package.
 
 PBSmodelling-UG.pdf       Detailed User's Guide to this package with more
-                          information that that contained in the help files.
+                          information than that contained in the help files.
 
 PBSmodelling-Updates.pdf  Changes to the package not yet covered in the 
-                          comprehensive User's Guide.
+                          comprehensive User's Guide. This file may be 
+                          absent if the Guide is current.
