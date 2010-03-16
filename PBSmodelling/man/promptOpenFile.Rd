@@ -2,7 +2,7 @@
 \alias{promptOpenFile}
 \title{Deprecated: Display Dialogue: Open File}
 \description{
-	Deprecated: use \code{\link{selectFile}} instead
+  Deprecated: use \code{\link{selectFile}} instead.
 }
 \usage{
 promptOpenFile(initialfile="", filetype=list(c("*","All Files")), 
@@ -24,6 +24,10 @@ promptOpenFile(initialfile="", filetype=list(c("*","All Files")),
 }
 \author{
   Alex Couture-Beil, Malaspina University-College, Nanaimo BC
+}
+\note{
+  *** This function is deprecated and will be removed in a future version.
+  Use \code{\link{selectFile}}. ***
 }
 \seealso{
 	\code{\link{selectFile}}

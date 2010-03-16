@@ -1,11 +1,14 @@
 PBSmodelling Changes
 ====================
 
-2.60 2010-03-12 Alex/Jon
+2.60  2010-03-16  Rowan
+  - Small bug fixes: 'runExamples' to close 'presentwin'; equilibrium plot routine in 'FishRes' example.
+
+2.60  2010-03-12  Alex/Jon
   - Widget adjustments suggested by Rob (Alex)
   - Further UG changes suggested by Rob (Jon)
 
-2.60 2010-03-03 Jon
+2.60  2010-03-03 Jon
   - Further revsions to the UG, particularly the preface.
 
 2.60  2010-02-18  Alex/Rowan/Jon

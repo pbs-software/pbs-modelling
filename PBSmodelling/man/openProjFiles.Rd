@@ -3,8 +3,6 @@
 \title{Open Files with a Common Prefix}
 
 \description{
-  ***warning: this function is buggy - see examples for an alternative***
-
   Open one or more files from the working directory, given one 
   file prefix and one or more file suffixes.
 }
@@ -42,13 +40,18 @@ openProjFiles(prefix, suffix, package=NULL, warn=NULL, alert=TRUE)
   disable templates, leave \code{package} unspecified but keep the leading comma
   (e.g., \code{action=,.r,.c}). When the function is called from a widget in this
   fashion, the prefix is taken from the value of a widget named \code{prefix}.
+
+  If all the required arguments are missing, it is assumed that the 
+  function is being called by a GUI widget.
 }
 \author{
   Anisa Egeli, Vancouver Island University, Nanaimo BC
 }
 \note{
-  If all the required arguments are missing, it is assumed that the 
-  function is being called by a GUI widget.
+  *** This function is deprecated and will be removed in a future version.
+  Use \code{\link{openFile}} or \code{\link{doAction}} with \code{openFile}. ***
+
+  *** Warning: this function is buggy; see examples for an alternative. ***
 }
 \seealso{
   \code{\link{openFile}}, \code{\link{setPBSext}}, \code{\link{openExamples}},

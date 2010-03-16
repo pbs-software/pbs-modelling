@@ -996,11 +996,11 @@ clearAll <- function(hidden=TRUE, verbose=TRUE, PBSsave=TRUE) {
 	invisible() }
 #-----------------------------------------clearAll
 
-#runExamples----------------------------2008-09-08
+#runExamples----------------------------2010-03-16
 # Display a master GUI to display examples
 #-------------------------------------------RH/ACB
 runExamples <- function () {
-	allWin=c("runE","window","widWin","testW","choisir","Swiss") # all potential windows open
+	allWin=c("runE","window","widWin","testW","choisir","presentwin") # all potential windows open
 	.runExHelper <- function() {
 		getWinVal(scope = "L")
 		act <- getWinAct()[1]
