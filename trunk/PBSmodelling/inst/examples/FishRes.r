@@ -1,8 +1,8 @@
-# Two linked populations (reserved and fished)
-#2008-08-25---------------------------------------
+#FishRes--------------------------------2010-03-16
+# Two linked populations (reserved and fished).
 # Functions that define and run the model,
 # with parameters shared globally for time series.
-#--------------------------------------------------
+#-------------------------------------------------
 
 # Make an expression (until part of PBSmodelling)
 makeExpression <- function(s) { # s is a single string
@@ -86,8 +86,9 @@ check <- function() {
 	#convert model 1 parms to equivalent model 2 parms
 	if (mod==1) { FresDisc <- 1-exp(-FresCont); FminDisc <- 1-exp(-FminCont); FmaxDisc <- 1-exp(-FmaxCont);
 		hbig <- 1-exp(-Fbig); Mdisc <- 1-exp(-Mcont); rDisc <- exp(rCont)-1; aDisc <- p1p2*(1-exp(-aCont/p1p2));};
-	if (mod==2) { FresCont <- -log(1-FresDisc); FminCont <- -log(1-FminDisc); FmaxCont <- -log(1-FmaxDisc); 
-		Fbig <- -log(1-hbig); Mcont <- -log(1-Mdisc); rCont <- log(1+rDisc); aCont <- -p1p2*log(1-aDisc/p1p2); };
+	if (mod==2) { FresCont = -log(GT0(1-FresDisc)); FminCont = -log(GT0(1-FminDisc))
+		FmaxCont = -log(GT0(1-FmaxDisc)); Fbig = -log(GT0(1-hbig)); Mcont = -log(GT0(1-Mdisc))
+		rCont = log(GT0(1+rDisc)); aCont = -p1p2*log(GT0(1-aDisc/p1p2)) }
 	Fcont <- c(FresCont,FminCont,FmaxCont,Fbig);
 	Fdisc <- c(FresDisc,FminDisc,FmaxDisc,hbig);
 	
@@ -107,8 +108,8 @@ check <- function() {
 			if (aDisc>=p1*(1-p1)) { aDisc <- p1*(1-p1)-.01; cat("\n***** a reset maximum-0.01; remember a < p1*p2"); };
 			if (any(Fdisc<0)) {Fdisc<-pmax(Fdisc,0,na.rm=TRUE); FresDisc<-Fdisc[1]; FminDisc<-Fdisc[2]; FmaxDisc<-Fdisc[3]; hbig<-Fdisc[4];}; 
 			if (any(Fdisc>1)) {Fdisc<-pmin(Fdisc,1,na.rm=TRUE); FresDisc<-Fdisc[1]; FminDisc<-Fdisc[2]; FmaxDisc<-Fdisc[3]; hbig<-Fdisc[4];};
-			FresCont <- -log(1-FresDisc); FminCont <- -log(1-FminDisc); FmaxCont <- -log(1-FmaxDisc); 
-			Fbig <- -log(1-hbig); Mcont <- -log(1-Mdisc); rCont <- log(1+rDisc); aCont <- -p1p2*log(1-aDisc/p1p2); };
+			FresCont = -log(GT0(1-FresDisc)); FminCont = -log(GT0(1-FminDisc)); FmaxCont = -log(GT0(1-FmaxDisc)); 
+			Fbig = -log(GT0(1-hbig)); Mcont = -log(GT0(1-Mdisc)); rCont = log(GT0(1+rDisc)); aCont = -p1p2*log(GT0(1-aDisc/p1p2)) }
 	}
 	alist <- list(FresCont=FresCont,FminCont=FminCont,FmaxCont=FmaxCont,
 	              FresDisc=FresDisc,FminDisc=FminDisc,FmaxDisc=FmaxDisc,
@@ -201,7 +202,6 @@ yield <- function () { # Equilibrium Yield Equations (Table 4)
 	Yout <- array(NA,dim=c(nx,5,np),dimnames=list(1:nx,c("p1","F2","x1","x2","C2"),P1));
 	clrs <- c("green3","orange","dodgerblue","forestgreen");
 	
-
 	for (p1 in P1) {
 		pp <- as.character(p1);
 		p2 <- 1-p1; K1 <- p1*K; K2 <- p2*K;
@@ -213,7 +213,7 @@ yield <- function () { # Equilibrium Yield Equations (Table 4)
 		C2 <- K2*F2*x2;  Yout[,"C2",pp] <- C2; #}
 	};
 	assign("Yout",Yout,pos=1); Zout <- NULL
-	Zout <- for (i in 1:np) {
+	for (i in 1:np) {
 		if (i==1) Zout <- Yout[,,i] else Zout <- rbind(Zout,Yout[,,i]); };
 	Zout <- as.data.frame(Zout,row.names=1:nrow(Zout));
 	bad <- apply(Zout,1,function(x){

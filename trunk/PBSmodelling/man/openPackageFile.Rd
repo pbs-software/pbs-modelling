@@ -3,9 +3,6 @@
 \title{Open a File from a Package Subdirectory}
 
 \description{
-
-	***this function will be depricated - use \link{openFile} or doAction with openFile***
-
   Open a file from a package in the R library, given the package 
   name and the file path relative to the package root directory.
 }
@@ -25,13 +22,16 @@ openPackageFile(package, filepath)
   as the action of the widget that calls \code{openPackageFile}. 
   Furthermore, \code{package} and \code{filepath} must be 
   separated by commas (e.g., \code{action=myPackage,/doc/help.pdf}).
+
+  If all the required arguments are missing, it is assumed that 
+  the function is being called by a GUI widget.
 }
 \author{
   Anisa Egeli, Vancouver Island University, Nanaimo BC
 }
 \note{
-  If all the required arguments are missing, it is assumed that 
-  the function is being called by a GUI widget.
+  *** This function is deprecated and will be removed in a future version.
+  Use \code{\link{openFile}} or \code{\link{doAction}} with \code{openFile}. ***
 }
 
 \seealso{
