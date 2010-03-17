@@ -1829,8 +1829,14 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 
 	#set font options
-	topfont <- ifelse( is.null(grid[["topfont"]]), "", grid$topfont )
-	sidefont <- ifelse( is.null(grid[["sidefont"]]), "", grid$sidefont )
+	if( is.null(grid[["topfont"]]) )
+		topfont = ""
+	else
+		topfont = grid$topfont
+	if( is.null(grid[["sidefont"]]) )
+		sidefont = ""
+	else
+		sidefont = grid$sidefont
 	
 	#set fg
 	if( is.null(grid[["topfg"]]) ) grid$topfg <- grid$fg
