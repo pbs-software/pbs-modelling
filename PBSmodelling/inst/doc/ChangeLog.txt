@@ -1,32 +1,32 @@
 PBSmodelling Changes
 ====================
+Authors: JTS = Jon T. Schnute
+         ACB = Alex Couture-Beil
+         RH  = Rowan Haigh
+         ARK = Rob Kronlund
 
-2.60  2010-03-16  Rowan
-  - Small bug fixes: 'runExamples' to close 'presentwin'; equilibrium plot routine in 'FishRes' example.
-
-2.60  2010-03-12  Alex/Jon
-  - Widget adjustments suggested by Rob (Alex)
-  - Further UG changes suggested by Rob (Jon)
-
-2.60  2010-03-03 Jon
-  - Further revsions to the UG, particularly the preface.
-
-2.60  2010-02-18  Alex/Rowan/Jon
-  - Updated UG to v.2.60.
-  - Fixed 'runDemos' to work with refactored grid code.
-  - Fixed byrow=FALSE behaviour in 'grid'.
-  - Fixed window description files that specified grids where dimensions were reversed when byrow=F.
-  - Made setWidgetColor work with logical modes of dataframes / matrix / vector.
-  - Added disablefg for check and button.
-  - Added arcradius, homogeneous, and tabbevelsize to notebook.
-  - Added support for setWidgetColor for spinbox, text, radio.
-  - Added notebook, image, progressbar to testWidgets().
-  - Added anchor arg for label widgets.
-  - Refactored parsewinfile to *not* nest grid items - now a single list of widgets
-	is passed to createWidget.XXX, which returns a tk pointer, *and* a left over set of widgets which still need to be parsed.
-  - Added a 'notebook' widget, which embeds different widgets under tabs.
-  - Added value checking for <code>'s 'break' argument, and made 'break' arg values case insensitive (presentTalk).
-  - Added small wrapper function 'showUG' to open User's Guide named '<pkg>-UG.pdf'.
+2.60  2010-03-19  Authors
+  - Updated UG to include info on the 'sticky' argument of widgets. (JTS 3/19)
+  - Fixed top/sidefont issue - where only the first vector item was being used. (ACB 3/17)
+  - Small bug fixes: 'runExamples' to close 'presentwin'; equilibrium plot routine in 'FishRes' example. (RH 3/16)
+  - Further UG changes suggested by Rob (JTS 3/12)
+  - Widget adjustments suggested by Rob (ACB 3/12)
+  - Further revsions to the UG, particularly the preface. (JTS 3/3)
+  - Updated UG to v.2.60. (RH 2/18)
+  - Fixed 'runDemos' to work with refactored grid code. (ACB 2/17)
+  - Fixed window description files that specified grids where dimensions were reversed when byrow=F. (RH 2/16)
+  - Made setWidgetColor work with logical modes of dataframes / matrix / vector. (ACB 2/13)
+  - Added disablefg for check and button. (ACB 2/9)
+  - Added arcradius, homogeneous, and tabbevelsize to notebook. (ACB 2/4)
+  - Added support for setWidgetColor for spinbox, text, radio. (ACB 1/24)
+  - Added notebook, image, progressbar to testWidgets(). (ACB 1/22)
+  - Added anchor arg for label widgets. (ACB 1/22)
+  - Refactored parsewinfile to *not* nest grid items - now a single list of widgets is passed to 
+	createWidget.XXX, which returns a tk pointer, *and* a left over set of widgets which still need to be parsed. (ACB 1/20)
+  - Added a 'notebook' widget, which embeds different widgets under tabs. (ACB 1/20)
+  - Fixed byrow=FALSE behaviour in 'grid'. (ACB 1/20)
+  - Added value checking for <code>'s 'break' argument, and made 'break' arg values case insensitive (presentTalk). (ACB 12/5)
+  - Added small wrapper function 'showUG' to open User's Guide named '<pkg>-UG.pdf'. (RH 12/4)
 
 2.55  2009-12-04  Rowan/Jon
   - Advanced to version 2.55 for posting on CRAN (Google version will be added: 2.55.xxx)

@@ -5,7 +5,8 @@
 	Display the default directory chooser prompt provided by the Operating System.
 }
 \usage{
-selectDir(initialdir=getwd(),mustexist=TRUE,title="",usewidget=NULL)
+selectDir(initialdir=getwd(), mustexist=TRUE, title="", 
+    usewidget=NULL)
 }
 \arguments{
 	\item{initialdir}{initially selected directory}
@@ -28,7 +29,8 @@ dir(selectDir(title="select a directory to list contents of"))
 
 #integration with widget via doAction
 createWin( c( "entry foo mode=character", 
-  "button text=\"select dir\" func=doAction action=\"selectDir(usewidget=`foo`)\"" ), astext=TRUE )
+  "button text=\"select dir\" 
+  func=doAction action=\"selectDir(usewidget=`foo`)\"" ), astext=TRUE )
 }
 }
 \keyword{file}

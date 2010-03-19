@@ -5,7 +5,9 @@
 	Display the default \bold{Open} or  \bold{Save} prompt provided by the Operating System.
 }
 \usage{
-selectFile(initialfile="",initialdir=getwd(),filetype=list(c("*","All Files")),mode="open",multiple=FALSE,title="",defaultextension="",usewidget=NULL)
+selectFile(initialfile="", initialdir=getwd(), 
+    filetype=list(c("*","All Files")), mode="open", multiple=FALSE,
+    title="", defaultextension="", usewidget=NULL)
 }
 \arguments{
 	\item{initialfile}{initially selected file}
@@ -41,10 +43,11 @@ scan(promptOpenFile(),what=character(),sep="\n")
 # Illustrates how to set filetype.
 promptOpenFile("intial_file.txt", filetype=list(c(".txt", "text files"), 
                c(".r", "R files"), c("*", "All Files")))
-}
 
 #integration with widget via doAction
 createWin( c( "entry foo mode=character", 
-  "button text=\"select file\" func=doAction action=\"selectFile(usewidget=`foo`)\"" ), astext=TRUE )
+  "button text=\"select file\" 
+  func=doAction action=\"selectFile(usewidget=`foo`)\"" ), astext=TRUE )
+}
 }
 \keyword{file}

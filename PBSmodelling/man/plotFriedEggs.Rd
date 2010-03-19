@@ -9,7 +9,7 @@
 }
 \usage{
 plotFriedEggs(A, eggs=TRUE, rings=TRUE, levs=c(0.01,0.1,0.5,0.75,0.95),
-              pepper=200, replace=FALSE, jitt=c(1,1), bw=25, histclr=NULL) 
+    pepper=200, replace=FALSE, jitt=c(1,1), bw=25, histclr=NULL) 
 }
 \arguments{
 	\item{A}{data frame or matrix for use in a pairs plot.}
