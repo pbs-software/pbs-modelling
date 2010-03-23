@@ -32,7 +32,7 @@ findSuffix(prefix,path=".")
 findPrefix( c(".txt", ".r") )
 
 #or use R's dir for similar functionality
-dir(pattern="\\.txt$")
-dir(pattern="$prefix")
+dir(pattern="txt$")
+dir(pattern="^[a-h]")
 }
 \keyword{file}
