@@ -1,11 +1,10 @@
 PBSmodelling Changes
 ====================
-Authors: JTS = Jon T. Schnute
-         ACB = Alex Couture-Beil
-         RH  = Rowan Haigh
-         ARK = Rob Kronlund
+Authors: JTS = Jon T. Schnute           RH  = Rowan Haigh
+         ACB = Alex Couture-Beil        ARK = Rob Kronlund
 
-2.60  2010-03-19  Authors
+2.60  2010-03-23  Authors
+  - Fixed functions 'findPrefix' and 'findSuffix' ('replacement' string in 'gsub' changed from '\\\\\\.' to '\\\\.'). (RH 3/23)
   - Updated UG to include info on the 'sticky' argument of widgets. (JTS 3/19)
   - Fixed top/sidefont issue - where only the first vector item was being used. (ACB 3/17)
   - Small bug fixes: 'runExamples' to close 'presentwin'; equilibrium plot routine in 'FishRes' example. (RH 3/16)
