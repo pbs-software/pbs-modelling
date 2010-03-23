@@ -214,9 +214,9 @@ findSuffix=function( prefix, path = "." ) {
 			ret <- c( ret, findSuffix( p, path ) )
 		return( ret )
 	}
-	#spat=gsub("\\.","\\\\\\.",suffix)                    # wrong: produces three backslashes
-	#spat=gsub("\\.",paste("\\\\","\\.",sep=""),suffix)   # possibly correct but unnecessary
-	spat=gsub("\\.","\\\\.",suffix)                       # sufficient
+	#spat=gsub("\\.","\\\\\\.",prefix)                    # wrong: produces three backslashes
+	#spat=gsub("\\.",paste("\\\\","\\.",sep=""),prefix)   # possibly correct but unnecessary
+	spat=gsub("\\.","\\\\.",prefix)                       # sufficient
 	sfiles=list.files(path,pattern=paste("^", spat,sep=""),ignore.case=TRUE)
 	pref=substring(sfiles,nchar(prefix) + 1)
 	return(pref)
