@@ -199,7 +199,9 @@ findPrefix=function(suffix, path = "." ) {
 			ret <- c( ret, findPrefix( s, path ) )
 		return( ret )
 	}
-	spat=gsub("\\.","\\\\\\.",suffix)
+	#spat=gsub("\\.","\\\\\\.",suffix)                    # wrong: produces three backslashes
+	#spat=gsub("\\.",paste("\\\\","\\.",sep=""),suffix)   # possibly correct but unnecessary
+	spat=gsub("\\.","\\\\.",suffix)                       # sufficient
 	sfiles=list.files( path, pattern=paste(spat,"$",sep=""),ignore.case=TRUE)
 	pref=substring(sfiles,1,nchar(sfiles)-nchar(suffix))
 	return(pref)
@@ -212,14 +214,16 @@ findSuffix=function( prefix, path = "." ) {
 			ret <- c( ret, findSuffix( p, path ) )
 		return( ret )
 	}
-	spat=gsub("\\.","\\\\\\.",prefix)
+	#spat=gsub("\\.","\\\\\\.",suffix)                    # wrong: produces three backslashes
+	#spat=gsub("\\.",paste("\\\\","\\.",sep=""),suffix)   # possibly correct but unnecessary
+	spat=gsub("\\.","\\\\.",suffix)                       # sufficient
 	sfiles=list.files(path,pattern=paste("^", spat,sep=""),ignore.case=TRUE)
 	pref=substring(sfiles,nchar(prefix) + 1)
 	return(pref)
 }
 
-#one big fucking hack to allow GUIs from outside PBSmodelling to call PBSmodelling's internal hidden functions
-#Do not rely on this to remain here - functions begining with a . should ONLY be called from PBSmodelling
+#One big hack to allow GUIs from outside PBSmodelling to call PBSmodelling's internal hidden functions.
+#Do not rely on this to remain here - functions beginning with a '.' should ONLY be called from PBSmodelling.
 #TODO REMOVE THIS - after PBSadmb is refactored
 .getHiddenEnv <- function()
 {
