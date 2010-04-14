@@ -996,7 +996,7 @@ clearAll <- function(hidden=TRUE, verbose=TRUE, PBSsave=TRUE) {
 	invisible() }
 #-----------------------------------------clearAll
 
-#runExamples----------------------------2010-03-16
+#runExamples----------------------------2010-04-14
 # Display a master GUI to display examples
 #-------------------------------------------RH/ACB
 runExamples <- function () {
@@ -1042,11 +1042,10 @@ runExamples <- function () {
 	assign(".cls",ls(pos = 1, all = TRUE),envir=.GlobalEnv)
 	assign(".cwd",getwd(),envir=.GlobalEnv)
 	pckg <- "PBSmodelling"
-	dnam <- "examples"
-	rdir <- system.file(package = pckg)
-	wdir <- paste(rdir, "/", dnam, sep = "")
-	fnam <- paste(wdir, list.files(wdir), sep = "/")
-	rtmp <- tempdir()
+	pdir <- system.file(package = pckg)               # package directory
+	edir <- paste(pdir, "/", "examples", sep = "")    # examples directory
+	fnam <- paste(edir, list.files(edir), sep = "/")  # file names in examples directory
+	rtmp <- tempdir()                                 # R's temporary directory
 	file.copy(fnam, rtmp, overwrite = TRUE)
 	setwd(rtmp)
 	createWin("runExamplesWin.txt")
@@ -1394,7 +1393,6 @@ evalCall=function(fn,argu,...,envir=parent.frame(),checkdef=FALSE,checkpar=FALSE
 	invisible(expr) }
 #-----------------------------------------evalCall
 
-
 .findSquare=function(nc) {
 	sqn=sqrt(nc); m=ceiling(sqn); n=ceiling(nc/m)
 	return(c(m,n)) }
@@ -1531,4 +1529,39 @@ openUG = function(pkg="PBSmodelling"){
 	openFile(paste("/doc/",pkgnam,"-UG.pdf",sep=""),pkgnam)
 }
 
+#runExample-----------------------------2010-04-14
+# Display a single GUI example.
+#-----------------------------------------------RH
+runExample <- function (ex, pkg="PBSmodelling") {
+
+	.runExHelperQuit <- function() {
+		#closeWin(name=allWin)
+		setwd(.cwd)
+		remove(list = setdiff(ls(pos = 1), .cls), pos = 1)
+		return() }
+	assign(".cls",ls(pos = 1, all = TRUE),envir=.GlobalEnv)
+	assign(".cwd",getwd(),envir=.GlobalEnv)
+	assign(".runExHelperQuit",.runExHelperQuit,envir=.GlobalEnv)
+
+	pdir <- system.file(package = pkg)                # package directory
+	edir <- paste(pdir, "/", "examples", sep = "")    # examples directory
+	fnam <- paste(edir, list.files(edir), sep = "/")  # file names in examples directory
+	bnam <- basename(fnam)                            # basenames
+
+	if (missing(ex) || !is.element(paste(ex,"Win.txt",sep=""),setdiff(bnam,"runExamplesWin.txt"))) {
+		mess = paste("Your example does not exist.\nChoose from:\n     ",
+			paste(setdiff(findPrefix("Win.txt",edir),"runExamples"),collapse="\n     "),sep="")
+		showAlert(mess)
+		stop ("Choose another example") }
+	rtmp <- tempdir()                                 # R's temporary directory
+	file.copy(fnam, rtmp, overwrite = TRUE)
+	setwd(rtmp)
+	wnam <- paste(ex,"Win.txt",sep="")                # window description file
+	wtxt <- readLines(wnam)
+	wtxt[1] = paste(wtxt[1], "onClose=.runExHelperQuit")
+	writeLines(wtxt,wnam)
+	rnam <- paste(ex,".r",sep="")                     # R code file
+	if (is.element(rnam,bnam)) source(rnam)
+	invisible() }
+#---------------------------------------runExample
 
