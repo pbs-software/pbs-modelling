@@ -1,11 +1,11 @@
 Package: PBSmodelling
-Version: 2.60
-Date: 2010-03-23
+Version: 2.61
+Date: 2010-04-14
 Title: GUI Tools Made Easy: Interact with Models, Explore Data, Give Dynamic Presentations
 Author: Jon T. Schnute <Jon.Schnute@dfo-mpo.gc.ca>,
   Alex Couture-Beil <alex@mofo.ca>, 
   Rowan Haigh <Rowan.Haigh@dfo-mpo.gc.ca>, and
-  Anisa Egeli <aegeli@gmail.com>
+  A.R. (Rob) Kronlund <Allen.Kronlund@dfo-mpo.gc.ca>
 Maintainer: Jon Schnute <Jon.Schnute@dfo-mpo.gc.ca>
 Depends: R (>= 2.7.0), methods
 Suggests: PBSmapping, PBSddesolve, deSolve, KernSmooth, XML

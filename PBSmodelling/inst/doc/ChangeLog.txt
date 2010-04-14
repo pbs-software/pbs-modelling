@@ -3,6 +3,10 @@ PBSmodelling Changes
 Authors: JTS = Jon T. Schnute           RH  = Rowan Haigh
          ACB = Alex Couture-Beil        ARK = Rob Kronlund
 
+2.61  2010-04-14  Authors
+  - Added new function 'runExample' to run a single GUI example from PBSmodelling's 'examples' subdirectory. (RH 4/14)
+  - Revised function 'runExamples' - minor changes to working variable names.
+
 2.60  2010-03-23  Authors
   - Fixed functions 'findPrefix' and 'findSuffix' ('replacement' string in 'gsub' changed from '\\\\\\.' to '\\\\.'). (RH 3/23)
   - Updated UG to include info on the 'sticky' argument of widgets. (JTS 3/19)
