@@ -2117,11 +2117,9 @@ parseWinFile <- function(fname, astext=FALSE)
 	return( list( widget = notebook, widgetList = childWidgets ) )
 }
 
-
-#TODO FIXME
-.createWidget.include <- function(tk, widget, winName)
+.createWidget.include <- function(tk, widgetList, winName)
 {
-	stop( "NEEDS WORK" )
+	widget <- widgetList[[ 1 ]]
 	if( !is.null( widget[[ "file" ]] ) && !is.null( widget[[ "name" ]] ) )
     		.stopWidget( "both file and name can not be set at the same time", widget$.debug, winName)
 	if( is.null( widget[[ "file" ]] ) && is.null( widget[[ "name" ]] ) )
@@ -2142,7 +2140,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		return( tkframe( tk ) )
 	if( length( gui_desc ) > 1 ) warning( "Multiple windows found in the window description file - only the first will be included (and displayed)" )
 	grid <- .packWidgetsIntoGrid( gui_desc[[ 1 ]]$.widgets, gui_desc[[ 1 ]]$vertical )
-	return( .createWidget( tk, grid, winName ) )
+	return( list( widget = .createWidget( tk, grid, winName )$widget, widgetList = widgetList[ -1 ] )  )
 }
 
 .createWidget.check <- function(tk, widgetList, winName)
