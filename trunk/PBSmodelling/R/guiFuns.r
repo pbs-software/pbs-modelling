@@ -3970,7 +3970,7 @@ parseWinFile <- function(fname, astext=FALSE)
 						),
 						list(
 							#list(type="label", text="Index", font="", fg=widget$fg, bg=widget$bg, sticky="", padx=0, pady=0),
-							list(type="button", text="Sort", font="", fg=widget$fg, bg=widget$bg, width=5, "function"=".sortActHistory", action=widget$name, sticky="", padx=0, pady=0),
+							list(type="button", text="Sort", font="", fg=widget$fg, bg=widget$bg, width=5, "function"="PBSmodelling:::.sortActHistory", action=widget$name, sticky="", padx=0, pady=0),
 							list(type="entry", name=indexname, value="0", width=5, label="", font="", entryfg=widget$entryfg, entrybg=widget$entrybg, "function"="jumpHistory", action=widget$name, enter=TRUE, mode="numeric", padx=0, pady=0, entrybg="white", edit=T),
 							list(type="entry", name=sizename, value="0", width=5, label="", font="", action="", enter=TRUE, mode="numeric", padx=0, pady=0, edit=F),
 							list(type="button", text="Empty", font="", fg=widget$fg, bg=widget$bg, width=5, "function"="clearHistory", action=widget$name, sticky="", padx=0, pady=0)

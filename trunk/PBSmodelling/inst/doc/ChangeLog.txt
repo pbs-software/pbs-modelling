@@ -3,7 +3,9 @@ PBSmodelling Changes
 Authors: JTS = Jon T. Schnute           RH  = Rowan Haigh
          ACB = Alex Couture-Beil        ARK = Rob Kronlund
 
-2.61  2010-04-14  Authors
+2.61  2010-07-07  Authors
+  - Teeny bug fix to make the sort button on the history widget functional. (RH 7/7)
+  - Updated createWidget.include to accecpt/return widgetlist. (ACB 5/12)
   - Added new function 'runExample' to run a single GUI example from PBSmodelling's 'examples' subdirectory. (RH 4/14)
   - Revised function 'runExamples' - minor changes to working variable names.
 
