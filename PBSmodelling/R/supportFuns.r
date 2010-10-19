@@ -1397,7 +1397,7 @@ evalCall=function(fn,argu,...,envir=parent.frame(),checkdef=FALSE,checkpar=FALSE
 	sqn=sqrt(nc); m=ceiling(sqn); n=ceiling(nc/m)
 	return(c(m,n)) }
 
-#viewCode-------------------------------2009-11-16
+#viewCode-------------------------------2010-10-19
 # View package R code on the fly.
 #-----------------------------------------------RH
 viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
@@ -1420,10 +1420,14 @@ viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
 	code=c(paste("#",pkg,"Functions"),paste("#",paste(rep("-",nchar(pkg)+10),collapse="")))
 	pkgFuns=c(pkgF1,pkgF0)
 	if (missing(funs)) funs=pkgFuns
+	else {
+		if (!is.null(list(...)$pat) && is.logical(list(...)$pat) && list(...)$pat)
+			funs = findPat(funs,pkgFuns) }
 	if (is.null(funs) || is.na(funs) || !is.character(funs) || all(funs=="")) {
 		showAlert("Your choice for 'funs' is badly specified")
 		return(invisible("Error: 'funs' badly specified")) }
 	seeFuns=pkgFuns[is.element(pkgFuns,funs)]
+#browser();return()
 	if (length(seeFuns)==0) {
 		showAlert("Your choices yield no functions")
 		return(invisible("Error: choices for 'funs' yield no functions")) }

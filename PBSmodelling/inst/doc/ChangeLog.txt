@@ -3,6 +3,9 @@ PBSmodelling Changes
 Authors: JTS = Jon T. Schnute           RH  = Rowan Haigh
          ACB = Alex Couture-Beil        ARK = Rob Kronlund
 
+2.6.2  2010-10-19  Rowan (started new version for eventual posting to CRAN)
+  - Modified 'viewCode' to search for patterns in 'funs' when 'pat=TRUE' (RH 10/19)
+
 2.61  2010-07-07  Authors
   - Teeny bug fix to make the sort button on the history widget functional. (RH 7/7)
   - Updated createWidget.include to accecpt/return widgetlist. (ACB 5/12)
