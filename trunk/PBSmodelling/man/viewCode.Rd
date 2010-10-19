@@ -18,7 +18,9 @@ viewCode(pkg="PBSmodelling", funs, output=4, ...)
     directory on a remote location; \cr
     \code{update} - logical: if \code{TRUE}, attempt to update the package
     index to reflect the currently available packages. 
-    (Not attempted if \code{remote} is non-\code{NULL}.) }
+    (Not attempted if \code{remote} is non-\code{NULL}.) \cr \cr
+    Also, if user specifies \code{pat=TRUE}, then \code{funs}, if specified,
+    are treated like patterns. }
 }
 \details{
   If \code{funs} is not specified, then all functions, including
