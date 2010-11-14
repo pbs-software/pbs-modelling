@@ -2774,11 +2774,13 @@ parseWinFile <- function(fname, astext=FALSE)
 						text <- rowlabels[rowCount]
 
 					tmp_i <- i
-					if (is.null( collabels ))
-						tmp_i <- tmp_i - 1
 					#define a row label (per each row)
 					row_number = tmp_i - 1 #for renaming row labels
 					label_name <- paste( widget$name, "[rowlabel][", row_number, "]", sep="" )
+
+					if (is.null( collabels ))
+						tmp_i <- tmp_i - 1
+
 					if( nNames != 1 ) label_name <- ""
 					wid$.widgets[[tmp_i]][[j]] <- list(type='label', text=text, name=label_name, mode="character", font=widget$font, bg=widget$bg, fg=widget$fg )
 					if( !is.null( widget[[ ".rowlabelwidth" ]] ) )
