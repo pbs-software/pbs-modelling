@@ -22,6 +22,9 @@ Packaged on", pkg_date, "
 Pacific Biological Station, Nanaimo
 
 ")
+	#Load custom PBSmodelling tcl scripts
+	tcl("lappend", "auto_path", system.file( "tcl_scripts", package = "PBSmodelling" ) )
+	tclRequire( "PBSmodelling" )
 
 	#TODO find a better place
 	bwidget <- tclRequire("BWidget", warn = FALSE)
