@@ -3972,7 +3972,7 @@ parseWinFile <- function(fname, astext=FALSE)
 						),
 						list(
 							#list(type="label", text="Index", font="", fg=widget$fg, bg=widget$bg, sticky="", padx=0, pady=0),
-							list(type="button", text="Sort", font="", fg=widget$fg, bg=widget$bg, width=5, "function"="PBSmodelling:::.sortActHistory", action=widget$name, sticky="", padx=0, pady=0),
+							list(type="button", text="Sort", font="", fg=widget$fg, bg=widget$bg, width=5, "function"="doAction", action=paste("sortHistory(hisname=\"",widget$name,"\")",sep=""), sticky="", padx=0, pady=0),
 							list(type="entry", name=indexname, value="0", width=5, label="", font="", entryfg=widget$entryfg, entrybg=widget$entrybg, "function"="jumpHistory", action=widget$name, enter=TRUE, mode="numeric", padx=0, pady=0, entrybg="white", edit=T),
 							list(type="entry", name=sizename, value="0", width=5, label="", font="", action="", enter=TRUE, mode="numeric", padx=0, pady=0, edit=F),
 							list(type="button", text="Empty", font="", fg=widget$fg, bg=widget$bg, width=5, "function"="clearHistory", action=widget$name, sticky="", padx=0, pady=0)
@@ -4518,21 +4518,27 @@ importHistory <- function(hisname="", fname="", updateHis=TRUE)
 }
 .sortHelperActive <- function(hisname)
 {
-	len <- length(PBS.history[[hisname]]) - 1
-	if (len < 1) stop("unable to sort empty history")
-	x <- data.frame(new = 1:len)
-	x <- fix(x); xnew <- order(x$new, na.last=NA);
-	tmp <- PBS.history[[hisname]]
-	j <- 2
-	PBS.history[[hisname]] <<- list(PBS.history[[hisname]][[1]])
-		for (i in xnew) {
-		if (!is.na(i)) {
-			PBS.history[[hisname]][[j]] <<- tmp[[i + 1]]
-			j <- j + 1
+	#convert history into a data.frame (which is used for sorting)
+	x <- PBS.history[[hisname]]
+	if( length( x ) < 2 )
+		stop( "History does not contain any items - unable to sort" )
+	i <- 1
+	hist <- NULL
+	for( h in x[-1] ) {
+		if( is.null(hist) ) {
+			hist <- list() #matrix( nrow=length(x[-1]), ncol=length(h) )
+			if( length( h ) )
+				for( j in 1:length( h ) )
+					hist[ j ] <- list(c())
 		}
+		if( length( h ) )
+			for( j in 1:length( h ) )
+				hist[[j]][i] <- as.vector( h[[j]] )[ 1 ]
+		i <- i + 1
 	}
-	PBS.history[[hisname]][[1]]$index <<- min(PBS.history[[hisname]][[1]]$index, length(PBS.history[[hisname]])-1)
-	.updateHistory(hisname)
+	names( hist ) <- names( x[[2]] )
+	#display sort widget, .done_sorting() takes care of saving the data
+	.sortWidget( as.data.frame( hist ) )
 }
 .sortHelperFile <- function(openfile, savefile)
 {
@@ -4564,11 +4570,6 @@ importHistory <- function(hisname="", fname="", updateHis=TRUE)
 		.sortHelperFile(openfile, savefile)
 	}
 	sortHistory()
-}
-#use window action as history name
-.sortActHistory <- function()
-{
-	sortHistory(hisname=getWinAct()[1])
 }
 sortHistory <- function(file="",outfile=file,hisname="")
 {
@@ -5548,6 +5549,4 @@ updateGUI <- function(scope="L") {
 		setWinVal( vals ) }
 	invisible(isMatch)
 }
-
-
 
