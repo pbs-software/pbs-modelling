@@ -1,5 +1,46 @@
-sortWidget <- function( d )
+.sortWidget <- function( d )
 {
+
+	#given a tcl_variable that represents a matrix, fetch it and convert into an R matrix
+	.sortWidgetGetVal <- function( tcl_var )
+	{
+		tmp <- tclvalue( tcl("array", "get", tcl_var) )
+		tmp <- .tclArrayToVector( tmp )
+		
+		row_max <- 0
+		col_max <- 0
+		for( i in seq(from=1, to=length(tmp), by=2 ) ) {
+			key <- as.integer( strsplit(tmp[i], ",")[[1]] )
+			row_max <- max( row_max, key[1] )
+			col_max <- max( col_max, key[2] )
+		}
+		ret <- matrix( nrow=row_max, ncol=col_max )
+		for( i in seq(from=1, to=length(tmp), by=2 ) ) {
+			key <- as.integer( strsplit(tmp[i], ",")[[1]] )
+			ret[ key[1], key[2] ] <- tmp[i+1]
+		}
+		return( ret )
+	}
+
+	#called when user pushes save button
+	.done_sorting <- function( r, hisname, tt )
+	{
+		sorted_data <- .sortWidgetGetVal( r )
+		sorted_index <- as.integer( sorted_data[,1] )
+		tmp <- PBS.history[[hisname]]
+		j <- 2
+		PBS.history[[hisname]] <<- PBS.history[[hisname]][1]
+			for (i in sorted_index) {
+			if (!is.na(i)) {
+				PBS.history[[hisname]][[j]] <<- tmp[[i + 1]]
+				j <- j + 1
+			}
+		}
+		PBS.history[[hisname]][[1]]$index <<- min(PBS.history[[hisname]][[1]]$index, length(PBS.history[[hisname]])-1)
+		.updateHistory(hisname)
+		tkdestroy( tt )
+	}
+
 	if( is.data.frame( d ) == FALSE ) stop( "d must be a data.frame" )
 	r <- tclArray()
 	for( i in 1:nrow(d) ) {
@@ -9,33 +50,19 @@ sortWidget <- function( d )
 			tcl( "set", paste(r,"(",i,",",j+1,")", sep=""), d[i,j] )
 	}
 
+	hisname <- "window.default"
 	tt <- tktoplevel()
-	p <- tcl( "PBSmodelling::create", .Tk.subwin( tt ), r, paste( nrow(d), ncol(d)+1 ) )
+	#frame <- tkframe( tt )
+	#tkgrid( tklabel( frame, text="Click and drag row items to adjust the history order" ), row=1, column=1, sticky="W" )
+	#tkgrid( tkbutton( frame,text="Save Order",command=function() print("done!") ), row=1, column=2, sticky="E" )
+	#tkpack( frame, fill="both", expand=0 )
+	frame <- tkframe( tt )
+	tkpack( tklabel( frame, text="Click and drag row items to adjust the history order" ), side="left" )
+	tkpack( tkbutton( frame, text="Save Order",command=function() .done_sorting( r, hisname, tt ) ), side="right" )
+	tkpack( frame )
+
+	p <- tcl( "PBSmodelling::create", .Tk.subwin( tt ), r, paste( nrow(d), ncol(d)+1 ), c("history index", colnames(d) ) )
 	tkpack( p, expand=1, fill="both" )
 	tkfocus(tt)
 	return( r )
 }
-
-sortWidgetGetVal <- function( tcl_var )
-{
-	tmp <- tclvalue( tcl("array", "get", tcl_var) )
-	tmp <- .tclArrayToVector( tmp )
-	
-	row_max <- 0
-	col_max <- 0
-	for( i in seq(from=1, to=length(tmp), by=2 ) ) {
-		key <- as.integer( strsplit(tmp[i], ",")[[1]] )
-		row_max <- max( row_max, key[1] )
-		col_max <- max( col_max, key[2] )
-	}
-	ret <- matrix( nrow=row_max, ncol=col_max )
-	for( i in seq(from=1, to=length(tmp), by=2 ) ) {
-		key <- as.integer( strsplit(tmp[i], ",")[[1]] )
-		ret[ key[1], key[2] ] <- tmp[i+1]
-	}
-	return( ret )
-}
-
-#r <- sortWidget( beaver1 )
-#print( sortWidgetGetVal( r ) )
-

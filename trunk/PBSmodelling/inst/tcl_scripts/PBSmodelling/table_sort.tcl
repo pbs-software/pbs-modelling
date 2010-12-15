@@ -8,7 +8,7 @@ namespace eval ::PBSmodelling {
     namespace export create
 }
 
-proc ::PBSmodelling::createLabel { tt name } {
+proc ::PBSmodelling::createLabel { w tt name var var_dim col_i } {
 	set arrow_x 16
 	set arrow_y 16
 	frame $tt -relief raised -borderwidth 2
@@ -17,17 +17,27 @@ proc ::PBSmodelling::createLabel { tt name } {
 	grid [canvas $tt.can -borderwidth 0 -highlightthickness 0 -relief flat -takefocus 0 -width $arrow_x -height $arrow_y] -column 1 -row 0
 	#$tt.can create line 0 0 3 3
 	image create photo box -width $arrow_x -height $arrow_y -palette 256/256/256
-	$tt.can create image 0 0 -image box -anchor nw
+	image create photo box_up -width $arrow_x -height $arrow_y -palette 256/256/256
+	image create photo box_down -width $arrow_x -height $arrow_y -palette 256/256/256
+	$tt.can create image 0 0 -image box -anchor nw -tags arrow
 
-	for { set x 1 } { $x < $arrow_x } { incr x } {
-		for { set y 1 } { $y <= $arrow_y } { incr y } {
-			box put black -to $x $y
+	#make some really shitty arrows 
+	#TODO (should really do this as bitmap data, and import the image)
+	for { set y 0 } { $y < 5 } { incr y } { #num of lines
+		for { set x 0 } { $x <= $y } { incr x } { #width of arrow
+			box_down put black -to [expr 8+$x] [expr $y+6]
+			box_down put black -to [expr 8-$x] [expr $y+6]
+
+			box_up put black -to [expr 8+$x] [expr 16-$y-6]
+			box_up put black -to [expr 8-$x] [expr 16-$y-6]
 		}
 	}
 
-	eval "bind $tt.lab <Button-1> {$tt configure -relief sunken}"
-	#TODO not quite the right event -> if the mouse moves off the label without releasing, then we shouldn't use 
-	eval "bind $tt.lab <ButtonRelease-1> {$tt configure -relief raised}"
+	#TODO re-enable the relief changing
+	#eval "bind $tt.lab <Button-1> {$tt configure -relief sunken}"
+	##TODO not quite the right event -> if the mouse moves off the label without releasing, then we shouldn't use 
+	#eval "bind $tt.lab <ButtonRelease-1> {$tt configure -relief raised}"
+	bind $tt.lab <1> "columnclick $w %W $var \"$var_dim\" $col_i"
 	
 	return $tt
 }
@@ -45,13 +55,11 @@ proc redisplay { w var var_dim } {
 }
 
 # Create a new stack
-proc ::PBSmodelling::create { tt var var_dim } {
+proc ::PBSmodelling::create { tt var var_dim col_names } {
 
 	set nrow [lindex $var_dim 0]
 	set ncol [lindex $var_dim 1]
 
-	#tk_messageBox -message "[set [set r](1,1)]" -type ok
-	
 	#inspired from http://wiki.tcl.tk/10923
 	frame $tt
 	scrollbar $tt.h -command "$tt.c xview" -orient horiz
@@ -68,7 +76,7 @@ proc ::PBSmodelling::create { tt var var_dim } {
 	$tt.c create window 0 0 -window $tt.c.f -anchor nw
 
 	for { set i 1 } { $i <= $ncol } { incr i } {
-		set w [createLabel $tt.c.f.lab$i "var$i"]
+		set w [createLabel $tt.c.f $tt.c.f.lab$i [lindex $col_names [expr $i-1]] $var $var_dim $i]
 		grid $w -column $i -row 0 -sticky we
 	}
 
@@ -96,6 +104,69 @@ proc ::PBSmodelling::create { tt var var_dim } {
 
 	return $tt
 	#return $tt.c.f
+}
+
+proc displayColumnLabelSortDirection { w num_cols } {
+	variable last_sort
+	if { [info exists last_sort] == 0 } {
+		set last_sort 0
+	}
+	for { set i 1 } { $i <= $num_cols } { incr i } {
+		$w.lab$i.can delete arrow
+		if { [lindex $last_sort 0] == $i } {
+			if { [lindex $last_sort 1] == 1 } {
+				$w.lab$i.can create image 0 0 -image box_up -anchor nw -tags arrow
+			} else {
+				$w.lab$i.can create image 0 0 -image box_down -anchor nw -tags arrow
+			}
+		} else {
+			$w.lab$i.can create image 0 0 -image box -anchor nw -tags arrow
+		}
+	}
+}
+
+proc columnclick {w clicked var var_dim col} {
+	set rows [lindex $var_dim 0]
+	set cols [lindex $var_dim 1]
+
+	variable last_sort
+	if { [info exists last_sort] == 0 } {
+		set last_sort 0
+	}
+	if { [lindex $last_sort 0] == $col } {
+		if { [lindex $last_sort 1] == 1 } { set direction -1 } else { set direction 1 }
+	} else {
+		set direction 1
+	}
+	set last_sort "$col $direction"
+
+	#lamely sort in o(n^2)
+	for { set i 1 } { $i <= $rows } { incr i } {
+		set min_i $i
+		for { set j $i } { $j <= $rows } { incr j } {
+			#when direction is -1, search for max
+			if { [expr $direction * [set [set var]($j,$col)]] < [expr $direction * [set [set var]($min_i,$col)]] } {
+				set min_i $j
+			}
+		}
+
+		#copy all columns
+		swaprows $var $var_dim $i $min_i
+	}
+	redisplay $w $var $var_dim
+	displayColumnLabelSortDirection $w $cols
+
+}
+
+proc swaprows {var var_dim row1 row2} {
+	if { $row1 == $row2 } { return }
+	set cols [lindex $var_dim 1]
+
+	for { set i 1 } { $i <= $cols } { incr i } {
+		set saved [set [set var]($row1,$i)]
+		set [set var]($row1,$i) [set [set var]($row2,$i)]
+		set [set var]($row2,$i) $saved
+	}
 }
 
 proc click {w clicked} {
@@ -169,6 +240,11 @@ proc unclick {w clicked var var_dim} {
 
 	moverows $var $var_dim $row $moveto
 	redisplay $w $var "$var_dim"
+
+	#remove direction sorting (since user changed rows)
+	variable last_sort
+	set last_sort 0
+	displayColumnLabelSortDirection $w [lindex $var_dim 1]
 
 	#remove the highlighed move to line
 	place forget $w.hover
