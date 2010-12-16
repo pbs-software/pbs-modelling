@@ -36,9 +36,8 @@
 				j <- j + 1
 			}
 		}
-		PBS.history[[hisname]][[1]]$index <<- min(PBS.history[[hisname]][[1]]$index, length(PBS.history[[hisname]])-1)
-		.updateHistory(hisname)
 		tkdestroy( tt )
+		jumpHistory( hisname, 1 )
 	}
 
 	if( is.data.frame( d ) == FALSE ) stop( "d must be a data.frame" )
