@@ -1068,33 +1068,13 @@ isWhat <- function(x) {
   invisible() }
 
 #given string name of a program - return the complete path to program
-#equivalent to "which" but works for windows too
+#This was made without knowing Sys.which() existed - we may want to depricate this at some point.
 findProgram <- function( name, includename = FALSE )
 {
-	if( .Platform$OS.type=="windows" ) {
-		name <- paste( name, ".exe", sep="" ) #TODO could iterate over .exe, .bat, ...
-		path <- Sys.getenv("PATH")
-		paths <- unlist( strsplit( path, ";" ) )
-		for( p in paths ) {
-			f <- paste( p, "\\", name, sep="" )
-			if( file.exists( f ) ) {
-				if( includename == FALSE )
-					return( dirname( f ) )
-				return( gsub("\\\\", "/", f ) )
-			}
-		}
-		return( NULL )
-	}
-	cmd <- system( paste( "which ", name, sep="" ), intern = TRUE )
-	if( length( cmd ) == 0 )
-		return( NULL )
-	if( includename == TRUE )
-		return( cmd )
-	#remove filename
-	tmp <- strsplit( cmd, "/" )[[ 1 ]]
-	tmp[ length(tmp) ] <- "" #last item is filename
-	cmd <- paste( tmp, collapse="/" ) #put back together
-	return( cmd )
+	tmp <- Sys.which( name )
+	if( includename == FALSE )
+		tmp <- dirname( tmp )
+	return( tmp )
 }
 
 #openFile-------------------------------2008-09-22
