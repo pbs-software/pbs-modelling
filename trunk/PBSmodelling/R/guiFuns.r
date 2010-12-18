@@ -4870,11 +4870,14 @@ getWinVal <- function(v=NULL, scope="", asvector=FALSE, winName="")
 	if (!exists(".PBSmod")) {
 		stop(".PBSmod was not found")
 	}
-	if (winName=="")
+	if (winName=="") {
 		winName <- .PBSmod$.activeWin
+		if( is.null( winName ) )
+			return( list() )
+	}
 
 	if( is.null( .PBSmod[[ winName ]] ) )
-		stop(paste("supplied window \"",winName,"\" name not found"))
+		stop(paste("supplied window \"",winName,"\" name not found", sep=""))
 
 	#extract all variables regardless if asked for by user
 	vars <- .extractVar(winName)
