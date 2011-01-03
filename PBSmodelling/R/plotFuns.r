@@ -571,12 +571,12 @@ testCol <- function(cnam=colors()[sample(length(colors()),15)]) {
 	invisible(clrs) }
 #------------------------------------------testCol
 
-#plotBubbles----------------------------2009-03-03
+#plotBubbles----------------------------2010-07-12
 # Function to construct a bubble plot for a matrix z
 #  z:     input matrix or data frame
-#  xval:  x-values for the columns of z
+#  xval:  x-values for the columns of z (if length xval != # colums in z, xval is ignored)
 #         if xval=TRUE, first row contains x-values for the columns
-#  yval:  y-values for the rows of z
+#  yval:  y-values for the rows of z (if length yval != # rows in z, yval is ignored)
 #         if yval=TRUE, first column contains y-values for the rows
 #  dnam:  if TRUE, use dimnames as xval and yval
 #         (overwrites previously specified values)
@@ -590,11 +590,14 @@ testCol <- function(cnam=colors()[sample(length(colors()),15)]) {
 #  size:  size (inches) of the largest & smallest bubble
 #  lwd:   line width for drawing circles
 #  hide0: if TRUE, hide zero-value bubbles
+#  frange: fraction by which the range of the axes should be extended
+#  prettyaxis: logical: if TRUE, apply the pretty function to both axes
 #  ...:   further parameters for the plotting functions 
 #-------------------------------------------JTS/RH
 plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE, 
-    rpro=FALSE, cpro=FALSE, rres=FALSE, cres=FALSE, powr=0.5, size=0.2, 
-    lwd=1, clrs=c("black","red","blue"), hide0=FALSE, frange=0.1, ...) {
+    rpro=FALSE, cpro=FALSE, rres=FALSE, cres=FALSE, 
+    powr=0.5, size=0.2, lwd=1, clrs=c("black","red","blue"), 
+    hide0=FALSE, frange=0.1, prettyaxis=FALSE, ...) {
 
 	if (is.data.frame(z)) {
 		use = !sapply(z,is.factor) & sapply(z,is.numeric)
@@ -616,6 +619,7 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	xind <- (nx - nx1 + 1):nx
 	x2=xlabel=xval1[xind]
 	yind <- (ny - ny1 + 1):ny
+#browser()
 	y2=ylabel=yval1[yind]
 	if ((mode(xval) != "logical") & (length(xval) == nx1)) {
 		if (mode(xval)=="numeric") x2=xval
@@ -623,7 +627,8 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	if ((mode(yval) != "logical") & (length(yval) == ny1)) {
 		if (mode(yval)=="numeric") y2=yval
 		ylabel=yval }
-	zz <- array(z[yind, xind],dim=c(length(yind),length(xind)),dimnames=dimnames(z))
+
+	zz <- array(z[yind, xind],dim=c(length(yind),length(xind)),dimnames=dimnames(z[yind, xind]))
 	dots=list(...)
 	xlab=dots$xlab; if (is.null(xlab)) xlab=""  # x-axis label
 	ylab=dots$ylab; if (is.null(ylab)) ylab=""  # y-axis label
@@ -677,8 +682,17 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	#axis(1,at=x2,labels=xlabel,...)
 	#symbols(xx,yy,circles=as.vector(abs(z0)),inches=size,fg=0,...)
 	evalCall(plot,argu=list(x=0,y=0,xlim=extendrange(x2,f=frange),
-		ylim=extendrange(y2,f=frange),type="n",xaxt="n",xlab=xlab,ylab=ylab),...,checkdef=TRUE,checkpar=TRUE)
-	evalCall(axis,argu=list(side=1,at=x2,labels=xlabel),...,checkpar=TRUE)
+		ylim=extendrange(y2,f=frange),type="n",axes=FALSE,xlab=xlab,ylab=ylab),...,checkdef=TRUE,checkpar=TRUE)
+	if (prettyaxis) {
+		xshow = is.element(x2,pretty(x2)); yshow = is.element(y2,pretty(y2)) }
+	else {
+		xshow = rep(TRUE,length(x2)); yshow = rep(TRUE,length(y2)) }
+	if (!all(xshow))
+		axis(1,at=x2[!xshow],labels=FALSE,tcl=ifelse(is.null(dots$tcl),par()$tcl,dots$tcl)/3)
+	if (!all(yshow))
+		axis(2,at=y2[!yshow],labels=FALSE,tcl=ifelse(is.null(dots$tcl),par()$tcl,dots$tcl)/3)
+	evalCall(axis,argu=list(side=1,at=x2[xshow],labels=xlabel[xshow]),...,checkpar=TRUE)
+	evalCall(axis,argu=list(side=2,at=y2[yshow],labels=ylabel[yshow]),...,checkpar=TRUE)
 	if (!hide0 && !all(is.na(z3))) {
 		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z3),inches=0.001,fg=clrs[3],lwd=lwd,add=TRUE),...,checkpar=TRUE) }
 		#symbols(xx, yy, circles = as.vector(z3), inches = 0.001, fg = clrs[3], lwd = lwd, add = TRUE, ...) }
@@ -688,8 +702,9 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	if (!all(is.na(z1))) {
 		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z1),inches=sz1,fg=clrs[1],lwd=lwd,add=TRUE),...,checkpar=TRUE) }
 		#symbols(xx, yy, circles = as.vector(z1), inches = sz1, fg = clrs[1], lwd = lwd, add = TRUE, ...) }
-	invisible(z0) }
+	box(); invisible(z0) }
 #--------------------------------------plotBubbles
+
 
 #testAlpha------------------------------2009-03-04
 # Display various alpha transparencies
