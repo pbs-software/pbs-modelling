@@ -7,7 +7,7 @@
 \usage{
 plotBubbles(z, xval=FALSE, yval=FALSE, dnam=FALSE, rpro=FALSE, 
    cpro=FALSE, rres=FALSE, cres=FALSE, powr=0.5, size=0.2, lwd=1,
-   clrs=c("black","red","blue"), hide0=FALSE, frange=0.1, ...) 
+   clrs=c("black","red","blue"), hide0=FALSE, frange=0.1, prettyaxis=FALSE, ...) 
 }
 \arguments{
 	\item{z}{input matrix, array (2 dimensions) or data frame.}
@@ -32,6 +32,7 @@ plotBubbles(z, xval=FALSE, yval=FALSE, dnam=FALSE, rpro=FALSE,
 		and zero values, respectively.}
 	\item{hide0}{logical: if \code{TRUE}, hide zero-value bubbles.}
 	\item{frange}{number specifying the fraction by which the range of the axes should be extended.}
+	\item{prettyaxis}{logical: if \code{TRUE}, apply the pretty function to both axes.}
 	\item{...}{additional arguments for plotting functions.}
 }
 \details{
