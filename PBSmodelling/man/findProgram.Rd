@@ -3,7 +3,7 @@
 \title{Locates a program in the PATH environment variable }
 \description{
   Returns the complete filename and path of a program in the PATH environment variable.
-  findProgram is similar to the which command under Unix, but works under Windows too.
+  This is a wrapper for \code{Sys.which}, and may be depricated in the future.
 }
 \usage{
 findProgram( name, includename=FALSE )
@@ -24,6 +24,6 @@ findProgram( "R", TRUE )
   Alex Couture-Beil
 }
 \seealso{
-  \code{\link{dirname}}
+  \code{\link{Sys.which}}
 }
 \keyword{file}
