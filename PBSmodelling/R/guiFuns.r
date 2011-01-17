@@ -4435,7 +4435,7 @@ exportHistory <- function(hisname="", fname="")
 		stop("unable to export history. Incorect history name given.")
 
 	if (fname=="")
-		fname <- promptSaveFile(initialfile=paste(hisname,".History.r", sep=""))
+		fname <- selectFile( initialfile=paste(hisname,".History.r", sep=""), mode="save" )
 	if (fname=="")
 		stop("no filename given.")
 
@@ -4461,8 +4461,8 @@ importHistory <- function(hisname="", fname="", updateHis=TRUE)
 		stop("unable to import history. Incorect history name given.")
 
 	if (fname=="")
-		fname <- promptOpenFile()
-	if (fname=="")
+		fname <- selectFile( mode="open" )
+	if ( is.null( fname ) || fname=="" )
 		stop("no filename given.")
 
 	newHist <- readList(fname)
@@ -4506,13 +4506,13 @@ importHistory <- function(hisname="", fname="", updateHis=TRUE)
 {
 	act <- getWinAct()[1]
 	if (act=="open") {
-		f <- promptOpenFile()
+		f <- selectFile( mode="open" )
 		s <- getWinVal("savefile")$savefile
 		if (s=="")
 			setWinVal(list(savefile=f))
 		setWinVal(list(openfile=f))
 	} else if (act=="save") {
-		f <- promptSaveFile()
+		f <- selectFile( mode="save" )
 		setWinVal(list(savefile=f))
 	}
 }
@@ -4544,7 +4544,6 @@ importHistory <- function(hisname="", fname="", updateHis=TRUE)
 	MAX_STRING_LEN <- 15
 	.shortenStrings <- function(x)
 	{
-		print( x )
 		x <- strsplit(x,"\n")[[1]]
 
 		needs_dots <- FALSE
@@ -4572,7 +4571,7 @@ importHistory <- function(hisname="", fname="", updateHis=TRUE)
 		}
 	}
 
-	.sortWidget( hist )
+	.sortWidget( hist, hisname )
 }
 .sortHelperFile <- function(openfile, savefile)
 {

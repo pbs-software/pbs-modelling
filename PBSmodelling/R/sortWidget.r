@@ -1,4 +1,4 @@
-.sortWidget <- function( d )
+.sortWidget <- function( d, hisname )
 {
 
 	#given a tcl_variable that represents a matrix, fetch it and convert into an R matrix
@@ -49,7 +49,6 @@
 			tcl( "set", paste(r,"(",i,",",j+1,")", sep=""), d[i,j] )
 	}
 
-	hisname <- "window.default"
 	tt <- tktoplevel()
 	#frame <- tkframe( tt )
 	#tkgrid( tklabel( frame, text="Click and drag row items to adjust the history order" ), row=1, column=1, sticky="W" )
