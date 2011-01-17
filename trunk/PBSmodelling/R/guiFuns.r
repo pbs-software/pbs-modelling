@@ -4538,7 +4538,41 @@ importHistory <- function(hisname="", fname="", updateHis=TRUE)
 	}
 	names( hist ) <- names( x[[2]] )
 	#display sort widget, .done_sorting() takes care of saving the data
-	.sortWidget( as.data.frame( hist ) )
+	hist <- as.data.frame( hist, stringsAsFactors=F )
+
+	#trim down long strings (if multiple lines take first non empty line)
+	MAX_STRING_LEN <- 15
+	.shortenStrings <- function(x)
+	{
+		print( x )
+		x <- strsplit(x,"\n")[[1]]
+
+		needs_dots <- FALSE
+		#grab first non empty element
+		x <- x[x!=""]
+		if( length( x ) == 0 )
+			return( "" )
+		if( length( x ) > 1 ) {
+			needs_dots <- TRUE
+			x <- x[1]
+		}
+		if( nchar( x ) > MAX_STRING_LEN ) {
+			needs_dots <- TRUE
+			x <- strtrim( x, MAX_STRING_LEN - 3 )
+		}
+		if( needs_dots == TRUE )
+			x <- paste( x, "...", sep="" )
+		return( x )
+	}
+	tmp.before <<- hist
+	if( ncol( hist ) > 0 ) {
+		for( i in 1:ncol( hist ) ) {
+			if( is.character( hist[,i] ) )
+				hist[,i] <- unlist( lapply( hist[,i], .shortenStrings ) )
+		}
+	}
+
+	.sortWidget( hist )
 }
 .sortHelperFile <- function(openfile, savefile)
 {
