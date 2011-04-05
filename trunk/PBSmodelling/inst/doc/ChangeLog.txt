@@ -3,8 +3,23 @@ PBSmodelling Changes
 Authors: JTS = Jon T. Schnute           RH  = Rowan Haigh
          ACB = Alex Couture-Beil        ARK = Rob Kronlund
 
-2.6.2  2010-10-19  Rowan (started new version for eventual posting to CRAN)
+2.6.2  2011-04-05  Authors
+  - Revised GUI for 'PopSim' example to notebook style with two tabs. (RH 4/5)
+  - Replaced import/export history deprecated functions with the new selectFile method.
+	Fixed missing hisname in sort widget which failed to jump history widget positions when it wasn't named default.window (ACB 1/16)
+  - Fixed sort widget levels issue (rather than characters) which resulted in integers being displayed rather than text in the sort table.
+	Added string trimming to trim strings over 15 characters. (ACB 1/16)
+  - Added Rob+Rowan's revised code for 'plotBubbles' and updated Rd file. (ACB 1/3)
+  - Updated findProgram.Rd to match new function wrapper (ACB 1/3)
+  - Changed findProgram() to simply wrap Sys.which() (ACB 12/17)
+  - If the default window has not been created, return an empty list(). (ACB 12/17)
+  - Once sorting has been saved, jump to history entry 1 and redraw data (ACB 12/14)
+  - Fixed sort button in history widget, and hooked up to new click and drag sort widget.
+	Added sort direction arrows to tcl code (ACB 12/14)
+  - Initial prototype for history sorter (ACB 12/8)
+  - rowlabel tcl ptr name off by 1 when collabels are used (ACB 11/14)
   - Modified 'viewCode' to search for patterns in 'funs' when 'pat=TRUE' (RH 10/19)
+  - Started new version for eventual posting to CRAN (RH 10/19)
 
 2.61  2010-07-07  Authors
   - Teeny bug fix to make the sort button on the history widget functional. (RH 7/7)
