@@ -9,10 +9,11 @@ menu nitems=3 label=View
   menuitem label="R Code" function=openFile action=PopSim.r
   menuitem label=Window   function=openFile action=PopSimWin.txt
 
-grid 1 2 sticky=NW
+notebook tabs="parameters display" name=nbpop #width=380 height=150
 #---------------------------LEFT
-	grid 4 1 sticky=NW 
-		grid 22 2 sticky=NW
+grid 2 1
+	grid 1 2 sticky=NW
+		grid 17 2 sticky=NW padx="2 10"
 			label text="Maturity parameters" font=bold sticky=W
 			null
 			label text="Age class at 50% maturity" sticky=W
@@ -37,6 +38,17 @@ grid 1 2 sticky=NW
 			entry name=t0 action=t0 value="-0.2"      function=calcAssess mode=numeric width=7 sticky=W
 			label text="VonBertalanffy K" sticky=W
 			entry name=k action=k value="0.2"         function=calcAssess mode=numeric width=7 sticky=W
+			label text="Other parameters" font=bold sticky=W
+			null
+			label text="Natural mortality rate" sticky=W
+			entry name=M action=M value=0.05          function=calcAssess mode=numeric width=7 sticky=W
+			label text="Mean recruitment (units)" sticky=W
+			entry name=R action=R value=1             function=calcAssess mode=numeric width=7 sticky=W
+			label text=Catchability sticky=W
+			entry name=q action=q value=1             function=calcAssess mode=numeric width=7 sticky=W
+			check name=chk checked=T text="Enable constraints" mode=logical sticky=W
+			null
+		grid 14 2 sticky=NE
 			label text="Fishing rates" font=bold sticky=W
 			null
 			label text=h1 sticky=W
@@ -49,16 +61,6 @@ grid 1 2 sticky=NW
 			entry name=A action=A value=30            function=calcAssess mode=numeric width=7 sticky=W
 			label text="Number of years" sticky=W
 			entry name=T action=T value=40            function=calcAssess mode=numeric width=7 sticky=W
-			label text="Other parameters" font=bold sticky=W
-			null
-			label text="Natural mortality rate" sticky=W
-			entry name=M action=M value=0.05          function=calcAssess mode=numeric width=7 sticky=W
-			label text="Mean recruitment (units)" sticky=W
-			entry name=R action=R value=1             function=calcAssess mode=numeric width=7 sticky=W
-			label text=Catchability sticky=W
-			entry name=q action=q value=1             function=calcAssess mode=numeric width=7 sticky=W
-		check name=chk checked=T text="Enable constraints" mode=logical sticky=W
-		grid 8 2 sticky=NW
 			label text="Standard errors       " font=bold sticky=W
 			null
 			label text="Recruitment process error" sticky=W
@@ -75,18 +77,36 @@ grid 1 2 sticky=NW
 			entry name=tau2 action=tau2 value=0.9  function=calcAssess mode=numeric width=7 sticky=W
 			radio name=doDir mode=logical text="Dirichlet effective N" value=TRUE selected=FALSE sticky=W padx=5
 			entry name=dirN action=dirN value=100 function=calcAssess mode=numeric width=7 sticky=W
-		text name=msg value="Notes:" height=3 width=34 edit=T 
+	text name=msg value="Parameter notes:" height=3 width=60 edit=TRUE
 
 #---------------------------RIGHT
-	grid 5 1 sticky=NW 
-		grid 1 4 stick=E
+grid 2 1
+grid 1 2 sticky=W
+	grid 15 1 sticky=NW padx="5 45"
+		label text="Choose a display" font=bold sticky=W
+		label text="Hidden states" font="11" sticky=W
+		radio name=plotType value=recruit   text="Recruits"                action=disp function=calcAssess mode=character sticky=W
+		radio name=plotType value=total     text="Total population"        action=disp function=calcAssess mode=character sticky=W
+		radio name=plotType value=spawner   text="Spawners"                action=disp function=calcAssess mode=character sticky=W
+		radio name=plotType value=select    text="Selected population"     action=disp function=calcAssess mode=character sticky=W
+		radio name=plotType value=compare   text="Comparison chart"        action=disp function=calcAssess mode=character sticky=W
+		radio name=plotType value=spawnVSrt text="Recruitment vs spawners" action=disp function=calcAssess mode=character sticky=W
+		radio name=plotType value=dbubble   text="Theoretical ages"        action=disp function=calcAssess mode=character sticky=W
+		radio name=plotType value=sbubble   text="True ages"               action=disp function=calcAssess mode=character sticky=W
+		radio name=plotType value=fish      text="Fishing mortality"       action=disp function=calcAssess mode=character sticky=W
+		label text="Measurements" font="11" sticky=W
+		radio name=plotType value=catch     text="Catch"                   action=disp function=calcAssess mode=character sticky=W
+		radio name=plotType value=index     text="Observed index"          action=disp function=calcAssess mode=character sticky=W
+		radio name=plotType value=pbubble   text="Observed ages"           action=disp function=calcAssess mode=character sticky=W
+	grid 4 1 sticky=NE
+		grid 1 4 stick=""
 			label text=View: font=bold
 			button text=Docs     function=openFile action=PopSimDoc.pdf
 			button text="R Code" function=openFile action=PopSim.r
 			button text=Window   function=openFile action=PopSimWin.txt
 		grid 2 1 sticky=NE
-			label text="Display properties" font=bold sticky=W
-			grid 5 2 sticky=W
+			label text="Display properties" font=bold sticky="" pady="10 0"
+			grid 5 2 sticky=""
 				label text="Max bubble size     " sticky=W
 				entry name=maxB value=0.15 action=disp function=calcAssess mode=numeric width=5 sticky=W
 				label text="Bubble power" sticky=W
@@ -99,26 +119,11 @@ grid 1 2 sticky=NW
 				radio name=unitType value=numbers action=disp function=calcAssess mode=character
 				label text="Display biomass" sticky=W
 				radio name=unitType value=biomass action=disp function=calcAssess mode=character
-		grid 15 1 sticky=NE
-			label text="Choose a display" font=bold sticky=W
-			label text="Hidden states" font="11" sticky=W
-			radio name=plotType value=recruit   text="Recruits"                action=disp function=calcAssess mode=character sticky=W
-			radio name=plotType value=total     text="Total population"        action=disp function=calcAssess mode=character sticky=W
-			radio name=plotType value=spawner   text="Spawners"                action=disp function=calcAssess mode=character sticky=W
-			radio name=plotType value=select    text="Selected population"     action=disp function=calcAssess mode=character sticky=W
-			radio name=plotType value=compare   text="Comparison chart"        action=disp function=calcAssess mode=character sticky=W
-			radio name=plotType value=spawnVSrt text="Recruitment vs spawners" action=disp function=calcAssess mode=character sticky=W
-			radio name=plotType value=dbubble   text="Theoretical ages"        action=disp function=calcAssess mode=character sticky=W
-			radio name=plotType value=sbubble   text="True ages"               action=disp function=calcAssess mode=character sticky=W
-			radio name=plotType value=fish      text="Fishing mortality"       action=disp function=calcAssess mode=character sticky=W
-			label text="Measurements" font="11" sticky=W
-			radio name=plotType value=catch     text="Catch"                   action=disp function=calcAssess mode=character sticky=W
-			radio name=plotType value=index     text="Observed index"          action=disp function=calcAssess mode=character sticky=W
-			radio name=plotType value=pbubble   text="Observed ages"           action=disp function=calcAssess mode=character sticky=W
-		grid 1 3 sticky=W pady=5
+		grid 1 3 pady=10
 			button text="Interact" action=interact function=calcAssess sticky=W
-			button text="Save As..." action=save function=calcAssess sticky=W padx=5
+			button text="Save As..." action=save function=calcAssess sticky=W 
 			button text="Recalculate" action="recalc" function=calcAssess sticky=W bg=greenyellow
-		grid 2 1 sticky=E
+		grid 2 1
 			label text="History" font=bold
-			history sticky=E
+			history 
+	text name=msg2 value="Display notes:" height=3 width=60 edit=TRUE pady="10 0"
