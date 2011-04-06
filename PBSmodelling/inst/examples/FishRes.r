@@ -1,4 +1,4 @@
-#FishRes--------------------------------2010-03-16
+#FishRes--------------------------------2011-04-06
 # Two linked populations (reserved and fished).
 # Functions that define and run the model,
 # with parameters shared globally for time series.
@@ -308,7 +308,11 @@ pbs <- list(tiny=0.5, small=0.8, medium=1, big=1.25, large=1.5, huge=2); # cex s
 remove(list=ls(1)[is.element(ls(1),c("yout","Yout","Zout"))],pos=1); # remove objects from previous session
 ips = installed.packages(); ip=ips[,"Package"]; names(ip)=ips[,"Version"]
 for (i in c("PBSmodelling","odesolve","akima")) {
-	if (any(ip==i)) eval(parse(text=paste("require(",i,", quietly=TRUE)",sep="")))
+	if (any(ip==i)) { 
+		eval(parse(text=paste("ipload=require(",i,", quietly=FALSE)",sep="")))
+		if (!ipload) { 
+			ii=paste("The",i,"package failed to load")
+			showAlert(ii,i,"error"); stop(ii,call.=FALSE) } } 
 	else {
 		ii=paste("The",i,"package is required for this example")
 		showAlert(ii,i,"error"); stop(ii,call.=FALSE) } }

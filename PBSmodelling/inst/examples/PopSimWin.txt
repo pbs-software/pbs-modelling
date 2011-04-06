@@ -9,7 +9,7 @@ menu nitems=3 label=View
   menuitem label="R Code" function=openFile action=PopSim.r
   menuitem label=Window   function=openFile action=PopSimWin.txt
 
-notebook tabs="parameters display" name=nbpop #width=380 height=150
+notebook tabs="Parameters Display" name=nbpop #width=380 height=150
 #---------------------------LEFT
 grid 2 1
 	grid 1 2 sticky=NW
