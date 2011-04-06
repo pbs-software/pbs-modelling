@@ -3,7 +3,8 @@ PBSmodelling Changes
 Authors: JTS = Jon T. Schnute           RH  = Rowan Haigh
          ACB = Alex Couture-Beil        ARK = Rob Kronlund
 
-2.6.2  2011-04-05  Authors
+2.6.2  2011-04-06  Authors
+  - Revised GUI for 'FishRes' example to notebook style with two tabs. (RH 4/6)
   - Revised GUI for 'PopSim' example to notebook style with two tabs. (RH 4/5)
   - Replaced import/export history deprecated functions with the new selectFile method.
 	Fixed missing hisname in sort widget which failed to jump history widget positions when it wasn't named default.window (ACB 1/16)
