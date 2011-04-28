@@ -3,7 +3,8 @@ PBSmodelling Changes
 Authors: JTS = Jon T. Schnute           RH  = Rowan Haigh
          ACB = Alex Couture-Beil        ARK = Rob Kronlund
 
-2.6.2  2011-04-06  Authors
+2.6.2  2011-04-28  Authors
+  - Critical bits of 'plotBubbles' had been removed that were needed to make the function display single years; they are added back in. (RH 4/28)
   - Revised GUI for 'FishRes' example to notebook style with two tabs. (RH 4/6)
   - Revised GUI for 'PopSim' example to notebook style with two tabs. (RH 4/5)
   - Replaced import/export history deprecated functions with the new selectFile method.
