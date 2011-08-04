@@ -1,26 +1,27 @@
 \name{PBSoptions-class}
-\Rdversion{1.1}
 \docType{class}
 \alias{PBSoptions-class}
 \alias{print,PBSoptions-method}
+\alias{show,PBSoptions-method}
 
 \title{Project Options Class}
 \description{
 	Projects commonly involve various settings or options such as paths to C compilers or other third-party tools.
-	PBSmodelling provides a set of option management functions for managing user specific options. Options can be 
+	\pkg{PBSmodelling} provides a set of option management functions for managing user specific options. Options can be 
 	modified through the provided set of functions on the command line, or through a custom GUI.
 	These options can be saved to disk for use in subsequent R sessions.
 	
-	To use PBSmodelling's suite of option management functions, a \code{PBSoptions} object must be
+	To use \pkg{PBSmodelling}'s suite of option management functions, a \code{PBSoptions} object must be
 	created for each of your projects. Each \code{PBSoptions} object contains a distinct R environment where 
 	option values are stored; this allows different projects to use overlapping option names without conflicts
 	(provided each project has its own \code{PBSoptions} class object).
 
 }
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("PBSoptions", filename, initial.options = list(), gui.prefix = "option")}.
+  Objects can be created by calls of the form \cr
+  \code{new("PBSoptions",filename,initial.options=list(),gui.prefix="option")}.
   \describe{
-    \item{\code{filename:}}{ default filename to use when saving and loading options to and from disk }
+    \item{\code{filename:}}{ default file name to use when saving and loading options to and from disk }
     \item{\code{initial.options:}}{ a list with distinctly named initial options to use if no previously saved file exists }
     \item{\code{gui.prefix:}}{ a prefix used to identify GUI variables which correspond to user options }
   }
@@ -48,22 +49,23 @@ Objects can be created by calls of the form \code{new("PBSoptions", filename, in
 \author{ Alex Couture-Beil }
 
 \section{Warning }{
-Do not use the slots - use our functions instead.
+Do not use the slots -- use the access functions instead.
 }
 \seealso{
-  \code{\link{getOptions}} for retrieving and modifying user options
+  \code{\link[PBSmodelling]{getOptions}} for retrieving and modifying user options
   
-  \code{\link{getOptionsFileName}} for retrieving and modifying the default options file name
+  \code{\link[PBSmodelling]{getOptionsFileName}} for retrieving and modifying the default options file name
   
-  \code{\link{loadOptions}} for loading and saving options from and to disk
+  \code{\link[PBSmodelling]{loadOptions}} for loading and saving options from and to disk
 
-  \code{\link{getOptionsPrefix}} for retrieving and modifying the GUI prefix (for custom GUI interfaces)
+  \code{\link[PBSmodelling]{getOptionsPrefix}} for retrieving and modifying the GUI prefix (for custom GUI interfaces)
   
-  \code{\link{loadOptionsGUI}} for setting GUI values to reflect user options and vice-versa
+  \code{\link[PBSmodelling]{loadOptionsGUI}} for setting GUI values to reflect user options and vice-versa
 }
 \examples{
 #initialize an option manager with a single logical option
-.mypkg <<- new( "PBSoptions", filename = "my_pkg.txt", initial.options = list( sillyhatday = FALSE ) )
+.mypkg <<- new( "PBSoptions", filename="my_pkg.txt", 
+   initial.options=list( sillyhatday=FALSE ) )
 
 #retrieving an option
 silly <- getOptions( .mypkg, "sillyhatday" )
@@ -80,5 +82,8 @@ createWin( c(
 
 #update GUI values based on values stored in .mypkg's options
 loadOptionsGUI( .mypkg )
+print(getOptions( .mypkg ))
 }
 \keyword{classes}
+\keyword{methods}
+

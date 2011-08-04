@@ -1,11 +1,11 @@
 \name{getOptionsFileName}
-\Rdversion{1.1}
 \alias{getOptionsFileName}
 \alias{setOptionsFileName}
-
-\title{get and set filename used for saving and loading of options}
+\title{
+  Get and Set File Name for Saving and Loading of Options
+}
 \description{
-  functions for retrieving and setting the default filename used by \code{loadOptions} and \code{saveOptions}
+  Functions for retrieving and setting the default file name used by \code{loadOptions} and \code{saveOptions}.
 }
 \usage{
 getOptionsFileName(option.object)
@@ -13,14 +13,15 @@ setOptionsFileName(option.object, name)
 }
 \arguments{
   \item{option.object}{options class object used for storing package options}
-  \item{name}{new name for default filename}
+  \item{name}{new name for default file name}
 }
 \value{
-  \code{getOptionsFileName}: the default filename
+  \code{getOptionsFileName}: the default file name
 }
 \seealso{
-  \code{\link{loadOptions}}
-  \code{\link{saveOptions}}
-  
-  see \code{\linkS4class{option}} for an example of using PBSmodelling's option managment functions
+  \code{\link{loadOptions}}, \code{\link{saveOptions}} \cr
+  See \code{\link[PBSmodelling]{PBSoptions-class}} for more details and 
+  an example using \pkg{PBSmodelling}'s option management functions.
 }
+\keyword{methods}
+
