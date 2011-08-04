@@ -1,43 +1,51 @@
-rem : This version creates and runs a new bash file Rd2dvi4pbs.sh from Rd2dvi.sh.
-rem : Note, only effective starting with R-2.8.0.
+@ rem %R_PATH% is set in RPaths.bat
+@ rem Individual Rd files:   %R_PATH%\R CMD Rd2dvi --pdf PBSmodelling.Rd
+@ rem package documentation: %R_PATH%\R CMD Rd2dvi --pdf PBSmodelling
+
 @ECHO OFF
 if not defined PBS_SETLOCAL (
 	SETLOCAL
 	SET PBS_SETLOCAL=1 )
 
 if "%1"=="" (
-	echo ERROR - you must specify a package name
-	echo example: %0 PBSmodelling 79
+	ECHO ERROR - you must specify a package name
+	ECHO example: %0 PBSmodelling 79
 	goto end )
 
 if "%2"=="" (
-	set page=1
+	SET page=1
 	) else (
-	set page=%2)
+	SET page=%2)
 
-set R_PAPERSIZE=letter
-set R_OSTYPE=windows
-set dviP=.Rd2dvi$
-set ext=aux;dvi;idx;ilg;ind;log;out;pdf;tex;toc
+SET ext=aux;dvi;idx;ilg;ind;log;out;pdf;tex;toc
 SET PBS_NO_PAUSE=1
-call RPathCheck.bat
+CALL RPathCheck.bat
+echo %R_PATH%
 
 if not defined PBSERROR (
 	for %%a in (%ext%) do (
 		if exist "%1.%%a" (
 			rm -f "%1.%%a" ) )
-	if exist %dviP% (rm -rf %dviP%)
-	sed 's/\${\$}\"/\$\"\nR_PAPERSIZE=%R_PAPERSIZE%\nR_OSTYPE=%R_OSTYPE%/g' %R_PATH%\Rd2dvi.sh > %R_PATH%\Rd2dvi4pbs.sh
-	R CMD %R_Path%\Rd2dvi4pbs.sh --pdf --no-clean --no-preview %1
-	sed 's/makeindex{}/makeindex{}\n\\\topmargin -0.25in \\\oddsidemargin 0in \\\evensidemargin 0in\n\\\textheight 9in \\\textwidth 6.5in/g' %dviP%\Rd2.tex > %dviP%\temp01.tex
-	sed 's/begin{document}/begin{document}\n\\\setcounter{page}{%page%}/g' %dviP%\temp01.tex > %dviP%\%1.tex
-	
-	latex %dviP%\%1 -output-directory=%dviP%
-	latex %dviP%\%1 -output-directory=%dviP%
-	makeindex %dviP%\%1
-	pdflatex %dviP%\%1 -output-directory=%dviP%
+	rm -f -r .Rd2dvi* rem remove all the temporary R directories
 
-	cp -f %dviP%\%1.pdf %1.pdf
+	%R_PATH%\R CMD Rd2dvi --no-clean --no-preview  %1
+	dir /b .Rd2dvi* > dirRd.txt
+	set dviP=
+	for /f %%i in (dirRd.txt) do ( rem should only see one temporary directory
+		set dviP=
+		set dviP=!dviP!%%i
+		echo !dviP! 
+		sed 's/makeindex{}/makeindex{}\n\\\topmargin 0.5in \\\oddsidemargin 0in \\\evensidemargin 0in\n\\\textheight 9in \\\textwidth 6.5in/g' !dviP!\Rd2.tex > Rd2a.tex
+		sed 's/begin{document}/begin{document}\n\\\setcounter{page}{%page%}/g' Rd2a.tex > %1.tex
+	)
+	latex -interaction=nonstopmode %1.tex
+	makeindex %1.idx
+	latex -interaction=nonstopmode %1.tex
+	makeindex %1.idx
+	latex -interaction=nonstopmode %1.tex
+	latex -interaction=nonstopmode %1.tex
+	dvips -q %1.dvi
+	ps2pdf %1.ps
 )
-
 :end
+

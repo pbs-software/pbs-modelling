@@ -29,7 +29,7 @@
 \begin{document}
 
 \title{Introduction to PBSmodelling}
-\author{Jon Schnute, Alex Couture-Beil, Rowan Haigh, and Anisa Egeli}
+\author{Jon T. Schnute, Alex Couture-Beil, and Rowan Haigh}
 \maketitle
 
 \section{What is \pbsm{}?}
@@ -43,9 +43,10 @@ The initials \bold{PBS} refer to the Pacific Biological Station, a major fisheri
 
 \section{Where is the User's Guide?}
 
-The R directory \code{../library/PBSmodelling/doc} includes a complete User's Guide \code{PBSmodelling-UG.pdf}. To use this package effectively, please consult the Guide.
+The R directory \code{../library/PBSmodelling/doc} includes a complete User's Guide \code{PBSmodelling-UG.pdf}. To use this package effectively, please consult the Guide. 
 
-We update the package more frequently than we update the User's Guide. For the latest information, see \code{PBSmodelling-Updates.pdf} in the same directory.
+We update the package more frequently than we update the User's Guide. To see our development site, navigate to:\\
+{\tt http://code.google.com/p/pbs-modelling/}.
 
 \section{Demos}
 
@@ -53,7 +54,7 @@ We update the package more frequently than we update the User's Guide. For the l
 
 \vspace*{4ex} \noindent {\bf \Large Reference}
 
-\vspace*{2ex} \noindent Schnute, J.T., Couture-Beil, A., Haigh, R., and Egeli, A. 2009. PBSmodelling 2.20: user's guide \red{revised from} \ital{Canadian Technical Report of Fisheries and Aquatic Sciences} \bold{2674}: vi + 170 pp.
+\vspace*{2ex} \noindent Schnute, J.T., Couture-Beil, A., Haigh, R., and Kronlund, A.R. 2011. PBSmodelling 2.62 user's guide \red{revised from} \ital{Canadian Technical Report of Fisheries and Aquatic Sciences} \bold{2674}. viii + 190 p. Last updated Aug 4, 2011.
 
 
 \end{document}

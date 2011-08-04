@@ -1,14 +1,14 @@
 \name{presentTalk}
 \alias{presentTalk}
-\title{Run an R Presentation}
+\title{Run a Presentation in R}
 \description{
-Start an R talk from a \emph{talk description file} that launches a control GUI.
+  Start an R talk from a \emph{talk description file} that launches a control GUI.
 }
 \usage{
-presentTalk(talk)
+  presentTalk(talk)
 }
 \arguments{
-\item{talk}{talk xml file name}
+  \item{talk}{talk xml file name}
 }
 \details{
   \code{presentTalk} is a tool that facilitates lectures and workshops in R.
@@ -30,6 +30,11 @@ presentTalk(talk)
   In addition to the automatic menu items, a user can add buttons to the GUI 
   that accomplish similar purposes.
 }
+\author{ Alex Couture-Beil }
+\seealso{
+  See \code{\link[PBSmodelling]{PBStalk-class}} for more details on 
+  \pkg{PBSmodelling}'s talk presentation classes.
+}
 \examples{
 wd <- getwd() #save current directory
 talk_dir <- system.file("examples", package = "PBSmodelling" )
@@ -42,3 +47,4 @@ setwd( wd )
 \note{
   See the PBSmodelling User's Guide for more information.
 }
+
