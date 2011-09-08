@@ -1,5 +1,5 @@
 #===========================================================
-# Plotting functions                                       |
+# Plotting functions (in alphabetic order)                 |
 # Authors:                                                 |
 #  Jon T. Schnute <SchnuteJ@pac.dfo-mpo.gc.ca>,            |
 #  Alex Couture-Beil <alex@mofo.ca>, and                   |
@@ -7,48 +7,62 @@
 #  Anisa Egeli <EgeliA@pac.dfo-mpo.gc.ca>                  |
 #===========================================================
 
-#resetGraph-----------------------------2009-07-20
-# Resets par() values to R default
-#-------------------------------------------ACB/RH
-resetGraph=function(reset.mf=TRUE)
-{
-	#ensure init has been called (to pass R check)
-	PBSmodelling:::.initPBSoptions()
-
-	#cache value on first run
-	if (is.null(.PBSmod[[".options"]][["par.default"]])) {
-		dev.new()
-		p <- graphics::par(no.readonly = TRUE)
-		dev.off()
-		.PBSmod$.options$par.default <<- p
-	}
-	if (dev.cur()==1) frame()
-	else {
-		p=.PBSmod$.options$par.default
-		if (reset.mf) {
-			par(p) ; frame()
-		} else {
-			keep=c("mfrow","mfcol","mfg") #keep these settings
-			#keep=c("mfrow","mfg") #keep only mfrow
-			fixed=par(keep)
-			reset=p[setdiff(names(p),keep)]
-			par(reset); par(fixed); par(new=FALSE)
-		}
-	}
-	invisible(par())
-}
-
-
-#expandGraph----------------------------2006-08-16
-#  Tweaks values to expand margins for multiple graphs
+#addArrows------------------------------2007-08-22
+# Calls 'arrows' function using relative (0:1) coordinates
 # Arguments:
-#  mar - margin paramater
-#  mgp - margin points
-#  ... - additional par settings
-#----------------------------------------------ACB
-expandGraph <- function(mar=c(4,3,1.2,0.5), mgp=c(1.6,.5,0),...) {
-	par(mar=mar, mgp=mgp, ...)
+#  x1 - draw from
+#  y1 - draw from
+#  x2 - draw to
+#  y2 - draw to
+#  ... - arguments used by key, such as "lines", "text", or "rectangle"
+#-------------------------------------------JTS/RH
+addArrows <- function (x1, y1, x2, y2, ...) {
+	uxy <- par()$usr
+	ux1 <- uxy[1]; ux2 <- uxy[2]
+	uy1 <- uxy[3]; uy2 <- uxy[4]
+	px1 <- ux1 + x1 * (ux2 - ux1)
+	px2 <- ux1 + x2 * (ux2 - ux1)
+	py1 <- uy1 + y1 * (uy2 - uy1)
+	py2 <- uy1 + y2 * (uy2 - uy1)
+	if(par()$xlog) { px1 <- 10^px1; px2 <- 10^px2 }
+	if(par()$ylog) { py1 <- 10^py1; py2 <- 10^py2 }
+	arrows(px1, py1, px2, py2, ...)
+	invisible(NULL) }
+
+#addLabel-------------------------------2007-08-22
+# Panel label function (Adapted from code by Rob Kronlund)
+# Input:
+#  x,y - label coordinates in the range (0,1); can step outside
+#  txt - desired label at (x,y)
+#  ... - arguments used by text, such as "adj", "cex", or "col"
+#----------------------------------------RK/JTS/RH
+addLabel <- function (x, y, txt, ...) {
+	uxy <- par()$usr
+	x1 <- uxy[1]; x2 <- uxy[2]
+	y1 <- uxy[3]; y2 <- uxy[4]
+	x0 <- x1 + x * (x2 - x1)
+	y0 <- y1 + y * (y2 - y1)
+	if(par()$xlog) x0 <- 10^x0
+	if(par()$ylog) y0 <- 10^y0
+	text(x0, y0, txt, ...)
 	invisible() }
+
+#addLegend------------------------------2007-08-22
+# Panel key function (Adapted from code by Rob Kronlund)
+# Arguments:
+#  x,y - label coordinates in the range (0,1); can step outside
+#  ... - arguments used by key, such as "lines", "text", or "rectangle"
+#----------------------------------------RK/JTS/RH
+addLegend <- function (x, y, ...) {
+	uxy <- par()$usr
+	x1 <- uxy[1]; x2 <- uxy[2]
+	y1 <- uxy[3]; y2 <- uxy[4]
+	x0 <- x1 + x * (x2 - x1)
+	y0 <- y1 + y * (y2 - y1)
+	if(par()$xlog) x0 <- 10^x0
+	if(par()$ylog) y0 <- 10^y0
+	legend(x0, y0, ...)
+	invisible(NULL) }
 
 #drawBars-------------------------------2008-08-16
 #  Draw a linear barplot on the current graph
@@ -88,6 +102,76 @@ drawBars <- function (x, y, width, base = 0, ...) {
 	xy <- list(x = x1, y = y1)
 	lines(xy, ...) }
 #-----------------------------------------drawBars
+
+#expandGraph----------------------------2006-08-16
+#  Tweaks values to expand margins for multiple graphs
+# Arguments:
+#  mar - margin paramater
+#  mgp - margin points
+#  ... - additional par settings
+#----------------------------------------------ACB
+expandGraph <- function(mar=c(4,3,1.2,0.5), mgp=c(1.6,.5,0),...) {
+	par(mar=mar, mgp=mgp, ...)
+	invisible() }
+
+#pickCol--------------------------------2006-08-08
+# Display interactive colour picking palette
+# Arguments:
+#  returnValue - if T, user only selects one colour which is returned
+#                if F, intermediate GUI is used to display HEX number
+#----------------------------------------------ACB
+pickCol <- function(returnValue=TRUE) {
+	#simply return the first selected value
+	if (returnValue)
+		return(tclvalue(.Tcl(paste("tk_chooseColor", .Tcl.args(title="Choose a colour")))))
+	#otherwise have an intermediate window to display colour codes in
+	tt <- tktoplevel()
+	tkwm.title(tt,"pickCol()")
+	colour <- "#8cda36"
+	entryVar<-tclVar(colour)
+	entry <- tkentry(tt,textvariable=entryVar, width=8,bg=colour,fg="#000000")
+	.changeColour <- function()
+	{
+		#launch colour picker
+		assign("colour",tclvalue(.Tcl(paste("tk_chooseColor",
+			.Tcl.args(initialcolor=colour,title="Choose a colour")))),envir=.GlobalEnv)
+		tmp <- col2rgb(colour)
+		#pick white or black foreground colour
+		#255*3/2=382.5
+		if (sum(tmp)>382 || tmp[2]>180)
+			colourFG <- "#000000"
+		else
+			colourFG <- "#FFFFFF"
+
+		if (nchar(colour)>0) {
+			tkconfigure(entry,bg=colour,fg=colourFG)
+			tclvalue(entryVar) <- colour
+		}
+	}
+	button <- tkbutton(tt,text="Pick Colour",command=.changeColour)
+	tkgrid(entry,button) }
+#------------------------------------------pickCol
+
+#plotACF--------------------------------2009-02-24
+# Plot auto correlations (support for BRugs)
+#-----------------------------------------------RH
+plotACF <- function(file,lags=20,clrs=c("blue","red","green","magenta","navy"),...) {
+	if (is.vector(file)) file <- matrix(file,ncol=1);
+	nc   <- ncol(file); nch <- nc; nr <- nrow(file); lags <- min(nr-1,lags);
+	clrs=rep(clrs,nc)[1:nc]
+	clim <- qnorm(c(.025,.975))/sqrt(nr);
+	acfout <- acf(file,lag.max=lags,plot=FALSE); acfacf <- acfout$acf
+	ymin <- min(diag(apply(acfacf,2:3,min)),-.2); ymax <- max(diag(apply(acfacf,2:3,max)));
+	xlim <- c(0,lags+.5); ylim <- c(ymin,ymax); ylim[1] <- min(ylim[1],clim[1]); ylim[2] <- max(ylim[2],clim[2]);
+	evalCall(plot,argu=list(x=0,y=0,xlim=xlim,ylim=ylim,type="n",tck=.03,xlab="",ylab="",las=1),...,checkdef=TRUE,checkpar=TRUE)
+	#plot(0,0,xlim=xlim,ylim=ylim,type="n",tck=.03,xlab="",ylab="",las=1,...)
+	if (lags<=30) axis(1,at=1:30,tcl=.25,label=FALSE);
+	abline(h=clim,col="#400080",lty=2);
+	for (i in 1:nc) {
+		x <- (0:lags)+(i-1)*(.7/nch); y <- acfacf[,i,i];
+		evalCall(lines,argu=list(x=x,y=y,type="h",col=clrs[i]),...,checkdef=TRUE,checkpar=TRUE); };
+		#lines(x,y,type="h",col=clrs[i],...); };
+   abline(h=0,col="grey40",lty=3); box(); };
 
 #plotAsp--------------------------------2008-08-16
 # Plots x and y vectors with plot() but maintaining a fixed aspect
@@ -133,8 +217,145 @@ plotAsp <- function(x,y,asp=1,...) {
 	          par()$mai[3] + (newMaiTop -par()$mai[1]-par()$mai[3])/2,
 	          par()$mai[4] + (newMaiSide-par()$mai[2]-par()$mai[4])/2))
 	plot(x,y,asp=asp,...) 
-	par(mai=old_mai) }
+	par(mai=old_mai) 
+	invisible() }
 #------------------------------------------plotAsp
+
+#plotBubbles----------------------------2010-08-04
+# Function to construct a bubble plot for a matrix z
+#  z:     input matrix or data frame
+#  xval:  x-values for the columns of z (if length xval != # colums in z, xval is ignored)
+#         if xval=TRUE, first row contains x-values for the columns
+#  yval:  y-values for the rows of z (if length yval != # rows in z, yval is ignored)
+#         if yval=TRUE, first column contains y-values for the rows
+#  dnam:  if TRUE, use dimnames as xval and yval
+#         (overwrites previously specified values)
+#  rpro:  if rpro=TRUE, convert rows to proportions
+#  cpro:  if cpro=TRUE, convert columns to proportions
+#  rres:  if rres=TRUE, use row residuals (subtract row means)
+#  cres:  if cres=TRUE, use column residuals (subtract column means)
+#  powr:  power tranform; radii proportional to z^powr
+#         powr=0.5 gives bubble areas proportional to z
+#  clrs:  colours used for positive, negative, and zero values
+#  size:  size (inches) of the largest & smallest bubble
+#  lwd:   line width for drawing circles
+#  hide0: if TRUE, hide zero-value bubbles
+#  frange: fraction by which the range of the axes should be extended
+#  prettyaxis: logical: if TRUE, apply the pretty function to both axes
+#  ...:   further parameters for the plotting functions 
+#-------------------------------------------JTS/RH
+plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE, 
+    rpro=FALSE, cpro=FALSE, rres=FALSE, cres=FALSE, 
+    powr=0.5, size=0.2, lwd=1, clrs=c("black","red","blue"), 
+    hide0=FALSE, frange=0.1, prettyaxis=FALSE, ...) {
+
+	if (is.data.frame(z)) {
+		use = !sapply(z,is.factor) & sapply(z,is.numeric)
+		z=z[,use,drop=FALSE]; if (ncol(z)==0) {showAlert("data frame not useable"); return()}
+		#names(z)=gsub("\\.","_",names(z))
+		z=as.matrix(z) }
+	dz <- dim(z);  ny=ny1=dz[1];  nx=nx1=dz[2]
+	if (length(dz)>2) {showAlert("Input matrix must have only 2 dimensions"); return() }
+	xval1 <- 1:nx;  yval1 <- 1:ny
+	# If first row contains x-values for columns
+	if (mode(xval) == "logical") {
+		if (xval[1]) {
+			xval1 <- z[1,]; ny1 <- ny - 1; } }
+	# If first column contains y-values for rows 
+	if (mode(yval) == "logical") {
+		if (yval[1]) {
+			yval1 <- z[,1]; nx1 <- nx - 1; } }
+	xind <- (nx - nx1 + 1):nx
+	x2=xlabel=xval1[xind]
+	yind <- (ny - ny1 + 1):ny
+	y2=ylabel=yval1[yind]
+	if ((mode(xval) != "logical") & (length(xval) == nx1)) {
+		if (mode(xval)=="numeric") x2=xval
+		xlabel=xval }
+	if ((mode(yval) != "logical") & (length(yval) == ny1)) {
+		if (mode(yval)=="numeric") y2=yval
+		ylabel=yval }
+
+	zz <- array(z[yind,xind],dim=c(length(yind),length(xind)),dimnames=dimnames(z[yind,xind,drop=FALSE]))
+	dots=list(...)
+	xlab=dots$xlab; if (is.null(xlab)) xlab=""  # x-axis label
+	ylab=dots$ylab; if (is.null(ylab)) ylab=""  # y-axis label
+
+	# dimnames are to be used to over-ride xval and yval
+	if (dnam & !is.null(dimnames(zz))) { 
+		warn=options()$warn; options(warn=-1)
+		if (!is.null(dimnames(zz)[[2]])) {
+			xpos = try(as.numeric(dimnames(zz)[[2]]),silent=TRUE)
+			if (all(is.na(xpos))) xlabel=dimnames(zz)[[2]]
+			else if (!any(is.na(xpos)) && all(diff(xpos)>0 | all(diff(xpos)<0))) {
+				xlabel=as.character(xpos); x2=xpos } # strictly increasing / decreasing
+		}
+		if (!is.null(dimnames(zz)[[1]])) { 
+			ypos = try(as.numeric(dimnames(zz)[[1]]),silent=TRUE)
+			if (all(is.na(ypos))) ylabel=dimnames(zz)[[2]]
+			else if (!any(is.na(ypos)) && all(diff(ypos)>0 | all(diff(ypos)<0))) {
+				ylabel=as.character(ypos); y2=ypos } # strictly increasing / decreasing
+		}
+		options(warn=warn)
+	}
+#browser()
+	xx <- rep(x2, each = length(y2))
+	yy <- rep(y2, length(x2))
+	minz <- min(zz,na.rm=TRUE);  maxz <- max(zz,na.rm=TRUE);
+	if (rpro | cpro) {
+		if (minz < 0) {
+			zz <- zz - minz
+			minz <- 0
+			maxz <- max(zz,na.rm=TRUE) } }
+	if (rpro) {
+		zs <- apply(zz, 1, sum, na.rm=TRUE)
+		zz <- sweep(zz, 1, zs, "/") }
+	if (cpro) {
+		zs <- apply(zz, 2, sum, na.rm=TRUE)
+		zz <- sweep(zz, 2, zs, "/") }
+	if (rres) {
+		zm <- apply(zz, 1, mean, na.rm=TRUE)
+		zz <- sweep(zz, 1, zm, "-") }
+	if (cres) {
+		zm <- apply(zz, 2, mean, na.rm=TRUE)
+		zz <- sweep(zz, 2, zm, "-") }
+	zNA <- is.na(zz) | is.nan(zz) | is.infinite(zz); zz[zNA] <- 0;
+	z0 <- sign(zz) * abs(zz)^abs(powr)
+	z1 <- z3 <- z0;  z1[z0 <= 0] <- NA; z3[z0<0 | z0>0] <- NA;
+	z2 <- -z0; z2[z0 >= 0] <- NA;
+	za <- max(z0,na.rm=TRUE);  zb <- min(z0,na.rm=TRUE)
+	zM <- max(abs(z0))
+	sz1 <- max(za * size/zM, 0.001)
+	sz2 <- max(-zb * size/zM, 0.001)
+	#plot(0,0,xlim=extendrange(x2),ylim=extendrange(y2),type="n",xaxt="n",...)
+	#axis(1,at=x2,labels=xlabel,...)
+	#symbols(xx,yy,circles=as.vector(abs(z0)),inches=size,fg=0,...)
+	evalCall(plot,argu=list(x=0,y=0,xlim=extendrange(x2,f=frange),
+		ylim=extendrange(y2,f=frange),type="n",axes=FALSE,xlab=xlab,ylab=ylab),...,checkdef=TRUE,checkpar=TRUE)
+	if (prettyaxis) {
+		if (length(min(x2):max(x2))<=5) xshow = is.element(x2,x2)
+		else                            xshow = is.element(x2,pretty(x2,n=10))
+		yshow = is.element(y2,pretty(y2,n=10))
+	}
+	else {
+		xshow = rep(TRUE,length(x2)); yshow = rep(TRUE,length(y2)) }
+	if (!all(xshow))
+		axis(1,at=x2[!xshow],labels=FALSE,tcl=ifelse(is.null(dots$tcl),par()$tcl,dots$tcl)/3)
+	if (!all(yshow))
+		axis(2,at=y2[!yshow],labels=FALSE,tcl=ifelse(is.null(dots$tcl),par()$tcl,dots$tcl)/3)
+	evalCall(axis,argu=list(side=1,at=x2[xshow],labels=xlabel[xshow]),...,checkpar=TRUE)
+	evalCall(axis,argu=list(side=2,at=y2[yshow],labels=ylabel[yshow]),...,checkpar=TRUE)
+	if (!hide0 && !all(is.na(z3))) {
+		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z3),inches=0.001,fg=clrs[3],lwd=lwd,add=TRUE),...,checkpar=TRUE) }
+		#symbols(xx, yy, circles = as.vector(z3), inches = 0.001, fg = clrs[3], lwd = lwd, add = TRUE, ...) }
+	if (!all(is.na(z2))) {
+		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z2),inches=sz2,fg=clrs[2],lwd=lwd,add=TRUE),...,checkpar=TRUE) }
+		#symbols(xx, yy, circles = as.vector(z2), inches = sz2, fg = clrs[2], lwd = lwd, add = TRUE, ...) }
+	if (!all(is.na(z1))) {
+		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z1),inches=sz1,fg=clrs[1],lwd=lwd,add=TRUE),...,checkpar=TRUE) }
+		#symbols(xx, yy, circles = as.vector(z1), inches = sz1, fg = clrs[1], lwd = lwd, add = TRUE, ...) }
+	box(); invisible(z0) }
+#--------------------------------------plotBubbles
 
 #plotCsum-------------------------------2006-07-26
 # Plots cumulative frequecy of data
@@ -165,199 +386,6 @@ plotCsum<-function(x,add=FALSE,ylim=c(0,1),xlab="Measure",ylab="Cumulative Propo
 	invisible(data.frame(x=x,y=y)) }
 #-----------------------------------------plotCsum
 
-#addArrows------------------------------2007-08-22
-# Calls 'arrows' function using relative (0:1) coordinates
-# Arguments:
-#  x1 - draw from
-#  y1 - draw from
-#  x2 - draw to
-#  y2 - draw to
-#  ... - arguments used by key, such as "lines", "text", or "rectangle"
-#-------------------------------------------JTS/RH
-addArrows <- function (x1, y1, x2, y2, ...) {
-	uxy <- par()$usr
-	ux1 <- uxy[1]; ux2 <- uxy[2]
-	uy1 <- uxy[3]; uy2 <- uxy[4]
-	px1 <- ux1 + x1 * (ux2 - ux1)
-	px2 <- ux1 + x2 * (ux2 - ux1)
-	py1 <- uy1 + y1 * (uy2 - uy1)
-	py2 <- uy1 + y2 * (uy2 - uy1)
-	if(par()$xlog) { px1 <- 10^px1; px2 <- 10^px2 }
-	if(par()$ylog) { py1 <- 10^py1; py2 <- 10^py2 }
-	arrows(px1, py1, px2, py2, ...)
-	invisible(NULL) }
-
-#addLegend------------------------------2007-08-22
-# Panel key function (Adapted from code by Rob Kronlund)
-# Arguments:
-#  x,y - label coordinates in the range (0,1); can step outside
-#  ... - arguments used by key, such as "lines", "text", or "rectangle"
-#----------------------------------------RK/JTS/RH
-addLegend <- function (x, y, ...) {
-	uxy <- par()$usr
-	x1 <- uxy[1]; x2 <- uxy[2]
-	y1 <- uxy[3]; y2 <- uxy[4]
-	x0 <- x1 + x * (x2 - x1)
-	y0 <- y1 + y * (y2 - y1)
-	if(par()$xlog) x0 <- 10^x0
-	if(par()$ylog) y0 <- 10^y0
-	legend(x0, y0, ...)
-	invisible(NULL) }
-
-#addLabel-------------------------------2007-08-22
-# Panel label function (Adapted from code by Rob Kronlund)
-# Input:
-#  x,y - label coordinates in the range (0,1); can step outside
-#  txt - desired label at (x,y)
-#  ... - arguments used by text, such as "adj", "cex", or "col"
-#----------------------------------------RK/JTS/RH
-addLabel <- function (x, y, txt, ...) {
-	uxy <- par()$usr
-	x1 <- uxy[1]; x2 <- uxy[2]
-	y1 <- uxy[3]; y2 <- uxy[4]
-	x0 <- x1 + x * (x2 - x1)
-	y0 <- y1 + y * (y2 - y1)
-	if(par()$xlog) x0 <- 10^x0
-	if(par()$ylog) y0 <- 10^y0
-	text(x0, y0, txt, ...)
-	invisible() }
-
-#pickCol--------------------------------2006-08-08
-# Display interactive colour picking palette
-# Arguments:
-#  returnValue - if T, user only selects one colour which is returned
-#                if F, intermediate GUI is used to display HEX number
-#----------------------------------------------ACB
-pickCol <- function(returnValue=TRUE) {
-	#simply return the first selected value
-	if (returnValue)
-		return(tclvalue(.Tcl(paste("tk_chooseColor", .Tcl.args(title="Choose a colour")))))
-	#otherwise have an intermediate window to display colour codes in
-	tt <- tktoplevel()
-	tkwm.title(tt,"pickCol()")
-	colour <- "#8cda36"
-	entryVar<-tclVar(colour)
-	entry <- tkentry(tt,textvariable=entryVar, width=8,bg=colour,fg="#000000")
-	.changeColour <- function()
-	{
-		#launch colour picker
-		assign("colour",tclvalue(.Tcl(paste("tk_chooseColor",
-			.Tcl.args(initialcolor=colour,title="Choose a colour")))),envir=.GlobalEnv)
-		tmp <- col2rgb(colour)
-		#pick white or black foreground colour
-		#255*3/2=382.5
-		if (sum(tmp)>382 || tmp[2]>180)
-			colourFG <- "#000000"
-		else
-			colourFG <- "#FFFFFF"
-
-		if (nchar(colour)>0) {
-			tkconfigure(entry,bg=colour,fg=colourFG)
-			tclvalue(entryVar) <- colour
-		}
-	}
-	button <- tkbutton(tt,text="Pick Colour",command=.changeColour)
-	tkgrid(entry,button) }
-#------------------------------------------pickCol
-
-#testLty--------------------------------2006-07-31
-# Display line types available
-# Arguments:
-#  newframe - if T, clear graphics frame, if F, overlay
-#-----------------------------------------------RH
-testLty <- function (newframe = TRUE) {
-	if (newframe) frame()
-	par0 <- par(no.readonly = TRUE)
-	par(usr = c(c(1, 20), c(0, 1)))
-	for (i in 1:20) lines(c(i, i), c(0, 1), lty = i)
-	mtext(as.character(1:20), side = 1, line = 1, at = (1:20))
-	mtext("LINE TYPES (lty)", side = 3, line = 2)
-	par(par0)
-	invisible(NULL) }
-
-#testLwd--------------------------------2006-07-31
-# Display line widths
-# Arguments:
-#  lwd      - line widths to test
-#  col      - colours to use
-#  newframe - if T, use a new graphics frame, if F, overlay
-#-----------------------------------------------RH
-testLwd <- function (lwd=1:20, col=c("black","blue"), newframe=TRUE) {
-	if (newframe) { resetGraph(); frame(); }
-	par0 <- par(no.readonly = TRUE); xlim <- range(lwd);
-	nl <- length(lwd); nc <- length(col); col <- rep(col,ceiling(nl/nc));
-	par(usr = c(c(xlim[1]-1, xlim[2]+1), c(0, 1)))
-	for (i in lwd) lines(c(i, i), c(0, 1), lty = 1, lwd = i, col=col[i-xlim[1]+1])
-	mtext(as.character(lwd), side = 1, line = 1, at = lwd)
-	mtext(paste("LINE WIDTHS (",xlim[1],"-",xlim[2],")"), side=3, line=2)
-	par(par0)
-	invisible(NULL) }
-
-#testPch--------------------------------2006-07-31
-# Display plotting symbols
-# Arguments:
-#  pch      - symbols to test
-#  ncol     - number of columns to use
-#  grid     - display in a grid
-#  newframe - if T, use a new graphics frame, if F, overlay
-#  bs       - use backslash values if T
-#-----------------------------------------------RH
-testPch <- function (pch=1:100, ncol=10, grid=TRUE, newframe=TRUE, bs=FALSE) {
-	if (!is.element(ncol,c(2,5,10))) stop("Set ncol to 2 or 5 or 10")
-	if (!all(diff(pch)==1)) stop("pch vector must be a continuous increasing integer series")
-	if (!bs && (all(pch>255) | any(pch<0))) stop("pch must be in the range 0 - 255")
-	if (bs && (all(pch<41) | all(pch>377))) stop("pch must be in the range 41 - 377")
-	if (newframe) {
-		resetGraph(); frame(); }
-	par0 <- par(no.readonly = TRUE); npch=length(pch);
-	xlim <- c(.5,ncol+.5);
-	rlim <- floor((pch[c(1,npch)]-1)/ncol); yval <- rlim[1]:rlim[2]
-	ylim <- rev(rlim); ylim <- ylim + c(.5,-.5)
-	pchy <- pch[is.element(pch,seq(0,1000,ncol))];
-	if(length(pchy)<length(yval)) {
-		pchy <- c(pchy,floor((pchy[length(pchy)]+ncol)/ncol)*ncol);
-	}
-	ylab <- pchy - ncol
-	par(usr=c(xlim,ylim))
-	if (grid) {
-		abline(v=seq(.5,ncol+.5,1),h=seq(rlim[1]-.5,rlim[2]+.5,1),col="gray");
-	}
-	for (i in pch) {
-		y <- floor((i - 1)/ncol);
-		x <- i - ncol * y;
-		if (bs) {
-			if (i<41 | i>377 | is.element(i,seq(9,379,10)) | is.element(i,c(90:99,190:199,290:299))) next
-			cset <- eval(parse(text=paste("\"\\", i, "\"", sep = "")))
-			text(x,y, cset, cex=1.5) 
-		}
-		else {
-			if (i>255 | is.element(i,26:31)) next
-			points(x, y, pch = i, cex=1.5)
-		}
-	}
-	mtext(as.character(1:ncol), side=1, line=.5, at=(1:ncol), cex=1.3, col="blue")
-	mtext(as.character(1:ncol), side=3, line=.4, at=(1:ncol), cex=1.3, col="blue")
-	mtext(ylab, side=2, line=1, at=yval, cex=1.3, col="red",las=1)
-	mtext(paste(ifelse(bs,"BACKSLASH","PCH"),"CHARACTERS (",pch[1],"-",pch[npch],")"), side=3, line=2.2, cex=1.2)
-	par(par0); invisible(yval); }
-#------------------------------------------testPch
-
-#plotTrace------------------------------2009-02-24
-# Plot trace lines (support for BRugs)
-#-----------------------------------------------RH
-plotTrace <- function(file,clrs=c("blue","red","green","magenta","navy"),...) {
-	if (is.vector(file)) file <- data.frame(x=1:length(file),y=file);
-	nc <- ncol(file)
-	clrs=rep(clrs,nc)[1:nc]
-	x  <- file[,1]; xlim <- range(x); ylim <- range(file[,2:nc])
-	evalCall(plot,argu=list(x=0,y=0,xlim=xlim,ylim=ylim,type="n",tck=.03,xlab="",ylab="",las=1),...,checkdef=TRUE,checkpar=TRUE)
-	#plot(0,0,xlim=xlim,ylim=ylim,type="n",tck=.03,xlab="",ylab="",las=1,...)
-	for (i in 2:nc) {
-		y <- file[,i]
-		evalCall(lines,argu=list(x=x,y=y,col=clrs[i-1]),...,checkdef=TRUE,checkpar=TRUE) }
-		#lines(x,y,col=clrs[i-1],...) }
-	invisible() }
-
 #plotDens-------------------------------2009-02-24
 # Plot density curves (support for BRugs)
 #-----------------------------------------------RH
@@ -380,27 +408,6 @@ plotDens <- function(file,clrs=c("blue","red","green","magenta","navy"),...) {
 		evalCall(lines,argu=list(x=d$x,y=d$y,col=clrs[i]),...,checkdef=TRUE,checkpar=TRUE) }; 
 		#lines(d$x,d$y,col=clrs[i],...) }; 
 	invisible() }
-
-#plotACF--------------------------------2009-02-24
-# Plot auto correlations (support for BRugs)
-#-----------------------------------------------RH
-plotACF <- function(file,lags=20,clrs=c("blue","red","green","magenta","navy"),...) {
-	if (is.vector(file)) file <- matrix(file,ncol=1);
-	nc   <- ncol(file); nch <- nc; nr <- nrow(file); lags <- min(nr-1,lags);
-	clrs=rep(clrs,nc)[1:nc]
-	clim <- qnorm(c(.025,.975))/sqrt(nr);
-	acfout <- acf(file,lag.max=lags,plot=FALSE); acfacf <- acfout$acf
-	ymin <- min(diag(apply(acfacf,2:3,min)),-.2); ymax <- max(diag(apply(acfacf,2:3,max)));
-	xlim <- c(0,lags+.5); ylim <- c(ymin,ymax); ylim[1] <- min(ylim[1],clim[1]); ylim[2] <- max(ylim[2],clim[2]);
-	evalCall(plot,argu=list(x=0,y=0,xlim=xlim,ylim=ylim,type="n",tck=.03,xlab="",ylab="",las=1),...,checkdef=TRUE,checkpar=TRUE)
-	#plot(0,0,xlim=xlim,ylim=ylim,type="n",tck=.03,xlab="",ylab="",las=1,...)
-	if (lags<=30) axis(1,at=1:30,tcl=.25,label=FALSE);
-	abline(h=clim,col="#400080",lty=2);
-	for (i in 1:nc) {
-		x <- (0:lags)+(i-1)*(.7/nch); y <- acfacf[,i,i];
-		evalCall(lines,argu=list(x=x,y=y,type="h",col=clrs[i]),...,checkdef=TRUE,checkpar=TRUE); };
-		#lines(x,y,type="h",col=clrs[i],...); };
-   abline(h=0,col="grey40",lty=3); box(); };
 
 #plotFriedEgss--------------------------2008-09-03
 #  Pairs plot featuring fried eggs and beer.
@@ -525,57 +532,60 @@ plotFriedEggs <- function(A, eggs=TRUE, rings=TRUE,
 }
 #------------------------------------plotFriedEggs
 
-#testCol--------------------------------2008-09-08
-# Display test colours as circular patches.
-#  cnam - colour names to search for
+#plotTrace------------------------------2009-02-24
+# Plot trace lines (support for BRugs)
 #-----------------------------------------------RH
-testCol <- function(cnam=colors()[sample(length(colors()),15)]) {
-	#get similar colours
-	getCol <- function(x) {
-		palette <- colors()
-		n <- length(palette)
-		z <- NULL
-		for (i in x) {
-			a <- regexpr(i,palette)
-			b <- (1:n)[a>0]
-			z <- union(z,b)
-		}
-		lovely <- palette[z]
-		return(lovely)
+plotTrace <- function(file,clrs=c("blue","red","green","magenta","navy"),...) {
+	if (is.vector(file)) file <- data.frame(x=1:length(file),y=file);
+	nc <- ncol(file)
+	clrs=rep(clrs,nc)[1:nc]
+	x  <- file[,1]; xlim <- range(x); ylim <- range(file[,2:nc])
+	evalCall(plot,argu=list(x=0,y=0,xlim=xlim,ylim=ylim,type="n",tck=.03,xlab="",ylab="",las=1),...,checkdef=TRUE,checkpar=TRUE)
+	#plot(0,0,xlim=xlim,ylim=ylim,type="n",tck=.03,xlab="",ylab="",las=1,...)
+	for (i in 2:nc) {
+		y <- file[,i]
+		evalCall(lines,argu=list(x=x,y=y,col=clrs[i-1]),...,checkdef=TRUE,checkpar=TRUE) }
+		#lines(x,y,col=clrs[i-1],...) }
+	invisible() }
+
+#resetGraph-----------------------------2009-07-20
+# Resets par() values to R default
+#-------------------------------------------ACB/RH
+resetGraph=function(reset.mf=TRUE)
+{
+	#ensure init has been called (to pass R check)
+	PBSmodelling:::.initPBSoptions()
+
+	#cache value on first run
+	if (is.null(.PBSmod[[".options"]][["par.default"]])) {
+		dev.new()
+		p <- graphics::par(no.readonly = TRUE)
+		dev.off()
+		.PBSmod$.options$par.default <<- p
 	}
- 
-	clrs <- getCol(grep("^[^#0-9]", cnam,value=TRUE))
-	clrs <- c(clrs, 
-	          grep("^#[0-9a-f]{6}$", cnam, value=TRUE, ignore.case=TRUE), 
-	          grep("^[0-9]+$", cnam, value=TRUE, ignore.case=TRUE)
-	          )
-	# fiddle for mfrow
-	N <- length(clrs); din <- par()$din; x <- din[1]; y <- din[2]
-	cell <- sqrt(prod(din)/N)
-	cols <- ceiling(x/cell); rows <- ceiling(y/cell)
-	if (N <= rows*cols-cols) rows <- rows-1
+	if (dev.cur()==1) frame()
+	else {
+		p=.PBSmod$.options$par.default
+		if (reset.mf) {
+			par(p) ; frame()
+		} else {
+			keep=c("mfrow","mfcol","mfg") #keep these settings
+			#keep=c("mfrow","mfg") #keep only mfrow
+			fixed=par(keep)
+			reset=p[setdiff(names(p),keep)]
+			par(reset); par(fixed); par(new=FALSE)
+		}
+	}
+	invisible(par()) }
+#--------------------------------------resetGrapgh
 
-	par0 <- par(no.readonly = TRUE)
-	xlim <- c(1, cols) + c(-.25,.25); ylim <- c(-rows,-1) + c(-.25,.25)
-
-	resetGraph()
-	par(mfrow=c(1,1),mai=c(.05,.05,.05,.05))
-	plot(0,0,xlim=xlim,ylim=ylim,type="n",axes=FALSE,xlab="",ylab="")
-	k <- 0
-	for (i in 1:rows) {
-		for (j in 1:cols) {
-			k <- k+1
-			points(j,-i, col=clrs[k], pch=16,cex=5)
-			text(j,-i-.04*diff(ylim),clrs[k],cex=.6) } }
-	par(par0)
-	invisible(clrs) }
-#------------------------------------------testCol
-
-#testAlpha------------------------------2009-03-04
+#testAlpha------------------------------2011-09-08
 # Display various alpha transparencies
 #-----------------------------------------------RH
 testAlpha <- function (alpha=seq(0,1,len=25), fg="blue", bg="yellow",
       border="black", grid=FALSE, ...) {
+	par0 <- par(no.readonly = TRUE)
+	on.exit(par(par0))
 	N=length(alpha); fg=rep(fg,N)[1:N]; bg=rep(bg,N)[1:N]; border=rep(border,N)[1:N]
 	rc=.findSquare(N); m=rc[1]; n=rc[2]
 	rgbfg=col2rgb(fg)/255; rgbbg=col2rgb(bg)/255; rgbbo=col2rgb(border)/255
@@ -596,6 +606,136 @@ testAlpha <- function (alpha=seq(0,1,len=25), fg="blue", bg="yellow",
 			cex=1.5), ..., checkpar=TRUE)
 	})
 	invisible(rgba) }
+
+#testCol--------------------------------2011-09-08
+# Display test colours as circular patches.
+#  cnam - colour names to search for
+#-----------------------------------------------RH
+testCol <- function(cnam=colors()[sample(length(colors()),15)]) {
+	#get similar colours
+	getCol <- function(x) {
+		palette <- colors()
+		n <- length(palette)
+		z <- NULL
+		for (i in x) {
+			a <- regexpr(i,palette)
+			b <- (1:n)[a>0]
+			z <- union(z,b)
+		}
+		lovely <- palette[z]
+		return(lovely)
+	}
+	par0 <- par(no.readonly = TRUE)
+	on.exit(par(par0))
+	clrs <- getCol(grep("^[^#0-9]", cnam,value=TRUE))                       # identifies all colours that contain string patterns
+	clrs <- c(clrs, 
+	          grep("^#[0-9a-f]{6,8}$", cnam, value=TRUE, ignore.case=TRUE), # identifies hexadecimal colours, incl. transparents
+	          grep("^[0-9]+$", cnam, value=TRUE, ignore.case=TRUE)          # identifies colours specified by an integer
+	          )
+#browser()
+	# fiddle for mfrow
+	N <- length(clrs); din <- par()$din; x <- din[1]; y <- din[2]
+	cell <- sqrt(prod(din)/N)
+	cols <- ceiling(x/cell); rows <- ceiling(y/cell)
+	if (N <= rows*cols-cols) rows <- rows-1
+
+	xlim <- c(1, cols) + c(-.25,.25); ylim <- c(-rows,-1) + c(-.25,.25)
+	resetGraph()
+	par(mfrow=c(1,1),mai=c(.05,.05,.05,.05))
+	plot(0,0,xlim=xlim,ylim=ylim,type="n",axes=FALSE,xlab="",ylab="")
+	k <- 0
+	for (i in 1:rows) {
+		for (j in 1:cols) {
+			k <- k+1
+			points(j,-i, col=clrs[k], pch=16,cex=5)
+			text(j,-i-.04*diff(ylim),clrs[k],cex=.6) } }
+	invisible(clrs) }
+#------------------------------------------testCol
+
+#testLty--------------------------------2011-09-08
+# Display line types available
+# Arguments:
+#  newframe - if T, clear graphics frame, if F, overlay
+#-----------------------------------------------RH
+testLty <- function (newframe = TRUE) {
+	if (newframe) frame()
+	par0 <- par(no.readonly = TRUE)
+	on.exit(par(par0))
+	par(usr = c(c(1, 20), c(0, 1)))
+	for (i in 1:20) lines(c(i, i), c(0, 1), lty = i)
+	mtext(as.character(1:20), side = 1, line = 1, at = (1:20))
+	mtext("LINE TYPES (lty)", side = 3, line = 2)
+	invisible(NULL) }
+
+#testLwd--------------------------------2011-09-08
+# Display line widths
+# Arguments:
+#  lwd      - line widths to test
+#  col      - colours to use
+#  newframe - if T, use a new graphics frame, if F, overlay
+#-----------------------------------------------RH
+testLwd <- function (lwd=1:20, col=c("black","blue"), newframe=TRUE) {
+	if (newframe) { resetGraph(); frame(); }
+	par0 <- par(no.readonly = TRUE)
+	on.exit(par(par0))
+	xlim <- range(lwd);
+	nl <- length(lwd); nc <- length(col); col <- rep(col,ceiling(nl/nc));
+	par(usr = c(c(xlim[1]-1, xlim[2]+1), c(0, 1)))
+	for (i in lwd) lines(c(i, i), c(0, 1), lty = 1, lwd = i, col=col[i-xlim[1]+1])
+	mtext(as.character(lwd), side = 1, line = 1, at = lwd)
+	mtext(paste("LINE WIDTHS (",xlim[1],"-",xlim[2],")"), side=3, line=2)
+	invisible(NULL) }
+
+#testPch--------------------------------2011-09-08
+# Display plotting symbols
+# Arguments:
+#  pch      - symbols to test
+#  ncol     - number of columns to use
+#  grid     - display in a grid
+#  newframe - if T, use a new graphics frame, if F, overlay
+#  bs       - use backslash values if T
+#-----------------------------------------------RH
+testPch <- function (pch=1:100, ncol=10, grid=TRUE, newframe=TRUE, bs=FALSE) {
+	if (!is.element(ncol,c(2,5,10))) stop("Set ncol to 2 or 5 or 10")
+	if (!all(diff(pch)==1)) stop("pch vector must be a continuous increasing integer series")
+	if (!bs && (all(pch>255) | any(pch<0))) stop("pch must be in the range 0 - 255")
+	if (bs && (all(pch<41) | all(pch>377))) stop("pch must be in the range 41 - 377")
+	if (newframe) {
+		resetGraph(); frame(); }
+	par0 <- par(no.readonly = TRUE)
+	on.exit(par(par0))
+	npch =length(pch)
+	xlim = c(.5,ncol+.5);
+	rlim = floor((pch[c(1,npch)]-1)/ncol); yval = rlim[1]:rlim[2]
+	ylim = rev(rlim); ylim = ylim + c(.5,-.5)
+	pchy = pch[is.element(pch,seq(0,1000,ncol))];
+	if(length(pchy)<length(yval)) {
+		pchy = c(pchy,floor((pchy[length(pchy)]+ncol)/ncol)*ncol);
+	}
+	ylab = pchy - ncol
+	par(usr=c(xlim,ylim))
+	if (grid) {
+		abline(v=seq(.5,ncol+.5,1),h=seq(rlim[1]-.5,rlim[2]+.5,1),col="gray");
+	}
+	for (i in pch) {
+		y = floor((i - 1)/ncol);
+		x = i - ncol * y;
+		if (bs) {
+			if (i<41 | i>377 | is.element(i,seq(9,379,10)) | is.element(i,c(90:99,190:199,290:299))) next
+			cset = eval(parse(text=paste("\"\\", i, "\"", sep = "")))
+			text(x,y, cset, cex=1.5) 
+		}
+		else {
+			if (i>255 | is.element(i,26:31)) next
+			points(x, y, pch = i, cex=1.5)
+		}
+	}
+	mtext(as.character(1:ncol), side=1, line=.5, at=(1:ncol), cex=1.3, col="blue")
+	mtext(as.character(1:ncol), side=3, line=.4, at=(1:ncol), cex=1.3, col="blue")
+	mtext(ylab, side=2, line=1, at=yval, cex=1.3, col="red",las=1)
+	mtext(paste(ifelse(bs,"BACKSLASH","PCH"),"CHARACTERS (",pch[1],"-",pch[npch],")"), side=3, line=2.2, cex=1.2)
+	invisible(yval); }
+#------------------------------------------testPch
 
 
 

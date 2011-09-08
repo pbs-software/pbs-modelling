@@ -3,6 +3,12 @@ PBSmodelling Changes
 Authors: JTS = Jon T. Schnute           RH  = Rowan Haigh
          ACB = Alex Couture-Beil        ARK = Rob Kronlund
 
+2.63  2011-09-08  Authors
+  - Adjusted function 'testCol' to display transparent colours. (RH 9/8)
+  - Updated 'Rpack.bat' and 'Rbuild.bat' in 'PBStools'. (RH 9/8)
+  - Revised a few test functions to reset par properly. (RH 9/8)
+  - Started new version for eventual posting to CRAN. (RH 9/8)
+
 2.62  2011-08-04  Authors
   - Updated 'RmakePDF.bat' and UG. (RH 8/4)
   - Added documentation for the S4 class objects used by 'presentTalk': 'PBStalk-class.Rd' (RH 8/2)
