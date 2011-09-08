@@ -12,6 +12,6 @@ SET PBS_NO_PAUSE=1
 call RPathCheck.bat
 
 if not defined PBSERROR (
-  Rcmd build %1 )
+  R CMD build %1 )
 
 :end
