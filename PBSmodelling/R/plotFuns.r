@@ -657,13 +657,16 @@ testCol <- function(cnam=colors()[sample(length(colors()),15)]) {
 # Arguments:
 #  newframe - if T, clear graphics frame, if F, overlay
 #-----------------------------------------------RH
-testLty <- function (newframe = TRUE) {
+testLty <- function (newframe=TRUE, n=1:18, ...) {
 	if (newframe) frame()
 	par0 <- par(no.readonly = TRUE)
 	on.exit(par(par0))
-	par(usr = c(c(1, 20), c(0, 1)))
-	for (i in 1:20) lines(c(i, i), c(0, 1), lty = i)
-	mtext(as.character(1:20), side = 1, line = 1, at = (1:20))
+	n = sort(unique(n))
+	xusr = c(n[1], rev(n)[1])
+	if (length(n)==1) xusr = xusr + c(-0.5,0.5)
+	par(usr = c(xusr, 0, 1) )
+	for (i in n) lines(c(i, i), c(0, 1), lty = i, ...)
+	mtext(as.character(n), side = 1, line = 1, at = n)
 	mtext("LINE TYPES (lty)", side = 3, line = 2)
 	invisible(NULL) }
 
@@ -686,55 +689,56 @@ testLwd <- function (lwd=1:20, col=c("black","blue"), newframe=TRUE) {
 	mtext(paste("LINE WIDTHS (",xlim[1],"-",xlim[2],")"), side=3, line=2)
 	invisible(NULL) }
 
-#testPch--------------------------------2011-09-08
-# Display plotting symbols
+#testPch--------------------------------2011-09-09
+# Display plotting symbols or octal strings
 # Arguments:
-#  pch      - symbols to test
+#  pch      - symbols/octals to test
 #  ncol     - number of columns to use
-#  grid     - display in a grid
+#  grid     - logical: if T, display in a grid
 #  newframe - if T, use a new graphics frame, if F, overlay
-#  bs       - use backslash values if T
+#  octal    - logical: if T, use octal (backslash) strings
 #-----------------------------------------------RH
-testPch <- function (pch=1:100, ncol=10, grid=TRUE, newframe=TRUE, bs=FALSE) {
+testPch <- function (pch=1:100, ncol=10, grid=TRUE, newframe=TRUE, octal=FALSE, ...) {
 	if (!is.element(ncol,c(2,5,10))) stop("Set ncol to 2 or 5 or 10")
 	if (!all(diff(pch)==1)) stop("pch vector must be a continuous increasing integer series")
-	if (!bs && (all(pch>255) | any(pch<0))) stop("pch must be in the range 0 - 255")
-	if (bs && (all(pch<41) | all(pch>377))) stop("pch must be in the range 41 - 377")
+	if (!octal && (all(pch>255) | any(pch<0))) stop("pch must be in the range 0 - 255")
+	if (octal && (all(pch<41) | all(pch>377))) stop("pch must be in the range 41 - 377")
 	if (newframe) {
 		resetGraph(); frame(); }
 	par0 <- par(no.readonly = TRUE)
 	on.exit(par(par0))
 	npch =length(pch)
-	xlim = c(.5,ncol+.5);
+	xlim = c(.5,ncol+.5)
 	rlim = floor((pch[c(1,npch)]-1)/ncol); yval = rlim[1]:rlim[2]
 	ylim = rev(rlim); ylim = ylim + c(.5,-.5)
-	pchy = pch[is.element(pch,seq(0,1000,ncol))];
+	pchy = pch[is.element(pch,seq(0,1000,ncol))]
 	if(length(pchy)<length(yval)) {
-		pchy = c(pchy,floor((pchy[length(pchy)]+ncol)/ncol)*ncol);
+		pchy = c(pchy,floor((pchy[length(pchy)]+ncol)/ncol)*ncol)
 	}
 	ylab = pchy - ncol
 	par(usr=c(xlim,ylim))
 	if (grid) {
-		abline(v=seq(.5,ncol+.5,1),h=seq(rlim[1]-.5,rlim[2]+.5,1),col="gray");
+		abline(v=seq(.5,ncol+.5,1),h=seq(rlim[1]-.5,rlim[2]+.5,1),col="gainsboro")
 	}
 	for (i in pch) {
-		y = floor((i - 1)/ncol);
-		x = i - ncol * y;
-		if (bs) {
-			if (i<41 | i>377 | is.element(i,seq(9,379,10)) | is.element(i,c(90:99,190:199,290:299))) next
+		y = floor((i - 1)/ncol)
+		x = i - ncol * y
+		if (octal) {
+			#if (i<41 | i>377 | is.element(i,seq(9,379,10)) | is.element(i,c(90:99,190:199,290:299))) next
+			if (i<41 | i>377 | grepl("[89]",i) | is.element(i,c(177,201,220,235))) next   # Duncan Murdoch suggested grepl("[89]",i)
 			cset = eval(parse(text=paste("\"\\", i, "\"", sep = "")))
-			text(x,y, cset, cex=1.5) 
+			text(x,y, cset, cex=1.5, ...) 
 		}
 		else {
 			if (i>255 | is.element(i,26:31)) next
-			points(x, y, pch = i, cex=1.5)
+			points(x, y, pch = i, cex=1.5, ...)
 		}
 	}
 	mtext(as.character(1:ncol), side=1, line=.5, at=(1:ncol), cex=1.3, col="blue")
 	mtext(as.character(1:ncol), side=3, line=.4, at=(1:ncol), cex=1.3, col="blue")
 	mtext(ylab, side=2, line=1, at=yval, cex=1.3, col="red",las=1)
-	mtext(paste(ifelse(bs,"BACKSLASH","PCH"),"CHARACTERS (",pch[1],"-",pch[npch],")"), side=3, line=2.2, cex=1.2)
-	invisible(yval); }
+	mtext(paste(ifelse(octal,"OCTAL STRINGS","PCH CHARACTERS"),"(",pch[1],"-",pch[npch],")"), side=3, line=2.2, cex=1.2)
+	invisible(yval) }
 #------------------------------------------testPch
 
 

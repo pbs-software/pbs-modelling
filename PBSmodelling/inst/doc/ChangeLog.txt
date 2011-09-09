@@ -1,9 +1,14 @@
 PBSmodelling Changes
-====================
-Authors: JTS = Jon T. Schnute           RH  = Rowan Haigh
-         ACB = Alex Couture-Beil        ARK = Rob Kronlund
-
-2.63  2011-09-08  Authors
+===================================
+Authors:  JTS = Jon T. Schnute
+          ACB = Alex Couture-Beil
+          RH  = Rowan Haigh
+          ARK = Rob Kronlund
+          AE  = Anisa Egeli
+-----------------------------------
+2.63  2011-09-09  Authors
+  - Revised functions 'testPch' and 'testLty' to allow additional arguments (...). (RH 9/9)
+  - Revised function 'testPch' to deal with octal string handling in the forthcoming R.2.14.0. release (thanks Duncan Murdoch). (RH 9/9)
   - Adjusted function 'testCol' to display transparent colours. (RH 9/8)
   - Updated 'Rpack.bat' and 'Rbuild.bat' in 'PBStools'. (RH 9/8)
   - Revised a few test functions to reset par properly. (RH 9/8)
