@@ -6,6 +6,12 @@ Authors:  JTS = Jon T. Schnute
           ARK = Rob Kronlund
           AE  = Anisa Egeli
 -----------------------------------
+2.64  2011-09-09  Authors
+  - Added an example to 'evalCall.Rd'. (RH 9/9)
+  - Renamed and revised the function 'focusRcon' to 'focusRgui' so that it can set the focus back to RGui from a PBSmodelling window. (RH 9/9)
+  - Fixed small bug in 'testFuns.r' which called 'testPch' with 'bs=FALSE' (RH 9/9)
+  - Started new version for eventual posting to CRAN. (RH 9/8)
+
 2.63  2011-09-09  Authors
   - Revised functions 'testPch' and 'testLty' to allow additional arguments (...). (RH 9/9)
   - Revised function 'testPch' to deal with octal string handling in the forthcoming R.2.14.0. release (thanks Duncan Murdoch). (RH 9/9)

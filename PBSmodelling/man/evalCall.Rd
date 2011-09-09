@@ -21,10 +21,10 @@ evalCall(fn, argu, ..., envir = parent.frame(),
 }
 \details{
   This function builds a call to the specified function and executes it. 
-  During the build, optional arguments \dots are checked for \cr
+  During the build, optional arguments (\dots) are checked for \cr
   (i) duplication with explicit arguments \code{argu}: if any are duplicated,
-  the user-supplied arguments supercede the explict ones; \cr
-  (ii) availability as usuable arguments in \code{fn}, \code{fn.default} if
+  the user-supplied arguments supersede the explicit ones; \cr
+  (ii) availability as usable arguments in \code{fn}, \code{fn.default} if
   \code{checkdef=TRUE}, and \code{par} if \code{checkpar=TRUE}.
 }
 \value{
@@ -32,8 +32,33 @@ evalCall(fn, argu, ..., envir = parent.frame(),
   passed to \code{eval(parse(text=expr))}.
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
-\seealso{ \code{\link{doAction}} }
+\seealso{
+  \code{\link[PBSmodelling]{doAction}}, \code{\link[PBSmodelling]{plotAsp}}  
+}
+\examples{
+# A user may have a function that calls other functions
+# using specific defaults (e.g., blue triangles)
+#------------------------------------------------------
+pbsfun = function(..., use.evalCall=TRUE) {
+  par0 <- par(no.readonly = TRUE); on.exit(par(par0))
+  plotAsp(0,0,type="n",xlim=c(-1.5,1.5),ylim=c(-1.5,1.5),
+    axes=FALSE, frame.plot=TRUE, xlab="",ylab="")
+  if (use.evalCall)
+    evalCall(polygon, ...,
+      argu=list(x=c(-1,1,0),y=c(1,1,-1), col="dodgerblue", border="grey"))
+  else
+    polygon(x=c(-1,1,0),y=c(1,1,-1),col="dodgerblue",border="grey",...)
+}
+pbsfun(lwd=4,use.evalCall=FALSE)
+#------------------------------------------------------
+# But what if the user wants pink triangles?
+pbsfun(col="pink",lwd=4,use.evalCall=TRUE,checkpar=TRUE)
+
+# Without 'evalCall' an error occurs due to duplicated arguments
+\dontrun{pbsfun(col="pink",lwd=4,use.evalCall=FALSE)}
+}
 \keyword{ programming }
 \keyword{ character }
+
