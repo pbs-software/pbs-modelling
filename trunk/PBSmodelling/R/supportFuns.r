@@ -322,19 +322,22 @@ findProgram <- function( name, includename = FALSE )
 	return( tmp )
 }
 
-#focusRcon------------------------------2009-05-14
-# Give the R console focus.
-#-----------------------------------------------NO
-focusRcon <- function(os=.Platform$OS.type) {
-	if (os!="windows") {
-		err="'focusRcon' needs Windows OS to use Windows Scripting"
-		cat(err,"\n"); return(invisible(err)) }
+#focusRgui------------------------------2011-09-09
+# Set focus to the RGui window.
+#--------------------------------------------NO/RH
+focusRgui = function (os = .Platform$OS.type) {
+	if (os != "windows") {
+		err = "'focusRgui' needs Windows OS to use Windows Scripting"
+		cat(err, "\n")
+		return(invisible(err))
+	}
 	tdir <- tempdir()
-	fname <- paste(tdir, "\\focusRcon.vbs", sep="")
-   cmd <- 'Set w = CreateObject("WScript.Shell"): w.AppActivate("R Console")'
-   cat(cmd, file=fname)
-	system(paste("cscript //NoLogo", fname), minimized=TRUE)
-	invisible(fname) }
+	fname <- paste(tdir, "\\focusRgui.vbs", sep = "")
+	cmd <- "Set w = CreateObject(\"WScript.Shell\"): w.AppActivate(\"RGui\") : w.SendKeys(\"% x\") "
+	cat(cmd, file = fname)
+	system(paste("cscript //NoLogo", fname), minimized = TRUE)
+	invisible(fname) 
+}
 
 #genMatrix------------------------------2006-08-28
 #  Generate a test matrix for use in plotBubbles

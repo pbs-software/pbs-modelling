@@ -238,7 +238,7 @@ if (any(funs=="testLwd")) {
 	testLwd(lwd=1:20, col=c("black","blue"), newframe=TRUE);
 	};
 if (any(funs=="testPch")) {
-	testPch(pch=1:100, ncol=10, grid=TRUE, newframe=TRUE, bs=FALSE);
+	testPch(pch=1:100, ncol=10, grid=TRUE, newframe=TRUE);
 	};
 if (any(funs=="testWidgets")) {
 	testWidgets();
