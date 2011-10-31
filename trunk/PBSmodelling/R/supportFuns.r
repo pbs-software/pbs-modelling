@@ -1168,50 +1168,47 @@ testWidgets <- function () {
 }
 #--------------------------------------testWidgets
 
-#view-----------------------------------2008-05-22
+#view-----------------------------------2011-10-31
 # View first/last/random n element/rows of an object.
 #-----------------------------------------------RH
-view <- function (obj, n=5, last=FALSE, random=FALSE, ...) {
-	getn=function(n,N,last=FALSE,random=FALSE,...) {
+view <- function (obj, n=5, last=FALSE, random=FALSE, print.console=TRUE, ...) {
+	getn=function(n,N,last,random,...) {
 		n=min(n,N)
 		if (random) return(sample(1:N,n,...)) 
 		n1=ifelse(last,N-n+1,1); n2=ifelse(last,N,n)
 		return(n1:n2) }
-	showVec=function(obj,n,last=FALSE,random=FALSE,...){
+	showVec=function(obj,n,last,random,...){
 		N=length(obj); if (N==0) return("empty vector")
 		v.vec=obj[getn(n,N,last,random,...)]
 		return(v.vec) }
-	showTab=function(obj,n,last=FALSE,random=FALSE,...){
+	showTab=function(obj,n,last,random,...){
 		N=nrow(obj); if (N==0) return("empty table")
-		v.tab=obj[getn(n,N,last,random,...),]
+		mess = paste(c("v.tab=obj[getn(n,N,last,random,...)",rep(",",length(dim(obj))-1),"]"),collapse="")
+		eval(parse(text=mess))
 		return(v.tab) }
-	showLis=function(obj,n,last=FALSE,random=FALSE,...){
+	showLis=function(obj,n,last,random,print.console,...){
 		nL=length(obj); if (nL==0) return("empty list")
 		v.lis=list()
 		if (is.null(names(obj))) ii=1:nL else ii=names(obj)
 		for (i in 1:nL) {
 			iobj=obj[[i]]
-			if (is.data.frame(iobj) || is.matrix(iobj))
-				v.lis=c(v.lis,list(showTab(iobj,n,last,random,...)))
-			else if (is.list(iobj))
-				v.lis=c(v.lis,list(showLis(iobj,n,last,random,...)))
-			else if (is.vector(iobj) || is.integer(obj) || is.numeric(obj) || is.character(obj))
-				v.lis=c(v.lis,list(showVec(iobj,n,last,random,...)))
-			else  v.lis=c(v.lis,list(showAll(iobj))) 
+			v.lis = c(v.lis,list(view(iobj,n,last,random,print.console=FALSE,...)))
 		}
 		names(v.lis)=ii; return(v.lis) }
 	showAll=function(obj){
 		return(obj) }
+	# End Subfunction------------------------------
 	if (n==0) return("nada")
 	n=abs(n) # coerce to positive
-	if (is.data.frame(obj) || is.matrix(obj)) 
+	if (is.data.frame(obj) || is.matrix(obj) || is.array(obj)) 
 		viewed=showTab(obj,n,last,random,...)
 	else if (is.list(obj)) 
-		viewed=showLis(obj,n,last,random,...)
+		viewed=showLis(obj,n,last,random,print.console,...)
 	else if (is.vector(obj) || is.integer(obj) || is.numeric(obj) || is.character(obj)) 
 		viewed=showVec(obj,n,last,random,...)
 	else viewed=showAll(obj)
-	print(viewed); invisible(viewed)
+	if (print.console) print(viewed)
+	invisible(viewed)
 }
 #---------------------------------------------view
 
