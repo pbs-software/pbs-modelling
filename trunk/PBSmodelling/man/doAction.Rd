@@ -16,22 +16,28 @@ doAction(act)
   directory of the window's widget directory in \code{.PBSmod}. This 
   action can be accessed through \code{getWinAct()[1]}.
 
-  Due to parsing complications, the expression \code{act} must contain 
-  the backtick character \samp{`} wherever there is to be an internal 
-  double quote \samp{"} character. For example,
+  Due to parsing complications, the expression \code{act} translates various symbols. \cr
+  The function translates:
+  
+  1. The back tick character \samp{`} to a double quote \samp{"} character. For example,
   \preformatted{"openFile(paste(getWinVal()$prefix,`.tpl`,sep=``))"}
-}
-\note{
-  The action is 
+  
+  2. Underscore period \samp{_.} to four back slashes and one period \samp{\\\\\\\\.}. For example,
+  \preformatted{"poop=strsplit(`some.thing.else`,split=`_.`)"}
 }
 \value{
-  Invisibly returns the string expression \code{act}.
+  Invisibly returns the string expression \code{expr}.
 }
 \examples{
-  createWin("button text=\"list directory files\" func=doAction action=print(ls())", astext=TRUE)
+  createWin("button text=\"list objects\" func=doAction action=print(ls())",
+    astext=TRUE)
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+}
+\seealso{
+  \code{\link[PBSmodelling]{createWin}}, \code{\link[PBSmodelling]{evalCall}},
+  \code{\link[PBSmodelling]{getWinAct}}
 }
 \keyword{ utilities }
 \keyword{ character }

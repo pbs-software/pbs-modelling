@@ -4,7 +4,7 @@
 \alias{print,PBSoptions-method}
 \alias{show,PBSoptions-method}
 
-\title{Project Options Class}
+\title{S4: Project Options Class}
 \description{
 	Projects commonly involve various settings or options such as paths to C compilers or other third-party tools.
 	\pkg{PBSmodelling} provides a set of option management functions for managing user specific options. Options can be 

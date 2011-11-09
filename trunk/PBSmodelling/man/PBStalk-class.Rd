@@ -7,7 +7,7 @@
 \alias{code-class}
 \alias{break-class}
 \title{
-  Present Talk Classes
+  S4: Present Talk Classes
 }
 \description{
   The function \code{presentTalk} is a tool that facilitates lectures and workshops in R.

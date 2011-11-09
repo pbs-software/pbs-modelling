@@ -5454,7 +5454,7 @@ chooseWinVal <- function(choice,varname,winname="window") {
 	getChoice(choice=choice,question="Select from:",horizontal=FALSE,radio=TRUE,qcolor="red3",gui=TRUE,quiet=TRUE);
 	setPBSoptions("setChoice",NULL); }
 
-#doAction-------------------------------2009-02-03
+#doAction-------------------------------2011-11-08
 # Executes the action created by a widget.
 #-----------------------------------------------RH
 doAction=function(act){
@@ -5470,9 +5470,11 @@ doAction=function(act){
 	else
 		envir <- globalenv() #maybe parent.frame() is better
 
-	expr=gsub("`","\"",act)
+	# Translation symbols used in Window Description File to create R-code:
+	expr=gsub("`","\"",act)                # convert back-tick to double-quote
+	expr=gsub("(_\\.)","\\\\\\\\.",expr)   # convert underscore period to four backslahes and one period
 	eval(parse(text=expr),envir=envir)
-	invisible(act) }
+	invisible(expr) }
 
 #cleanProj------------------------------2009-04-21
 # Anisa's cleanProj function modified for flexibility.
