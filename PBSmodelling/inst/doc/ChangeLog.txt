@@ -6,7 +6,9 @@ Authors:  JTS = Jon T. Schnute
           ARK = Rob Kronlund
           AE  = Anisa Egeli
 -----------------------------------
-2.64  2011-10-31  Authors
+2.64  2011-11-09  Authors
+  - Note: R.2.14.0 now requires all packages to have a namespace; added some dot functions to export. (RH 11/9)
+  - Revised function 'doAction' to convert underscore period '..' in WDF to four back slashes and one period '\\\\.' in R code. (RH 11/8)
   - Revised function 'view' to iteratively 'view' contents of a list object. (RH 10/31)
   - Added an example to 'evalCall.Rd'. (RH 9/9)
   - Renamed and revised the function 'focusRcon' to 'focusRgui' so that it can set the focus back to RGui from a PBSmodelling window. (RH 9/9)
