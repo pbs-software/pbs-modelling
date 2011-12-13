@@ -453,9 +453,10 @@ openUG = function(pkg="PBSmodelling"){
 	openFile(paste("/doc/",pkgnam,"-UG.pdf",sep=""),pkgnam)
 }
 
-#pad0-----------------------------------2006-08-28
-# Takes numbers, converts them to integers then text,
-#   and pads them with leading zeroes.
+#pad0-----------------------------------2011-12-12
+# Takes numbers (or text coerced to numeric), 
+#  converts them to integers then text, and 
+#  pads them with leading zeroes.
 # Arguments:
 #    x - Vector of numbers
 #    n - Length of padded integer
@@ -464,18 +465,41 @@ openUG = function(pkg="PBSmodelling"){
 #       large as the order of factored x (x * 10^f).
 #-----------------------------------------------RH
 pad0 <- function (x, n, f = 0) {
-	xin <- x; xord <- max(ceiling(log10(abs(x * 10^f))), na.rm = TRUE);
-	if (any(max(abs(x * 10^f)) == 10^(-10:10))) xord <- xord + 1;
-	if (n < xord) n <- xord; # No padding occurs if n<=xord
-	x <- round(x, f) * 10^f; xneg <- x < 0;
-	x <- abs(x);  x <- format(x, scientific=FALSE);
-	x <- gsub(" ", "", x); nx <- length(x);
-	base0 <- rep(paste(rep(0, n), collapse = ""), nx);
-	nchr <- nchar(x); ndiff <- n - nchr;
-	add0 <- substring(base0, 1, ndiff);
-	xnew <- paste(add0, x, sep = "");
-	xnew[xneg] <- paste("-", xnew[xneg], sep = "");
-	attr(xnew, "input") <- xin; return(xnew); };
+	xin <- x
+	fin <- f
+	flist <- as.list(f); names(flist) = f
+	xnum <- suppressWarnings(as.numeric(xin))
+	zstr <- is.na(xnum); znum = !zstr
+	for (f in fin) {
+		xout <- xin
+		if (any(znum)) {
+			x <- xnum[znum]
+			xord <- max(ceiling(log10(abs(x * 10^f))), na.rm = TRUE);
+			if (any(max(abs(x * 10^f)) == 10^(-10:10))) xord <- xord + 1;
+			if (n < xord) n <- xord  # No padding occurs if n<=xord
+			x <- round(x, f) * 10^f
+			xneg <- x < 0;
+			x <- abs(x);  x <- format(x, scientific=FALSE)
+			xout[znum] = x }
+		if (any(zstr)) 
+			xout[zstr] <- paste(xout[zstr],paste(rep(0,f),collapse=""),sep="")
+		xout <- gsub(" ", "", xout); nx <- length(xout);
+		base0 <- rep(paste(rep(0, n), collapse = ""), nx);
+		nchr <- nchar(xout); ndiff <- n - nchr;
+		add0 <- substring(base0, 1, ndiff);
+		xout <- paste(add0, xout, sep = "");
+		if (any(znum))
+			xout[znum][xneg] <- paste("-", xout[znum][xneg], sep = "");
+		attr(xout, "input") <- xin
+		flist[[as.character(f)]] <- xout
+	}
+	if (length(fin)==1)
+		padout = flist[[as.character(fin)]]
+	else if (length(xin)==1) {
+		padout = sapply(flist,function(x){x[1]})
+		attr(padout, "input") <- xin }
+	else padout <- flist
+	return(padout) }
 #---------------------------------------------pad0
 
 #pause----------------------------------2006-08-28

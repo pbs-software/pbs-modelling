@@ -6,7 +6,9 @@ Authors:  JTS = Jon T. Schnute
           ARK = Rob Kronlund
           AE  = Anisa Egeli
 -----------------------------------
-2.64  2011-11-21  Authors
+2.64  2011-12-12  Authors
+  - Revised function 'pad0' to deal with vectors containing mixtures of numeric and character elements. (RH 12/12)
+  - Moved call to '.initPBSoptions' from '.onLoad' to '.onAttach'. {RH 11/24)
   - Updated UG. (RH 11/21)
   - Used 'packageStartupMessage' and 'message' rather than 'cat' in '.onLoad' in 'zzz.r'. (RH 11/15)
   - Building PDF manuals (for R itself or packages, e.g. via R CMD check) by default requires the LaTeX package inconsolata. (RH 11/15)
@@ -51,7 +53,7 @@ Authors:  JTS = Jon T. Schnute
 
 2.61  2010-07-07  Authors
   - Teeny bug fix to make the sort button on the history widget functional. (RH 7/7)
-  - Updated createWidget.include to accecpt/return widgetlist. (ACB 5/12)
+  - Updated createWidget.include to accept/return widgetlist. (ACB 5/12)
   - Added new function 'runExample' to run a single GUI example from PBSmodelling's 'examples' subdirectory. (RH 4/14)
   - Revised function 'runExamples' - minor changes to working variable names.
 
@@ -62,7 +64,7 @@ Authors:  JTS = Jon T. Schnute
   - Small bug fixes: 'runExamples' to close 'presentwin'; equilibrium plot routine in 'FishRes' example. (RH 3/16)
   - Further UG changes suggested by Rob (JTS 3/12)
   - Widget adjustments suggested by Rob (ACB 3/12)
-  - Further revsions to the UG, particularly the preface. (JTS 3/3)
+  - Further revisions to the UG, particularly the preface. (JTS 3/3)
   - Updated UG to v.2.60. (RH 2/18)
   - Fixed 'runDemos' to work with refactored grid code. (ACB 2/17)
   - Fixed window description files that specified grids where dimensions were reversed when byrow=F. (RH 2/16)
@@ -98,12 +100,12 @@ Authors:  JTS = Jon T. Schnute
   - Created (internal) function '.tclArrayToVector'.
 
 2.21  2009-08-16 Alex
-  - Fixed case sensitive issues for runExamples (linux support).
+  - Fixed case sensitive issues for runExamples (Linux support).
   - Fixed title issue in description file.
   - Added warning when bwidget and tktable tk packages are missing.
 
 2.20  2009-08-07  Alex
-  - Inroduced three new widget objects: 'droplist', 'spinbox', 'table'. (These can be demoed via testWidgets().)
+  - Introduced three new widget objects: 'droplist', 'spinbox', 'table'. (These can be demoed via testWidgets().)
   - Fixed read/write list bug fix for array objects (introduced dimnames arg).
   - Modified 'getWinVal' & 'setWinVal' so that they can change label widget text (via new name argument).
   - Converted 'runDemos' to use droplist widget (to allow for packages with many examples which can overflow screen height).
@@ -154,7 +156,7 @@ Authors:  JTS = Jon T. Schnute
   - Revised 'packList()' to pack an explicit value instead of object values.
   - Revised 'evalCall()' to optionally check additional arguments in '.default()' functions and 'par()'.
   - Revised function '.makeCleanVec()' to allow file names with spaces.
-  - Removed easy-to-change isntances of "<<-", replaced with either 'assign()' or 'packList()'.
+  - Removed easy-to-change instances of "<<-", replaced with either 'assign()' or 'packList()'.
 
 2.03  2009-02-24  Rowan
   - Revised functions 'cleanProj()', '.doClean()', 'cleanWD()' and '.doCleanWD()'.
@@ -169,13 +171,13 @@ Authors:  JTS = Jon T. Schnute
   - Revised 'showArgs()' to display the widget arguments in a more visible manner.
   - Added new non-GUI functions 'getPrefix()' and 'getSuffix()' to search for and return all prefixes/suffixes of system files on the specified path.
   - Revised 'plotBubbles()' to increase its versatility.
-  - Added new function 'evalCall()' to evaluate function calls with pontentially duplicated arguments due to '...'.
+  - Added new function 'evalCall()' to evaluate function calls with potentially duplicated arguments due to '...'.
   - Added new function 'showPacks()' to check if specified packages are missing from a user's system (Jon).
   - Added new function 'convSlashes()' to convert slashes depending on OS.
 	(duplicates somewhat the functionality of '.addSlashes()')
   - Added new function 'viewCode()' to collect the R-code of all functions in a specified package on the user's system.
   - Added new function 'doAction()' which executes the action created by a widget.
-  - Added new function '.forceMode()' to coerce modes into those specified, if possible (relpaces '.convertMode()' in 'readList()').
+  - Added new function '.forceMode()' to coerce modes into those specified, if possible (replaces '.convertMode()' in 'readList()').
 	Note: I could not use this algorithm to replace '.convertMode()' generally because this affects logical values derived from GUIs.
   - Changed the definition of '.pFormatDefs$array' (formerly not used) in '.widgetDefs.r'.
   - Revised 'writeList()' and 'readList()' to handle n-dimensional arrays in PBS format.
@@ -185,7 +187,7 @@ Authors:  JTS = Jon T. Schnute
   - POSTED ON CRAN
 
 2.00  2008-10-23  Rowan
-  - Bumped up the vesion for CRAN
+  - Bumped up the version for CRAN
 
 1.92  2008-10-23  Jon/Rowan
   - Revised the User's Guide, the example document 'vonBDoc.pdf', and the talk description file 'SwissTalk.txt'.
@@ -533,7 +535,7 @@ Authors:  JTS = Jon T. Schnute
 
 0.51  2006-08-08  Alex
   - Added argument 'returnValue=TRUE' to 'pickCol()'.
-  - Aadded 'frame()' call in 'resetGraph()'.
+  - Added 'frame()' call in 'resetGraph()'.
 
 0.50  2006-08-03  Alex
   - Added 'expandGraph() function and documentation.
@@ -555,7 +557,7 @@ Authors:  JTS = Jon T. Schnute
 	if 'fooXYZ' exists, then 'foo' points to 'fooXYZ' instead of a new variable.
 
 0.44  2006-07-16  Alex
-  - Worked on documentation for funtions from utils15.r.
+  - Worked on documentation for functions from utils15.r.
   - Made minor changes and bug fixes to these functions.
 
 0.43  2006-07-14  Alex
@@ -593,7 +595,7 @@ Authors:  JTS = Jon T. Schnute
   - Fixed 'byrow' option in 'writeList()'.
 
 0.32  2006-06-04  Alex
-  - Worked on 'writeList()' to allow 'byrow' option for use with Brugs package.
+  - Worked on 'writeList()' to allow 'byrow' option for use with BRugs package.
 
 0.31  2006-05-30  Alex
   - Modified 'createWin()' to accept a vector of strings representing the contents of a window description file.

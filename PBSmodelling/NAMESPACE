@@ -10,7 +10,7 @@ exportClasses( PBSoptions )
 exportPattern("^[^\\.]")
 #exportPattern("^[^\\*]") # export all objects
 
-# Export soma handy dot functions
+# Export some handy dot functions
 export(.addslashes, .findSquare, .forceMode, .getHome, .readList.P, .readList.P.convertData, .writeList.P)
 
 
