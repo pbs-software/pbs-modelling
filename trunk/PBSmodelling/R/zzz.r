@@ -1,8 +1,7 @@
-
-.onLoad <- function(lib, pkg)
+.onLoad <- function(libname, pkgname)
 {
-	library.dynam("PBSmodelling", pkg, lib)
-	.initPBSoptions()
+	library.dynam("PBSmodelling", pkgname, libname)
+	#.initPBSoptions()
 	
 	pkg_info <- utils::sessionInfo( package="PBSmodelling" )$otherPkgs$PBSmodelling
 	if( is.character( pkg_info$Packaged ) )
@@ -33,26 +32,33 @@ Pacific Biological Station, Nanaimo
 	bwidget <- tclRequire("BWidget", warn = FALSE)
 	tktable <- tclRequire("Tktable")
 	if( is.logical( bwidget ) || is.logical( tktable ) ) {
-		message("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" )
+		packageStartupMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" )
 	}
 	if( is.logical( bwidget ) ) {
 		#try included distribution
 		tcl("lappend", "auto_path", system.file( "thirdparty/BWidget-1.9.0/", package = "PBSmodelling" ) )
 		bwidget <- tclRequire("BWidget")
 		if( is.logical( bwidget ) ) {
-		message("ERROR: PBSmodelling requires the tcl package \"BWidget\"\nand cannot proceed until it is installed.\n" ,
-				"Ubuntu (apt) users can install via the command:\n\tsudo apt-get install bwidget\n",
-				"Bwidget source can be downloaded from\n\thttp://sourceforge.net/projects/tcllib/files/\n")
+		packageStartupMessage(
+			"ERROR: PBSmodelling requires the tcl package \"BWidget\"\nand cannot proceed until it is installed.\n" ,
+			"Ubuntu (apt) users can install via the command:\n\tsudo apt-get install bwidget\n",
+			"Bwidget source can be downloaded from\n\thttp://sourceforge.net/projects/tcllib/files/\n")
 		}
 	}
 	if( is.logical( tktable ) ) {
-		message("ERROR: PBSmodelling requires the tcl package \"Tktable\"\nand cannot proceed until it is installed.\n",
+		packageStartupMessage(
+			"ERROR: PBSmodelling requires the tcl package \"Tktable\"\nand cannot proceed until it is installed.\n",
 			"Ubuntu (apt) users can install via the command:\n\tsudo apt-get install libtktable2.10\n",
 			"Mac (port) users can install via the command:\n\tsudo port install tktable\n",
 			"assuming Mac Ports is installed (http://www.macports.org/)\n",
 			"tktable can also be donwloaded from \n\thttp://sourceforge.net/projects/tktable/files/\n" )
 	}
 	if( is.logical( bwidget ) || is.logical( tktable ) ) {
-		message("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+		packageStartupMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 	}
 }
+
+.onAttach <- function(libname, pkgname){
+	.initPBSoptions()
+}
+
