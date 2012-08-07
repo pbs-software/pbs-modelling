@@ -42,12 +42,12 @@ definition=function(.Object, filename, initial.options = list(), gui.prefix = "o
 		if( file.exists( filename ) == FALSE )
 			return()
 		tmp <- readList( filename )
-		options <<- .mergeLists( options, tmp )
+		eval(parse(text="options <<- .mergeLists( options, tmp )"))
 	}
 
 	setFileName <- function( name )
 	{
-		filename <<- name
+		eval(parse(text="filename <<- name"))
 	}
 
 	getFileName <- function()
@@ -63,7 +63,7 @@ definition=function(.Object, filename, initial.options = list(), gui.prefix = "o
 
 		#TODO alert if file already exists - do we really want to overwrite?
 
-		filename <<- selected
+		eval(parse(text="filename <<- selected"))
 		save()
 	}
 	
@@ -101,7 +101,7 @@ definition=function(.Object, filename, initial.options = list(), gui.prefix = "o
 			stop( "values must be named" )
 
 		for( i in 1:length( v ) ) {
-			options[ names(v)[ i ] ] <<- list( v[[ i ]] )
+			eval(parse(text="options[ names(v)[ i ] ] <<- list( v[[ i ]] )"))
 		}
 		
 	}
@@ -117,7 +117,7 @@ definition=function(.Object, filename, initial.options = list(), gui.prefix = "o
 
 		for( w in to_update ) {
 			k <- substring( w, nchar(gui.prefix)+1 ) #remove prefix to get option key
-			options[[ k ]] <<- values[[ w ]]
+			eval(parse(text="options[[ k ]] <<- values[[ w ]]"))
 		}
 			
 	}
@@ -143,7 +143,7 @@ definition=function(.Object, filename, initial.options = list(), gui.prefix = "o
 	getPrefix <- function() { return( gui.prefix ) }
 
 	#set the gui prefix
-	setPrefix <- function( prefix ) { gui.prefix <<- prefix }
+	setPrefix <- function( prefix ) { eval(parse(text="gui.prefix <<- prefix")) }
 
 	#load all functions into the instance list to return
 	instance <- list()

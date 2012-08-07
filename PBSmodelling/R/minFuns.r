@@ -3,16 +3,17 @@
 #------------------------
 calcMin <- function(pvec, func, method="nlm", trace=0, maxit=1000, reltol=1e-8, steptol=1e-6, temp=10, repN=0, ...) {
 	Sfun <- function(S,pvec,func,repN) { # function of surrogate parameters
-		PBSmin$N <<- PBSmin$N + 1;
+		eval(parse(text="PBSmin$N <<- PBSmin$N + 1"))
 		P <- restorePar(S,pvec);
 		Uval <- func(P);
-		if (PBSmin$N==1) { PBSmin$fmin0 <<- Uval; if (repN>0) cat("\nParameter reporting:\n"); }
+		if (PBSmin$N==1) { eval(parse(text="PBSmin$fmin0 <<- Uval")); if (repN>0) cat("\nParameter reporting:\n"); }
 		if (repN>0 && is.element(PBSmin$N,seq(repN,maxit,repN)))
 			print(paste("N=",PBSmin$N," P=c(",paste(show0(round(P,5),5),collapse=","),") F=",show0(round(Uval,5),5),sep="" ));
 		return(Uval); };
 
 	Sval <- scalePar(pvec); nS <- length(Sval); junk <- gc(FALSE); 
-	PBSmin <<- list(); PBSmin$N <<- 0; Ftime <- proc.time()[1:3];
+	eval(parse(text="PBSmin <<- list(); PBSmin$N <<- 0"))
+	Ftime <- proc.time()[1:3];
 	if (method=="nlm") { # Non-Linear Minimization
 		Fout <- nlm(f=Sfun,p=Sval,typsize=rep(1,nS), iterlim=maxit, gradtol=reltol, steptol=steptol,
 		        pvec=pvec, func=func,repN=repN,...)
@@ -45,8 +46,8 @@ calcMin <- function(pvec, func, method="nlm", trace=0, maxit=1000, reltol=1e-8, 
 
 	Pfin <- restorePar(Pest,pvec); Pmat <- cbind(Pfin,pvec[,2:4]); 
 	P0 <- pvec[,1]; names(P0) <- dimnames(pvec)[[1]]; AIC <- 2*fmin + 2*nS;
-	PBSmin <<- c(PBSmin,list(start=P0, end=Pfin, surrogates=Pest, check=scalePar(Pmat), gradient=grad,
-		code=code, message=mess, iterations=iter, evaluations=eval, time=Ftime, fmin=fmin, AIC=AIC )); 
+	eval(parse(text="PBSmin <<- c(PBSmin,list(start=P0, end=Pfin, surrogates=Pest, check=scalePar(Pmat), gradient=grad,
+		code=code, message=mess, iterations=iter, evaluations=eval, time=Ftime, fmin=fmin, AIC=AIC ))"))
 	Obag <- list(Fout=Fout, iters=iter[1], evals=PBSmin$N, cpuTime=Ftime[1], elapTime=Ftime[3], 
 		fminS=PBSmin$fmin0, fminE=fmin, Pstart=P0, Pend=Pfin, AIC=AIC, message=mess);
 	return(Obag) 

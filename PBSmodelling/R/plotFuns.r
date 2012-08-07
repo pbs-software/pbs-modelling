@@ -1,10 +1,32 @@
 #===========================================================
 # Plotting functions (in alphabetic order)                 |
+#  addArrows    : Add arrows to current plot
+#  addLabel     : Add label to current plot
+#  addLegend    : Add a legend to current plot
+#  drawBars     : Draw a linear barplot on the current graph
+#  expandGraph  : Tweaks values to expand margins for multiple graphs
+#  lucent       : Create translucent colour
+#  pickCol      : Display interactive colour picking palette
+#  plotACF      : Plot auto correlations (support for BRugs)
+#  plotAsp      : Plots x and y vectors with plot() but maintaining a fixed aspect
+#  plotBubbles  : Function to construct a bubble plot for a matrix z
+#  plotCsum     : Plots cumulative frequecy of data
+#  plotDens     : Plot density curves (support for BRugs)
+#  plotFriedEggs: Pairs plot featuring fried eggs and beer
+#  plotSidebars : Plot (x,y) table as horizontal sidebars
+#  plotTrace    : Plot trace lines (support for BRugs)
+#  resetGraph   : Resets par() values to R default
+#  testAlpha    : Display various alpha transparencies
+#  testCol      : Display test colours as circular patches
+#  testLty      : Display line types available
+#  testLwd      : Display line widths
+#  testPch      : Display plotting symbols or octal strings
+#-----------------------------------------------------------
 # Authors:                                                 |
-#  Jon T. Schnute <SchnuteJ@pac.dfo-mpo.gc.ca>,            |
-#  Alex Couture-Beil <alex@mofo.ca>, and                   |
-#  Rowan Haigh <HaighR@pac.dfo-mpo.gc.ca>                  |
-#  Anisa Egeli <EgeliA@pac.dfo-mpo.gc.ca>                  |
+#  Jon T. Schnute <Jon.Schnute@dfo-mpo.gc.ca>,             |
+#  Alex Couture-Beil <alex@mofo.ca>,                       |
+#  Rowan Haigh <Rowan.Haigh@dfo-mpo.gc.ca>                 |
+#  Rob Kronlund <Allen.Kronlund@dfo-mpo.gc.ca>             |
 #===========================================================
 
 #addArrows------------------------------2007-08-22
@@ -114,6 +136,14 @@ expandGraph <- function(mar=c(4,3,1.2,0.5), mgp=c(1.6,.5,0),...) {
 	par(mar=mar, mgp=mgp, ...)
 	invisible() }
 
+#lucent---------------------------------2012-07-26
+# Create translucent colour
+#-----------------------------------------------SM
+lucent <- function(col.pal=1,a=1){
+	col.rgb<-col2rgb(col.pal)/255
+	rgb(t(col.rgb),alpha=a)
+}
+
 #pickCol--------------------------------2006-08-08
 # Display interactive colour picking palette
 # Arguments:
@@ -165,7 +195,7 @@ plotACF <- function(file,lags=20,clrs=c("blue","red","green","magenta","navy"),.
 	xlim <- c(0,lags+.5); ylim <- c(ymin,ymax); ylim[1] <- min(ylim[1],clim[1]); ylim[2] <- max(ylim[2],clim[2]);
 	evalCall(plot,argu=list(x=0,y=0,xlim=xlim,ylim=ylim,type="n",tck=.03,xlab="",ylab="",las=1),...,checkdef=TRUE,checkpar=TRUE)
 	#plot(0,0,xlim=xlim,ylim=ylim,type="n",tck=.03,xlab="",ylab="",las=1,...)
-	if (lags<=30) axis(1,at=1:30,tcl=.25,label=FALSE);
+	if (lags<=30) axis(1,at=1:30,tcl=.25,labels=FALSE);
 	abline(h=clim,col="#400080",lty=2);
 	for (i in 1:nc) {
 		x <- (0:lags)+(i-1)*(.7/nch); y <- acfacf[,i,i];
@@ -409,7 +439,7 @@ plotDens <- function(file,clrs=c("blue","red","green","magenta","navy"),...) {
 		#lines(d$x,d$y,col=clrs[i],...) }; 
 	invisible() }
 
-#plotFriedEgss--------------------------2008-09-03
+#plotFriedEggs--------------------------2008-09-03
 #  Pairs plot featuring fried eggs and beer.
 #  Original code by Steve Martell (UBC).
 #--------------------------------------------SM/RH
@@ -532,6 +562,59 @@ plotFriedEggs <- function(A, eggs=TRUE, rings=TRUE,
 }
 #------------------------------------plotFriedEggs
 
+#plotSidebars---------------------------2012-07-26
+# Plot (x,y) table as horizontal sidebars.
+# Additional arguments:
+#   lbl    - labels for the x- and y-axis
+#   margin - function to report margin summaries
+#--------------------------------------------SM/RH
+plotSidebars <- function(z, scale=1, col=lucent("blue",0.25), ...){
+	ciao = function(){ par(oldpar) }
+	oldpar = par(no.readonly=TRUE)
+	on.exit(ciao())
+	dots = list(...)
+	plot.new()
+	# set up graphical parameters
+	#par(mar=c(1, 1, 1, 1), oma=c(1, 1, 1, 1)*4, xaxs='r')
+	evalCall(par,argu=list(no.readonly=FALSE),...,checkpar=TRUE)
+	dz  <- dim(z)
+	dn  <- dimnames(z)
+	if(!is.null(dots$lbl)) lbl = dots$lbl
+	else {
+		lbl <- rev(names(dn))
+		if(is.null(lbl)) lbl=c("Year","Age") }
+	
+	ny = nr = dz[1]
+	nx = nc = dz[2]
+	y  = as.numeric(unlist(dn[1]))
+	x  = as.numeric(unlist(dn[2]))
+	yl = extendrange(y, f=0.05)
+	xl = extendrange(x, f=0.05*sqrt(scale))
+	
+	par(usr=c(xl, yl))
+	box()
+	mtext(lbl, side=1:2, outer=FALSE, line=2.5, cex=1.5, las=0)
+	axis(1); axis(2)
+	scale = scale/diff(range(z,na.rm=TRUE))
+	for( i in 1:nx ) {
+		dy = 0.5*diff(y[1:2])
+		xx = as.vector(rbind(y-dy, y+dy))
+		xx = c(min(xx), xx, max(xx))
+		yy = as.vector(rbind(z[,i], z[,i]))*scale
+		yy = c(0, yy, 0)
+		#polygon(x[i]-yy, xx,col=col)
+		evalCall(polygon,argu=list(x=x[i]-yy, y=xx, density=NULL,angle=45,border=NULL,col=col,lty=par("lty"),fillOddEven=FALSE),
+			..., checkpar=TRUE)
+	}
+	if (!is.null(dots$margin) && is.function(dots$margin)) {
+		xmarg = apply(z,2,dots$margin)
+		ymarg = apply(z,1,dots$margin)
+		usr=par()$usr
+		text(usr[2]-0.02*diff(usr[1:2]), y, ymarg,adj=1,cex=0.7,font=2)
+		text(x, usr[3]+0.02*diff(usr[3:4]), xmarg,adj=1,cex=0.7,font=2)
+	}
+}
+
 #plotTrace------------------------------2009-02-24
 # Plot trace lines (support for BRugs)
 #-----------------------------------------------RH
@@ -561,7 +644,7 @@ resetGraph=function(reset.mf=TRUE)
 		dev.new()
 		p <- graphics::par(no.readonly = TRUE)
 		dev.off()
-		.PBSmod$.options$par.default <<- p
+		eval(parse(text=".PBSmod$.options$par.default <<- p"))
 	}
 	if (dev.cur()==1) frame()
 	else {

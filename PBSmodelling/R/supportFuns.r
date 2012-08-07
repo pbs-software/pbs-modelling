@@ -127,7 +127,7 @@ clearPBSext=function(ext){
     packList("openfile",".PBSmod$.options",list()) #.PBSmod$.options$openfile<<-list()
   else{
     oldLen=length(.PBSmod$.options$openfile)
-    .PBSmod$.options$openfile<<-.removeFromList(.PBSmod$.options$openfile, ext)
+    eval(parse(text=".PBSmod$.options$openfile <<- .removeFromList(.PBSmod$.options$openfile, ext)"))
     if(oldLen!=length(.PBSmod$.options$openfile))
       packList(".optionsChanged",".PBSmod$.options",TRUE) #.PBSmod$.options$.optionsChanged<<-TRUE
   }
@@ -571,7 +571,7 @@ readPBSoptions=function(fname="PBSoptions.txt"){
   if(class(optList)=="try-error")
     return(FALSE)
     
-  .PBSmod$.options<<-.mergeLists(.PBSmod$.options, optList)
+  eval(parse(text=".PBSmod$.options <<- .mergeLists(.PBSmod$.options, optList)"))
   if(fname!="PBSoptions.txt")
     packList(".optionsFile",".PBSmod$.options",fname) #.PBSmod$.options$.optionsFile<<-fname
   packList(".optionsChanged",".PBSmod$.options",NULL) #.PBSmod$.options$.optionsChanged<<-NULL
@@ -582,7 +582,7 @@ readPBSoptions=function(fname="PBSoptions.txt"){
 #-------------------------------------------ACB/RH
 runDemos <- function (package) {
 	if (!exists(".dwd",where=1)) assign(".dwd",getwd(),envir=.GlobalEnv)
-	if (!exists(".dls",where=1)) assign(".dls",c(".dls",ls(pos = 1, all = TRUE)),envir=.GlobalEnv)
+	if (!exists(".dls",where=1)) assign(".dls",c(".dls",ls(pos = 1, all.names=TRUE)),envir=.GlobalEnv)
 	try(closeWin(),silent=TRUE)
 	x <- demo(package = .packages(all.available = TRUE))
 	if (missing(package)) {
@@ -663,7 +663,7 @@ runExample <- function (ex, pkg="PBSmodelling") {
 		setwd(.cwd)
 		remove(list = setdiff(ls(pos = 1), .cls), pos = 1)
 		return() }
-	assign(".cls",ls(pos = 1, all = TRUE),envir=.GlobalEnv)
+	assign(".cls",ls(pos = 1, all.names=TRUE),envir=.GlobalEnv)
 	assign(".cwd",getwd(),envir=.GlobalEnv)
 	assign(".runExHelperQuit",.runExHelperQuit,envir=.GlobalEnv)
 
@@ -732,7 +732,7 @@ runExamples <- function () {
 	}
 	assign(".runExHelper",.runExHelper,envir=.GlobalEnv)
 	assign(".runExHelperQuit",.runExHelperQuit,envir=.GlobalEnv)
-	assign(".cls",ls(pos = 1, all = TRUE),envir=.GlobalEnv)
+	assign(".cls",ls(pos = 1, all.names=TRUE),envir=.GlobalEnv)
 	assign(".cwd",getwd(),envir=.GlobalEnv)
 	pckg <- "PBSmodelling"
 	pdir <- system.file(package = pckg)               # package directory
@@ -862,7 +862,7 @@ setPBSext <- function(ext, cmd) {
 			.PBSmod$.options$openfile[[ext]]!=cmd)
 		packList(".optionsChanged",".PBSmod$.options",TRUE) #.PBSmod$.options.optionsChanged<<-TRUE
 		
-	.PBSmod$.options$openfile[[ext]] <<- cmd
+	eval(parse(text=".PBSmod$.options$openfile[[ext]] <<- cmd"))
 }
 #----------------------------------------setPBSext
 
@@ -883,7 +883,7 @@ setPBSoptions <- function(option, value, sublist=FALSE) {
  	if(substr(option, 1, 1)!="." && !identical(.PBSmod$.options[[option]], value))
 		packList(".optionsChanged",".PBSmod$.options",TRUE) #.PBSmod$.options$.optionsChanged<<-TRUE
 	if(is.null(value) && !sublist)
-		.PBSmod$.options <<- .removeFromList(.PBSmod$.options, option)
+		eval(parse(text=".PBSmod$.options <<- .removeFromList(.PBSmod$.options, option)"))
 	else{
 		if(is.list(value) && sublist){
 			for (i in 1:length(value)){
@@ -893,7 +893,7 @@ setPBSoptions <- function(option, value, sublist=FALSE) {
 				eval(parse(text=txt))
 			}
 		}
-		else .PBSmod$.options[[option]] <<- value
+		else eval(parse(text=".PBSmod$.options[[option]] <<- value"))
 	}
 }
 #------------------------------------setPBSoptions
@@ -1049,7 +1049,7 @@ showRes <- function(x, cr=TRUE, pau=TRUE) {
 #-----------------------------------------------AE
 showVignettes <- function (package) {
 	if (!exists(".dwd",where=1)) assign(".dwd",getwd(),envir=.GlobalEnv)
-	if (!exists(".dls",where=1)) assign(".dls",c(".dls",ls(pos = 1, all = TRUE)),envir=.GlobalEnv)
+	if (!exists(".dls",where=1)) assign(".dls",c(".dls",ls(pos = 1, all.names=TRUE)),envir=.GlobalEnv)
 	closeWin();
 	x <- vignette()
 	if (missing(package)) {
@@ -1395,7 +1395,7 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 	closeWin();
 	setwd(.dwd)
 	if (is.null(act) || act=="demo") {
-		remove(list = setdiff(ls(pos=1, all=TRUE), .dls), pos = 1);
+		remove(list = setdiff(ls(pos=1, all.names=TRUE), .dls), pos = 1);
 		remove(list = c(".dwd", ".dls"), pos = 1); }; # final good-bye
 	return(); };
 #------------------------------------------.dClose
