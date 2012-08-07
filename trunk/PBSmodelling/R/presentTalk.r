@@ -413,7 +413,7 @@ setValidity ("code", function( object )
 
 
 .startSlide <- function( talk ) {
-	.PBSmod[[ ".presentTalk" ]][[ talk@name ]]$index <<- 1
+	eval(parse(text=".PBSmod[[ \".presentTalk\" ]][[ talk@name ]]$index <<- 1"))
 	talk <- .PBSmod[[ ".presentTalk" ]][[ talk@name ]]$talk
 	.updateSlide( talk )
 }
@@ -421,14 +421,14 @@ setValidity ("code", function( object )
 	talk_name <- getWinAct()[1]
 	index <- .PBSmod[[ ".presentTalk" ]][[ talk_name ]]$index
 	talk <- .PBSmod[[ ".presentTalk" ]][[ talk_name ]]$talk
-	.PBSmod[[ ".presentTalk" ]][[ talk_name ]]$index <<- index - 1
+	eval(parse(text=".PBSmod[[ \".presentTalk\" ]][[ talk_name ]]$index <<- index - 1"))
 	.updateSlide( talk )
 }
 .nextSlide <- function() {
 	talk_name <- getWinAct()[1]
 	index <- .PBSmod[[ ".presentTalk" ]][[ talk_name ]]$index
 	talk <- .PBSmod[[ ".presentTalk" ]][[ talk_name ]]$talk
-	.PBSmod[[ ".presentTalk" ]][[ talk_name ]]$index <<- index + 1
+	eval(parse(text=".PBSmod[[ \".presentTalk\" ]][[ talk_name ]]$index <<- index + 1"))
 	.updateSlide( talk )
 }
 .slidedrop <- function() {
@@ -444,7 +444,7 @@ setValidity ("code", function( object )
 	if( index == new_index )
 		return()
 
-	.PBSmod[[ ".presentTalk" ]][[ talk_name ]]$index <<- new_index
+	eval(parse(text=".PBSmod[[ \".presentTalk\" ]][[ talk_name ]]$index <<- new_index"))
 	.updateSlide( talk )
 }
 .sectiondrop <- function() {
@@ -460,7 +460,7 @@ setValidity ("code", function( object )
 	if( section_id == new_sect_id )
 		return()
 
-	.PBSmod[[ ".presentTalk" ]][[ talk_name ]]$index <<- .getIndexForSection( talk, new_sect_id )
+	eval(parse(text=".PBSmod[[ \".presentTalk\" ]][[ talk_name ]]$index <<- .getIndexForSection( talk, new_sect_id )"))
 	.updateSlide( talk )
 }
 
@@ -484,7 +484,7 @@ setValidity ("code", function( object )
 	else
 		index <- .getIndexForSection( talk, as.integer( act ) )
 
-	.PBSmod[[ ".presentTalk" ]][[ talk_name ]]$index <<- index
+	eval(parse(text=".PBSmod[[ \".presentTalk\" ]][[ talk_name ]]$index <<- index"))
 	.updateSlide( talk )
 }
 
@@ -497,14 +497,14 @@ presentTalk <- function( talk )
 	PBSmodelling:::.initPBSoptions()
 	#setup .PBSmod$.talk (should be seperate package)
 	if( !is.null( .PBSmod[[ ".presentTalk" ]] ) )
-		.PBSmod[[ ".presentTalk" ]] <<- list()
+		eval(parse(text=".PBSmod[[ \".presentTalk\" ]] <<- list()"))
 	
 	#parse XML into a DOM
 	talk <- .parseTalkFile( talk )
 
 	#save parsed talk
 	name <- talk@name
-	.PBSmod[[ ".presentTalk" ]][[ name ]] <<- list( index = 0, talk = talk )
+	eval(parse(text=".PBSmod[[ \".presentTalk\" ]][[ name ]] <<- list( index = 0, talk = talk )"))
 
 	#create a GUI for it
 	win_desc <- c(

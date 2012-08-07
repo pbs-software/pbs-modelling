@@ -1,4 +1,4 @@
-window name=window title="Test Functions"
+window name=window title="Test Functions" onclose=closeALL
 
 grid 1 4 sticky=W
   label text=View: font=bold
@@ -6,7 +6,7 @@ grid 1 4 sticky=W
   button text="R Code" func=openFile action=TestFuns.r
   button text=Window func=openFile action=TestFunsWin.txt
 
-grid 25 2 byrow=FALSE
+grid 25 2 byrow=TRUE
 radio mode=character sticky=W func=TestFuns name=funs value=closeWin text=CLOSE
 radio mode=character sticky=W func=TestFuns name=funs value=addArrows text=addArrows
 radio mode=character sticky=W func=TestFuns name=funs value=addLabel text=addLabel
@@ -57,3 +57,4 @@ radio mode=character sticky=W func=TestFuns name=funs value=unpackList text=unpa
 radio mode=character sticky=W func=TestFuns name=funs value=view text=view
 radio mode=character sticky=W func=TestFuns name=funs value=viewCode text=viewCode
 radio mode=character sticky=W func=TestFuns name=funs value=writeList text=writeList
+

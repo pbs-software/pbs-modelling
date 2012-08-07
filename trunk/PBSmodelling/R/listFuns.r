@@ -471,7 +471,7 @@ unpackList <- function(x, scope="L") {
 			if (scope=="L")
 				assign(namx[i], x[[i]], pos=parent.frame(1))
 			else if (scope=="G")
-				assign(namx[i], x[[i]], env = .GlobalEnv)
+				assign(namx[i], x[[i]], envir = .GlobalEnv)
 		}
 	}
 	namx[namx != ""] }

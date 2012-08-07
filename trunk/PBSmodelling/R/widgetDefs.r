@@ -167,7 +167,7 @@
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='enter', required=FALSE, class="logical", default=TRUE), #require an enter to call function
 	list(param='edit', required=FALSE, class="logical", default=TRUE),
-	list(param='action', required=FALSE, class="character", default="droplist"),
+	list(param='action', required=FALSE, class="character", default="spinbox"),
 	list(param='width', required=FALSE, class="integer", default=20),
 	list(param='sticky', required=FALSE, class="character", default="", grep="^(n|s|N|S|e|w|E|W)*$"),	#choices: N,NE,E,SE,S,SW,W,NW
 	list(param='padx', required=FALSE, class="integerVector", default=0, grep="^[0-9]+([ \\t]+[0-9]+)?$"),
@@ -428,7 +428,7 @@
 	list(param='rowlabels', required=FALSE, class="logical", default=TRUE),
 	list(param='function', required=FALSE, class="character", default=""),
 	list(param='enter', required=FALSE, class="logical", default=TRUE),
-	list(param='action', required=FALSE, class="character", default="data"),
+	list(param='action', required=FALSE, class="character", default="object"),
 	list(param='edit', required=FALSE, class="logical", default=TRUE),
 	list(param='width', required=FALSE, class="integerVector", default=6),
 	list(param='borderwidth', required=FALSE, class="integer", default=0),

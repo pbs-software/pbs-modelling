@@ -160,19 +160,16 @@
 {
 	if( is.null( .PBSmod[[ winName ]] ) )
 		.map.init(winName)
-
 	if (!is.character(key)) {
 		stop("map error - key must be a string")
 	}
 	if (key=="") {
 		stop("map error - key must be atleast 1character long")
 	}
-
 	if (!is.null(.PBSmod[[winName]]$widgetPtrs[[ key ]]))
 		return(.PBSmod[[winName]]$widgetPtrs[[key]])
 
-	.PBSmod[[winName]]$widgetPtrs[[key]] <<- list(...)
-
+	eval(parse(text=".PBSmod[[winName]]$widgetPtrs[[key]] <<- list(...)"))
 }
 
 
@@ -196,7 +193,7 @@
 		stop("map error - key must be atleast 1character long")
 
 	if (!is.list(.PBSmod[[winName]]$widgetPtrs[[key]]))
-		.PBSmod[[winName]]$widgetPtrs[[key]] <<- list()
+		eval(parse(text=".PBSmod[[winName]]$widgetPtrs[[key]] <<- list()"))
 
 	#set additional keys
 	tmp <- list(...)
@@ -204,11 +201,11 @@
 	if (length(tmp)>0) {
 		for (i in 1:length(tmp)) {
 			if (is.null(tmpNames[i]))
-				.PBSmod[[winName]]$widgetPtrs[[key]][[i]] <<- tmp[[i]]
+				eval(parse(text=".PBSmod[[winName]]$widgetPtrs[[key]][[i]] <<- tmp[[i]]"))
 			else if (tmpNames[i]=="")
-				.PBSmod[[winName]]$widgetPtrs[[key]][[i]] <<- tmp[[i]]
+				eval(parse(text=".PBSmod[[winName]]$widgetPtrs[[key]][[i]] <<- tmp[[i]]"))
 			else
-				.PBSmod[[winName]]$widgetPtrs[[key]][[tmpNames[i]]] <<- tmp[[i]]
+				eval(parse(text=".PBSmod[[winName]]$widgetPtrs[[key]][[tmpNames[i]]] <<- tmp[[i]]"))
 		}
 	}
 
@@ -726,7 +723,7 @@ createWin <- function( fname, astext=FALSE, env=parent.frame() ) #globalenv() )
 		.map.init(guiDesc[[i]]$windowname)
 
 		#store windowname as most recent active window
-		.PBSmod$.activeWin <<- guiDesc[[i]]$windowname
+		eval(parse(text=".PBSmod$.activeWin <<- guiDesc[[i]]$windowname"))
 
 		#Had to re-write tktoplevel to allow binding to the destroy
 		#action without breaking the cleanup process
@@ -753,7 +750,7 @@ createWin <- function( fname, astext=FALSE, env=parent.frame() ) #globalenv() )
 				tkbind(w, "<Destroy>", "")
 				
 				if( !is.null( widget[["remove"]] ) && widget$remove == TRUE )
-					.PBSmod[[ widget$windowname ]] <<- NULL
+					eval(parse(text=".PBSmod[[ widget$windowname ]] <<- NULL"))
 			})
 			w
 		}
@@ -772,10 +769,10 @@ createWin <- function( fname, astext=FALSE, env=parent.frame() ) #globalenv() )
 		tt <- mytktoplevel( guiDesc[[i]] )
 
 		#store the TK handle (so we can destroy it at a later time via closeWin)
-		.PBSmod[[winName]]$tkwindow <<- tt
+		eval(parse(text=".PBSmod[[winName]]$tkwindow <<- tt"))
 
 		#store environment to look for functions under
-		.PBSmod[[winName]]$env <<- env
+		eval(parse(text=".PBSmod[[winName]]$env <<- env"))
 
 		#set window title
 		tkwm.title(tt,guiDesc[[i]]$title)
@@ -784,7 +781,7 @@ createWin <- function( fname, astext=FALSE, env=parent.frame() ) #globalenv() )
 		if (exists("PBS.history")) {
 			j<-grep(paste("^", winName, "\\.", sep=""), names(PBS.history))
 			for(n in names(PBS.history)[j]) {
-				PBS.history[[n]] <<- NULL
+				eval(parse(text="PBS.history[[n]] <<- NULL"))
 			}
 		}
 
@@ -1979,7 +1976,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	if (!is.null(widget[["function"]])) {
 		if (widget[["function"]]!="") {
 			if (!any(.PBSmod[[winName]]$functions==widget[["function"]]))
-				.PBSmod[[winName]]$functions <<- c(.PBSmod[[winName]]$functions, widget[["function"]])
+				eval(parse(text=".PBSmod[[winName]]$functions <<- c(.PBSmod[[winName]]$functions, widget[[\"function\"]])"))
 		}
 	}
 
@@ -1989,14 +1986,14 @@ parseWinFile <- function(fname, astext=FALSE)
 	if (!is.null(widget$name)) {
 		if (length(widget$name)==1 && widget$name != "" ) {
 			if (is.null(.PBSmod[[winName]]$widgets[[ widget$name ]])) {
-				.PBSmod[[winName]]$widgets[[widget$name]] <<- widget
+				eval(parse(text=".PBSmod[[winName]]$widgets[[widget$name]] <<- widget"))
 			} else {
 				#duplicate widget name found -> likely a radio with many options but only one var name
 				#save additional widget information under .duplicate
 				if( is.null( .PBSmod[[winName]]$widgets[[widget$name]]$.duplicate ) )
-					.PBSmod[[winName]]$widgets[[widget$name]]$.duplicate <<- list()
+					eval(parse(text=".PBSmod[[winName]]$widgets[[widget$name]]$.duplicate <<- list()"))
 				i <- length( .PBSmod[[winName]]$widgets[[widget$name]]$.duplicate ) + 1
-				.PBSmod[[winName]]$widgets[[widget$name]]$.duplicate[[ i ]] <<- widget
+				eval(parse(text=".PBSmod[[winName]]$widgets[[widget$name]]$.duplicate[[ i ]] <<- widget"))
 			}
 		}
 	}
@@ -2082,7 +2079,7 @@ parseWinFile <- function(fname, astext=FALSE)
 			return( 
 			function() { 
 				if( !is.null( widget[["name"]] ) )
-					.PBSmod[[winName]]$widgets[[ paste( widget$name, ".raised", sep="" ) ]] <<- tab
+					eval(parse(text=".PBSmod[[winName]]$widgets[[ paste( widget$name, \".raised\", sep=\"\" ) ]] <<- tab"))
 
 				#callback
 				.extractData(widget[["function"]], widget$action, winName)
@@ -2190,7 +2187,7 @@ parseWinFile <- function(fname, astext=FALSE)
 			#R is crashing here.... wtf? .stopWidget( msg, widget$.debug, winName ) #maybe its crashing when the window is closed by tkclose
 			stop( msg )
 		}
-		image <- get( widget$varname, env = .PBSmod[[ winName ]]$env )
+		image <- get( widget$varname, envir = .PBSmod[[ winName ]]$env )
 	} else {
 		image = widget$file
 	}
@@ -2291,7 +2288,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	tkWidget<-do.call("tklabel", argList)
 	if( !is.null(widget[["name"]]) && widget$name != "" ) {
 		tkconfigure( tkWidget,textvariable= .map.get(winName, widget$name )$tclvar )
-		.PBSmod[[ winName ]]$widgetPtrs[[ widget$name ]]$tclwidget <<- tkWidget
+		eval(parse(text=".PBSmod[[ winName ]]$widgetPtrs[[ widget$name ]]$tclwidget <<- tkWidget"))
 	}
 
 	return( list( widget = tkWidget, widgetList = widgetList[ -1 ] ) )
@@ -2916,7 +2913,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	}
 		
 	#save back to global memory (so getWinVal can access it)
-	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject	
+	eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject"))
 }
 
 .superobject.redraw <- function( winName, widget_name )
@@ -2950,21 +2947,21 @@ parseWinFile <- function(fname, astext=FALSE)
 	
 	if( is.matrix( userObject ) ) {
 		userObject <- as.data.frame( userObject )
-		.PBSmod[[ winName ]]$widgets[[ widget_name ]]$class <<- "matrix"
+		eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$class <<- \"matrix\""))
 	} else {
-		.PBSmod[[ winName ]]$widgets[[ widget_name ]]$class <<- ""
+		eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$class <<- \"\""))
 	}
 	if( !is.data.frame( userObject ) )
 		stop( "superobjects only support data.frames" )
 
-	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <<- 1
+	eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <<- 1"))
 	rows_to_display <- widget$rowshow #num of rows visible
 	enable_scrolling <- TRUE
 	if( rows_to_display <= 0 || rows_to_display >= nrow( userObject ) ) {
 		rows_to_display = nrow( userObject )
 		enable_scrolling <- FALSE
 	}
-	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$rows_to_display <<- rows_to_display
+	eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$rows_to_display <<- rows_to_display"))
 	ncols <- ncol( userObject )
 	nrows <- nrow( userObject )
 
@@ -2975,7 +2972,7 @@ parseWinFile <- function(fname, astext=FALSE)
 	sub_object_value <- userObject[1:rows_to_display, cols, drop = FALSE ]
 	
 	widget$name <- new_widget_name
-	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject
+	eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject"))
 	rm( userObject )
 
 	scroll_callback <- function( ... )
@@ -2997,7 +2994,7 @@ parseWinFile <- function(fname, astext=FALSE)
 			display_top <- 1
 		if( display_top + rows_to_display - 1 > nrows ) 
 			display_top <- nrows - rows_to_display + 1
-		.PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <<- display_top
+		eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <<- display_top"))
 		
 		#update row labels
 		for( i in 1:rows_to_display ) {
@@ -3130,7 +3127,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		return(.createWidget(tk, list(wid), winName))
 	}
 
-	if (!exists(widget$name, env = .PBSmod[[ winName ]]$env )) {
+	if (!exists(widget$name, envir = .PBSmod[[ winName ]]$env )) {
 		return(.dispError(paste("Error: variable \"", widget$name, "\" could not be found.", sep="")))
 	}
 	return( NULL )
@@ -3204,12 +3201,12 @@ parseWinFile <- function(fname, astext=FALSE)
 	widget_name <- widget$name
 
 	#to help us getWinVal the correct size/mode/names
-	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.dim <<- dim( userObject )
+	eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$.dim <<- dim( userObject )"))
 	modes <- c()
 	for( i in 1:ncol( userObject ) ) modes <- c( modes, mode( userObject[[ i ]] ) )
-	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.modes <<- modes
-	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.dimnames <<- dimnames( userObject )
-	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.class <<- ifelse( is.matrix( userObject ), "matrix", "data.frame" )
+	eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$.modes <<- modes"))
+	eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$.dimnames <<- dimnames( userObject )"))
+	eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$.class <<- ifelse( is.matrix( userObject ), \"matrix\", \"data.frame\" )"))
 	nrows <- nrow( userObject )
 	ncols <- ncol( userObject )
 	table_nrows <- nrows
@@ -3310,7 +3307,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		return( .createWidget.object.scrolling( tk, widgetList, winName ) )
 
 	if( is.null( userObject ) )
-		userObject <- get( widget$name, env = .PBSmod[[ winName ]]$env )
+		userObject <- get( widget$name, envir = .PBSmod[[ winName ]]$env )
 
 	#matrix
 	if (is.matrix(userObject)) {
@@ -3345,7 +3342,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		            );
 		if( widget$rowlabels == FALSE ) wid$rowlabels <- NULL
 		if( widget$collabels == FALSE ) wid$collabels <- NULL
-		.PBSmod[[winName]]$widgets[[widget$name]] <<- wid
+		eval(parse(text=".PBSmod[[winName]]$widgets[[widget$name]] <<- wid"))
 		tmp <- .createWidget(tk, list(wid), winName)
 		return( list( widget = tmp$widget, widgetList = widgetList[ -1 ] ) )
 	}
@@ -3396,7 +3393,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		            );
 		if( widget$rowlabels == FALSE ) wid$rowlabels <- NULL
 		if( widget$collabels == FALSE ) wid$collabels <- NULL
-		.PBSmod[[winName]]$widgets[[widget$name]] <<- wid
+		eval(parse(text=".PBSmod[[winName]]$widgets[[widget$name]] <<- wid"))
 		tmp <- .createWidget(tk, list(wid), winName)
 		return( list( widget = tmp$widget, widgetList = widgetList[ -1 ] ) )
 	}
@@ -3430,7 +3427,7 @@ parseWinFile <- function(fname, astext=FALSE)
 		            edit=widget$edit
 		            );
 		if( widget$collabels == FALSE ) wid$labels <- NULL
-		.PBSmod[[winName]]$widgets[[widget$name]] <<- wid
+		eval(parse(text=".PBSmod[[winName]]$widgets[[widget$name]] <<- wid"))
 		tmp <- .createWidget(tk, list(wid), winName)
 		return( list( widget = tmp$widget, widgetList = widgetList[ -1 ] ) )
 	}
@@ -3581,9 +3578,9 @@ parseWinFile <- function(fname, astext=FALSE)
 # winName: name of window being created
 .getValueForWidgetSetup <- function( varname, widget, winName )
 {
-	if( !exists( varname, env = .PBSmod[[ winName ]]$env ) )
+	if( !exists( varname, envir = .PBSmod[[ winName ]]$env ) )
 		.stopWidget( paste( "unable to find variable \"", varname, "\" in global memory - this search happend since value=NULL", sep="" ), widget$.debug, winName )
-	var <- get( varname, env = .PBSmod[[ winName ]]$env )
+	var <- get( varname, envir = .PBSmod[[ winName ]]$env )
 	if( is.factor( var ) )
 		var <- as.character( var )
 	else if( is.data.frame( var ) ) {
@@ -3654,7 +3651,7 @@ parseWinFile <- function(fname, astext=FALSE)
 
 	.map.set( winName, paste( widget$name, ".values", sep="" ), droplist_widget=drop_widget )
 	.map.set( winName, paste( widget$name, ".id", sep="" ), droplist_widget=FALSE )
-	.PBSmod[[winName]]$widgets[[ paste( widget$name, ".values", sep="" ) ]]$labels <<- values
+	eval(parse(text=".PBSmod[[winName]]$widgets[[ paste( widget$name, \".values\", sep=\"\" ) ]]$labels <<- values"))
 
 	if( widget$edit == FALSE )
 		tkconfigure( drop_widget, state="disabled" )
@@ -4106,7 +4103,9 @@ backHistory <- function(hisname="")
 		#cat("history widget: warning, current position is already at front of history list.\n")
 		return()
 	}
-	PBS.history[[hisname]][[1]]$index <<- i <- i-1
+	#PBS.history[[hisname]][[1]]$index <<- i <- i-1
+	i <- i-1
+	eval(parse(text="PBS.history[[hisname]][[1]]$index <<- i"))
 	.updateHistoryButtons( hisname )
 	setWinVal(PBS.history[[hisname]][[i+1]], winName=win) #i is always one lower
 	.updateHistory(hisname)
@@ -4137,7 +4136,9 @@ forwHistory <- function(hisname="")
 		#cat("history widget: warning, current position is already at end of history list.\n")
 		return()
 	}
-	PBS.history[[hisname]][[1]]$index <<- i <- i+1
+	#PBS.history[[hisname]][[1]]$index <<- i <- i+1
+	i <- i+1
+	eval(parse(text="PBS.history[[hisname]][[1]]$index <<- i"))
 	.updateHistoryButtons( hisname )
 
 	setWinVal(PBS.history[[hisname]][[i+1]], winName=win) #i is always one lower
@@ -4210,8 +4211,8 @@ jumpHistory <- function(hisname="", index="")
 	}
 
 
-	PBS.history[[hisname]][[1]]$index <<- i #update index
-	setWinVal(PBS.history[[hisname]][[i+1]], winName=win) #i is always one lower
+	eval(parse(text="PBS.history[[hisname]][[1]]$index <<- i")) #update index
+	setWinVal(PBS.history[[hisname]][[i+1]], winName=win)       #i is always one lower
 	.updateHistory(hisname)
 	if (!is.null(PBS.history[[hisname]][[1]]$func))
 		do.call(PBS.history[[hisname]][[1]]$func, list())
@@ -4246,25 +4247,25 @@ addHistory <- function(hisname="")
 
 	if (insertMode=="a") {
 		#insert to the right of current index
-		PBS.history[[hisname]][[index+2]] <<- getWinVal()
+		eval(parse(text="PBS.history[[hisname]][[index+2]] <<- getWinVal()"))
 		if (index<itemLen) {
 			for(i in (index+2):(itemLen+1)) {
-				PBS.history[[hisname]][[i+1]] <<- x[[i]]
+				eval(parse(text="PBS.history[[hisname]][[i+1]] <<- x[[i]]"))
 			}
 		}
 		#point index to inserted pos
-		PBS.history[[hisname]][[1]]$index <<- index+1
+		eval(parse(text="PBS.history[[hisname]][[1]]$index <<- index+1"))
 	}
 	else if (insertMode=="b") {
 		#insert to the left of current index
-		PBS.history[[hisname]][[index+1]] <<- getWinVal()
+		eval(parse(text="PBS.history[[hisname]][[index+1]] <<- getWinVal()"))
 		for(i in (index+1):(itemLen+1)) {
-			PBS.history[[hisname]][[i+1]] <<- x[[i]]
+			eval(parse(text="PBS.history[[hisname]][[i+1]] <<- x[[i]]"))
 		}
 	}
 	else if (insertMode=="o") {
 		#overwrite the current index
-		PBS.history[[hisname]][[index+1]] <<- getWinVal()
+		eval(parse(text="PBS.history[[hisname]][[index+1]] <<- getWinVal()"))
 	}
 	else {
 		stop(paste("unknown insert mode:", insertMode))
@@ -4302,10 +4303,10 @@ rmHistory <- function(hisname="", index="")
 		return()
 	}
 
-	PBS.history[[hisname]] <<- PBS.history[[hisname]][-(i+1)]
+	eval(parse(text="PBS.history[[hisname]] <<- PBS.history[[hisname]][-(i+1)]"))
 	#change index if it was the last element
 	if (i > length(PBS.history[[hisname]])-1)
-		PBS.history[[hisname]][[1]]$index <<- length(PBS.history[[hisname]])-1 #set index to size
+		eval(parse(text="PBS.history[[hisname]][[1]]$index <<- length(PBS.history[[hisname]])-1")) #set index to size
 
 	#change values to current index
 	i <- PBS.history[[hisname]][[1]]$index
@@ -4338,8 +4339,8 @@ clearHistory <- function(hisname="")
 
 	tmp <- PBS.history[[hisname]][[1]]
 	tmp$index = 0
-	PBS.history[[hisname]] <<- list(0)
-	PBS.history[[hisname]][[1]] <<- tmp
+	eval(parse(text="PBS.history[[hisname]] <<- list(0)"))
+	eval(parse(text="PBS.history[[hisname]][[1]] <<- tmp"))
 
 #	len <- length(PBS.history[[hisname]])
 #	if (len > 1) {
@@ -4389,10 +4390,10 @@ clearHistory <- function(hisname="")
 initHistory <- function(hisname, indexname=NULL, sizename=NULL, buttonnames=NULL, modename=NULL, func=NULL, overwrite=TRUE)
 {
 
-	if (!exists("PBS.history", env = .GlobalEnv))
+	if (!exists("PBS.history", envir = .GlobalEnv))
 		PBS.history <- list()
 	else
-		PBS.history <- get("PBS.history", env = .GlobalEnv)
+		PBS.history <- get("PBS.history", envir = .GlobalEnv)
 
 	if (func=="")
 		func <- NULL
@@ -4404,7 +4405,7 @@ initHistory <- function(hisname, indexname=NULL, sizename=NULL, buttonnames=NULL
 	}
 
 	if (!is.list(PBS.history))
-		assign("PBS.history", list(), env = .GlobalEnv)
+		assign("PBS.history", list(), envir = .GlobalEnv)
 
 	if (!is.list(PBS.history[[hisname]]) || overwrite) {
 		PBS.history[[hisname]] <- list(0)
@@ -4416,7 +4417,7 @@ initHistory <- function(hisname, indexname=NULL, sizename=NULL, buttonnames=NULL
 	PBS.history[[hisname]][[1]]$sizename <- sizename
 	PBS.history[[hisname]][[1]]$modename <- modename
 	PBS.history[[hisname]][[1]]$func <- func
-	assign("PBS.history", PBS.history, env = .GlobalEnv)
+	assign("PBS.history", PBS.history, envir = .GlobalEnv)
 }
 
 
@@ -4470,7 +4471,7 @@ importHistory <- function(hisname="", fname="", updateHis=TRUE)
 	insertMode <- getWinVal(PBS.history[[hisname]][[1]]$modename)[[PBS.history[[hisname]][[1]]$modename]]
 
 	a <- PBS.history[[hisname]]
-	PBS.history[[hisname]] <<- list()
+	eval(parse(text="PBS.history[[hisname]] <<- list()"))
 	index <- max(0, min(a$index, length(a)-1))
 	if (insertMode!="b" || index==0)
 		index <- index + 1
@@ -4480,16 +4481,16 @@ importHistory <- function(hisname="", fname="", updateHis=TRUE)
 		if( !length(a) && !length(newHist) )
 			break
 		if( i > index && length(newHist) ) {
-			PBS.history[[hisname]][[i]] <<- newHist[[1]]
+			eval(parse(text="PBS.history[[hisname]][[i]] <<- newHist[[1]]"))
 			newHist[[1]] <- NULL
 		} else {
-			PBS.history[[hisname]][[i]] <<- a[[1]]
+			eval(parse(text="PBS.history[[hisname]][[i]] <<- a[[1]]"))
 			a[[1]] <- NULL
 		}
 		i <- i + 1
 	}
 	
-	PBS.history[[hisname]][[1]]$index <<- 1
+	eval(parse(text="PBS.history[[hisname]][[1]]$index <<- 1"))
 
 	#update with new history settings
 	if (updateHis)
@@ -4563,7 +4564,7 @@ importHistory <- function(hisname="", fname="", updateHis=TRUE)
 			x <- paste( x, "...", sep="" )
 		return( x )
 	}
-	tmp.before <<- hist
+	eval(parse(text="tmp.before <<- hist"))
 	if( ncol( hist ) > 0 ) {
 		for( i in 1:ncol( hist ) ) {
 			if( is.character( hist[,i] ) )
@@ -4704,8 +4705,8 @@ sortHistory <- function(file="",outfile=file,hisname="")
 	if (command=="")
 		return()
 
-	if (exists(command,mode="function", env=.PBSmod[[ winName ]]$env))
-		do.call(command, list(), envir=.PBSmod[[ winName ]]$env )
+	if (exists(command,mode="function", envir = .PBSmod[[ winName ]]$env))
+		do.call(command, list(), envir = .PBSmod[[ winName ]]$env )
 	else
 		cat(paste("Warning: cannot find function '", command, "'.\n", sep=""))
 }
@@ -4728,8 +4729,8 @@ setWinAct <- function(winName, action)
 		return()
 
 	if (length(.PBSmod[[winName]]$actions) >= .maxActionSize)
-		.PBSmod[[winName]]$actions <<- .PBSmod[[winName]]$actions[1:(.maxActionSize-1)]
-	.PBSmod[[winName]]$actions <<- c(action, .PBSmod[[winName]]$actions)
+		eval(parse(text=".PBSmod[[winName]]$actions <<- .PBSmod[[winName]]$actions[1:(.maxActionSize-1)]"))
+	eval(parse(text=".PBSmod[[winName]]$actions <<- c(action, .PBSmod[[winName]]$actions)"))
 }
 
 
@@ -4832,7 +4833,7 @@ setWinVal <- function(vars, winName="")
 		if( is.logical( x[[ "droplist_widget" ]] ) ) #hack to only set values, and not .id
 			return( value )
 		tkconfigure( x[[ "droplist_widget" ]], values = value )
-		.PBSmod[[winName]]$widgets[[varname]]$labels <<- value #there's no way to specify different labels via setWinVal, so assume the same
+		eval(parse(text=".PBSmod[[winName]]$widgets[[varname]]$labels <<- value")) #there's no way to specify different labels via setWinVal, so assume the same
 		return( value )
 	}
 	
@@ -4879,7 +4880,7 @@ setWinVal <- function(vars, winName="")
 	
 	#special case for superobject
 	if( wid$type == "superobject" || wid$type == "object" ) {
-		.PBSmod[[ winName ]]$widgets[[ wid$name ]]$.data <<- value
+		eval(parse(text=".PBSmod[[ winName ]]$widgets[[ wid$name ]]$.data <<- value"))
 		.superobject.redraw( winName, wid$name )
 		return( value )
 	}
@@ -4940,7 +4941,7 @@ getWinVal <- function(v=NULL, scope="", asvector=FALSE, winName="")
 		if (scope=="L")
 			assign(key,vars[[key]],pos=parent.frame(1))
 		else if (scope=="G")
-			assign(key, vars[[key]], env = .GlobalEnv)
+			assign(key, vars[[key]], envir = .GlobalEnv)
 	}
 	return(vals)
 }
@@ -5086,15 +5087,15 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmod$.activeWin, ... 
 	myargs = list( ... )
 	if( !is.null( myargs[[ "noeditfg" ]] ) ) {
 		widget$noeditfg = myargs[[ "noeditfg" ]]
-		.PBSmod[[ winName ]]$widgets[[ name ]] <<- widget
+		eval(parse(text=".PBSmod[[ winName ]]$widgets[[ name ]] <<- widget"))
 	}
 	if( !is.null( myargs[[ "fg" ]] ) ) {
 		widget$fg = myargs[[ "fg" ]]
-		.PBSmod[[ winName ]]$widgets[[ name ]] <<- widget
+		eval(parse(text=".PBSmod[[ winName ]]$widgets[[ name ]] <<- widget"))
 	}
 	if( !is.null( myargs[[ "entryfg" ]] ) ) {
 		widget$entryfg = myargs[[ "entryfg" ]]
-		.PBSmod[[ winName ]]$widgets[[ name ]] <<- widget
+		eval(parse(text=".PBSmod[[ winName ]]$widgets[[ name ]] <<- widget"))
 	}
 
 	#get tcl ptr to tk widget

@@ -7,13 +7,13 @@
 	if( is.character( pkg_info$Packaged ) )
 		pkg_date <- strsplit( pkg_info$Packaged, " " )[[1]][1]
 	else
-		pkg_date  <- "unkown"
+		pkg_date  <- date()
 	
 	userguide_path <- system.file( "doc/PBSmodelling-UG.pdf", package = "PBSmodelling" )
 	
 	packageStartupMessage("
 -----------------------------------------------------------
-PBS Modelling ", pkg_info$Version, " -- Copyright (C) 2005-2011 Fisheries and Oceans Canada
+PBS Modelling ", pkg_info$Version, " -- Copyright (C) 2005-2012 Fisheries and Oceans Canada
 
 A complete user guide 'PBSmodelling-UG.pdf' is located at 
 ", userguide_path, "
@@ -21,7 +21,6 @@ A complete user guide 'PBSmodelling-UG.pdf' is located at
 Packaged on ", pkg_date, "
 Pacific Biological Station, Nanaimo
 -----------------------------------------------------------
-
 
 ")
 	#Load custom PBSmodelling tcl scripts
@@ -61,4 +60,20 @@ Pacific Biological Station, Nanaimo
 .onAttach <- function(libname, pkgname){
 	.initPBSoptions()
 }
+# No Visible Bindings
+# ===================
+if(getRversion() >= "2.15.1") utils::globalVariables(names=c(
+	".cls",".cwd",".dls",".dwd",
+	"blist",
+	"command","curVal",
+	"for",
+	"global",
+	"maxVal","minVal",
+	"OK",
+	"PBS.history","PBSmin","prefix",
+	"remote","runs",
+	"tmp.before",
+	"v.tab","variable",
+	"wN"),
+	package="PBSmodelling")
 

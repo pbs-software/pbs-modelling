@@ -29,10 +29,10 @@
 		sorted_index <- as.integer( sorted_data[,1] )
 		tmp <- PBS.history[[hisname]]
 		j <- 2
-		PBS.history[[hisname]] <<- PBS.history[[hisname]][1]
+		eval(parse(text="PBS.history[[hisname]] <<- PBS.history[[hisname]][1]"))
 			for (i in sorted_index) {
 			if (!is.na(i)) {
-				PBS.history[[hisname]][[j]] <<- tmp[[i + 1]]
+				eval(parse(text="PBS.history[[hisname]][[j]] <<- tmp[[i + 1]]"))
 				j <- j + 1
 			}
 		}
