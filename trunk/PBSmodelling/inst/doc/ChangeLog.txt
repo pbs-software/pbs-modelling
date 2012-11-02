@@ -7,7 +7,9 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
-2.64  2012-08-07  Authors
+2.64  2012-11-02  Authors
+  - Added dot functions to namespace for export using explicit action patterns. (RH 11/02)
+  - Changed Jon's email address to schnutej-dfo@shaw.ca (RH 11/02)
   - Added Steve Martell's function 'plotSidebars'. (RH 8/7)
   - Disabled NOTES about 'no visible binding for '<<-'' by converting the assignment lines to evaluated text. (RH 7/17)
   - Implemented Brian Ripley's suggestion to remove NOTES about 'no visible binding for global variable xxx':
