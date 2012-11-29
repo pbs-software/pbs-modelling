@@ -1,4 +1,4 @@
-#TestFuns-------------------------------2012-03-27
+#TestFuns-------------------------------2012-11-28
 # GUI menu to test various PBSmodelling functions.
 #-------------------------------------------RH/ACB
 TestFuns <- function(funs=ls(pos=grep("package:PBSmodelling",search()))){
@@ -11,8 +11,8 @@ TestFuns <- function(funs=ls(pos=grep("package:PBSmodelling",search()))){
 	#is1 <- ifelse(length(funs)==1,TRUE,FALSE);  # --- NOT USED ?
 	resetGraph(); getWinVal(scope="L"); print(funs)
 	testWins <- getPBSoptions("testWins")
-	if (any(funs=="testWidgets")) closeWin(setdiff(.su(unlist(testWins)),"window"))
-	else closeWin(setdiff(.su(unlist(testWins[setdiff(names(testWins),"createVector")])),"window"))
+	if (any(funs=="testWidgets")) closeWin(setdiff(sort(unique(unlist(testWins))),"window"))
+	else closeWin(setdiff(sort(unique(unlist(testWins[setdiff(names(testWins),"createVector")]))),"window"))
 	#if (!any(funs=="createVector")) closeWin("vector");
 	#if (!any(funs=="focusWin")) closeWin(c("master","slave","drudge","employee"));
 	#if (!any(funs=="chooseWinVal")) closeWin(c("choisir"));
@@ -283,7 +283,7 @@ grab <- function() {
 # Close the slave/drudge/employee windows controlled by master
 closeSDE <- function(){ closeWin(getPBSoptions("testWins")[["focusWin"]][-1]) }
 # Close all the windows associated with TestFuns
-closeALL <- function(){ closeWin(.su(unlist(getPBSoptions("testWins")))) }
+closeALL <- function(){ closeWin(sort(unique(unlist(getPBSoptions("testWins"))))) }
 
 #require(PBSmodelling)
 createWin("TestFunsWin.txt")
