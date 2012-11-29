@@ -77,6 +77,6 @@ if(getRversion() >= "2.15.1") utils::globalVariables(names=c(
 	"remote","runs",
 	"tmp.before",
 	"v.tab","variable",
-	"wN"),
-	package="PBSmodelling")
+	"wN"
+	), package="PBSmodelling" )
 

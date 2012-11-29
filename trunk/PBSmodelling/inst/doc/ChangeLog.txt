@@ -7,7 +7,11 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
-2.64  2012-11-02  Authors
+2.64  2012-11-29
+  - Updated the UG. (RH 11/29)
+  - Changed the default environment for 'createWin' from 'parent.frame()' to 'sys.frame(sys.nframe())'. RH (11/29)
+	Enclosing super assignment operator '<<-' calls in eval(parse(text="")) expressions (see RH 7/17/12) was disabling the creation of GUIs launched from other GUIs (Athena Ogden).
+	This appears to be related to a loss of synchronization of environments between PBSmodelling and tcltk.
   - Added dot functions to namespace for export using explicit action patterns. (RH 11/02)
   - Changed Jon's email address to schnutej-dfo@shaw.ca (RH 11/02)
   - Added Steve Martell's function 'plotSidebars'. (RH 8/7)

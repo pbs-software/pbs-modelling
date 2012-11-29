@@ -686,7 +686,7 @@ focusWin <- function(winName, winVal=TRUE)
 # createWin:
 #   creates a GUI window from a given file, or GUI description list
 # -----------------------------------------------------------
-createWin <- function( fname, astext=FALSE, env=parent.frame() ) #globalenv() )
+createWin <- function( fname, astext=FALSE, env=sys.frame(sys.nframe()) )  #parent.frame() ) #globalenv() )
 {
 	#must be called here for examples in rd to pass check
 	.initPBSoptions()

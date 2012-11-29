@@ -26,16 +26,16 @@ if not defined PBSERROR (
 	for %%a in (%ext%) do (
 		if exist "%1.%%a" (
 			rm -f "%1.%%a" ) )
-	rm -f -r .Rd2dvi* rem remove all the temporary R directories
+	rm -f -r .Rd2pdf* rem remove all the temporary R directories
 
-	%R_PATH%\R CMD Rd2dvi --no-clean --no-preview  %1
-	dir /b .Rd2dvi* > dirRd.txt
+	%R_PATH%\R CMD Rd2pdf --no-clean --no-preview  %1
+	dir /b .Rd2pdf* > dirRd.txt
 	set dviP=
 	for /f %%i in (dirRd.txt) do ( rem should only see one temporary directory
 		set dviP=
 		set dviP=!dviP!%%i
 		echo !dviP! 
-		sed 's/makeindex{}/makeindex{}\n\\\topmargin 0.5in \\\oddsidemargin 0in \\\evensidemargin 0in\n\\\textheight 9in \\\textwidth 6.5in/g' !dviP!\Rd2.tex > Rd2a.tex
+		sed 's/makeindex{}/makeindex{}\n\\\topmargin -0.25in \\\oddsidemargin 0in \\\evensidemargin 0in\n\\\textheight 9in \\\textwidth 6.5in/g' !dviP!\Rd2.tex > Rd2a.tex
 		sed 's/begin{document}/begin{document}\n\\\setcounter{page}{%page%}/g' Rd2a.tex > %1.tex
 	)
 	latex -interaction=nonstopmode %1.tex
