@@ -16,11 +16,14 @@
   Geometric mean of the modified vector \code{x + offset}
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \note{\code{NA} values are automatically removed from \code{x}}
+
 \examples{
-calcGM(c(0,1,100))
-calcGM(c(0,1,100),offset=0.01,exzero=FALSE)
+local(envir=.PBSmodEnv,expr={
+  calcGM(c(0,1,100))
+  calcGM(c(0,1,100),offset=0.01,exzero=FALSE)
+})
 }
 \keyword{arith}

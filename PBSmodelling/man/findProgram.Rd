@@ -3,7 +3,7 @@
 \title{Locates a program in the PATH environment variable }
 \description{
   Returns the complete filename and path of a program in the PATH environment variable.
-  This is a wrapper for \code{Sys.which}, and may be depricated in the future.
+  This is a wrapper for \code{Sys.which}, and may be deprecated in the future.
 }
 \usage{
 findProgram( name, includename=FALSE )
@@ -15,15 +15,18 @@ findProgram( name, includename=FALSE )
 \value{
   A string containing the location of the program. NULL is returned if the program is not located.
 }
-\examples{
-findProgram( "gcc" )
-findProgram( "notepad" )
-findProgram( "R", TRUE )
-}
 \author{
-  Alex Couture-Beil
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
+}
+\examples{
+local(envir=.PBSmodEnv,expr={
+  print(list(
+  gcc =     findProgram( "gcc" ),
+  notepad = findProgram( "notepad" ),
+  R       = findProgram( "R", includename=TRUE ) ))
+})
 }
 \seealso{
-  \code{\link{Sys.which}}
+  \code{\link[base]{Sys.which}}
 }
 \keyword{file}

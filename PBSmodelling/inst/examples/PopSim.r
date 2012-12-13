@@ -19,9 +19,9 @@
 #                do error checking
 calcAssess <- function(as50, as95, am50, am95, winf, linf, b, t0, k, h1, h2, 
     sigma1, sigma2, tau1, tau2, A, T, M, R, q, gamma1, unitType, plotType, 
-    percent, maxB, powr, chk=FALSE)
+    percent, maxB, powr, chk=FALSE, act=NULL)
 {     
-	act <- getWinAct()[1];
+	if(is.null(act)) act <- getWinAct()[1];
   if(!is.null(act) && act == "interact") {
     print("Select a point on the R Graphics window to display its x and y coordinates")
     pt <- locator(1)
@@ -33,25 +33,26 @@ calcAssess <- function(as50, as95, am50, am95, winf, linf, b, t0, k, h1, h2,
 	if((chk) && (!validParam()))  return(invisible())
 
 # Calculate random numbers if there are none, or if the user wants to recalculate them
-	if(!is.null(act) && (act != "disp") || (!exists(".PBSpopsim",where=1))) {
-		.PBSpopsim <<- list(colPre="green",colHigh="red",colLow="deepskyblue");
+	if(!is.null(act) && (act != "disp") || (!exists(".PBSpopsim",where=.PBSmodEnv))) {
+		.PBSpopsim <- list(colPre="green",colHigh="red",colLow="deepskyblue")
 		nAT <- length((2-A):T); RtOffset <- A - 1;
 		delta <- .getRnorm(nA=A, nY=nAT);
 		epsilon <- .getRnorm(nA=A, nY=T)
 		epsilon0 <- .getRnorm(nA=1, nY=nAT);
-		.PBSpopsim <<- c(.PBSpopsim,list(RtOffset=RtOffset,
+		.PBSpopsim <- c(.PBSpopsim,list(RtOffset=RtOffset,
 			delta=delta,epsilon=epsilon,epsilon0=epsilon0));
 
 		betaa <- getSelectivity(as50, as95, A)                 # selectivity
 		ma    <- getMaturity(am50, am95, A)                    # maturity
 		wa    <- getWeight(winf, linf, b, k, t0, A)            # weight
 		Ft    <- getFishing(M, T, h1, h2)                      # fishing rate
-		Rt    <- getRecruitmentN(R, gamma1, sigma1, A, T)      # recruitment numbers
-		RBt   <- getRecruitmentB(R, gamma1, sigma1, A, T, wa)  # recruitment biomass
+		#tput(.PBSpopsim)
+		Rt    <- getRecruitmentN(R, gamma1, sigma1, delta, A, T)      # recruitment numbers
+		RBt   <- getRecruitmentB(R, gamma1, sigma1, delta, A, T, wa)  # recruitment biomass
 		DetN  <- N <- matrix(nrow=A, ncol=T)                   # initial number of fish
 
 		DetN[,1] <- getDetInitial(M, A, Rt);  Nbar <- DetN;
-		N[,1]    <- getStoInitial(M, sigma2, A, Rt, Nbar)
+		N[,1]    <- getStoInitial(M, sigma2, delta, A, Rt, Nbar)
 
 # initialize so that I can use the indexing in the loop
 		Pt <- DetPt <- PBt <- DetPBt <- Ct <- DetCt <- CBt <- DetCBt <- Ibar <- StoI <- IBbar <- StoBI <- 0
@@ -64,7 +65,7 @@ calcAssess <- function(as50, as95, am50, am95, winf, linf, b, t0, k, h1, h2,
 			DetPBt[yr]   <- getSelectedB(A, betaa, DetN, yr, wa)
 			uat[,yr]     <- getUN(A, betaa, N, yr, Pt)           # actual proportion numbers
 			if (doDir) 
-				.PBSpopsim$epsilon[,yr] <<- .getRdir(pvec=uat[,yr],nY=1, N=dirN) # replace random normals with Dirichlets
+				.PBSpopsim$epsilon[,yr] <- .getRdir(pvec=uat[,yr],nY=1, N=dirN) # replace random normals with Dirichlets
 			Detuat[,yr]  <- getUN(A, betaa, DetN, yr, DetPt)
 			uBat[,yr]    <- getUB(A, betaa, N, yr, PBt, wa)      # actual proportion biomass
 			DetuBat[,yr] <- getUB(A, betaa, DetN, yr, DetPt, wa)
@@ -73,17 +74,17 @@ calcAssess <- function(as50, as95, am50, am95, winf, linf, b, t0, k, h1, h2,
 			CBt[yr]      <- getCatch(Ft, PBt, yr)                # catch biomass
 			DetCBt[yr]   <- getCatch(Ft, DetPBt, yr)
 			Ibar[yr]     <- getDetIndex(q, yr, Pt, Ct)           # index numbers
-			StoI[yr]     <- getStoIndex(tau1, yr, Ibar, A)
+			StoI[yr]     <- getStoIndex(tau1, yr, Ibar, A, epsilon0)
 			IBbar[yr]    <- getDetIndex(q, yr, PBt, CBt)         # index biomass
-			StoBI[yr]    <- getStoIndex(tau1, yr, IBbar, A)
-			Pat[1:A,yr]  <- getProportion(A, tau2, uat, yr, doDir)      # observed proportion numbers
+			StoBI[yr]    <- getStoIndex(tau1, yr, IBbar, A, epsilon0)
+			Pat[1:A,yr]  <- getProportion(A, tau2, epsilon, uat, yr, doDir)  # observed proportion numbers
 			PBat[1:A,yr] <- (Pat[1:A,yr]*wa[1:A]) / sum(Pat[1:A,yr]*wa[1:A]) # obs proportion biomass
-			#PBat[,yr]    <- getProportion(A, tau2, uBat, yr, doDir)     # observed proportion biomass
+			#PBat[,yr]    <- getProportion(A, tau2, epsilon, uBat, yr, doDir) # observed proportion biomass
 
 			if(yr < T) {                                  # number of fish
 				DetN[,yr+1] <- getDetPredict(M, A, Rt, DetN, yr+1, Detuat, DetCt)
 				Nbar[,yr+1] <- getDetPredict(M, A, Rt, N, yr+1, uat, Ct)      
-				N[,yr+1] <- getStoPredict(M, A, Rt, N, Nbar, yr+1, sigma2)
+				N[,yr+1]    <- getStoPredict(M, A, Rt, N, Nbar, yr+1, sigma2, delta)
 			}
 		}
 		DetNB <- getBioPredict(DetN, wa, A)      # biomass of fish
@@ -93,14 +94,15 @@ calcAssess <- function(as50, as95, am50, am95, winf, linf, b, t0, k, h1, h2,
 		Tt    <- getTotal(N)                     # total numbers
 		TBt   <- getTotal(NB)                    # total biomass
 
-#	if (doDir) .PBSpopsim$epsilon <<- epsilon
-	.PBSpopsim <<- c(.PBSpopsim,list(betaa=betaa, ma=ma, wa=wa, Ft=Ft, Rt=Rt, RBt=RBt, 
+	.PBSpopsim <- c(.PBSpopsim,list(betaa=betaa, ma=ma, wa=wa, Ft=Ft, Rt=Rt, RBt=RBt, 
          DetN=DetN, Nbar=Nbar, N=N, Pt=Pt, DetPt=DetPt, PBt=PBt, 
          DetPBt=DetPBt, Ct=Ct, DetCt=DetCt, CBt=CBt, DetCBt=DetCBt, 
          Ibar=Ibar, StoI=StoI, IBbar=IBbar, StoBI=StoBI, uat=uat, 
          Detuat=Detuat, uBat=uBat, DetuBat=DetuBat, Pat=Pat, PBat=PBat, 
          DetNB=DetNB, NB=NB, St=St, SBt=SBt, Tt=Tt, TBt=TBt));
-	}
+   tput(.PBSpopsim)
+	} else tget(.PBSpopsim)
+#browser()
 	unpackList(.PBSpopsim,scope="L")
 	if(!is.null(act) && act == "save") {
 	# save data to an Excel file
@@ -122,7 +124,7 @@ calcAssess <- function(as50, as95, am50, am95, winf, linf, b, t0, k, h1, h2,
 # Returns:    NULL
 saveExcel <- function(betaa, ma, wa, fish, recruit, dbubble, sbubble, sel, uat, catch, index, pbubble, spawner, total, A, T)
 {
-	unpackList(.PBSpopsim,scope="L")
+	tget(.PBSpopsim); unpackList(.PBSpopsim,scope="L")
 	fname <- promptSaveFile(filetype=list(c(".xls", "Microsoft Excel Spreadsheet")))
 	# no name provided, or they pushed cancel
 	if(fname == "") { return(invisible()) }
@@ -194,7 +196,7 @@ saveExcel <- function(betaa, ma, wa, fish, recruit, dbubble, sbubble, sel, uat, 
 #plotResults <- function(betaa, ma, wa, fish, recruit, dbubble, sbubble, sel, uat, 
 #	catch, index, pbubble, spawner, total, A, T, unitType, plotType, powr, maxB, percent)
 plotResults <- function() {
-	getWinVal(scope="L"); unpackList(.PBSpopsim,scope="L");
+	getWinVal(scope="L"); tget(.PBSpopsim); unpackList(.PBSpopsim,scope="L");
 	RtOffset <- RtOffset-1; # =A-2
 	if(unitType == "biomass") {
 		fish<-Ft; recruit<-RBt; dbubble<-DetNB; sbubble<-NB; sel<-PBt; uat<-uBat;
@@ -393,16 +395,17 @@ plotResults <- function() {
   #               it was before
   # Parameters: None
   # Returns:    Nothing
-	.workingDirQuit <<- function() {
+	.workingDirQuit <- function() {
 		closeWin(c("window","runE"))
-		setwd(.cwd)
-		remove(list = setdiff(ls(pos = 1), .cls), pos = 1)
+		setwd(tget(.cwd))
+		remove(list = setdiff(ls(pos = .PBSmodEnv), tget(.cls)), pos = .PBSmodEnv)
 		return()
 	}
+	tput(.workingDirQuit)
 	
 	# save the current working directory 
-	.cls <<- ls(pos = 1, all = TRUE)
-	.cwd <<- getwd()
+	.cls <- ls(pos = .PBSmodEnv, all.names = TRUE); tput(.cls)
+	.cwd <- getwd(); tput(.cwd)
 	
 	# the files you wish to copy to the new working directory
 	pckg <- "PBSassess"
@@ -489,8 +492,8 @@ getWeight <- function(winf, linf, b, k, t0, A) {
 # Notes:      The range of t is from 2-A <= t <= T, but the indicies are from
 #               1 <= t-(A-1) <= T-(A-1). Therefore, the written t is the index 
 #               t+(A-1), call this A-1 the RtOffset
-getRecruitmentN <- function(R, gamma1, sigma1, A, T) {
-	rVec <- getRecruitmentB(R, gamma1, sigma1, A, T, 1)
+getRecruitmentN <- function(R, gamma1, sigma1, delta, A, T) {
+	rVec <- getRecruitmentB(R, gamma1, sigma1, delta, A, T, 1)
 	return(rVec) };
 
 #----------------------------------------------------------------
@@ -510,8 +513,9 @@ getRecruitmentN <- function(R, gamma1, sigma1, A, T) {
 #             The range of t is from 2-A <= t <= T, but the indicies are from
 #               1 <= t-(A-1) <= T-(A-1). Therefore, the written t is the index 
 #               t+(A-1), call this A-1 the RtOffset
-getRecruitmentB <- function(R, gamma1, sigma1, A, T, wa) {
-	unpackList(.PBSpopsim,scope="L"); 
+getRecruitmentB <- function(R, gamma1, sigma1, delta, A, T, wa) {
+	#tget(.PBSpopsim); unpackList(.PBSpopsim,scope="L");
+	RtOffset = A-1
 	rVec <- R * exp((sigma1 / sqrt(1 - (gamma1 ^ 2))) * delta[1,2-A+RtOffset])         # Formula (9)
 	for(i in 2:(T+RtOffset)) {
 		rVec[[i]] <- R ^ (1 - gamma1) * rVec[[i-1]] ^ gamma1 * exp(sigma1 * delta[1,i]) # Formula (10)
@@ -531,7 +535,8 @@ getRecruitmentB <- function(R, gamma1, sigma1, A, T, wa) {
 #               of fish
 # Note:       Formulae (12) and (13) from PBSassessDoc2.pdf
 getDetInitial <- function(M, A, Rt) {
-	unpackList(.PBSpopsim,scope="L"); 
+	#tget(.PBSpopsim); unpackList(.PBSpopsim,scope="L"); 
+	RtOffset = A-1
 	aRange <- 1:A
 	NVec <- Rt[2 - aRange + RtOffset] * exp(-M * (aRange - 1))  # Formula (12)
 	NVec[[A]] <- NVec[[A]] / (1 - exp(-M))                      # Formula (13)
@@ -551,8 +556,9 @@ getDetInitial <- function(M, A, Rt) {
 # Returns:    A numeric vector of length A conatining the corresponding number
 #               of fish
 # Note:       Formulae (14) and (15) from PBSassessDoc2.pdf
-getStoInitial <- function(M, sigma2, A, Rt, Nbar) {
-	unpackList(.PBSpopsim,scope="L"); 
+getStoInitial <- function(M, sigma2, delta, A, Rt, Nbar) {
+	#tget(.PBSpopsim); unpackList(.PBSpopsim,scope="L"); 
+	RtOffset = A-1
 	aRange <- 2:A;
 	NVec <- Rt[1 + RtOffset]               # Formula (14)
 	for(i in aRange) {                     # Formula (15)
@@ -697,8 +703,9 @@ getDetIndex <- function(q, yr, Pt, Ct) {
 # Returns:    A numeric for the stochastic index for the given year in either
 #               numbers or biomass
 # Note:       Formula (23) and (25) from PBSassessDoc2.pdf
-getStoIndex <- function(tau1, yr, Ibar, A) {
-	unpackList(.PBSpopsim,scope="L"); 
+getStoIndex <- function(tau1, yr, Ibar, A, epsilon0) {
+	#tget(.PBSpopsim); unpackList(.PBSpopsim,scope="L"); 
+	RtOffset = A - 1
 	It <- Ibar[yr] * exp(tau1 * epsilon0[yr + RtOffset])   # Formula (23) and (25)
 	return(It) }
 
@@ -720,7 +727,8 @@ getStoIndex <- function(tau1, yr, Ibar, A) {
 #               of fish for the given year
 # Note:       Formulae (D.7), (D.8), and (D.9) from PBSassessDoc1.pdf
 getDetPredict <- function(M, A, Rt, N, yr, uat, Ct) {
-	unpackList(.PBSpopsim,scope="L"); 
+	#tget(.PBSpopsim); unpackList(.PBSpopsim,scope="L"); 
+	RtOffset = A - 1
 	aRange <- 2:(A-1);
 	nVec <- Rt[yr + RtOffset]   # Formula (D.7)
 	nVec[aRange] <- exp(-M) * (N[aRange-1, yr-1] - uat[aRange-1, yr-1] * Ct[yr-1])  # Formula (D.8)
@@ -743,8 +751,9 @@ getDetPredict <- function(M, A, Rt, N, yr, uat, Ct) {
 # Returns:    A numeric vector of length A containing the stochastic number
 #               of fish for the given year
 # Note:       Formulae (32) and (33) from PBSassessDoc2.pdf
-getStoPredict <- function(M, A, Rt, N, Nbar, yr, sigma2) {
-	unpackList(.PBSpopsim,scope="L"); 
+getStoPredict <- function(M, A, Rt, N, Nbar, yr, sigma2, delta) {
+	#tget(.PBSpopsim); unpackList(.PBSpopsim,scope="L"); 
+	RtOffset = A - 1
 	aRange <- 2:A;
 	N[1, yr] <- Rt[yr + RtOffset]   # Formula (32)
 	# Formula (33)
@@ -783,8 +792,8 @@ getBioPredict <- function(N, wa, A) {
 #               stochastic observed proportion of fish in the catch in the given
 #               year in numbers or biomass
 # Note:       Formulae (26)-(29)
-getProportion <- function(A, tau2, uat, yr, doDir) {
-	unpackList(.PBSpopsim,scope="L"); 
+getProportion <- function(A, tau2, epsilon, uat, yr, doDir) {
+	#tget(.PBSpopsim); unpackList(.PBSpopsim,scope="L"); 
 	aRange <- aRange2 <- 1:A;
 	# Formula (26) and (28)
 	if (doDir)
@@ -993,9 +1002,7 @@ validParam <- function()
   
   require(PBSmodelling)
   require(RODBC)
-  resetGraph(); if (exists(".PBSpopsim")) rm(.PBSpopsim)
-
+  resetGraph(); if (exists(".PBSpopsim",where=.PBSmodEnv)) rm(.PBSpopsim,pos=.PBSmodEnv)
   createWin("PopSimWin.txt"); calcAssess();
-  
 #  invisible()
 #}

@@ -78,8 +78,8 @@ grid 1 4 sticky=W byrow=T
 	vector length=2 names="chn1 chn2" labels="First Last" values="1 2" vertical=F width=4 padx=0
 
 grid 1 5
-	button text=Trace func=modTrace
+	button text=Trace   func=modTrace
 	button text=Density func=modDens
-	button text=ACF func=modACF
-	button text=Pairs func=modPairs
+	button text=ACF     func=modACF
+	button text=Pairs   func=modPairs
 	button text=Histogram func=modHist

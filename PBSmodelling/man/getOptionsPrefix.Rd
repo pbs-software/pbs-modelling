@@ -18,15 +18,22 @@ setOptionsPrefix(option.object, prefix)
 \value{
   \code{getOptionsPrefix}: a prefix string used to reference GUI variables
 }
+\author{
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
+}
 \examples{
-.mypkg <<- new( "PBSoptions", filename="my_pkg.txt", 
-   initial.options=list(pi=3.14), gui.prefix="opt" )
+local(envir=.PBSmodEnv,expr={
+  # For the example, the options object is saved to the temporary environment;
+  # however, a user would normally create the object in his/her workspace.
+  .mypkg <- new( "PBSoptions", filename="my_pkg.txt", 
+    initial.options=list(pi=3.14), gui.prefix="opt" )
 
-#prefix the option "pi" with "opt" to get "optpi"
-createWin( "entry name=optpi", astext = TRUE )
+  #prefix the option "pi" with "opt" to get "optpi"
+  createWin( "entry name=optpi", astext = TRUE )
 
-#the GUI variable "optpi" will be loaded with the option "pi"
-loadOptionsGUI( .mypkg )
+  #the GUI variable "optpi" will be loaded with the option "pi"
+  loadOptionsGUI( .mypkg )
+})
 }
 \seealso{
   See \code{\link[PBSmodelling]{PBSoptions-class}} for more details and 

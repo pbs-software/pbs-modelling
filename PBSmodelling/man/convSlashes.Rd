@@ -20,6 +20,6 @@ convSlashes(expr, os=.Platform$OS.type, addQuotes=FALSE)
   specified operating system.
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \keyword{ character }

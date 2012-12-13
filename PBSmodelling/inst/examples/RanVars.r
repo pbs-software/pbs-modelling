@@ -13,9 +13,9 @@ simData <- function() {
   setWinVal(lapply(Gpar,round,4));
 
   # generate samples
-  RVx <<- rnorm(ns,Tmn,Tsd);
-  RVy <<- rlnorm(ns,Lmu,Lsig);
-  RVz <<- rgamma(ns,shape=Gshp,scale=Gscl);
+  RVx <- rnorm(ns,Tmn,Tsd); tput(RVx)
+  RVy <- rlnorm(ns,Lmu,Lsig); tput(RVy)
+  RVz <- rgamma(ns,shape=Gshp,scale=Gscl); tput(RVz)
   
   # calculate estimates
   SNpar <- list(SNmn=mean(RVx),SNsd=sd(RVx));
@@ -71,9 +71,9 @@ plCum <- function() {
          text.width = strwidth("1,000,000"), lwd=2, lty = 1, title="Theoretical",
          xjust = 1, yjust = 1, col = c("red","forestgreen","blue"))
   
-  x1 <- sort(RVx);
-  x2 <- sort(RVy);
-  x3 <- sort(RVz);
+  tget(RVx); x1 <- sort(RVx);
+  tget(RVy); x2 <- sort(RVy);
+  tget(RVz); x3 <- sort(RVz);
   qq <- (1:ns)/ns;
   xrng <- range(c(x1,x2,x3));
   plot(x1,qq,xlim=xrng,ylim=c(0,1),xlab="x obs",ylab="Q",
@@ -97,6 +97,7 @@ panel.hist <- function(x, ...) {
    box() }
 
 plPair <- function() {
+	tget(RVx); tget(RVy); tget(RVz); 
   pairs(list(Normal=RVx,Lognormal=RVy,Gamma=RVz),
     pch=16,cex=0.5,col="forestgreen",gap=0,
     diag.panel=panel.hist); }

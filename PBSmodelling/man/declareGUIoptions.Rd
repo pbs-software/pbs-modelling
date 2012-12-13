@@ -28,6 +28,8 @@ declareGUIoptions(newOptions)
 }
 \examples{
 \dontrun{
-declareGUIOptions("editor")
+local(envir=.PBSmodEnv,expr={
+  declareGUIoptions("editor")
+})
 }
 }

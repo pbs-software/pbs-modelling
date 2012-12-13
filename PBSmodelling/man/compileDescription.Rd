@@ -20,7 +20,7 @@
 	which is then converted to R code, and saved to \code{outFile}.
 }
 \author{
-  Alex Couture-Beil, Malaspina University-College, Nanaimo BC
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \seealso{
   \code{\link{parseWinFile}}, \code{\link{createWin}}

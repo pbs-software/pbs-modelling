@@ -1,6 +1,5 @@
 .sortWidget <- function( d, hisname )
 {
-
 	#given a tcl_variable that represents a matrix, fetch it and convert into an R matrix
 	.sortWidgetGetVal <- function( tcl_var )
 	{
@@ -27,15 +26,19 @@
 	{
 		sorted_data <- .sortWidgetGetVal( r )
 		sorted_index <- as.integer( sorted_data[,1] )
+		tget(PBS.history)
 		tmp <- PBS.history[[hisname]]
 		j <- 2
-		eval(parse(text="PBS.history[[hisname]] <<- PBS.history[[hisname]][1]"))
+		#eval(parse(text=".PBSmodEnv$PBS.history[[hisname]] <<- .PBSmodEnv$PBS.history[[hisname]][1]"))
+		PBS.history[[hisname]] <- PBS.history[[hisname]][1]
 			for (i in sorted_index) {
 			if (!is.na(i)) {
-				eval(parse(text="PBS.history[[hisname]][[j]] <<- tmp[[i + 1]]"))
+				#eval(parse(text=".PBSmodEnv$PBS.history[[hisname]][[j]] <<- tmp[[i + 1]]"))
+				PBS.history[[hisname]][[j]] <- tmp[[i + 1]]
 				j <- j + 1
 			}
 		}
+		tput(PBS.history)
 		tkdestroy( tt )
 		jumpHistory( hisname, 1 )
 	}

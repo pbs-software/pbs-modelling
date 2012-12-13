@@ -29,24 +29,24 @@ Ufun <- function(P) { # User's objective function
 	pa <- ccaMod(P=c(Z,alpha,betak,tau,rho1,rho2,rho3,rho4,rho5));
 	if (Pcur==1) {
 		out <- -nspec * sum(pa.obs * log(pa));
-		assign("pi1",pa,pos=1); };
+		assign("pi1",pa,pos=.PBSmodEnv); };
 	if (any(Pcur==c(2,3))) {
 		z <- as.numeric(cut(a,acut));
 		pi <- sapply(split(pa,z),sum);
 		if (Pcur==2) {
 			g <- length(pi.obs);
 			out <- sum( lgamma(n*pi) - n*pi*log(pi.obs) ) - lgamma(n);
-			assign("pi2",pi,pos=1); };
+			assign("pi2",pi,pos=.PBSmodEnv); };
 		if (Pcur==3) {
 			g <- length(pi.obs); ytil <- calcGM(pi.obs); ptil <- calcGM(pi);
 			out <- (g-1) * log(sigma) + (1/(2*sigma^2)) * sum((log(pi.obs/ytil)-log(pi/ptil))^2);
-			assign("pi3",pi,pos=1); }; };
+			assign("pi3",pi,pos=.PBSmodEnv); }; };
 	return(out); };
 
 Uget <- function() {# Get user's data
 	getWinVal(scope="L")
-	source(paste(fnam,"r",sep="."))
-	Afile <- get(fnam);
+	source(paste(fnam,"r",sep="."),local=.PBSmodEnv)
+	Afile <- get(fnam,pos=.PBSmodEnv);
 
 	len  <- 5
 	flds <- dimnames(Afile)[[2]]; nflds <- length(flds); fldc <- paste(flds,",",sep="")
@@ -57,7 +57,8 @@ Uget <- function() {# Get user's data
 	msg  <- paste(msg,temp,sep="\n")
 
 	if (!any(flds==year)) {frame(); addLabel(.5,.5,"YEAR NOT AVAILABLE",cex=2,font=8,col="red"); stop("No such year");}
-	afile <<- data.frame(age=as.numeric(dimnames(Afile)[[1]]),pa=Afile[,as.character(year)]);
+	afile <- data.frame(age=as.numeric(dimnames(Afile)[[1]]),pa=Afile[,as.character(year)])
+	tput(afile)
 
 	ii <- dimnames(afile)[[2]]
 	x  <- afile[,1]; y  <- afile[,2]
@@ -77,7 +78,7 @@ Uget <- function() {# Get user's data
 	mtext("Age",side=1,line=1.75,cex=1.5)
 	mtext("Frequency",side=2,line=1.75,cex=1.5)
 
-	remove(list=ls(1)[is.element(ls(1),c("FP",paste("Fout",1:3,sep="")))],pos=1);
+	remove(list=ls(1)[is.element(ls(1),c("FP",paste("Fout",1:3,sep="")))],pos=.PBSmodEnv);
 	setWinVal(list(allflds=msg,phi=phi)); };
 
 Uset <- function() { #Set user's settings
@@ -92,8 +93,8 @@ Uset <- function() { #Set user's settings
 	FP   <- c(FP,list(b5=b5,bh=bh,pnam=pnam))
 	unpackList(FP,scope="L")
 
-	if (!exists("afile",where=1)) Uget();
-	Ufile <- get("afile",pos=1)
+	if (!exists("afile",where=.PBSmodEnv)) Uget();
+	Ufile <- get("afile",pos=.PBSmodEnv)
 	Ufile <- Ufile[Ufile[,"age"]>=k & !is.na(Ufile[,"age"]) & !is.na(Ufile[,"pa"]),]
 	pa    <- rev(Ufile[,"pa"]); a <- rev(Ufile[,"age"]); zz <- cumsum(pa) > 0;
 	pa    <- rev(pa[zz]); a <- rev(a[zz]); names(pa) <- a;
@@ -138,26 +139,26 @@ Uset <- function() { #Set user's settings
 	if (any(substring(pmon,1,3)=="rho")) {
 		pmon <- pmon[!is.element(substring(pmon,1,3),"rho")]
 		pmon <- c(pmon,"rho"); };
-	FP  <<- c(FP,list(pmon=pmon))
+	FP  <- c(FP,list(pmon=pmon)); tput(FP)
 
-   assign(paste("FP",fnam,sep="."),FP,pos=1)
+   assign(paste("FP",fnam,sep="."),FP,pos=.PBSmodEnv)
    setWinVal(list(phi=phi,pset=pset)) #,active=active))
-   remove(list=ls(1)[is.element(ls(1),paste("Fout",1:3,sep=""))],pos=1); };
+   remove(list=ls(1)[is.element(ls(1),paste("Fout",1:3,sep=""))],pos=.PBSmodEnv); };
 
 Ueval <- function() { # Evaluate user's model
-	if (!exists("FP",where=1)) Uset();
-	getWinVal(scope="L"); unpackList(FP,scope="L");
+	if (!exists("FP",where=.PBSmodEnv)) Uset()
+	getWinVal(scope="L"); tget(FP); unpackList(FP,scope="L");
 	suff <- paste(fnam,year,sep="."); mods <- (1:3)[modT];
 	for (i in mods) {
-		Pcur <<- i; parvec <- theta; parvec$active <- switch(i,idxM,idxD,idxL);
+		Pcur <- i; tput(Pcur); parvec <- theta; parvec$active <- switch(i,idxM,idxD,idxL);
 		Fout <- calcMin(parvec,Ufun,method="nlm",steptol=1e-4,repN=25); print(Fout);
-		assign(paste("Fout",i,sep=""),Fout,pos=1);
-		assign(paste(paste("Fout",i,sep=""),suff,sep="."),Fout,pos=1); }; };
+		assign(paste("Fout",i,sep=""),Fout,pos=.PBSmodEnv);
+		assign(paste(paste("Fout",i,sep=""),suff,sep="."),Fout,pos=.PBSmodEnv); }; };
 
 Uplot <- function() { # User's plot of NLM results
-	if (!exists("FP",where=1)) { Uset(); Ueval(); };
-	getWinVal(scope="L"); unpackList(FP,scope="L"); resetGraph();
-	if (any(sapply(paste("Fout",(1:3)[getWinVal()$modT],sep=""),exists,where=1)==F) ) {Uset(); Ueval();}
+	if (!exists("FP",where=.PBSmodEnv)) { Uset(); Ueval(); };
+	getWinVal(scope="L"); tget(FP); unpackList(FP,scope="L"); resetGraph();
+	if (any(sapply(paste("Fout",(1:3)[getWinVal()$modT],sep=""),exists,where=.PBSmodEnv)==FALSE) ) {Uset(); Ueval();}
 
 	# Data matrix for plotting
 	mods <- (1:3)[modT]; nmods <- length(mods);
@@ -168,7 +169,7 @@ Uplot <- function() { # User's plot of NLM results
 	names(dimnames(pmat)) <- c("age","xy","mod")
 
 	for (i in mods) {
-		ii <- as.character(i); Fout <- get(paste("Fout",i,sep="")); pars <- Fout$Pend;
+		ii <- as.character(i); Fout <- get(paste("Fout",i,sep=""),pos=.PBSmodEnv); pars <- Fout$Pend;
 		y  <- pa.raw; ya <- pa.obs; yi <- switch(i, pa.obs, pi.obs, pi.obs);
 		a  <- as.numeric(names(yi));
 		pa   <- ccaMod(P=pars[c("Z","alpha","betak","tau","rho1","rho2","rho3","rho4","rho5")])
@@ -188,7 +189,7 @@ Uplot <- function() { # User's plot of NLM results
 		pmat[names(cyi),"cyi",ii] <- cyi
 		pmat[names(cpa),"cpa",ii] <- cpa
 		pmat[names(cpi),"cpi",ii] <- cpi; };
-	assign(paste("pmat",suff,sep="."),pmat,pos=1);
+	assign(paste("pmat",suff,sep="."),pmat,pos=.PBSmodEnv);
 
 	ymax  <- max(apply(pmat,match("xy",names(dimnames(pmat))),max,na.rm=T)[c("ya","yi")]);
 	ylim  <- c(0,ymax);  xpos <- seq(0,B,5);  zx <- xpos>=k & xpos<=A;
@@ -207,7 +208,7 @@ Uplot <- function() { # User's plot of NLM results
 
 	for (i in mods) {
 		ii <- as.character(i); idx <- switch(i,idxM,idxD,idxL); 
-		Fout <- get(paste("Fout",i,sep="")); pars <- Fout$Pend[idx]; npars <- length(pars);
+		Fout <- get(paste("Fout",i,sep=""),pos=.PBSmodEnv); pars <- Fout$Pend[idx]; npars <- length(pars);
 
 		# PLOT 1 - Bars of pi
 		za <- !is.na(pmat[xx,"ya",ii]);  zi <- !is.na(pmat[xx,"yi",ii]);
@@ -261,8 +262,8 @@ Uplot <- function() { # User's plot of NLM results
 #-----WinBUGS-Model-------------------------------------------------------------
 
 checkMon <- function() { # Check user's monitor choices
-	if (!exists("FP",where=1)) { Uset(); };
-	getWinVal(scope="L"); unpackList(FP,scope="L");
+	if (!exists("FP",where=.PBSmodEnv)) { Uset(); };
+	getWinVal(scope="L"); tget(FP); unpackList(FP,scope="L");
 	#Pset <- switch(MDL,idxM,idxD,idxL);
 	Pset <- c(T,T,T,T,F,T,T,T,T,T,T) & as.vector(phi>0); # Fix for Dirichlet
 	z <- Pset-pset;
@@ -273,7 +274,7 @@ checkMon <- function() { # Check user's monitor choices
 		pmon <- pnam[pset];
 		if (any(substring(pmon,1,3)=="rho")) {
 			pmon <- pmon[!is.element(substring(pmon,1,3),"rho")]; pmon <- c(pmon,"rho"); };
-		FP$pmon <<- pmon;
+		tget(FP); FP$pmon <- pmon; tput(FP)
 		return(TRUE); }; };
 
 modCompile <- function() { # Initialize and compile the WinBUGS model
@@ -298,7 +299,7 @@ modUpdate <- function() { # Update the model and save complete history in global
 	nams  <- names(Bhist); nams <- sub("rho\\.","rho",nams);
 	if (nc==1) nams <- paste(nams,1,sep=".");
 	nams <- sub("\\.\\.",".",nams); names(Bhist) <- nams;
-	CCAhist <<- cbind(X=1:nrow(Bhist),Bhist);
+	CCAhist <- cbind(X=1:nrow(Bhist),Bhist); tput(CCAhist)
 	ctot <- dim(CCAhist)[1];    # total length so far
 	setWinVal(list(ctot=ctot,s1=ctot-clen+1,s2=ctot)); par(ask=F); };
 
@@ -361,8 +362,8 @@ modPairs <- function() { # Pairs plot
 	z2   <- is.element(substring(nams,1,dot-1),pmon);
 	file <- file[,z1&z2];
 	PMON <- paste(rep(pmon,each=nchn),rep(chains,length(pmon)),sep="."); file <- file[,PMON];
-	if (exists(paste("Fout",MDL,sep=""),where=1)) {
-		modes <- get(paste("Fout",MDL,sep=""),pos=1)$Pend[pset];
+	if (exists(paste("Fout",MDL,sep=""),where=.PBSmodEnv)) {
+		modes <- get(paste("Fout",MDL,sep=""),pos=.PBSmodEnv)$Pend[pset];
 		print("MODES:"); print(paste(names(modes),signif(modes,3),sep="="));
 		modes <- rep(modes,each=nchn); }
 	else  modes <- NULL;
@@ -393,7 +394,7 @@ modSub <- function(chains=samplesGetFirstChain():samplesGetLastChain()) { # amal
 	for (i in chains) {
 		junk <- file[,paste(Pfld,i,sep=".")];  names(junk) <- Pfld;
 		temp <- rbind(temp,junk); };
-	CCAsub <<- temp; return(TRUE); };
+	CCAsub <- temp; tput(CCAsub); return(TRUE); };
 
 modHist <- function() { # Histograms of parameter posterior distributions
 	isOK <- checkMon(); if (!isOK) stop("Reset monitors");
@@ -429,7 +430,7 @@ modHist <- function() { # Histograms of parameter posterior distributions
 
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
-remove(list=ls(1)[is.element(ls(1),c("afile","FP","Fout","Fout1","Fout2","Fout3"))],pos=1);
+remove(list=ls(1)[is.element(ls(1),c("afile","FP","Fout","Fout1","Fout2","Fout3"))],pos=.PBSmodEnv);
 if (!require(BRugs, quietly=TRUE)) stop("The BRugs package is required for this example")
 if (!require(PBSmodelling, quietly=TRUE)) stop("The PBSmodelling package is required for this example")
 createWin("CCAWin.txt"); Uget();

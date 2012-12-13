@@ -26,7 +26,7 @@ teum <- function(Flim) { #Eumetric line
 	zout; };
 
 RickFig <- function() {
-	getWinVal(scope="G"); Fopt <- as.vector(Fin);
+	getWinVal(scope="P"); Fopt <- as.vector(Fin);
 	Fvec <- seq(Flim[1],Flim[2],length=Flim[3]);
 	tvec <- seq(tlim[1],tlim[2],length=tlim[3]);
 	ymat <- outer(Fvec,tvec,FUN="ypr"); ymax <- max(ymat);
@@ -49,7 +49,7 @@ RickFig <- function() {
 	setWinVal(list(Rout=t(signif(EumP,5)))); };
 
 autoC <- function() {
-	getWinVal(scope="G");
+	getWinVal(scope="P");
 	Fvec <- seq(Flim[1],Flim[2],length=Flim[3]);
 	tvec <- seq(tlim[1],tlim[2],length=tlim[3]);
 	ymat <- outer(Fvec,tvec,FUN="ypr"); yrng <- range(ymat,na.rm=T);

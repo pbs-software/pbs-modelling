@@ -40,52 +40,58 @@ chooseWinVal(choice, varname, winname="window")
 }
 \examples{
 \dontrun{
+local(envir=.PBSmodEnv,expr={
 dfnam <-
-	c("airquality","attitude","ChickWeight","faithful","freeny",
-	"iris","LifeCycleSavings","longley","morley","Orange",
-	"quakes","randu","rock","stackloss","swiss","trees")
+  c("airquality","attitude","ChickWeight","faithful","freeny",
+  "iris","LifeCycleSavings","longley","morley","Orange",
+  "quakes","randu","rock","stackloss","swiss","trees")
 
 wlist <- c(
-	"window name=choisir title=\"Test chooseWinVal\"",
-	"label text=\"Press <ENTER> in the green entry box
-	\\nto choose a file, then press <GO>\" sticky=W pady=5",
-	"grid 1 3 sticky=W",
-	"label text=File: sticky=W",
-	"entry name=fnam mode=character width=23 value=\"\" 
-	func=chFile entrybg=darkolivegreen1 pady=5",
-	"button text=GO bg=green sticky=W func=test",
-	"")
+  "window name=choisir title=\"Test chooseWinVal\"",
+  "label text=\"Press <ENTER> in the green entry box
+  \\nto choose a file, then press <GO>\" sticky=W pady=5",
+  "grid 1 3 sticky=W",
+  "label text=File: sticky=W",
+  "entry name=fnam mode=character width=23 value=\"\" 
+  func=chFile entrybg=darkolivegreen1 pady=5",
+  "button text=GO bg=green sticky=W func=test",
+  "")
 
 chFile <- function(ch=dfnam,fn="fnam") 
-	{chooseWinVal(ch,fn,winname="choisir")};
+  {chooseWinVal(ch,fn,winname="choisir")};
 
 #-- Example 1 GUI test
 test <- function() {
-	getWinVal(winName="choisir",scope="L")
-	if (fnam!="" && any(fnam==dfnam)) {
-		file <- get(fnam);
-		pairs(file,gap=0); }
-	else {
-		resetGraph(); 
-		addLabel(.5,.5,"Press <ENTER> in the green entry box
-		\nto choose a file, then press <GO>", col="red",cex=1.5)}};
-
+  oldpar = par(no.readonly=TRUE); on.exit(par(oldpar))
+  getWinVal(winName="choisir",scope="L")
+  if (fnam!="" && any(fnam==dfnam)) {
+    file <- get(fnam);
+    pairs(file,gap=0); }
+  else {
+    resetGraph(); 
+    addLabel(.5,.5,"Press <ENTER> in the green entry box
+    \nto choose a file, then press <GO>", col="red",cex=1.5)
+  }
+}
 #-- Example 2 Non-GUI test
 #To try the non-GUI version, type 'test2()' on the command line
 test2 <- function(fnames=dfnam) {
+  oldpar = par(no.readonly=TRUE); on.exit(par(oldpar))
   frame();resetGraph()
   again <- TRUE;
   while (again) {
     fnam <- sample(fnames,1); file <- get(fnam); 
     flds <- names(file);
-    xfld <- getChoice(paste("Pick x-field from",fnam),flds,gui=F);
-    yfld <- getChoice(paste("Pick y-field from",fnam),flds,gui=F)
+    xfld <- getChoice(paste("Pick x-field from",fnam),flds,gui=FALSE);
+    yfld <- getChoice(paste("Pick y-field from",fnam),flds,gui=FALSE)
     plot(file[,xfld],file[,yfld],xlab=xfld,ylab=yfld,
       pch=16,cex=1.2,col="red");
-    again <- getChoice("Plot another pair?",gui=F) }
+    again <- getChoice("Plot another pair?",gui=FALSE)
   }
+}
 require(PBSmodelling)
-createWin(wlist,astext=T); test();
+createWin(wlist,astext=TRUE); test();
+})
 }
 }
 \keyword{ device }

@@ -24,6 +24,6 @@ calcFib(n, len=1, method="C")
   calculated.
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Nanaimo BC
+  Jon Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \keyword{arith}

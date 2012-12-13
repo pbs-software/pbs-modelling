@@ -27,7 +27,7 @@ grid 2 1
     labels="Start End Thin" \
     values="1 100 1" vertical=T width=12
 grid 1 4
-  button text=Trace func=modHist
+  button text=Trace   func=modHist
   button text=Density func=modDens
-  button text=ACF func=modACF
-  button text=Pairs func=modPairs
+  button text=ACF     func=modACF
+  button text=Pairs   func=modPairs

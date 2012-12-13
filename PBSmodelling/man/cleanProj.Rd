@@ -39,7 +39,9 @@ cleanProj(prefix, suffix, files)
 }
 \examples{
 \dontrun{
-cleanProj(prefix="foo",suffix=c(".a*",".b?",".c","-old.d"),files=c("red","blue"))
+local(envir=.PBSmodEnv,expr={
+  cleanProj(prefix="foo",suffix=c(".a*",".b?",".c","-old.d"),files=c("red","blue"))
+})
 }
 }
 \keyword{utilities}

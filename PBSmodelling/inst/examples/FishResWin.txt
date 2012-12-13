@@ -80,9 +80,12 @@ grid 5 1 # Equilibrium tab in notebook
 			entry name=qlev value=0.975 width=5 label="C/Cmax" sticky=SE
 			entry name=ncell value=100 width=5 label="grid cells" sticky=SE
 			entry name=nlev value=8 width=5 label="cntr levels" sticky=SE
-			button text=Pairs func=yield sticky=SE bg=darkseagreen1 action=pairs
-			button text=Image func=yield sticky=SE bg=darkseagreen1 action=image
-			button text=Contour func=yield sticky=SE bg=darkseagreen1 action=contour
+			#button text=Pairs func=doAction action="tget(yield)(`pairs`)" sticky=SE bg=darkseagreen1
+			#button text=Image func=doAction action="tget(yield)(`image`)" sticky=SE bg=darkseagreen1
+			#button text=Contour func=doAction action="tget(yield)(`contour`)" sticky=SE bg=darkseagreen1
+			button text=Pairs   func=yield action=pairs sticky=SE bg=darkseagreen1
+			button text=Image   func=yield action=image sticky=SE bg=darkseagreen1
+			button text=Contour func=yield action=contour sticky=SE bg=darkseagreen1
 	vector length=5 vertical=F names=eqOut labels="Cmax p1 F2 x1 x2" width=6 entrybg="#ffb3d9"
 	label text="------History---------------------------------------" font="bold" fg=blue sticky=SW pady="10 0"
 	grid 1 2

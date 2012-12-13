@@ -24,32 +24,33 @@ modCompile <- function() {
 modUpdate <- function() {
   getWinVal(scope="L");
   modelUpdate(clen,cthin);
-  MRhist <<- as.data.frame( samplesHistory("*",beg=0,plot=F) );
+  MRhist <- as.data.frame( samplesHistory("*",beg=0,plot=FALSE) ); tput(MRhist)
   ctot <- dim(MRhist)[1];    # total length so far
-  setWinVal(list(ctot=ctot)); par(ask=F); }
+  setWinVal(list(ctot=ctot)); par(ask=FALSE); }
   
 # Functions to report results
 
 modHist <- function() {
   getWinVal(scope="L"); resetGraph();
   samplesHistory("*",beg=s1-1,end=s2-1,thin=sthin,
-    mfrow=c(2,1),ask=F); };
+    mfrow=c(2,1),ask=FALSE); };
 
 modDens <- function() {
   getWinVal(scope="L"); resetGraph();
   samplesDensity("*",beg=s1-1,end=s2-1,thin=sthin,
-    mfrow=c(2,1),ask=F); };
+    mfrow=c(2,1),ask=FALSE); };
 
 modACF <- function(chn=1) { # default chain 1
   getWinVal(scope="L"); resetGraph();
   samplesAutoC("*",chn,beg=s1-1,end=s2-1,thin=sthin,
-    mfrow=c(2,1),ask=F); };
+    mfrow=c(2,1),ask=FALSE); };
 
 modPairs <- function() {
   getWinVal(scope="L"); resetGraph();
   i1 <- max(s1,1); i2 <- min(s2,ctot); # ensure valid range
   idx <- seq(i1,i2,by=sthin);
-  par(ask=F); pairs(MRhist[idx,],pch=19,cex=0.5); };
+  tget(MRhist)
+  par(ask=FALSE); pairs(MRhist[idx,],pch=19,cex=0.5); };
 
 # ************************************************************
 # Load libraries and start the GUI

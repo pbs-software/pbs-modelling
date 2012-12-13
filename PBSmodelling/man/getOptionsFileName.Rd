@@ -18,6 +18,9 @@ setOptionsFileName(option.object, name)
 \value{
   \code{getOptionsFileName}: the default file name
 }
+\author{
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
+}
 \seealso{
   \code{\link{loadOptions}}, \code{\link{saveOptions}} \cr
   See \code{\link[PBSmodelling]{PBSoptions-class}} for more details and 

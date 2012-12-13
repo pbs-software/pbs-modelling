@@ -142,7 +142,6 @@ getMod <- function(){
   rmod <- switch(MDL,"testrmul","testrdir","testrln")
   get(rmod)()
 }
-
 require(PBSmodelling)
 createWin("RanPropWin.txt")
 

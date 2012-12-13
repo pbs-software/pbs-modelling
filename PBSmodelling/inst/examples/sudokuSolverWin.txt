@@ -1,16 +1,16 @@
 window title="Sudoku Solver Example"
 
 menu nitems=2 label=Load
-  menuitem function=loadPuz label="Load Easy Sample Puzzle" action=easy
-  menuitem function=loadPuz label="Load Evil Sample Puzzle" action=evil
+  menuitem function=doAction action="tget(loadPuz)(`easy`)" label="Load Easy Sample Puzzle"
+  menuitem function=doAction action="tget(loadPuz)(`evil`)" label="Load Evil Sample Puzzle"
 
 menu nitems=2 label=Tools
   menuitem function=openFile label="View R Source" action=sudokuSolver.r
   menuitem function=openFile label="View Window Source" action=sudokuSolverWin.txt
 
 menu nitems=2 label=Help
-  menuitem function=sudokuHelp label="About Sudoku" action=about
-  menuitem function=sudokuHelp label="About the Solver" action=usage
+  menuitem function=doAction action="tget(sudokuHelp)(`about`)" label="About Sudoku"
+  menuitem function=doAction action="tget(sudokuHelp)(`usage`)" label="About the Solver"
 
 matrix name=s nrow=9 ncol=9
 

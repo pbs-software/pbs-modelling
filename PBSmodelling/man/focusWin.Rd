@@ -19,26 +19,29 @@
 		for \code{setWinVal} and \code{getWinVal}}
 }
 \author{
-  Alex Couture-Beil, Malaspina University-College, Nanaimo BC
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \examples{
 \dontrun{
+local(envir=.PBSmodEnv,expr={
 focus <- function() {
   winName <- getWinVal()$select;
   focusWin(winName);
-  cat("calling focusWin(\"", winName, "\")\n", sep="");
-  cat("getWinVal()$myvar = ", getWinVal()$myvar, "\n\n", sep=""); };
-
+  mess = paste("Calling focusWin(\"", winName, "\")\n",
+    "getWinVal()$myvar = ", getWinVal()$myvar, "\n\n", sep="",collapse="")
+  cat(mess); invisible()
+}
 #create three windows named win1, win2, win3
 #each having three radio buttons, which are used to change the focus
 for(i in 1:3) {
   winDesc <- c(
-    paste('window name=win',i,' title="Win',i,'"', sep=''),
+    paste('window onclose=closeWin name=win',i,' title="Win',i,'"', sep=''),
     paste('entry myvar ', i, sep=''),
     'radio name=select value=win1 text="one" function=focus mode=character',
     'radio name=select value=win2 text="two" function=focus mode=character',
     'radio name=select value=win3 text="three" function=focus mode=character');
   createWin(winDesc, astext=TRUE); };
+})
 }
 }
 \keyword{methods}

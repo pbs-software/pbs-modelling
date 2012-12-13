@@ -4,11 +4,11 @@
 
 \description{
   Create a GUI window with widgets using instructions from a 
-  Window Description (markup) File.
+  Window Description File (aka mark-up file) .
 }
 
 \usage{
-  createWin( fname, astext=FALSE, env=sys.frame(sys.nframe()) )
+  createWin( fname, astext=FALSE, env=NULL )
 }
 
 \arguments{
@@ -36,7 +36,7 @@
   is equivalent to a new line in the \emph{window description file}.
 }
 \author{
-  Alex Couture-Beil, Malaspina University-College, Nanaimo BC
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \note{
   Microsoft Windows users may experience difficulties switching focus between the 
@@ -61,30 +61,31 @@
 \dontrun{
 # See file .../library/PBSmodelling/testWidgets/LissWin.txt
 # Calculate and draw the Lissajous figure
-drawLiss <- function() {
-   getWinVal(scope="L"); ti=2*pi*(0:k)/k;
-   x=sin(2*pi*m*ti);     y=sin(2*pi*(n*ti+phi));
-   plot(x,y,type=ptype); invisible(NULL); };
-createWin(system.file("testWidgets/LissWin.txt",package="PBSmodelling"));
-}
+local(envir=.PBSmodEnv,expr={
+  drawLiss <- function() {
+    oldpar = par(no.readonly=TRUE); on.exit(par(oldpar))
+    getWinVal(scope="L"); ti=2*pi*(0:k)/k;
+    x=sin(2*pi*m*ti);     y=sin(2*pi*(n*ti+phi));
+    plot(x,y,type=ptype); invisible(NULL); };
+  createWin(system.file("testWidgets/LissWin.txt",package="PBSmodelling"));
+})
 
 ############################################################
 # Environment example:
 # function in global
-hello <- function()
-{
-  stop( "I shouldn't be called" )
-}
-newNameGreeter <- function( name )
-{
+local(envir=.PBSmodEnv,expr={
+  hello <- function() {
+    stop( "I shouldn't be called" )
+  }
+
+newNameGreeter <- function( name ) {
   # method to display window
-  greet <- function()
-  {
-    createWin(c("button \"Say hello\" func=hello"), astext=TRUE, env=parent.env(environment()))
+  greet <- function() {
+    createWin(c("button \"Say hello\" func=hello"), astext=TRUE,
+      env=parent.env(environment()))
   }
   # hello method will refer to the name in this local scope
-  hello <- function()
-  {
+  hello <- function() {
     cat( "Hello", name, "\n" )
   }
   # return functions which the user can call directly
@@ -96,6 +97,8 @@ jon  <- newNameGreeter( "Jon" )
 alex$hello() # prints hello Alex
 jon$hello()  # prints hello Jon
 alex$greet() # creates a GUI with a button, which will print "hello Alex" when pushed
+})
+}
 }
 \keyword{utilities}
 

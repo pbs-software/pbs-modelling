@@ -25,5 +25,8 @@ grid 5 2 sticky=W
 		matrix nrow=2 ncol=2 names="Rout" rowlabels="'' ''" collabels="RecA YPR" values="0 0 0 0" width=6 sticky=W entrybg="#FDB3C1"
 grid 1 3 sticky=E pady=5
 	entry name=nlevel label="# levels" width=3 value=8 mode=numeric
-	button text=" autoContour " func=autoC action="autoC"
-	button text=" PLOT " func=RickFig action="RickFig" bg=green
+	#button text=" autoContour " func=.win.tget action=autoC
+	#button text=" PLOT " func=.win.tget action=RickFig bg=green
+	button text=" autoContour " func=autoC
+	button text=" PLOT " func=RickFig bg=green
+

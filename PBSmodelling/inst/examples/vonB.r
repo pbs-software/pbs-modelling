@@ -1,5 +1,5 @@
 VBinit <- function() {
-	VBlist <- readList("vonBdata.txt"); unpackList(VBlist,scope="G");
+	VBlist <- readList("vonBdata.txt"); unpackList(VBlist,scope="P");
 	setWinVal(list(parVec=VBpars)); };
 
 VBfun <- function(P) {
@@ -13,8 +13,8 @@ VBfun <- function(P) {
 VBtest <- function() {
 	getWinVal(scope="L");
 	Obag <- calcMin(pvec=parVec,func=VBfun,method=method,trace=trace,maxit=maxit,reltol=reltol,steptol=steptol,repN=repN);
-	fmin <- PBSmin$fmin; np <- sum(parVec[,4]); ng <- nrow(VBdata);
-	PBSmin$AICc <<- 2*fmin + 2*np * (ng/(ng-np-1)); #print(PBSmin);
+	tget(PBSmin); fmin <- PBSmin$fmin; np <- sum(parVec[,4]); ng <- nrow(VBdata);
+	PBSmin$AICc <- 2*fmin + 2*np * (ng/(ng-np-1)); tput(PBSmin);
 	P <- PBSmin$end; ftime <- PBSmin$time;
 
 	resetGraph(); expandGraph();

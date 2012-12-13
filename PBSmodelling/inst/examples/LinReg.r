@@ -13,9 +13,9 @@ pairsLR <- function() {
       x   <- runif(nsim,xmin,xmax)
       eps <- rnorm(nsim,0,1)
       y   <- asim + bsim * x + (eps * ssim)
-      sim <<- data.frame(X=x,Y=y)
+      sim <- data.frame(X=x,Y=y); tput(sim)
    }
-   file <- get(dset); writeList(file,"LinRegDat.txt");
+   file <- get(dset,pos=.PBSmodEnv); writeList(file,"LinRegDat.txt");
    flds <- names(file); nfld <- ncol(file)
    msg  <- paste("# Records =",nrow(file))
    msg  <- paste(msg,paste(1:nfld,"=",flds,collapse="\n"),sep="\n")
@@ -24,15 +24,15 @@ pairsLR <- function() {
 
 }
 
-plotLR <- function(addBRugs=F,...) {
+plotLR <- function(addBRugs=NUL, ...) {
    # ----------------------------------------------------------------
    # Compute classical fit with predictions and a confidence interval
    # ----------------------------------------------------------------
    getWinVal(scope="L")
-   resetGraph(); par(ask=F);
-   addBRugs <- as.logical(getWinAct()[1])
+   resetGraph(); par(ask=FALSE);
+   if (is.null(addBRugs)) addBRugs <- as.logical(getWinAct()[1])
 
-   file <- get(dset)
+   file <- get(dset,pos=.PBSmodEnv)
    flds <- names(file); nfld <- ncol(file)
    msg  <- paste("# Records =",nrow(file))
    msg  <- paste(msg,paste(1:nfld,"=",flds,collapse="\n"),sep="\n")
@@ -96,7 +96,7 @@ modCompile <- function() {
    # Initialize and compile the WinBUGS model
    # ----------------------------------------
    getWinVal(scope="L");
-   file <- get(dset)
+   file <- get(dset,pos=.PBSmodEnv)
    flds <- names(file); nfld <- ncol(file)
    n    <- nrow(file)
    x    <- file[,xfld]
@@ -119,7 +119,7 @@ modUpdate <- function() {
    modelUpdate(clen,cthin);
    LRhist <- as.data.frame( samplesHistory("*",beg=0,plot=F) );
    if (nc==1) names(LRhist) <- paste(names(LRhist),1,sep=".");
-   LRhist <<- LRhist;
+   LRhist <- LRhist; tput(LRhist)
    ctot <- dim(LRhist)[1];    # total length so far
    setWinVal(list(ctot=ctot,s1=ctot-clen+1,s2=ctot)); par(ask=F);
 }
@@ -158,7 +158,7 @@ modPairs <- function() {
    getWinVal(scope="L"); resetGraph();
    i1   <- max(s1,1); i2 <- min(s2,ctot); # ensure valid range
    idx  <- seq(i1,i2,by=sthin);
-   file <- LRhist[idx,]
+   tget(LRhist); file <- LRhist[idx,]
    if (dset=="sim") {
       pars <- rep(c(asim,bsim,ssim),each=nc)
       file <- rbind(file,pars)
@@ -166,9 +166,9 @@ modPairs <- function() {
    nams <- names(file); dot <- regexpr("\\.",nams);
    z <- is.element(substring(nams,dot+1),chn1:chn2)
    file <- file[,z]
-   par(ask=F);
+   par(ask=FALSE);
    pairs(file, diag.panel=panel.hist, gap=0, cex.labels=1.5,
-      panel=function(x,y,s=ifelse(dset=="sim",T,F)) {
+      panel=function(x,y,s=ifelse(dset=="sim",TRUE,FALSE)) {
          n <- length(x); nn <- n-1;
          points(x[1:ifelse(s,nn,n)],y[1:ifelse(s,nn,n)],
            pch=16,cex=0.6,col="darkgray");
@@ -179,7 +179,7 @@ modPairs <- function() {
 }
 
 modSub <- function(chains=samplesGetFirstChain():samplesGetLastChain()) {
-   if (!exists("LRhist")) {
+   if (!exists("LRhist",where=.PBSmodEnv)) {
       return(FALSE)
    }
    getWinVal(scope="L");
@@ -189,7 +189,7 @@ modSub <- function(chains=samplesGetFirstChain():samplesGetLastChain()) {
    Pfld <- c("a","b","sig")[pset]; nP <- length(Pfld)
    nch  <- length(chains)
    pfld <- paste(rep(Pfld,each=nch),chains,sep=".")
-   file <- LRhist[idx,pfld]
+   tget(LRhist); file <- LRhist[idx,pfld]
 
    temp <- NULL
    for (i in chains) {
@@ -197,18 +197,18 @@ modSub <- function(chains=samplesGetFirstChain():samplesGetLastChain()) {
       names(junk) <- Pfld
       temp <- rbind(temp,junk)
    }
-   LRsub <<- temp
+   LRsub <- temp; tput(LRsub)
    return(TRUE)
 }
 
 modFreq <- function() {
    getWinVal(scope="L");
    chains <- chn1:chn2
-   resetGraph(); par(ask=F);
+   resetGraph(); par(ask=FALSE);
 
    Pfld <- c("a","b","sig")[pset]; nP <- length(Pfld)
    modSub(chains)
-   file <- LRsub
+   tget(LRsub); file <- LRsub
 
    iclr <- c("aquamarine","gold","plum")
    par(mfrow=c(nP,1),mai=c(.25,0.6,.05,.05),omi=c(0,0,0,0),ask=F)
@@ -255,7 +255,7 @@ modSplash <- function() {
    Pfld <- c("a","b","sig")[pset]; nP <- length(Pfld)
    isOK <- modSub(chains)
    if (isOK) {
-      file <- LRsub
+      tget(LRsub); file <- LRsub
       iclr <- c("goldenrod","aquamarine","plum")
       addab <- function(x) {
          abline(a=x[1],b=x[2],col="gold")

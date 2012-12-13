@@ -17,10 +17,10 @@ grid 1 2
       'swept area' 'impacted area' 'total area'" \
     values="0 0 0 0 0 0 10000" vertical=T width=12
 button text="Generate Tows" func=genTows font=bold
-button text="Plot Lines" func=plotTow font=bold action="L"
-button text="Plot Tows" func=plotTow font=bold action="T"
-button text="Plot Union" func=plotTow font=bold action="U"
-button text="Compare" func=plotTow font=bold action="C"
+button text="Plot Lines" func=doAction action="tget(plotTow)(`L`)" font=bold
+button text="Plot Tows"  func=doAction action="tget(plotTow)(`T`)" font=bold
+button text="Plot Union" func=doAction action="tget(plotTow)(`U`)" font=bold
+button text="Compare"    func=doAction action="tget(plotTow)(`C`)" font=bold
 grid 1 4
    label text="Compare\nMode" font="bold 10"
    radio name=cmode value="P" mode=character text=Portrait

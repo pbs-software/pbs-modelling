@@ -7,9 +7,14 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
+2.65  2012-12-10
+  - Updated runExamples to run in the new environment .PBSmodEnv. (RH 12/10)
+  - Finally got the gui code to work after switching the location of .PBSmod to .PBSmodEnv. (RH 12/7)
+  - Bumped up the version as PBSmodelling is undergoing major changes to ensure that no objects are installed on the user's global environment. (RH 12/01)
+
 2.64  2012-11-29
   - Updated the UG. (RH 11/29)
-  - Changed the default environment for 'createWin' from 'parent.frame()' to 'sys.frame(sys.nframe())'. RH (11/29)
+  - Changed the default environment for 'createWin' from 'parent.frame()' to 'sys.frame(sys.nframe())'. (RH 11/29)
 	Enclosing super assignment operator '<<-' calls in eval(parse(text="")) expressions (see RH 7/17/12) was disabling the creation of GUIs launched from other GUIs (Athena Ogden).
 	This appears to be related to a loss of synchronization of environments between PBSmodelling and tcltk.
   - Added dot functions to namespace for export using explicit action patterns. (RH 11/02)

@@ -1,4 +1,4 @@
-window name=runE title="Run Examples" onClose=.runExHelperQuit
+window name=runE title="Run Examples" onClose=.win.runExHelperQuit
 grid 1 2 sticky=W
 	label text="Choose an Example" font="bold 12" sticky=W pady=5
 	radio name=eN value=0 sticky=W padx=20 text=CLEAR function=.runExHelper action=clear

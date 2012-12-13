@@ -21,7 +21,7 @@ setOptions(option.object, ...)
   If \code{key} is missing, a list of all options.
 }
 \author{
-  Alex Couture-Beil
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \seealso{
   See \code{\link[PBSmodelling]{PBSoptions-class}} for more details and 

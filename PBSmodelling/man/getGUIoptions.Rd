@@ -23,6 +23,8 @@ getGUIoptions()
 }
 \examples{
 \dontrun{
-getPBSoptions() #loads from default PBSoptions.txt
+local(envir=.PBSmodEnv,expr={
+  getPBSoptions() #loads from default PBSoptions.txt
+})
 }
 }
