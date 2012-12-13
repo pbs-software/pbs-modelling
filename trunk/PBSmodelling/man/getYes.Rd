@@ -25,8 +25,9 @@ getYes(message, title="Choice", icon="question")
 }
 \examples{
 \dontrun{
-#default settings
-if(getYes("Print the number 1?"))
-	print(1)
+local(envir=.PBSmodEnv,expr={
+  if(getYes("Print the number 1?"))
+    print(1) else print("hallucination")
+})
 }
 }

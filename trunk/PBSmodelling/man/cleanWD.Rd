@@ -27,11 +27,13 @@ cleanWD(files)
   }
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \examples{
 \dontrun{
-cleanWD(c("*.bak","*.tmp","junk*"))
+local(envir=.PBSmodEnv,expr={
+  cleanWD(c("*.bak","*.tmp","junk*"))
+})
 }
 }
 \keyword{utilities}

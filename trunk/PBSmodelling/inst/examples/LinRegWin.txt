@@ -10,10 +10,10 @@ grid 1 6 sticky=W
 grid 3 1 toptitle="Choose Example" topfont=bold sticky=W
 
    grid 1 5 sticky=W sidetitle="Data Sets" sidefont="bold 10"
-      radio name=dset text="sim" padx=5 mode=character value=sim func=pairsLR
-      radio name=dset text="cars" padx=5 mode=character value=cars func=pairsLR
-      radio name=dset text="trees" padx=5 mode=character value=trees func=pairsLR
-      radio name=dset text="swiss" padx=5 mode=character value=swiss func=pairsLR
+      radio name=dset text="sim"      padx=5 mode=character value=sim      func=pairsLR
+      radio name=dset text="cars"     padx=5 mode=character value=cars     func=pairsLR
+      radio name=dset text="trees"    padx=5 mode=character value=trees    func=pairsLR
+      radio name=dset text="swiss"    padx=5 mode=character value=swiss    func=pairsLR
       radio name=dset text="attitude" padx=5 mode=character value=attitude func=pairsLR
    grid 1 3 sticky=W
       grid 2 1 sticky=W
@@ -30,7 +30,7 @@ grid 3 1 toptitle="Choose Example" topfont=bold sticky=W
 
 grid 1 2
    button text="Pairs Plot" func=pairsLR
-   button text="Classic Regression" func=plotLR action=FALSE
+   button text="Classic Regression" func=doAction action="tget(plotLR)(FALSE)"
 
 label text="-------------------------------------" sticky=W font=courier
 
@@ -57,10 +57,10 @@ grid 1 4 sticky=W byrow=T
 
 null
 grid 1 6
-  button text=Trace func=modHist
-  button text=Density func=modDens
-  button text=ACF func=modACF
-  button text=Pairs func=modPairs
-  button text=Histogram func=modFreq
-  button text=Regression func=plotLR action=TRUE
+  button text=Trace      func=modHist
+  button text=Density    func=modDens
+  button text=ACF        func=modACF
+  button text=Pairs      func=modPairs
+  button text=Histogram  func=modFreq
+  button text=Regression func=doAction  action="tget(plotLR)(TRUE)"
 

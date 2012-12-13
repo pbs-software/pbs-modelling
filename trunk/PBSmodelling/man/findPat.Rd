@@ -20,11 +20,13 @@ findPat(pat, vec)
 	A character vector of all matched strings.
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \examples{
-#find all strings with a vowel, or that start with a number
-findPat(c("[aeoiy]", "^[0-9]"), c("hello", "WRLD", "11b"))
+local(envir=.PBSmodEnv,expr={
+  #find all strings with a vowel, or that start with a number
+  print(findPat(c("[aeiou]", "^[0-9]"), c("hello", "WORLD", "1over")))
+})
 }
 
 \keyword{utilities}

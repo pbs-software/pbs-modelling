@@ -27,7 +27,7 @@ seegx <- function(){
 	xmax <- xscale;
 	x <- seq(0,xmax,len=100); n <- length(x); x1 <- 1;
 	r <- switch(mod,rCont,rDisc); M <- switch(mod,Mcont,Mdisc);
-	
+
 	for (i in 1:2) {
 		y <- g1(x,r,M,gam); y1 <- g1(x1,r,M,gam);
 		if (i==2) y <- x*y;
@@ -122,8 +122,8 @@ check <- function() {
 runModel <- function() {
 	check();
 	clrs <- c("forestgreen","red","blue","dodgerblue3");
-	remove(list=ls(1)[is.element(ls(1),c(names(getWinVal()),"p2","K1","K2"))],pos=1); # remove global values from previous runs
-	getWinVal(scope="G"); act <- getWinAct()[1]; unpackList(pbs,scope="L");
+	remove(list=ls(1)[is.element(ls(1),c(names(getWinVal()),"p2","K1","K2"))],pos=.PBSmodEnv); # remove global values from previous runs
+	getWinVal(scope="P"); act <- getWinAct()[1]; unpackList(pbs,scope="L");
 
 	if(ptype=="p"){
 		if (!exists("yout")){
@@ -136,7 +136,7 @@ runModel <- function() {
 	yinit <- c(p1*x10*K,(1-p1)*x20*K); # see Theorem 1
 	pnams <- c("yinit","K1","K2","p2");  # extra parameters used in models, make global to speed up solvers
 	plist <- list(); for (i in pnams) plist[[i]] <- get(i);
-	unpackList(plist,scope="G");
+	unpackList(plist,scope="P");
 
 	if (mod==1 && k==0) {
 		tt <- seq(0,tmax,tstp);
@@ -144,13 +144,13 @@ runModel <- function() {
 		colnames(yout) <- c("tt","y1","y2","dy1","dy2","F1","F2"); }
 	if (mod==1 && k>0) {
 		tt <- seq(0,tmax,tstp);
-		yout <<- dde(y=yinit,times=tt,func=modR1b,parms=plist,tol=atol)
+		yout <- dde(y=yinit,times=tt,func=modR1b,parms=plist,tol=atol); tput(yout)
 		colnames(yout)[1:3] <- c("tt","y1","y2"); }; 
 	if (mod==2) {
 		tt <- seq(0,tmax,by=1);
 		yout <- modR2(tt,yinit,plist); };
 
-	yout <- as.data.frame(yout); assign("yout",yout,pos=1);
+	yout <- as.data.frame(yout); assign("yout",yout,pos=.PBSmodEnv);
 	ptype <- getWinVal("ptype");
 	unpackList(yout,scope="L"); xlim <- range(tt);
 
@@ -187,10 +187,12 @@ runModel <- function() {
 	invisible(yout); };
 
 #-------------------------------------------------------------
-yield <- function () { # Equilibrium Yield Equations (Table 4)
+yield <- function (act=NULL) { # Equilibrium Yield Equations (Table 4)
 	check();
-	remove(list=ls(1)[is.element(ls(1),c("Yout","Zout"))],pos=1);
-	getWinVal(scope="L"); act <- getWinAct()[1]; unpackList(pbs,scope="L");
+	remove(list=ls(1)[is.element(ls(1),c("Yout","Zout"))],pos=.PBSmodEnv);
+	getWinVal(scope="L")
+	if (is.null(act))  act <- getWinAct()[1]
+	unpackList(pbs,scope="L")
 	x1 <- seq(xvec[1],xvec[2],xvec[3]); nx <- length(x1);
 	P1 <- seq(pvec[1],pvec[2],pvec[3]); np <- length(P1); 
 	Fmax <- switch(mod,Fbig,hbig); hl <- switch(mod,c(FminCont,FmaxCont),c(FminDisc,FmaxDisc));
@@ -212,7 +214,7 @@ yield <- function () { # Equilibrium Yield Equations (Table 4)
 		F2 <- ((p1*x1)/(p2*x2)) * (r*g1(x1,r,M,gam)-M) + r*g1(x2,r,M,gam) - M; Yout[,"F2",pp] <- F2;
 		C2 <- K2*F2*x2;  Yout[,"C2",pp] <- C2; #}
 	};
-	assign("Yout",Yout,pos=1); Zout <- NULL
+	assign("Yout",Yout,pos=.PBSmodEnv); Zout <- NULL
 	for (i in 1:np) {
 		if (i==1) Zout <- Yout[,,i] else Zout <- rbind(Zout,Yout[,,i]); };
 	Zout <- as.data.frame(Zout,row.names=1:nrow(Zout));
@@ -222,7 +224,7 @@ yield <- function () { # Equilibrium Yield Equations (Table 4)
 	Zout <- Zout[Zout[,"F2"]>0 & Zout[,"F2"]<Fmax,];
 	Zout <- Zout[rev(order(Zout$C2)),];
 	setWinVal(list(eqOut=signif(Zout[1,c(5,1:4)],3)));
-	assign("Zout",Zout,pos=1);
+	assign("Zout",Zout,pos=.PBSmodEnv);
 	CC <- Zout$C2; Cmax <- CC[1]; #CI <<- (1:length(CC))[rev(order(CC))];  ImaxC <<- CI[1];
 	Z95 <- Zout[Zout$C2 >= (qlev * Cmax) & !is.na(Zout$C2),];
 
@@ -236,12 +238,12 @@ yield <- function () { # Equilibrium Yield Equations (Table 4)
 			x95 <- Z95$p1; y95 <- Z95[,"F2"];
 			Zint <- interp(xx,yy,zz,duplicate="mean",linear=TRUE,
 				xo=seq(min(xx),max(xx),length=ncell),yo=seq(min(yy),max(yy),length=ncell));
-			#assign(paste("Zint",z,sep="."),Zint, pos=1);
+			#assign(paste("Zint",z,sep="."),Zint, pos=.PBSmodEnv);
 			if (act=="contour")
 				contour(Zint,nlevels=nlev,xlim=xlim,ylim=ylim,col=c(clrs[match(z,zval)],"grey50"),
 					lwd=1,labcex=small,xlab="",ylab="F2");
 			if (act=="image"){
-				iclr <- rev(rainbow(40,start=0.05,end=0.7)); assign("zclr",iclr,pos=1)
+				iclr <- rev(rainbow(40,start=0.05,end=0.7)); assign("zclr",iclr,pos=.PBSmodEnv)
 				levs <- seq(ylim[1],ylim[2],len=length(iclr));
 				zlev <- seq(min(zz,na.rm=TRUE),max(zz,na.rm=TRUE),len=length(iclr));
 				ztck <- approx(zlev,levs,pretty(zz)); 
@@ -305,7 +307,7 @@ fig4 <- function(wmf=TRUE){
 
 #===================================================================================================
 pbs <- list(tiny=0.5, small=0.8, medium=1, big=1.25, large=1.5, huge=2); # cex sizes
-remove(list=ls(1)[is.element(ls(1),c("yout","Yout","Zout"))],pos=1); # remove objects from previous session
+remove(list=ls(1)[is.element(ls(1),c("yout","Yout","Zout"))],pos=.PBSmodEnv); # remove objects from previous session
 ips = installed.packages(); ip=ips[,"Package"]; names(ip)=ips[,"Version"]
 for (i in c("PBSmodelling","odesolve","akima")) {
 	if (any(ip==i)) { 

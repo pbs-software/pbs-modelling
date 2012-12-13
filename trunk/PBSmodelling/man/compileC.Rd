@@ -33,7 +33,15 @@ compileC(file, lib="", options="", logWindow=TRUE, logFile=TRUE)
 }
 \examples{
 \dontrun{
-compileC("myFile.c", lib="myLib", options="myObj.o")
+local(envir=.PBSmodEnv,expr={
+  cwd = getwd()
+  edir <- system.file("examples", package = "PBSmodelling" )
+  file.copy(paste(edir,"fib.c",sep="/"), tempdir(), overwrite=TRUE)
+  setwd(tempdir())
+  compileC("fib.c", lib="myLib", options="myObj.o", logWindow=FALSE)
+  print(list.files())
+  setwd(cwd)
+})
 }
 }
 \keyword{programming}

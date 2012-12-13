@@ -129,7 +129,7 @@ savePuz <- function()
 	cat("you must execute the function solveSudoku() from the console.\n")
 	cat("If the window invoked the function, the window would not\n")
 	cat("be updated until the function has finished.\n\n")
-	cat("Type \"solveSudoku()\" in the R console prompt below.\n")
+	cat("Type \"tget(solveSudoku)()\" in the R console prompt below.\n")
 	cat("------------------------------------------------------------\n")
 }
 
@@ -208,9 +208,9 @@ loadPuz <- function(puzzle)
 }
 
 #display help messages
-sudokuHelp <- function()
+sudokuHelp <- function(section=NULL)
 {
-	section <- getWinAct()[1]
+	if (is.null(section)) section <- getWinAct()[1]
 	
 	if (section=="about") {
 cat("-------------------------------------------------------------------------------

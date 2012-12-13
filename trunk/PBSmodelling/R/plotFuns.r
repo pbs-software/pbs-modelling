@@ -164,7 +164,7 @@ pickCol <- function(returnValue=TRUE) {
 	{
 		#launch colour picker
 		assign("colour",tclvalue(.Tcl(paste("tk_chooseColor",
-			.Tcl.args(initialcolor=colour,title="Choose a colour")))),envir=.GlobalEnv)
+			.Tcl.args(initialcolor=colour,title="Choose a colour")))),envir=.PBSmodEnv) #.GlobalEnv)
 		tmp <- col2rgb(colour)
 		#pick white or black foreground colour
 		#255*3/2=382.5
@@ -631,24 +631,28 @@ plotTrace <- function(file,clrs=c("blue","red","green","magenta","navy"),...) {
 		#lines(x,y,col=clrs[i-1],...) }
 	invisible() }
 
-#resetGraph-----------------------------2009-07-20
+#resetGraph-----------------------------2012-12-04
 # Resets par() values to R default
 #-------------------------------------------ACB/RH
 resetGraph=function(reset.mf=TRUE)
 {
 	#ensure init has been called (to pass R check)
-	PBSmodelling:::.initPBSoptions()
+	#PBSmodelling:::.initPBSoptions()
+	.initPBSoptions()
+	tget(.PBSmod)
 
 	#cache value on first run
 	if (is.null(.PBSmod[[".options"]][["par.default"]])) {
 		dev.new()
 		p <- graphics::par(no.readonly = TRUE)
 		dev.off()
-		eval(parse(text=".PBSmod$.options$par.default <<- p"))
+		#eval(parse(text=".PBSmod$.options$par.default <<- p"))
+		.PBSmod$.options$par.default <- p
+		tput(.PBSmod)
 	}
 	if (dev.cur()==1) frame()
 	else {
-		p=.PBSmod$.options$par.default
+		p = .PBSmod$.options$par.default
 		if (reset.mf) {
 			par(p) ; frame()
 		} else {

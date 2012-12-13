@@ -45,6 +45,6 @@ fib2.R=function(n=defaultN, len=defaultLen){
 
 #initialization for testing
 fib2.init=function(){
-  defaultN<<-200
-  defaultLen<<-10
+  defaultN <- 200; tput(defaultN)
+  defaultLen <- 10; tput(defaultLen)
 }

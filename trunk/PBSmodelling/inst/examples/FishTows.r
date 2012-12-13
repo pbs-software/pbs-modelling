@@ -102,10 +102,10 @@ divPolys <- function(PSet) {
 genTows <- function() {
    getWinVal(scope="L");
    n <- nTow; w <- wTow; s <- sTow;
-   towLines <<- makeTows(n,s);
-   towPolys <<- expandTows(towLines,w);
-   towAll   <<- joinPolys(towPolys, operation="UNION");
-   towAll   <<- divPolys(towAll);
+   towLines <- makeTows(n,s); tput(towLines)
+   towPolys <- expandTows(towLines,w); tput(towPolys)
+   towAll   <- joinPolys(towPolys, operation="UNION")
+   towAll   <- divPolys(towAll); tput(towAll)
    towSumm <- summary(towAll);
    nCont   <- towSumm$contours; nHole <- towSumm$holes;
    nPoly   <- nCont - nHole;
@@ -118,35 +118,38 @@ genTows <- function() {
       swpArea=signif(swpArea,8),impArea=signif(impArea,8),totArea=totArea));
    invisible(); };
 
-plotTow <- function() {
+plotTow <- function(act=NULL) {
    resetGraph(); getWinVal(scope="L");
    s <- sTow; eps <- s/50;
    # range slightly larger than (0,s)
    rng0 <- c(-eps,s+eps);
    # larger range for rectangles
+	tget(towPolys)
    rng1 <- range(c(-eps,towPolys$X,towPolys$Y,s+eps));
-   a <- getWinAct()[1];
+   if (is.null(act)) act <- getWinAct()[1];
    side <- 6 # side of 1 frame in inches for EMF
-   if (wmf) win.metafile(filename=paste("FishTows",a,".emf",sep=""),pointsize=12,
-       width=ifelse(a=="C" && cmode=="L",2*side,side), height=ifelse(a=="C" && cmode=="P",2*side,side));
+   if (wmf) win.metafile(filename=paste("FishTows",act,".emf",sep=""),pointsize=12,
+       width=ifelse(act=="C" && cmode=="L",2*side,side), height=ifelse(act=="C" && cmode=="P",2*side,side));
    par(mar=c(2,2,0.1,0.5),mgp=c(2,.25,0),las=1);
-   if (a=="L") {
+   if (act=="L") {
+   	tget(towLines)
       plotMap(towLines,type="n",xlim=rng0,ylim=rng0,plt=NULL,cex=1.5,xlab="",ylab="");
      addLines(towLines); };
-   if (a=="T")
+   if (act=="T")
       plotMap(towPolys,col="red",xlim=rng1,ylim=rng1,plt=NULL,cex=1.5,xlab="",ylab="");
-   if ((a=="U") | (a=="C")) {
+   if ((act=="U") | (act=="C")) {
       myCol <- c("red","green","blue","yellow","orange","violet","cyan",
          "firebrick","deeppink","brown","chocolate","coral","azure");
       myCol <- rep(myCol,100); # up to 1300 colors
+      tget(towAll)
       towID <- unique(towAll$PID); nID <- length(towID);
       towCol <- myCol[1:nID];
       towDF <- data.frame(PID=towID,col=towCol);
       towDF[[2]] <- as.character(towDF[[2]]);
       towProps <- as.PolyData(towDF);
-      if (a=="U")
+      if (act=="U")
          plotMap(towAll,polyProps=towProps,xlim=rng1,ylim=rng1,colHoles="white",plt=NULL,cex=1.5,xlab="",ylab="");
-      if (a=="C") {
+      if (act=="C") {
          if (cmode=="P")  par(mfrow=c(2,1),mar=c(1.2,1.4,0.1,0.5),mgp=c(2,.1,0),las=1);
          if (cmode=="L")  par(mfrow=c(1,2),mar=c(1.2,1.4,0.1,0.5),mgp=c(2,.1,0),las=1);
          plotMap(towPolys,col=myCol[1],xlim=rng1,ylim=rng1,

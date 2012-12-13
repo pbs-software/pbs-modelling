@@ -1,4 +1,4 @@
-window name=window title="Test Functions" onclose=closeALL
+window name=window title="Test Functions" onclose=.win.closeALL
 
 grid 1 4 sticky=W
   label text=View: font=bold

@@ -21,20 +21,22 @@ clipVector(vec, clip, end=0)
   Clipped vector with names.
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \seealso{ 
 	\code{\link{createVector}}
 }
 \examples{
-x=c(0,0,0,0,1,1,1,1,0,0)
-clipVector(x,0)
+local(envir=.PBSmodEnv,expr={
+  x=c(0,0,0,0,1,1,1,1,0,0)
+  print(clipVector(x,0))
 
-x=c(TRUE,TRUE,FALSE,TRUE)
-clipVector(x,TRUE)
+  x=c(TRUE,TRUE,FALSE,TRUE)
+  print(clipVector(x,TRUE))
 
-x=c("red","tide","red","red")
-clipVector(x,"red",2)
+  x=c("red","tide","red","red")
+  print(clipVector(x,"red",2))
+})
 }
 
 \keyword{ data }

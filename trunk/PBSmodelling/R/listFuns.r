@@ -461,27 +461,30 @@ readList <- function(fname) {
 }
 #--------------------------.readList.P.convertData
 
-#unpackList-----------------------------2006-06-19
+#unpackList-----------------------------2012-12-06
 # Make local/global variables from the components of a named list.
-#----------------------------------------------ACB
+#-------------------------------------------ACB/RH
 unpackList <- function(x, scope="L") {
 	namx <- names(x); nx <- length(namx);
 	if (nx > 0) for (i in 1:nx) {
 		if (namx[i] != "") {
 			if (scope=="L")
 				assign(namx[i], x[[i]], pos=parent.frame(1))
+			else if (scope=="P")
+				assign(namx[i], x[[i]], envir = .PBSmodEnv)
 			else if (scope=="G")
 				assign(namx[i], x[[i]], envir = .GlobalEnv)
 		}
 	}
 	namx[namx != ""] }
 
-#packList-------------------------------2009-08-04
+#packList-------------------------------2012-12-03
 # Pack a list with (i) existing objects using their 
 # names or (ii) one explicit value.
 #-----------------------------------------------RH
-packList=function(stuff, target="PBSlist", value,
-                  lenv=parent.frame(), tenv=.GlobalEnv) {
+packList=function(stuff, target="PBSlist", value, tenv=.PBSmodEnv) {
+                  #lenv=parent.frame(), tenv=.PBSmodEnv) { #.GlobalEnv) {
+	penv = parent.frame() # need to call this inside the function NOT as an argument
 	# Deparse bad objects: those that break code (see function 'deparse')
 	deparseBO = function(x){
 		if (is.list(x) && !is.data.frame(x)) {
@@ -507,8 +510,8 @@ packList=function(stuff, target="PBSlist", value,
 		eval(parse(text=paste(target,"[[\"",stuff,"\"]]=",objet,sep="")),envir=tenv) } #pack explicit value into the list
 	else {
 		for (s in stuff) {
-			if (!exists(s,envir=lenv)) next
-			eval(parse(text=paste("objet=get(\"",s,"\",envir=lenv)",sep=""))) #grab the local object
+			if (!exists(s,envir=penv)) next
+			eval(parse(text=paste("objet=get(\"",s,"\",envir=penv)",sep=""))) #grab the local object
 			if (is.list(objet) && !is.data.frame(objet)) {
 				atts=attributes(objet)
 				objet=deparseBO(objet)
@@ -527,5 +530,9 @@ packList=function(stuff, target="PBSlist", value,
 	invisible() }
 #-----------------------------------------packList
 
+#lisp-----------------------------------2012-12-12
+lisp = function(name, pos=.PBSmodEnv, envir=as.environment(pos), all.names=TRUE, pattern){
+	ls(name,pos,envir,all.names,pattern)
+}
 
 

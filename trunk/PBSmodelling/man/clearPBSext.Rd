@@ -14,7 +14,7 @@
     unspecified, all associations are removed}
 }
 \author{
-  Alex Couture-Beil, Malaspina University-College, Nanaimo BC
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \seealso{
 	\code{\link{setPBSext}}, \code{\link{getPBSext}}, \code{\link{openFile}}

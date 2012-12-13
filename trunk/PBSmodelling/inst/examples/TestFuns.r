@@ -70,11 +70,12 @@ TestFuns <- function(funs=ls(pos=grep("package:PBSmodelling",search()))){
 		"grid 1 3 sticky=W",
 		"label text=File: sticky=W",
 		"entry name=fnam mode=character width=23 value=\"\" 
-		func=chFile entrybg=darkolivegreen1 pady=5",
-		"button text=GO bg=green sticky=W func=test",
+		func=.win.chFile entrybg=darkolivegreen1 pady=5",
+		"button text=GO bg=green sticky=W func=.win.chTest",
 		"")
-		chFile <<- function(ch=dfnam,fn="fnam") {chooseWinVal(ch,fn,winname="choisir")}
-		test <<- function() {
+		chFile <- function(ch=dfnam,fn="fnam") {chooseWinVal(ch,fn,winname="choisir")}
+		tput(chFile)
+		chTest <- function() {
 			getWinVal(winName="choisir",scope="L")
 			if (fnam!="" && any(fnam==dfnam)) {
 				file <- get(fnam)
@@ -83,13 +84,15 @@ TestFuns <- function(funs=ls(pos=grep("package:PBSmodelling",search()))){
 				resetGraph()
 				addLabel(.5,.5,"Press <ENTER> in the green entry box\nto choose a file, then press <GO>",
 					col="red",cex=1.5)}}
-		createWin(wlist,astext=T); test()
+		tput(chTest)
+		createWin(wlist,astext=TRUE); chTest()
 	}
 	if (any(funs=="cleanProj")) {
 		cleanProj(prefix="TestFuns", suffix=c("_junk.aaa","_junk.bbb"), files=c("TestFuns_JUNK1", "TestFuns_JUNK2"))
 	}
 	if (any(funs=="createVector")) {
 		createVector(c(m=2,n=3,phi=0,k=1000),vectorLabels=c("x cycles","y cycles", "y phase", "points"),
+			#func=".win.tget",action="drawLiss",windowname="vector")
 			func="drawLiss",windowname="vector")
 	}
 	if (any(funs=="drawBars")) {
@@ -111,7 +114,7 @@ TestFuns <- function(funs=ls(pos=grep("package:PBSmodelling",search()))){
 		addLabel(.5,.3,paste(junk,collapse=" "),cex=1.5,col="blue")
 	}
 	if (any(funs=="focusWin")) {
-		createWin(c("window name=master title=Master onclose=closeSDE","grid 4 1 padx=25", 
+		createWin(c("window name=master title=Master onclose=.win.closeSDE","grid 4 1 padx=25", 
 			"radio name=it value=0 text=master sticky=W function=grab", 
 			"radio name=it value=1 text=slave sticky=W function=grab", 
 			"radio name=it value=2 text=drudge sticky=W function=grab",

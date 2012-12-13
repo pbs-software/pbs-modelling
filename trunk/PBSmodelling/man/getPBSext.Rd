@@ -3,8 +3,8 @@
 \title{Get a Command Associated With a File Name}
 
 \description{
-	Display all locally defined file extensions and their associated commands, 
-	or search for the command associated with a specific file extension
+  Display all locally defined file extensions and their associated commands, 
+  or search for the command associated with a specific file extension
   \code{ext}.
 }
 \note{
@@ -12,21 +12,17 @@
   the next unless explicity saved and loaded (see \code{writePBSoptions} and
   \code{readPBSoptions}).
 }
-
 \usage{getPBSext(ext)}
-
 \arguments{
-	\item{ext}{optional string specifying a file extension.}
+  \item{ext}{optional string specifying a file extension.}
 }
-
 \value{
-	Command associated with file extension.
+  Command associated with file extension.
 }
 \author{
-  Alex Couture-Beil, Malaspina University-College, Nanaimo BC
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \seealso{
-	\code{\link{setPBSext}}, \code{\link{openFile}}, \code{\link{clearPBSext}}
+  \code{\link{setPBSext}}, \code{\link{openFile}}, \code{\link{clearPBSext}}
 }
-
 \keyword{methods}

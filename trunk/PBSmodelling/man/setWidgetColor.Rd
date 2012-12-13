@@ -5,7 +5,7 @@
 	Update the foreground and background colors of a widget
 }
 \usage{
-setWidgetColor( name, radioValue, winName = .PBSmod$.activeWin, ... )
+setWidgetColor(name, radioValue, winName = .PBSmodEnv$.PBSmod$.activeWin, ...)
 }
 \arguments{
 	\item{name}{the name of the widget}

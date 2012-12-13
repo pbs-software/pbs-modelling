@@ -22,16 +22,20 @@ addArrows(x1, y1, x2, y2, ...)
 	Lines will be drawn from \code{(x1[i],y1[i])} to \code{(x2[i],y2[i])}
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Nanaimo BC
+  Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada , Nanaimo BC
 }
 \seealso{
 	\code{\link{addLabel}}, \code{\link{addLegend}}
 }
 \examples{
-tt=seq(from=-5,to=5,by=0.01)
-plot(sin(tt), cos(tt)*(1-sin(tt)), type="l")
-addArrows(0.2,0.5,0.8,0.5)
-addArrows(0.8,0.95,0.95,0.55, col="#FF0066")
+local(envir=.PBSmodEnv,expr={
+  oldpar = par(no.readonly=TRUE)
+  tt=seq(from=-5,to=5,by=0.01)
+  plot(sin(tt), cos(tt)*(1-sin(tt)), type="l")
+  addArrows(0.2,0.5,0.8,0.5)
+  addArrows(0.8,0.95,0.95,0.55, col="#FF0066")
+  par(oldpar)
+})
 }
 
 \keyword{iplot}

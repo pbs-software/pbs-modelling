@@ -1,3 +1,5 @@
+.PBSmodEnv <- new.env(FALSE, parent=globalenv())  # Taking cue from Roger Bivand's maptools
+
 .onLoad <- function(libname, pkgname)
 {
 	library.dynam("PBSmodelling", pkgname, libname)
@@ -63,19 +65,23 @@ http://code.google.com/p/pbs-software/
 .onAttach <- function(libname, pkgname){
 	.initPBSoptions()
 }
+.onUnload <- function(libpath) {
+	rm(.PBSmodEnv)
+}
+
 # No Visible Bindings
 # ===================
 if(getRversion() >= "2.15.1") utils::globalVariables(names=c(
-	".cls",".cwd",".dls",".dwd",
+	".closeChoice",".cls",".cwd",".dls",".dwd",".makeChoice",".PBSmod",".runExHelperQuit",
 	"blist",
-	"command","curVal",
+	"chFile","chTest","closeALL","closeSDE","command","curVal",
 	"for",
 	"global",
 	"maxVal","minVal",
 	"OK",
 	"PBS.history","PBSmin","prefix",
 	"remote","runs",
-	"tmp.before",
+	"tgot","tmp.before",
 	"v.tab","variable",
 	"wN"
 	), package="PBSmodelling" )

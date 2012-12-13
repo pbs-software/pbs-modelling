@@ -9,7 +9,7 @@ grid 1 5 sticky=W pady=5
 grid 1 4 sticky=W pady=5
 	label text="Inputs" font="bold 12" sticky="W" fg="blue"
 	entry name=pwr label="Power" width=4 value=0 sticky=W
-	button text=" RePow " func=SGinit action="rePow"
+	button text=" RePow " func=doAction action="tget(SGinit)(`rePow`)"
 	label text="-----------------------------" font="courier 10"
 
 grid 3 3 sticky=W byrow=F
@@ -33,13 +33,13 @@ grid 3 3 sticky=W byrow=F
 			radio name=method value="L-BFGS-B" text="L-BFGS-B" mode=character sticky=W
 			radio name=method value="SANN" text="SANN" mode=character sticky=W
 	grid 1 3
-		button text=" RUN " func=SGtest action="calcMin" sticky="" pady=0 padx=0 
+		button text=" RUN " func=SGtest sticky="" pady=0 padx=0 
 		button text=" ReSet " func=SGset action="reSet" sticky="" pady=0 padx=0 
-		button text=" ReInit " func=SGinit action="reInit" sticky="" pady=0 padx=0 
+		button text=" ReInit " func=doAction action="tget(SGinit)(`reInit`)" sticky="" pady=0 padx=0 
 	label text="Controls" font="bold 10" sticky=""
 	vector names="trace maxit reltol steptol temp repN" length=6 values="0 1000 1e-8 1e-6 10 0" \
 		width=5 vertical=T padx=10 sticky=NW
-	button text="8 Areas" func=show8 action="show8" sticky="" pady=0 padx=0 stick=""
+	button text="8 Areas" func=show8 sticky="" pady=0 padx=0
 
 grid 1 3 sticky=W
 	label text="Outputs" font="bold 12" sticky="W" fg="red" pady=10

@@ -40,7 +40,7 @@ getChoice(choice=c("Yes","No"), question="Make a choice: ",
   
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \note{ 
 	Microsoft Windows users may experience difficulties switching focus between the 
@@ -56,12 +56,16 @@ getChoice(choice=c("Yes","No"), question="Make a choice: ",
 \examples{
 \dontrun{
 #-- Example 1
-getChoice(c("Fame","Fortune","Health","Beauty","Lunch"),
-   "What do you want?",qcolor="red",gui=F)
+local(envir=.PBSmodEnv,expr={
+  getChoice(c("Fame","Fortune","Health","Beauty","Lunch"),
+    "What do you want?",qcolor="red",gui=FALSE)
+})
 
 #-- Example 2
-getChoice(c("Homer Simpson","Wilberforce Humphries","Miss Marple"),
-   "Who`s your idol?",horiz=F,radio=T,gui=F)
+local(envir=.PBSmodEnv,expr={
+  getChoice(c("Homer Simpson","Wilberforce Humphries","Miss Marple","Gary Numan"),
+    "Who`s your idol?",horiz=FALSE,radio=TRUE,gui=FALSE)
+})
 }
 }
 \keyword{ device }

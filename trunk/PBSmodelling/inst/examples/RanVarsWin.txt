@@ -27,8 +27,8 @@ grid 1 2 padx=20
     rowlabels="mean sd shape scale" \
     collabels="True Estimated" \
     values="0 0 0 0 0 0 0 0" sticky=E
-button text=Simulate func=simData sticky="S" font=bold
+button text=Simulate func=.win.tget act=simData sticky="S" font=bold  # need to get simData from .PBSmodEnv
 grid 1 3
-  button text="Density Plot" func=plDens sticky="S" font=bold
-  button text="Cummulative Plot" func=plCum sticky="S" font=bold
-  button text="Pairs Plot" func=plPair sticky="S" font=bold
+  button text="Density Plot" func=.win.tget act=plDens sticky="S" font=bold
+  button text="Cummulative Plot" func=.win.tget act=plCum sticky="S" font=bold
+  button text="Pairs Plot" func=.win.tget act=plPair sticky="S" font=bold

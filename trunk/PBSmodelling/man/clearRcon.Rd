@@ -1,5 +1,4 @@
 \name{clearRcon}
-\Rdversion{1.1}
 \alias{clearRcon}
 \alias{focusRgui}
 \title{Clear the R Console / Focus on the RGui Window}
@@ -31,8 +30,10 @@ focusRgui(os=.Platform$OS.type)
 }
 \examples{
 \dontrun{
-createWin( c("window title=Focus",
-  "button text=\"Go to RGui\" width=20 bg=aliceblue func=focusRgui"), astext=T)
+local(envir=.PBSmodEnv,expr={
+  createWin( c("window title=Focus",
+    "button text=\"Go to RGui\" width=20 bg=aliceblue func=focusRgui"), astext=T)
+})
 }
 }
 \keyword{device}

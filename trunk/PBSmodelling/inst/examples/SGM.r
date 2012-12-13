@@ -1,14 +1,17 @@
-SGinit <- function() {
-	SGlist <- readList("SGMdata.txt"); unpackList(SGlist,scope="G");
-	act <- getWinAct()[1];
+SGinit <- function(act=NULL) {
+	SGlist <- readList("SGMdata.txt"); unpackList(SGlist,scope="P");
+	if (is.null(act)) act <- getWinAct()[1]
 	if (!is.null(act)) {
 		pwr <- getWinVal()$pwr; 
 		if (act=="reInit") {
 			pwr <- 0; setWinVal(list(pwr=pwr)); };
 		if (pwr>0) {
-			mlen <- SGdata$len^pwr; SGdata$len <<- mlen/max(mlen) * 100;
+			mlen <- SGdata$len^pwr; SGdata$len <- mlen/max(mlen) * 100;
 			mpars <- SGpars[3:4,1:3]^pwr; mpars<- round(mpars/max(mpars) * 100);
-			mpars[1,1] <- max(mpars[1,1],1); SGpars[3:4,1:3] <<- mpars; }; };
+			mpars[1,1] <- max(mpars[1,1],1); SGpars[3:4,1:3] <- mpars
+		}
+	}
+	tput(SGdata); tput(SGpars)
 	setWinVal(list(parVec=SGpars)); };
 
 SGfun <- function(P) {
@@ -35,27 +38,27 @@ SGfun <- function(P) {
 			frac <- (xobs-t1) / (t2-t1);
 			y <- y1 * exp(log(y2/y1) * frac); return(y);  }
 	}
-	unpackList(FP,scope="L");
+	tget(FP); unpackList(FP,scope="L");
 	ypred <- aModel(P=P,xobs=xobs,yobs=yobs,Pfix=Pfix,is.pred=is.pred);
-	if (is.pred) { FP$yobs <<- ypred; return(ypred); }
+	if (is.pred) { FP$yobs <- ypred; tput(FP); return(ypred); }
 	n <- length(yobs);  ssq <- sum( (yobs-ypred)^2 );
 	return(n*log(ssq)); };
 
-SGtest <- function() {
-	getWinVal(scope="L");
-	FP <<-list(Pfix=Pfix,is.pred=FALSE,xobs=SGdata$age,yobs=SGdata$len);
-	Obag <<- calcMin(pvec=parVec,func=SGfun,method=method,trace=trace,maxit=maxit,reltol=reltol,steptol=steptol,repN=repN);
-	fmin <- PBSmin$fmin; np <- sum(parVec[,4]); ng <- nrow(SGdata);
-	PBSmin$AICc <<- 2*fmin + 2*np * (ng/(ng-np-1)); #print(PBSmin);
+SGtest <- function(act=NULL) {
+	getWinVal(scope="L"); tget(SGdata); tget(SGpars)
+	FP <-list(Pfix=Pfix,is.pred=FALSE,xobs=SGdata$age,yobs=SGdata$len); tput(FP)
+	Obag <- calcMin(pvec=parVec,func=SGfun,method=method,trace=trace,maxit=maxit,reltol=reltol,steptol=steptol,repN=repN); tput(Obag)
+	tget(PBSmin); fmin <- PBSmin$fmin; np <- sum(parVec[,4]); ng <- nrow(SGdata);
+	PBSmin$AICc <- 2*fmin + 2*np * (ng/(ng-np-1)); tput(PBSmin)
 	P <- PBSmin$end; ftime <- PBSmin$time;
-	Pcalc <<- calcP(P,Pfix); # t0, yinf, tstar, ystar, zstar (Eqns 24-28, Schnute 1981)
+	Pcalc <- calcP(P,Pfix); tput(Pcalc) # t0, yinf, tstar, ystar, zstar (Eqns 24-28, Schnute 1981)
 	Pcfig <- sapply(Pcalc,signif,5); Pfig <- signif(P,5);
 
 	resetGraph(); expandGraph();
 	clrs <- c("red","blue","green4","purple4","darkorange3","cornflowerblue","darkolivegreen");
 	clr <- clrs[match(method,c("nlminb","nlm","Nelder-Mead","BFGS","CG","L-BFGS-B","SANN"))];
 	xnew <- seq(SGdata$age[1],SGdata$age[ng],len=100);
-	FP$is.pred <<- TRUE;  FP$xobs <<- xnew;
+	FP$is.pred <- TRUE;  FP$xobs <- xnew; tput(FP)
 	ynew <- SGfun(P);
 	plot(SGdata,las=1,cex.axis=1,mgp=c(2,0.5,0),xlab="Age",
 		ylab=paste("Length",ifelse(pwr!=0 & pwr!=1,paste("^",round(pwr,3)),"")));
@@ -100,8 +103,8 @@ calcP <- function(P,Pfix) { # t0, yinf, tstar, ystar, zstar (Eqns 24-28, Schnute
 		ystar=as.vector(ystar),zstar=as.vector(zstar))); };
 
 show8 <- function(xy=1.5) {
-	if (!exists("FP",where=1)) stop("Perform minimization first");
-	unpackList(FP,scope="L"); P <- PBSmin$end;
+	if (!exists("FP",where=.PBSmodEnv)) stop("Perform minimization first");
+	tget(FP); unpackList(FP,scope="L"); P <- PBSmin$end;
 	a<-P[1]; b<-P[2]; y1<-P[3]; y2<-P[4]; t1 <- Pfix[1]; t2 <- Pfix[2];
 	bee  <- -a * (t2-t1) / log(y2/y1);
 	xbee <- seq(-10,10,len=100); ybee <- bee*xbee;
@@ -122,4 +125,4 @@ show8 <- function(xy=1.5) {
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 require("PBSmodelling");
 createWin("SGMWin.txt");
-remove(list=ls(1)[is.element(ls(1),c("FP","SGlist","SGdata","SGpars","PBSmin"))]); SGinit();
+remove(list=ls(.PBSmodEnv)[is.element(ls(1),c("FP","SGlist","SGdata","SGpars","PBSmin"))],pos=.PBSmodEnv); SGinit();
