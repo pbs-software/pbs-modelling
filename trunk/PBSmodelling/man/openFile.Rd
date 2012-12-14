@@ -11,14 +11,14 @@
 openFile(fname, package=NULL)
 }
 \arguments{
-	\item{fname}{name(s) of file(s) to open.}
-	\item{package}{(optional) open files relative to this package}
+  \item{fname}{name(s) of file(s) to open.}
+  \item{package}{(optional) open files relative to this package}
 }
 \value{
   An invisible string vector of the file names and/or commands + file names.
 }
 \author{
-  Alex Couture-Beil, Malaspina University-College, Nanaimo BC
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \note{
   If a command is registered with \code{setPBSext}, then 
@@ -26,7 +26,7 @@ openFile(fname, package=NULL)
   with the absolute path of the filename, before executing the command.
 }
 \section{Warning}{
-	Windows only: \code{openFile( ".." )} does not work as expected, but openFile( "../.." ) only opens the first parent directory.
+  Windows only: \code{openFile( ".." )} does not work as expected, but openFile( "../.." ) only opens the first parent directory.
 }
 
 \seealso{
@@ -35,17 +35,20 @@ openFile(fname, package=NULL)
 }
 \examples{
 \dontrun{
-
-#use openFile directly:
-openFile( "doc/PBSmodelling-UG.pdf", package="PBSmodelling" )
-
-#via doAction in a window description file:
-createWin( "button text=help func=doAction action=\"openFile( `doc/PBSmodelling-UG.pdf`, package=`PBSmodelling` )\"", astext=TRUE )
-
-#############################
-# Set up firefox to open .html files (only applicable if firefox is NOT the default web browser
-setPBSext("html", '"c:/Program Files/Mozilla Firefox/firefox.exe" file://\%f')
-openFile("foo.html")
+local(envir=.PBSmodEnv,expr={
+  #use openFile directly:
+  openFile( "doc/PBSmodelling-UG.pdf", package="PBSmodelling" )
+})
+local(envir=.PBSmodEnv,expr={
+  #via doAction in a window description file:
+  createWin( "button text=help func=doAction action=\"openFile( `doc/PBSmodelling-UG.pdf`, package=`PBSmodelling` )\"", astext=TRUE )
+})
+local(envir=.PBSmodEnv,expr={
+  #############################
+  # Set up firefox to open .html files (only applicable if firefox is NOT the default web browser
+  setPBSext("html", '"c:/Program Files/Mozilla Firefox/firefox.exe" file://\%f')
+  openFile("foo.html")
+})
 }
 }
 \keyword{file}

@@ -92,7 +92,7 @@ new("code",
   "break"  = tolower(xmlGetAttr(node,"break","print")))
 new("break") }
 }
-\author{ Alex Couture-Beil }
+\author{ Alex Couture-Beil, Vancouver Island University, Nanaimo BC }
 \seealso{
   \code{\link[PBSmodelling]{presentTalk}} for presenting a talk in R.
   

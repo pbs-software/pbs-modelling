@@ -18,7 +18,8 @@ showPacks(packs=c("PBSmodelling","PBSmapping","PBSddesolve",
   \code{Mpacks} (packages that are missing).
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Nanaimo BC
+  Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \keyword{ package }
 \keyword{ character }
+

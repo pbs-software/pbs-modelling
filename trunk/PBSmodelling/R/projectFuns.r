@@ -158,8 +158,7 @@ openExamples=function(package, prefix, suffix){
   filenames=basename(filepaths)
 
   for(i in 1:length(filenames)){
-    if(!file.exists(filenames[i]) || getYes(paste("Overwrite existing ",
-        filenames[i], "?", sep="")))
+    if(!file.exists(filenames[i]) || getYes(paste("Overwrite existing ",filenames[i], "?", sep="")))
       file.copy(from=filepaths[i], to=filenames[i], overwrite=TRUE)
   }
 
@@ -168,108 +167,6 @@ openExamples=function(package, prefix, suffix){
 
   for(i in filenames)
     .tryOpen(i)
-}
-
-# ***********************************************************
-# openPackageFile:
-#  Open a file from a given package. This can be used via a
-#  window description file using openPackageFile as the
-#  function and packageName,relativeFilepath as the
-#  action. Alternatively, it can be called without a GUI, in
-#  which case the package and filepath are provided as
-#  parameters.
-# Input:
-#  package - name of package in which to find file
-#  filepath - filepath of file, relative from package root
-# -----------------------------------------------------------
-openPackageFile=function(package, filepath){
-	warning( "this function is deprecated - use openFile" )
-  if(missing(package) && missing(filepath)){
-    action=strsplit(getWinAct()[1], ",")
-    package=action[[1]][1]
-    filepath=action[[1]][2]
-  }
-  openFile( filepath, package=package )
-}
-
-# ***********************************************************
-# openProjFiles:
-#  Open one or more files in the working directory, given one
-#  file prefix and one or more file suffixes.
-#  A suffix may contain wild card characters (? and *)--
-#  if more than one file is found matching a single suffix
-#  in this way then only the first is opened.
-#  This function can also be used to automatically copy and
-#  open a template associated with each given suffix if the
-#  file does not already exist in the working directory
-#  The template should be found in the template subdirectory
-#  for the given package. No error will occur if the template
-#  option is used and there is no template to copy.
-#  The action in the window description file should follow
-#  the format packageName,suffix1,suffix2,suffixN
-#  If the package name is omitted, ie. ,suffix1,suffix2
-#  then no templates will be copied
-#  If an editor option has been set, the files will be
-#  opened using this, otherwise openFile will be used.
-# Input:
-#  prefix - prefix of file
-#  suffix - character vector of suffixes
-#  package - name of package to find template or NULL to not use
-#            templates
-#  warn - NULL to not change warn setting, or a value to change
-#         the R warn option to temporarily
-#  alert - If TRUE, a pop-up alert message is shown if
-#          a file failed to be opened.
-# Output:
-#   Returns FALSE if a one or more of the files failed to be
-#   opened, TRUE otherwise
-# -----------------------------------------------------------
-openProjFiles=function(prefix, suffix, package=NULL, warn=NULL, alert=TRUE){
-	oldWarn=options("warn")[[1]]
-	if(!is.null(warn))
-		options("warn"=warn)
-		
-	if(missing(prefix) && missing(suffix)){
-    prefix=.getPrefix(quiet=!alert)
-    if (is.null(prefix)){
-			warning("Must specify prefix.")
-			options("warn"=oldWarn)
-      return(FALSE)
-		}
-    action=strsplit(getWinAct()[1], ",")[[1]]
-    package=action[1]
-    suffix=action[2:length(action)]
-	} else if (missing(prefix)){
-		warning('argument "prefix" is missing, with no default')
-		options("warn"=oldWarn)
-  	return(FALSE)
-	} else if (missing(suffix)){
-		warning('argument "suffix" is missing, with no default')
-		options("warn"=oldWarn)
-  	return(FALSE)
- 	}
-		
-  notOpened=character(0)
-  for(sufI in suffix){
-    localFilename=Sys.glob(paste(prefix, sufI, sep=""))
-    if(length(localFilename))
-      localFilename=localFilename[1]
-    else if(!is.null(package)){
-      template=Sys.glob(paste(system.file("templates", package=package), "/",
-          prefix, sufI, sep=""))
-      if(length(template)){
-        expandedSuf=sub("*template", "", template[1])
-        localFilename=paste(prefix, suffix, sep="")
-        file.copy(from=template[1], to=localFilename)
-      }
-    }
-    if(!.tryOpen(localFilename, quiet=TRUE))
-      notOpened=c(notOpened, localFilename)
-  }
-  options("warn"=oldWarn)
-  if(alert && length(notOpened))
-		showAlert(paste("Could not open", paste(notOpened, collapse=", ")))
-  return(!as.logical(length(notOpened)))
 }
 
 #promptWriteOptions---------------------2012-12-04

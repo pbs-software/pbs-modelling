@@ -41,6 +41,9 @@ setGUIoptions(option)
 }
 \examples{
 \dontrun{
-setGUIoptions("editor")
+local(envir=.PBSmodEnv,expr={
+  setGUIoptions("editor")
+})
 }
 }
+

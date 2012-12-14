@@ -17,6 +17,6 @@ isWhat(x)
   characteristics on the command line.
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Nanaimo BC
+  Jon Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \keyword{utilities}

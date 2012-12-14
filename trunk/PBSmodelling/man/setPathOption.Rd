@@ -25,6 +25,9 @@ setPathOption(option)
 }
 \examples{
 \dontrun{
-setPathOption("myPath")
+local(envir=.PBSmodEnv,expr={
+  setPathOption("myPath")
+})
 }
 }
+

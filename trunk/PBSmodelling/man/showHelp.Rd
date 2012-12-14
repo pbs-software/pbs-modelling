@@ -32,7 +32,7 @@ showHelp(pattern="methods", ...)
   Help pages are displayed in a separate browser window.
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \note{
   The connection time for browsers (at least in Windows OS)
@@ -41,7 +41,8 @@ showHelp(pattern="methods", ...)
   subsequent calls to \code{showHelp} should show all matches.
 }
 \seealso{ 
-	\code{\link{viewCode}}, \code{\link{showPacks}}
+  \code{\link{viewCode}}, \code{\link{showPacks}}
 }
 \keyword{device}
 \keyword{utilities}
+

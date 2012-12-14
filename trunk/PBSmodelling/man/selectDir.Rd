@@ -2,35 +2,37 @@
 \alias{selectDir}
 \title{Display Dialogue: Select directory}
 \description{
-	Display the default directory chooser prompt provided by the Operating System.
+  Display the default directory chooser prompt provided by the Operating System.
 }
 \usage{
 selectDir(initialdir=getwd(), mustexist=TRUE, title="", 
     usewidget=NULL)
 }
 \arguments{
-	\item{initialdir}{initially selected directory}
-	\item{mustexist}{if logical value is \code{TRUE}, only a existing directory can be selected}
-	\item{title}{title for the prompt window}
-	\item{usewidget}{store the selected directory in the named entry widget}
+  \item{initialdir}{initially selected directory}
+  \item{mustexist}{if logical value is \code{TRUE}, only a existing directory can be selected}
+  \item{title}{title for the prompt window}
+  \item{usewidget}{store the selected directory in the named entry widget}
 }
 \value{
-	The directory path selected by the user
+  The directory path selected by the user
 }
 \author{
-  Alex Couture-Beil
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \seealso{
-	\code{\link{selectFile}}
+  \code{\link{selectFile}}
 }
 \examples{
 \dontrun{
-dir(selectDir(title="select a directory to list contents of"))
+local(envir=.PBSmodEnv,expr={
+  dir(selectDir(title="select a directory to list contents of"))
 
-#integration with widget via doAction
-createWin( c( "entry foo mode=character", 
-  "button text=\"select dir\" 
-  func=doAction action=\"selectDir(usewidget=`foo`)\"" ), astext=TRUE )
+  #integration with widget via doAction
+  createWin( c( "entry foo mode=character", 
+    "button text=\"select dir\" 
+    func=doAction action=\"selectDir(usewidget=`foo`)\"" ), astext=TRUE )
+})
 }
 }
 \keyword{file}

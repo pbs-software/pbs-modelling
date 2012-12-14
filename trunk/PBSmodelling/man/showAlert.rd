@@ -19,10 +19,12 @@ showAlert(message, title="Alert", icon="warning")
   Anisa Egeli, Vancouver Island University, Nanaimo BC
 }
 \seealso{
-	\code{\link{getYes}}
+  \code{\link{getYes}}
 }
 \examples{
 \dontrun{
-showAlert("Hello World!")
+local(envir=.PBSmodEnv,expr={
+  showAlert("Hello World!")
+})
 }
 }

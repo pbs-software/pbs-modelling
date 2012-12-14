@@ -32,16 +32,21 @@ show0(x, n, add2int=FALSE, round2n=FALSE)
   \code{\link[PBSmodelling]{pad0}}, \code{\link[PBSmodelling]{GT0}}
 }
 \examples{
-frame()
+local(envir=.PBSmodEnv,expr={
+  oldpar = par(no.readonly=TRUE)
+  frame()
 
-#do not show decimals on integers
-addLabel(0.25,0.75,show0(15.2,4))
-addLabel(0.25,0.7,show0(15.1,4))
-addLabel(0.25,0.65,show0(15,4))
+  #do not show decimals on integers
+  addLabel(0.25,0.75,show0(15.2,4))
+  addLabel(0.25,0.7,show0(15.1,4))
+  addLabel(0.25,0.65,show0(15,4))
 
-#show decimals on integers
-addLabel(0.25,0.55,show0(15.2,4,TRUE))
-addLabel(0.25,0.5,show0(15.1,4,TRUE))
-addLabel(0.25,0.45,show0(15,4,TRUE))
+  #show decimals on integers
+  addLabel(0.25,0.55,show0(15.2,4,TRUE))
+  addLabel(0.25,0.5,show0(15.1,4,TRUE))
+  addLabel(0.25,0.45,show0(15,4,TRUE))
+  par(oldpar)
+})
 }
 \keyword{print}
+

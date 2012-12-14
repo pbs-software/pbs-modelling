@@ -26,21 +26,25 @@ plotSidebars(z, scale = 1, col = lucent("blue", 0.25), ...)
 	by \code{z*scale} from the central x-coordinate. 
 }
 \author{
-  Steve Martell, University of British Columbia, Vancouver BC
+  Steve Martell, International Pacific Halibut Commission, Seattle WA
 }
 \seealso{
   \code{\link[PBSmodelling]{plotBubbles}}, \code{\link[PBSmodelling]{plotFriedEggs}},
   \code{\link[PBSmodelling]{evalCall}}
 }
 \examples{
-pbsfun = function () {
-  meanmarg = function(x){x=x[!is.na(x)]; 
-    if (length(x)==0 | all(x==0)) NA else sum((x/sum(x))*as.numeric(names(x)))}
-  data(CCA.qbr)
-  plotSidebars(CCA.qbr,scale=4,las=1,border="navyblue",mar=c(4,4,1,1),
-    lbl=c("Year","Quillback Rockfish Age"),margin=function(x){round(meanmarg(x),0)})
-  invisible() }
-pbsfun()
+local(envir=.PBSmodEnv,expr={
+  oldpar = par(no.readonly=TRUE)
+  pbsfun = function () {
+    meanmarg = function(x){x=x[!is.na(x)]; 
+      if (length(x)==0 | all(x==0)) NA else sum((x/sum(x))*as.numeric(names(x)))}
+    data(CCA.qbr,envir=.PBSmodEnv)
+    plotSidebars(CCA.qbr,scale=4,las=1,border="navyblue",mar=c(4,4,1,1),
+      lbl=c("Year","Quillback Rockfish Age"),margin=function(x){round(meanmarg(x),0)})
+    invisible() }
+  pbsfun()
+  par(oldpar)
+})
 }
 \keyword{hplot}
 

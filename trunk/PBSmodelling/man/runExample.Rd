@@ -29,7 +29,7 @@
   \code{PBSmapping} - \code{FishTows}.
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \note{
   The examples are copied from \code{.../library/PBSmodelling/examples} to R's current 
@@ -39,3 +39,4 @@
   \code{\link{runDemos}}, \code{\link{runExamples}}
 }
 \keyword{utilities}
+

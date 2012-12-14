@@ -25,6 +25,9 @@ setFileOption(option)
 }
 \examples{
 \dontrun{
-setPathOption("editor")
+local(envir=.PBSmodEnv,expr={
+  setPathOption("editor")
+})
 }
 }
+

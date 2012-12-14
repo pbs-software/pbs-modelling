@@ -20,7 +20,7 @@
   \code{PBSmapping} - \code{FishTows}.
 }
 \author{
-  Alex Couture-Beil, Malaspina University-College, Nanaimo BC
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \note{
   The examples are copied from \code{.../library/PBSmodelling/examples} to R's current 
@@ -30,4 +30,5 @@
   \code{\link{runDemos}}, \code{\link{runExample}}
 }
 \keyword{utilities}
+
 
