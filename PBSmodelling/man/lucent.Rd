@@ -20,18 +20,21 @@ lucent(col.pal=1, a=1)
   Vector of transformed colours depending on the alpha transparancy value \code{a}.
 }
 \author{
-  Steve Martell, University of British Columbia, Vancouver BC
+  Steve Martell, International Pacific Halibut Commission, Seattle WA
 }
 \seealso{
   \code{\link[PBSmodelling]{pickCol}}, \code{\link[PBSmodelling]{testCol}},
   \code{\link[grDevices]{col2rgb}}, \code{\link[grDevices]{rgb}}
 }
 \examples{
-pbsfun = function(clrs=c("moccasin",rainbow(3))){
-  clrs = c(clrs,lucent(clrs,a=0.25))
-  testCol(clrs)
-  invisible() }
-pbsfun()
+local(envir=.PBSmodEnv,expr={
+  oldpar = par(no.readonly=TRUE)
+  pbsfun = function(clrs=c("moccasin",rainbow(3))){
+    clrs = c(clrs,lucent(clrs,a=0.25))
+    testCol(clrs); invisible() }
+  pbsfun()
+  par(oldpar)
+})
 }
 \keyword{color}
 

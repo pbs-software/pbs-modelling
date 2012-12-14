@@ -37,6 +37,8 @@ promptWriteOptions(fname="")
 }
 \examples{
 \dontrun{
-promptWriteOptions() #uses default filename PBSoptions.txt
+local(envir=.PBSmodEnv,expr={
+  promptWriteOptions() #uses default filename PBSoptions.txt
+})
 }
 }

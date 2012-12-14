@@ -19,7 +19,7 @@ openUG(pkg = "PBSmodelling")
   The name of the PDF file will be '<pkg>-UG.pdf' (e.g., \code{PBSmodelling-UG.pdf}.
 }
 \author{
-  Rowan Haigh, PAcific Biological station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \seealso{
 \code{\link{openFile}}, \code{\link{showHelp}}, \code{\link{viewCode}}

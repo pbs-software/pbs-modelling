@@ -6,15 +6,15 @@
 
 \title{S4: Project Options Class}
 \description{
-	Projects commonly involve various settings or options such as paths to C compilers or other third-party tools.
-	\pkg{PBSmodelling} provides a set of option management functions for managing user specific options. Options can be 
-	modified through the provided set of functions on the command line, or through a custom GUI.
-	These options can be saved to disk for use in subsequent R sessions.
-	
-	To use \pkg{PBSmodelling}'s suite of option management functions, a \code{PBSoptions} object must be
-	created for each of your projects. Each \code{PBSoptions} object contains a distinct R environment where 
-	option values are stored; this allows different projects to use overlapping option names without conflicts
-	(provided each project has its own \code{PBSoptions} class object).
+  Projects commonly involve various settings or options such as paths to C compilers or other third-party tools.
+  \pkg{PBSmodelling} provides a set of option management functions for managing user specific options. Options can be 
+  modified through the provided set of functions on the command line, or through a custom GUI.
+  These options can be saved to disk for use in subsequent R sessions.
+  
+  To use \pkg{PBSmodelling}'s suite of option management functions, a \code{PBSoptions} object must be
+  created for each of your projects. Each \code{PBSoptions} object contains a distinct R environment where 
+  option values are stored; this allows different projects to use overlapping option names without conflicts
+  (provided each project has its own \code{PBSoptions} class object).
 
 }
 \section{Objects from the Class}{
@@ -46,10 +46,10 @@
   we can save options in the object without the need of returning a new modified class object. It is therefore necessary that users
   use the functions listed in the "see also" section to effectively manage user options.
 }
-\author{ Alex Couture-Beil }
+\author{ Alex Couture-Beil, Vancouver Island University, Nanaimo BC }
 
 \section{Warning }{
-Do not use the slots -- use the access functions instead.
+  Do not use the slots directly -- use the access functions instead.
 }
 \seealso{
   \code{\link[PBSmodelling]{getOptions}} for retrieving and modifying user options
@@ -63,26 +63,28 @@ Do not use the slots -- use the access functions instead.
   \code{\link[PBSmodelling]{loadOptionsGUI}} for setting GUI values to reflect user options and vice-versa
 }
 \examples{
-#initialize an option manager with a single logical option
-.mypkg <<- new( "PBSoptions", filename="my_pkg.txt", 
-   initial.options=list( sillyhatday=FALSE ) )
+local(envir=.PBSmodEnv,expr={
+  #initialize an option manager with a single logical option
+  .mypkg <- new( "PBSoptions", filename="my_pkg.txt", 
+    initial.options=list( sillyhatday=FALSE ) )
 
-#retrieving an option
-silly <- getOptions( .mypkg, "sillyhatday" )
-cat( "today is", ifelse( silly, "silly hat day!", "monday" ), "\n" )
+  #retrieving an option
+  silly <- getOptions( .mypkg, "sillyhatday" )
+  cat( "today is", ifelse( silly, "silly hat day!", "monday" ), "\n" )
 
-#set an option
-setOptions( .mypkg, sillyhatday = TRUE, photos = "/shares/silly_hat_photos" )
+  #set an option
+  setOptions( .mypkg, sillyhatday = TRUE, photos = "/shares/silly_hat_photos" )
 
-#create a GUI which works with options
-createWin( c( 
-	"check name=optionsillyhatday text=\"silly hat day\"",
-	"entry name=optionphotos mode=character label=\"photos directory\"",
-	"button func=doAction text=save action=saveOptionsGUI(.mypkg)" ), astext = TRUE )
+  #create a GUI which works with options
+  createWin( c( 
+    "check name=optionsillyhatday text=\"silly hat day\"",
+    "entry name=optionphotos width=22 mode=character label=\"photos directory\"",
+    "button func=doAction text=save action=saveOptionsGUI(.mypkg)" ), astext = TRUE )
 
-#update GUI values based on values stored in .mypkg's options
-loadOptionsGUI( .mypkg )
-print(getOptions( .mypkg ))
+  #update GUI values based on values stored in .mypkg's options
+  loadOptionsGUI( .mypkg )
+  print(getOptions( .mypkg ))
+})
 }
 \keyword{classes}
 \keyword{methods}

@@ -518,46 +518,6 @@ pause <- function (s = "Press <Enter> to continue") {
 	invisible()
 }
 
-#promptOpenFile-------------------------2006-09-16
-# Opens a prompt and asks a user to select a file.
-# Arguments:
-#  initialfile - filename to pre-select
-#  filetype - list of vectors specifying allowed filetypes
-# Returns:
-#  selected filename
-# Example:
-#  promptOpenFile("intial_file.txt", filetype=list(c(".txt", "text files"), 
-#                 c(".r", "R files"), c("*", "All Files")))
-#----------------------------------------------ACB
-promptOpenFile <- function(initialfile="", filetype=list(c("*", "All Files")), open=TRUE) {
-	warning( "promptOpenFile is deprecated - use selectFile instead" )
-	filetypes <- ""
-	for(i in 1:length(filetype)) {
-		filetype[[i]]
-		if (is.na(filetype[[i]][2]))
-			filetype[[i]][2] <- filetype[[i]][1]
-		if (filetype[[i]][1] != "*" && substr(filetype[[i]][1],1,1)!=".")
-			filetype[[i]][1] <- paste(".", filetype[[i]][1], sep="")
-		filetypes <- paste(filetypes, " {{", filetype[[i]][2], "} {", filetype[[i]][1], "}}", sep="")
-	}
-	filetypes <- .trimWhiteSpace(filetypes)
-	
-	if (open)
-		return(tclvalue(tkgetOpenFile(initialfile=initialfile, filetypes=filetypes)))
-	else
-		return(tclvalue(tkgetSaveFile(initialfile=initialfile, filetypes=filetypes)))
-}
-
-#promptSaveFile-------------------------2006-09-16
-# Exactly the same as promptOpenFile except displays a 
-# save button instead of an open button
-#----------------------------------------------ACB
-promptSaveFile <- function(initialfile="", filetype=list(c("*", "All Files")), save=TRUE)
-{
-	warning( "promptSaveFile is deprecated - use selectFile instead" )
-	return(promptOpenFile(initialfile, filetype, !save))
-}
-
 #readPBSoptions-------------------------2012-12-04
 # Load PBS options from a text file. The loaded options will
 # overwrite existing ones in memory; however, an existing

@@ -11,10 +11,11 @@
 #                                                          #
 ############################################################
 
-# ***********************************************************
-# createWin:
-#   creates a GUI window from a given file, or GUI description list
-# -----------------------------------------------------------
+
+#createWin------------------------------2012-12-14
+# Create a GUI window from a given file,
+# or GUI description list.
+#-------------------------------------------ACB/RH
 createWin <- function( fname, astext=FALSE, env=NULL )  #parent.frame() ) #globalenv() )
 {
 	#must be called here for examples in rd to pass check
@@ -26,7 +27,14 @@ createWin <- function( fname, astext=FALSE, env=NULL )  #parent.frame() ) #globa
 		guiDesc <- parseWinFile(fname, astext=astext)
 	}
 	else if (is.list(fname)) {
-		guiDesc <- .validateWindowDescList(fname)
+		cat("The function `.validateWindowDescWidgets` needs revising.\n",
+		"Ignore for now and try creating the window description file anyway.\n",sep="")
+		guiDesc = fname
+		#guiDesc <- .validateWindowDescList(fname)
+		# appears to be buggy because .validateWindowDescWidgets(x[[i]]$.widgets)
+		# tests for the presences of $.widgets under $.widgets
+		# Note that the results of `parseWinFile` in line 27 
+		# never go through this validation algorithm.
 	}
 	else {
 		cat("ERROR, supplied argument is wrong type\n")
@@ -1021,7 +1029,7 @@ initHistory <- function(hisname, indexname=NULL, sizename=NULL, buttonnames=NULL
 	else
 		PBS.history <- get("PBS.history", envir = .PBSmodEnv) #.GlobalEnv)
 
-	if (func=="")
+	if (is.null(func) || func=="")
 		func <- NULL
 	if (!is.null(func)) {
 		if (!exists(func,mode="function",envir=.PBSmodEnv$.PBSmod[[.PBSmodEnv$.PBSmod$.activeWin]]$env)) {  #look for function in the original environment
@@ -1931,6 +1939,9 @@ rmHistory <- function(hisname="", index="")
 #       ex: -no error messages for filename/line number
 #           -no support for expanding shortened param names
 #           -no type conversion
+# -----------------------------------------------------------
+#***** THIS FUNCTION APPEARS TO BE BUGGY ***** RH
+#  It tests for $.widgets in $.widgets ???
 # -----------------------------------------------------------
 .validateWindowDescWidgets <- function(x)
 {

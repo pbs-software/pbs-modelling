@@ -28,8 +28,10 @@ pad0(x, n, f = 0)
   Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \examples{
-resetGraph(); x <- pad0(x=123,n=10,f=0:7);
-addLabel(.5,.5,paste(x,collapse="\n"),cex=1.5);
+local(envir=.PBSmodEnv,expr={
+  resetGraph(); x <- pad0(x=123,n=10,f=0:7);
+  addLabel(.5,.5,paste(x,collapse="\n"),cex=1.5);
+})
 }
 \seealso{
   \code{\link[PBSmodelling]{show0}}, \code{\link[PBSmodelling]{GT0}}

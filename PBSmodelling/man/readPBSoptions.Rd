@@ -23,3 +23,5 @@ readPBSoptions(fname="PBSoptions.txt")
   \code{\link{writePBSoptions}}, \code{\link{getGUIoptions}},
   \code{\link{openFile}}, \code{\link{getPBSoptions}}
 }
+\keyword{connection}
+

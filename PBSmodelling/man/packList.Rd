@@ -31,19 +31,21 @@ packList(stuff, target="PBSlist", value, tenv=.PBSmodEnv)
   No value is returned
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \seealso{
   \code{\link{unpackList}}, \code{\link{readList}}, \code{\link{writeList}}
 }
 \examples{
-fn = function() {
-	alpha=rnorm(10)
-	beta=letters
-	gamma=mean
-	delta=longley
-	packList(c("alpha","beta","gamma","delta")) }
-fn(); tprint(PBSlist)
+local(envir=.PBSmodEnv,expr={
+  fn = function() {
+    alpha=rnorm(10)
+    beta=letters
+    gamma=mean
+    delta=longley
+    packList(c("alpha","beta","gamma","delta")) }
+  fn(); tprint(PBSlist)
+})
 }
 \keyword{list}
 \keyword{file}

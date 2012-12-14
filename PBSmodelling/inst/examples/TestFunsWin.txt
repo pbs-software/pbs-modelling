@@ -6,7 +6,7 @@ grid 1 4 sticky=W
   button text="R Code" func=openFile action=TestFuns.r
   button text=Window func=openFile action=TestFunsWin.txt
 
-grid 25 2 byrow=TRUE
+grid 23 2 byrow=TRUE
 radio mode=character sticky=W func=TestFuns name=funs value=closeWin text=CLOSE
 radio mode=character sticky=W func=TestFuns name=funs value=addArrows text=addArrows
 radio mode=character sticky=W func=TestFuns name=funs value=addLabel text=addLabel
@@ -27,8 +27,6 @@ radio mode=character sticky=W func=TestFuns name=funs value=getYes text="getYes|
 radio mode=character sticky=W func=TestFuns name=funs value=GT0 text=GT0
 radio mode=character sticky=W func=openExamples name=funs value=openExamples text=openExamples action=PBSmodelling,fib,.c,.r
 radio mode=character sticky=W func=TestFuns name=funs value=openFile text=openFile
-radio mode=character sticky=W func=openPackageFile name=funs value=openPackageFile text=openPackageFile action=PBSmodelling,/doc/PBSmodelling-UG.pdf
-radio mode=character sticky=W func=TestFuns name=funs value=openProjFiles text=openProjFiles
 radio mode=character sticky=W func=TestFuns name=funs value=pad0 text=pad0
 radio mode=character sticky=W func=TestFuns name=funs value=pickCol text=pickCol
 radio mode=character sticky=W func=TestFuns name=funs value=plotACF text=plotACF
@@ -38,8 +36,6 @@ radio mode=character sticky=W func=TestFuns name=funs value=plotCsum text=plotCs
 radio mode=character sticky=W func=TestFuns name=funs value=plotDens text=plotDens
 radio mode=character sticky=W func=TestFuns name=funs value=plotFriedEggs text=plotFriedEggs
 radio mode=character sticky=W func=TestFuns name=funs value=plotTrace text=plotTrace
-radio mode=character sticky=W func=TestFuns name=funs value=promptOpenFile text=promptOpenFile
-radio mode=character sticky=W func=TestFuns name=funs value=promptSaveFile text=promptSaveFile
 radio mode=character sticky=W func=TestFuns name=funs value=readList text=readList
 radio mode=character sticky=W func=TestFuns name=funs value=resetGraph text=resetGraph
 radio mode=character sticky=W func=TestFuns name=funs value=restorePar text=restorePar

@@ -10,5 +10,8 @@
 setwdGUI()
 }
 \examples{
-createWin( "button text=\"Change working directory\" func=setwdGUI", astext=TRUE )
+local(envir=.PBSmodEnv,expr={
+  createWin( "button text=\"Change working directory\" func=setwdGUI", astext=TRUE )
+})
 }
+

@@ -36,17 +36,18 @@ openExamples(package, prefix, suffix)
   If all the required arguments are missing, it is assumed 
   that the function is being called by a GUI widget.
 }
-
 \seealso{
-	\code{\link{openFile}}, \code{\link{openProjFiles}},
-	\code{\link{openPackageFile}}
+  \code{\link{openFile}}, \code{\link{openProjFiles}}
 }
-
 \examples{
 \dontrun{
-# Copies example1.c and example2.r from the examples directory in 
-# myPackage to the working directory, and opens these files
-openExamples("myPackage", "example1", c(".r", ".c"))
+# Copies fib.c and fib.r from the examples directory in 
+# PBSmodelling to the temporary working directory, and opens these files.
+local(envir=.PBSmodEnv,expr={
+  cwd = getwd(); setwd(tempdir())
+  openExamples("PBSmodelling", c("fib"), c(".r", ".c"))
+  setwd(cwd)
+})
 }
 }
 \keyword{file}
