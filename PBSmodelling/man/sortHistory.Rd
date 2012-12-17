@@ -22,15 +22,15 @@
 sortHistory(file="", outfile=file, hisname="")
 }
 \arguments{
-	\item{file}{file name of saved history to sort.}
-	\item{outfile}{file to save sorted history to.}
-	\item{hisname}{name of active history widget and window it is located in, given
-	               in the form \code{WINDOW.HISTORY}.}
+  \item{file}{file name of saved history to sort.}
+  \item{outfile}{file to save sorted history to.}
+  \item{hisname}{name of active history widget and window it is located in, given
+                 in the form \code{WINDOW.HISTORY}.}
 }
 \author{
-  Alex Couture-Beil, Malaspina University-College, Nanaimo BC
+  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \seealso{
-	\code{\link{importHistory}}, \code{\link{initHistory}}
+  \code{\link{importHistory}}, \code{\link{initHistory}}
 }
 \keyword{list}

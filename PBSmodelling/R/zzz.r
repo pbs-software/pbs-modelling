@@ -74,7 +74,7 @@ http://code.google.com/p/pbs-software/
 if(getRversion() >= "2.15.1") utils::globalVariables(names=c(
 	".closeChoice",".cls",".cwd",".dls",".dwd",".makeChoice",".PBSmod",".runExHelperQuit",
 	"blist",
-	"chFile","chTest","closeALL","closeSDE","command","curVal",
+	"chFile","chTest","closeALL","closeSDE","command","curVal","cwd",
 	"for",
 	"global",
 	"maxVal","minVal",

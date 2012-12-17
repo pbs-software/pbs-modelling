@@ -19,7 +19,7 @@ showArgs(widget, width=70, showargs=FALSE)
     on single line after the widget usage section.}
 }
 \value{
-	A text stream to the R console. Invisibly returns the widget usage lines.
+  A text stream to the R console. Invisibly returns the widget usage lines.
 }
 \author{
   Alex Couture-Beil, Vancouver Island University, Nanaimo BC

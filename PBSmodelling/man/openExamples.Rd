@@ -37,7 +37,7 @@ openExamples(package, prefix, suffix)
   that the function is being called by a GUI widget.
 }
 \seealso{
-  \code{\link{openFile}}, \code{\link{openProjFiles}}
+  \code{\link{openFile}}
 }
 \examples{
 \dontrun{

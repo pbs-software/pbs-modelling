@@ -129,7 +129,7 @@ savePuz <- function()
 	cat("you must execute the function solveSudoku() from the console.\n")
 	cat("If the window invoked the function, the window would not\n")
 	cat("be updated until the function has finished.\n\n")
-	cat("Type \"tget(solveSudoku)()\" in the R console prompt below.\n")
+	cat("Type \"tcall(solveSudoku)()\" in the R console prompt below.\n")
 	cat("------------------------------------------------------------\n")
 }
 

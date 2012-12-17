@@ -21,7 +21,7 @@ testAlpha(alpha=seq(0,1,len=25), fg="blue", bg="yellow",
   \code{bg}, and \code{border}.
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Nanaimo BC
+  Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \seealso{ \code{\link{testCol}}, \code{\link{testPch}}, \code{\link{testLty}}, \code{\link{testLwd}} }
 \keyword{ color }

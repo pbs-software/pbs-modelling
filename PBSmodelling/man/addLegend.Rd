@@ -17,7 +17,7 @@ addLegend(x, y, ...)
     such as \code{lines}, \code{text}, or \code{rectangle}.}
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \seealso{
   \code{\link{addArrows}}, \code{\link{addLabel}}

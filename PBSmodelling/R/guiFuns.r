@@ -12,7 +12,7 @@
 ############################################################
 
 
-#createWin------------------------------2012-12-14
+#createWin------------------------------2012-12-17
 # Create a GUI window from a given file,
 # or GUI description list.
 #-------------------------------------------ACB/RH
@@ -27,14 +27,12 @@ createWin <- function( fname, astext=FALSE, env=NULL )  #parent.frame() ) #globa
 		guiDesc <- parseWinFile(fname, astext=astext)
 	}
 	else if (is.list(fname)) {
-		cat("The function `.validateWindowDescWidgets` needs revising.\n",
-		"Ignore for now and try creating the window description file anyway.\n",sep="")
-		guiDesc = fname
-		#guiDesc <- .validateWindowDescList(fname)
-		# appears to be buggy because .validateWindowDescWidgets(x[[i]]$.widgets)
-		# tests for the presences of $.widgets under $.widgets
-		# Note that the results of `parseWinFile` in line 27 
-		# never go through this validation algorithm.
+		guiDesc <- .validateWindowDescList(fname)
+		# Disabled the grid check in `.validateWindowDescWidgets` because the structure of a 
+		# windows description list must have changed since this little-used function was written. (RH 12/17)
+		# Note that the list result of `parseWinFile` in line 27 never goes through this validation algorithm.
+		# This call only occurs if a list from `parseWinFile` (or hand-made) is passed directly into `createWin`.
+		# Note: A list from `parseWinFile` never appears to create `.widgets` under `.widgets`. ***** SHOULD BE CHECKED *****
 	}
 	else {
 		cat("ERROR, supplied argument is wrong type\n")
@@ -1324,7 +1322,7 @@ rmHistory <- function(hisname="", index="")
 		stop("map error - key must be a string")
 	}
 	if (key=="") {
-		stop("map error - key must be atleast 1character long")
+		stop("map error - key must be at least 1 character long")
 	}
 	tget(.PBSmod)
 	if (!is.null(.PBSmod[[winName]]$widgetPtrs[[ key ]]))
@@ -1366,7 +1364,7 @@ rmHistory <- function(hisname="", index="")
 	if (!is.character(key))
 		stop("map error - key must be a string")
 	if (key=="")
-		stop("map error - key must be atleast 1character long")
+		stop("map error - key must be at least 1 character long")
 
 	tget(.PBSmod)
 	if (!is.list(.PBSmod[[winName]]$widgetPtrs[[key]]))
@@ -1941,7 +1939,8 @@ rmHistory <- function(hisname="", index="")
 #           -no type conversion
 # -----------------------------------------------------------
 #***** THIS FUNCTION APPEARS TO BE BUGGY ***** RH
-#  It tests for $.widgets in $.widgets ???
+#  It tests for $.widgets under grids, which doesn't seem to
+#  occur any more. (I could be wrong.)
 # -----------------------------------------------------------
 .validateWindowDescWidgets <- function(x)
 {
@@ -1950,8 +1949,13 @@ rmHistory <- function(hisname="", index="")
 		type <- x[[i]]$type
 		if (is.null(paramOrder[[type]]))
 			stop(paste("unknown widget type found:", type))
+		# RH (2012-12-17)-----------------
+		# I've disabled this grid check because the structure of a
+		# windows description list must have changed since this 
+		# little-used function was written.
+		# --------------------------------
 		#check children widgets of grid
-		if (type=="grid") {
+		if (type=="oldgrid") {
 			if (!is.list(x[[i]]$.widgets))
 				stop("grid needs a .widgets list")
 			for(j in 1:length(x[[i]]$.widgets))
@@ -1983,9 +1987,7 @@ rmHistory <- function(hisname="", index="")
 						stop(paste("given value \"", x[[i]][[args[[j]]$param]], 
 						"\" does not match grep:", args[[j]]$grep, sep=""))
 				}
-
 			}
-
 		}
 	}
 	return(x)

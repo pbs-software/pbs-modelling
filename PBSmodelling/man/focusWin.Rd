@@ -3,20 +3,20 @@
 \title{Set the Focus on a Particular Window}
 
 \description{
-	Bring the specified window into focus, and set it as the active window. 
-	\code{focusWin} will fail to bring the window into focus if it is called from the R 
-	console, since the R console returns focus to itself once a function returns. 
-	However, it will work if \code{focusWin} is called as a result of calling a function 
-	from the GUI window. (i.e., pushing a button or any other widget that has a 
-	function argument).
+  Bring the specified window into focus, and set it as the active window. 
+  \code{focusWin} will fail to bring the window into focus if it is called from the R 
+  console, since the R console returns focus to itself once a function returns. 
+  However, it will work if \code{focusWin} is called as a result of calling a function 
+  from the GUI window. (i.e., pushing a button or any other widget that has a 
+  function argument).
 }
 
 \usage{focusWin(winName, winVal=TRUE)}
 
 \arguments{
-	\item{winName}{name of window to focus}
-	\item{winVal}{if \code{TRUE}, associate \code{winName} with the default window 
-		for \code{setWinVal} and \code{getWinVal}}
+  \item{winName}{name of window to focus}
+  \item{winVal}{if \code{TRUE}, associate \code{winName} with the default window 
+    for \code{setWinVal} and \code{getWinVal}}
 }
 \author{
   Alex Couture-Beil, Vancouver Island University, Nanaimo BC

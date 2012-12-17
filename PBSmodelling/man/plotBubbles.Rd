@@ -43,7 +43,7 @@ plotBubbles(z, xval=FALSE, yval=FALSE, dnam=FALSE, rpro=FALSE,
   function's original intention was to display proportions-at-age vs. year.
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \seealso{
   \code{\link{genMatrix}}

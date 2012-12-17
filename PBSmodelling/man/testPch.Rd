@@ -28,9 +28,15 @@ testPch(pch=1:100, ncol=10, grid=TRUE, newframe=TRUE, octal=FALSE, ...)
   \code{\link[PBSmodelling]{testLty}}, \code{\link[PBSmodelling]{testLwd}}, \code{\link[PBSmodelling]{addLabel}}
 }
 \examples{
-testPch(123:255)
-testPch(1:25,ncol=5)
-testPch(41:277,octal=TRUE)
+local(envir=.PBSmodEnv,expr={
+  testPch(123:255)
+})
+local(envir=.PBSmodEnv,expr={
+  testPch(1:25,ncol=5)
+})
+local(envir=.PBSmodEnv,expr={
+  testPch(41:277,octal=TRUE)
+})
 }
 \keyword{utilities}
 \keyword{color}

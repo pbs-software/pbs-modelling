@@ -6,7 +6,7 @@ grid 1 4 sticky=W
   button text="R Code" func=openFile action=TestFuns.r
   button text=Window func=openFile action=TestFunsWin.txt
 
-grid 23 2 byrow=TRUE
+grid 23 2 byrow=FALSE
 radio mode=character sticky=W func=TestFuns name=funs value=closeWin text=CLOSE
 radio mode=character sticky=W func=TestFuns name=funs value=addArrows text=addArrows
 radio mode=character sticky=W func=TestFuns name=funs value=addLabel text=addLabel

@@ -43,15 +43,15 @@ getChoice(choice=c("Yes","No"), question="Make a choice: ",
   Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \note{ 
-	Microsoft Windows users may experience difficulties switching focus between the 
-	R console and GUI windows. The latter frequently disappear from the screen and 
-	need to be reselected (either clicking on the task bar or pressing <Alt><Tab>. 
-	This issue can be resolved by switching from MDI to SDI mode. From the R console 
-	menu bar, select <Edit> and <GUI preferences>, then change the value of 
-	\dQuote{single or multiple windows} to SDI.
+  Microsoft Windows users may experience difficulties switching focus between the 
+  R console and GUI windows. The latter frequently disappear from the screen and 
+  need to be reselected (either clicking on the task bar or pressing <Alt><Tab>. 
+  This issue can be resolved by switching from MDI to SDI mode. From the R console 
+  menu bar, select <Edit> and <GUI preferences>, then change the value of 
+  \dQuote{single or multiple windows} to SDI.
 }
 \seealso{ 
-	\code{\link{chooseWinVal}}, \code{\link{getWinVal}}, \code{\link{setWinVal}}
+  \code{\link{chooseWinVal}}, \code{\link{getWinVal}}, \code{\link{setWinVal}}
 }
 \examples{
 \dontrun{

@@ -29,12 +29,12 @@ findSuffix(prefix,path=".")
 }
 \examples{
 local(envir=.PBSmodEnv,expr={
-	edir = system.file("examples", package="PBSmodelling")
-	print(findPrefix(suffix=c(".txt", ".r"),path=edir)); cat("\n")
+  edir = system.file("examples", package="PBSmodelling")
+  print(findPrefix(suffix=c(".txt", ".r"),path=edir)); cat("\n")
 
-	#or use R's dir for similar functionality
-	print(dir(pattern="txt$",path=edir)); cat("\n")
-	print(dir(pattern="^[a-h]",path=edir)); cat("\n")
+  #or use R's dir for similar functionality
+  print(dir(pattern="txt$",path=edir)); cat("\n")
+  print(dir(pattern="^[a-h]",path=edir)); cat("\n")
 })
 }
 \keyword{file}

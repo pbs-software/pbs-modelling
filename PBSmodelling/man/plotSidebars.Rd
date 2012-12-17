@@ -21,9 +21,9 @@ plotSidebars(z, scale = 1, col = lucent("blue", 0.25), ...)
     \code{margin} -- function to report margin summaries. }
 }
 \details{
-	Plots z-data as horizontal bars arising from an x-coordinate controlled by
-	the column names of \code{z}. The bars extend left along the y-coordinate 
-	by \code{z*scale} from the central x-coordinate. 
+  Plots z-data as horizontal bars arising from an x-coordinate controlled by
+  the column names of \code{z}. The bars extend left along the y-coordinate 
+  by \code{z*scale} from the central x-coordinate. 
 }
 \author{
   Steve Martell, International Pacific Halibut Commission, Seattle WA

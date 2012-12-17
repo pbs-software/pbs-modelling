@@ -18,7 +18,7 @@ expandGraph(mar=c(4,3,1.2,0.5), mgp=c(1.6,.5,0),...)
   \item{...}{additional graphical parameters to be passed to \code{par}}
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \seealso{
   \code{\link{resetGraph}}

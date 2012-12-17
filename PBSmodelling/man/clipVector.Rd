@@ -24,7 +24,7 @@ clipVector(vec, clip, end=0)
   Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \seealso{ 
-	\code{\link{createVector}}
+  \code{\link{createVector}}
 }
 \examples{
 local(envir=.PBSmodEnv,expr={

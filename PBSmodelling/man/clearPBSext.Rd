@@ -10,14 +10,14 @@
 \usage{clearPBSext(ext)}
 
 \arguments{
-	\item{ext}{optional character vector of file extensions to clear; if
+  \item{ext}{optional character vector of file extensions to clear; if
     unspecified, all associations are removed}
 }
 \author{
   Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \seealso{
-	\code{\link{setPBSext}}, \code{\link{getPBSext}}, \code{\link{openFile}}
+  \code{\link{setPBSext}}, \code{\link{getPBSext}}, \code{\link{openFile}}
 }
 
 \keyword{methods}

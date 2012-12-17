@@ -1,7 +1,8 @@
 \name{tget}
 \alias{tget}
-\alias{tput}
+\alias{tcall}
 \alias{tprint}
+\alias{tput}
 \title{
   Get/Print Objects From or Put Objects Into Temporary Work Environment
 }
