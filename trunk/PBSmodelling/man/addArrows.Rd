@@ -3,7 +3,7 @@
 \title{Add Arrows to a Plot Using Relative (0:1) Coordinates}
 
 \description{
-	Call the \code{arrows} function using relative (0:1) coordinates.
+  Call the \code{arrows} function using relative (0:1) coordinates.
 }
 
 \usage{
@@ -11,21 +11,21 @@ addArrows(x1, y1, x2, y2, ...)
 }
 
 \arguments{
-	\item{x1}{ x-coordinate (0:1) at base of arrow.}
-	\item{y1}{ y-coordinate (0:1) at base of arrow.}
-	\item{x2}{ x-coordinate (0:1) at tip of arrow.}
-	\item{y2}{ y-coordinate (0:1) at tip of arrow.}
-	\item{...}{ additional paramaters for the function \code{arrows}.}
+  \item{x1}{ x-coordinate (0:1) at base of arrow.}
+  \item{y1}{ y-coordinate (0:1) at base of arrow.}
+  \item{x2}{ x-coordinate (0:1) at tip of arrow.}
+  \item{y2}{ y-coordinate (0:1) at tip of arrow.}
+  \item{...}{ additional paramaters for the function \code{arrows}.}
 }
 
 \details{
-	Lines will be drawn from \code{(x1[i],y1[i])} to \code{(x2[i],y2[i])}
+  Lines will be drawn from \code{(x1[i],y1[i])} to \code{(x2[i],y2[i])}
 }
 \author{
   Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada , Nanaimo BC
 }
 \seealso{
-	\code{\link{addLabel}}, \code{\link{addLegend}}
+  \code{\link{addLabel}}, \code{\link{addLegend}}
 }
 \examples{
 local(envir=.PBSmodEnv,expr={

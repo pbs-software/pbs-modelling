@@ -258,6 +258,7 @@ createVector <- function (vec, vectorLabels=NULL, func="", windowname="vectorwin
 		padx = 0, pady = 0), list(type = "button", "function" = func, 
 		text = "Go", padx = 0, pady = 0)), .menus = list()))
 	createWin(winList,env=env)
+	invisible(winList)
 }
 #-------------------------------------createVector
 
@@ -623,6 +624,60 @@ runDemos <- function (package) {
 }
 #-----------------------------------------runDemos
 
+#.dClose--------------------------------2012-12-17
+# Function to execute on closing runDemos().
+#----------------------------------------------ACB
+.dClose <- function() {
+	act <- getWinAct()[1];
+	closeWin();
+	setwd(tget(.dwd))
+	if (is.null(act) || act=="demo") {
+		remove(list = setdiff(ls(pos=.PBSmodEnv, all.names=TRUE), tget(.dls)), pos = .PBSmodEnv);
+		remove(list = c(".dwd", ".dls"), pos = .PBSmodEnv); }; # final good-bye
+	return(); };
+#------------------------------------------.dClose
+
+#.dUpdateDesc-------------------------------------
+.dUpdateDesc <- function() {
+	vals <- getWinVal()
+	demo.id <- vals$demo.id
+	package <- .trimWhiteSpace( vals$package )
+	x <- demo(package = .packages(all.available = TRUE))
+	x <- x$results[x$results[,"Package"]==package,]
+	if (is.null(dim(x))) {
+		tmp<-names(x)
+		dim(x)<-c(1,4)
+		colnames(x)<-tmp
+	}
+	setWinVal( list( demo_desc=x[demo.id,"Title"] ) )
+}
+#-------------------------------------.dUpdateDesc
+
+#.viewPkgDemo---------------------------2009-03-04
+# Display a GUI to display something equivalent to R's demo()
+#-------------------------------------------ACB/RH
+.viewPkgDemo <- function() {
+	act <- getWinAct()[1]
+	if (act=="pkg") {
+		package=getWinVal("pkg")$pkg
+		eval(parse(text=paste("OK=require(",package,",quietly=TRUE)",sep="")))
+		if (!OK) {
+			mess=paste(package,"package is not available")
+			showAlert(mess); stop(mess) }
+		return(runDemos(package)) }
+	if (act=="demo") {
+		demo <- getWinVal("demo")$demo
+		source(demo, echo=TRUE, max.deparse.length=100)
+		return(invisible(NULL))
+	}
+	if (act=="source") {
+		demo <- getWinVal("demo")$demo
+		openFile(demo)
+		return(invisible(NULL))
+	}
+}
+#-------------------------------------.viewPkgDemo
+
 #runExample-----------------------------2012-12-10
 # Display a single GUI example.
 #-----------------------------------------------RH
@@ -632,10 +687,11 @@ runExample <- function (ex, pkg="PBSmodelling") {
 		#closeWin(name=allWin)
 		setwd(tget(.cwd))
 		remove(list = setdiff(ls(pos = .PBSmodEnv), tget(.cls)), pos = .PBSmodEnv)
+		junk=file.remove(tget(.cfl)) # assign only to suppress printing T/F
 		return() }
-	#assign(".cls",ls(pos = 1, all.names=TRUE),envir=.GlobalEnv)
-	assign(".cls",ls(envir=.PBSmodEnv, all.names=TRUE),envir=.PBSmodEnv)
-	assign(".cwd",getwd(),envir=.PBSmodEnv) #.GlobalEnv)
+	assign(".cls",ls(pos=.PBSmodEnv, all.names=TRUE),envir=.PBSmodEnv)    # current list in .PBSmodEnv
+	assign(".cwd",getwd(),envir=.PBSmodEnv)                               # current working system directory
+	assign(".cfl",list.files(tempdir(),full.names=TRUE),envir=.PBSmodEnv) # current file list in temporary system directory
 	assign(".runExHelperQuit",.runExHelperQuit,envir=.PBSmodEnv) #.GlobalEnv)
 
 	pdir <- system.file(package = pkg)                # package directory
@@ -660,7 +716,7 @@ runExample <- function (ex, pkg="PBSmodelling") {
 	invisible() }
 #---------------------------------------runExample
 
-#runExamples----------------------------2010-04-14
+#runExamples----------------------------2012-12-17
 # Display a master GUI to display examples
 #-------------------------------------------RH/ACB
 runExamples <- function () {
@@ -699,12 +755,14 @@ runExamples <- function () {
 		closeWin(name=allWin)
 		setwd(tget(.cwd))
 		remove(list = setdiff(ls(pos = .PBSmodEnv), tget(.cls)), pos = .PBSmodEnv)
+		junk=file.remove(tget(.cfl)) # assign only to suppress printing T/F
 		return()
 	}
 	assign(".runExHelper",.runExHelper,envir=.PBSmodEnv) #.GlobalEnv)
 	assign(".runExHelperQuit",.runExHelperQuit,envir=.PBSmodEnv) #.GlobalEnv)
-	assign(".cls",ls(pos = .PBSmodEnv, all.names=TRUE),envir=.PBSmodEnv)  #.GlobalEnv)
-	assign(".cwd",getwd(),envir=.PBSmodEnv) #.GlobalEnv)
+	assign(".cls",ls(pos=.PBSmodEnv, all.names=TRUE),envir=.PBSmodEnv)    # current list in .PBSmodEnv
+	assign(".cwd",getwd(),envir=.PBSmodEnv)                               # current working system directory
+	assign(".cfl",list.files(tempdir(),full.names=TRUE),envir=.PBSmodEnv) # current file list in temporary system directory
 	pckg <- "PBSmodelling"
 	pdir <- system.file(package = pckg)               # package directory
 	edir <- paste(pdir, "/", "examples", sep = "")    # examples directory
@@ -1438,36 +1496,6 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 }
 #-------------------------------.convertVecToArray
 
-#.dClose--------------------------------2006-08-28
-# Function to execute on closing runDemos().
-#----------------------------------------------ACB
-.dClose <- function() {
-	act <- getWinAct()[1];
-	closeWin();
-	setwd(.dwd)
-	if (is.null(act) || act=="demo") {
-		remove(list = setdiff(ls(pos=.PBSmodEnv, all.names=TRUE), .dls), pos = .PBSmodEnv);
-		remove(list = c(".dwd", ".dls"), pos = .PBSmodEnv); }; # final good-bye
-	return(); };
-#------------------------------------------.dClose
-
-#.dUpdateDesc-------------------------------------
-.dUpdateDesc <- function() {
-	vals <- getWinVal()
-	demo.id <- vals$demo.id
-	package <- .trimWhiteSpace( vals$package )
-	x <- demo(package = .packages(all.available = TRUE))
-	x <- x$results[x$results[,"Package"]==package,]
-	if (is.null(dim(x))) {
-		tmp<-names(x)
-		dim(x)<-c(1,4)
-		colnames(x)<-tmp
-	}
-
-	setWinVal( list( demo_desc=x[demo.id,"Title"] ) )
-}
-#-------------------------------------.dUpdateDesc
-
 #.findSquare--------------------------------------
 .findSquare=function(nc) {
 	sqn=sqrt(nc); m=ceiling(sqn); n=ceiling(nc/m)
@@ -1619,31 +1647,6 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 	return( file_vector )
 }
 #--------------------------------.tclArrayToVector
-
-#.viewPkgDemo---------------------------2009-03-04
-# Display a GUI to display something equivalent to R's demo()
-#-------------------------------------------ACB/RH
-.viewPkgDemo <- function() {
-	act <- getWinAct()[1]
-	if (act=="pkg") {
-		package=getWinVal("pkg")$pkg
-		eval(parse(text=paste("OK=require(",package,",quietly=TRUE)",sep="")))
-		if (!OK) {
-			mess=paste(package,"package is not available")
-			showAlert(mess); stop(mess) }
-		return(runDemos(package)) }
-	if (act=="demo") {
-		demo <- getWinVal("demo")$demo
-		source(demo, echo=TRUE, max.deparse.length=100)
-		return(invisible(NULL))
-	}
-	if (act=="source") {
-		demo <- getWinVal("demo")$demo
-		openFile(demo)
-		return(invisible(NULL))
-	}
-}
-#-------------------------------------.viewPkgDemo
 
 #.viewPkgVignettes----------------------2008-07-10
 # Display a GUI to display something equivalent to R's vignette()

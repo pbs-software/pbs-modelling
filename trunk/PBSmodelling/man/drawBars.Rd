@@ -3,7 +3,7 @@
 \title{Draw a Linear Barplot on the Current Plot}
 
 \description{
-	Draw a linear barplot on the current plot.
+  Draw a linear barplot on the current plot.
 }
 \usage{drawBars(x, y, width, base = 0, ...)}
 
@@ -15,7 +15,7 @@
   \item{...}{further graphical parameters (see \code{par}) may also be supplied as arguments}
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \examples{
 local(envir=.PBSmodEnv,expr={

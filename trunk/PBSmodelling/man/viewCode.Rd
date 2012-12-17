@@ -32,10 +32,10 @@ viewCode(pkg="PBSmodelling", funs, output=4, ...)
   The function invokes \code{openFile} to display the results.
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \seealso{ 
-	\code{\link{showHelp}}, \code{\link{view}}
+  \code{\link{showHelp}}, \code{\link{view}}
 }
 \keyword{ character }
 \keyword{ package }

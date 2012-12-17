@@ -22,7 +22,7 @@
   }
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \seealso{
   \code{\link{scalePar}}, \code{\link{restorePar}}, \code{\link{calcMin}}

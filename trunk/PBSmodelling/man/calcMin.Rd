@@ -60,7 +60,7 @@ calcMin(pvec, func, method="nlm", trace=0, maxit=1000, reltol=1e-8,
   \item{message}{Convergence message from the minimization routine.}
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \note{
   Some arguments to \code{calcMin} have no effect depending on the \code{method} chosen.

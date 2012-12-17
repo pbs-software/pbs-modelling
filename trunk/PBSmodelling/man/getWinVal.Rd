@@ -17,8 +17,8 @@ getWinVal(v=NULL, scope="", asvector=FALSE, winName="")
     in the non-GUI environment; \code{scope="L"} creates variables
     locally in relation to the parent frame that called the function;
     \code{scope="P"} creates variables in the temporary package 
-    workspace called .PBSmodEnv; and \code{scope="G"} creates global
-    variables (\code{pos=1}).}
+    workspace called \code{.PBSmodEnv}; and \code{scope="G"} creates
+    global variables (\code{pos=1}).}
   \item{asvector}{return a vector instead of a list. 
     WARNING: if a widget variable defines a true vector or matrix, this will not work.}
   \item{winName}{window from which to select GUI widget values. The default 

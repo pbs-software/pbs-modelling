@@ -10,13 +10,13 @@
 isWhat(x)
 }
 \arguments{
-	\item{x}{an R object}
+  \item{x}{an R object}
 }
 \value{
   No value is returned. The function prints the object's 
   characteristics on the command line.
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \keyword{utilities}

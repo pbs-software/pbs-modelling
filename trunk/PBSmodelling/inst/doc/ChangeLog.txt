@@ -7,7 +7,10 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
-2.65  2012-12-10
+2.65  2012-12-17
+  - Disabled the grid check in `.validateWindowDescWidgets` because the structure of a windows description list must have changed since this little-used function was written. (RH 12/17)
+  - Finished updating example section in Rd files. (RH 12/17)
+  - Filed Issue 86 on GoogleCode: `.validateWindowDescWidgets` appears to be buggy. (RH 12/14)
   - Updated runExamples to run in the new environment .PBSmodEnv. (RH 12/10)
   - Finally got the gui code to work after switching the location of .PBSmod to .PBSmodEnv. (RH 12/7)
   - Bumped up the version as PBSmodelling is undergoing major changes to ensure that no objects are installed on the user's global environment. (RH 12/01)

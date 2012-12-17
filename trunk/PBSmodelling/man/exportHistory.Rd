@@ -17,6 +17,6 @@ exportHistory(hisname="", fname="")
   Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \seealso{
-  \code{\link{importHistory}}, \code{\link{initHistory}}, \code{\link{promptSaveFile}}
+  \code{\link{importHistory}}, \code{\link{initHistory}}
 }
 \keyword{list}

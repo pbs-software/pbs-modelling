@@ -25,7 +25,7 @@ chooseWinVal(choice, varname, winname="window")
   in PBS options is the window name from which the choice was activated.
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Nanaimo BC
+  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \note{ 
   Microsoft Windows users may experience difficulties switching focus between the 

@@ -3,8 +3,8 @@
 \title{Import a History List from a File}
 
 \description{
-	Import a history list from file \code{fname}, and place it 
-	into the history list \code{hisname}.
+  Import a history list from file \code{fname}, and place it 
+  into the history list \code{hisname}.
 }
 \usage{
 importHistory(hisname="", fname="", updateHis=TRUE)
@@ -21,7 +21,7 @@ importHistory(hisname="", fname="", updateHis=TRUE)
   Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \seealso{
-\code{\link{exportHistory}}, \code{\link{initHistory}}, \code{\link{promptOpenFile}}
+\code{\link{exportHistory}}, \code{\link{initHistory}}
 }
 \keyword{list}
 

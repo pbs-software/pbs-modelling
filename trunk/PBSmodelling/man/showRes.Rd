@@ -10,17 +10,19 @@
 showRes(x, cr=TRUE, pau=TRUE)
 }
 \arguments{
-	\item{x}{an R expression to evaluate}
-	\item{cr}{logical: if \code{TRUE}, introduce extra carriage returns}
-	\item{pau}{logical: if \code{TRUE}, pause after expression reflection and execution}
+  \item{x}{an R expression to evaluate}
+  \item{cr}{logical: if \code{TRUE}, introduce extra carriage returns}
+  \item{pau}{logical: if \code{TRUE}, pause after expression reflection and execution}
 }
 \value{
   The results of the expression are return invisibly.
 }
 \author{
-  Jon Schnute, Pacific Biological Station, Nanaimo BC
+  Jon T. Schnute, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \examples{
-showRes("x=rnorm(100)",pau=FALSE)
+local(envir=.PBSmodEnv,expr={
+  showRes("x=rnorm(100)",pau=FALSE)
+})
 }
 \keyword{utilities}
