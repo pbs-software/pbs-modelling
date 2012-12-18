@@ -52,7 +52,8 @@ createWin <- function( fname, astext=FALSE, env=NULL )  #parent.frame() ) #globa
 
 		#destroy any existing windows with the same name
 		#tt <- .PBSmod[[winName]]$tkwindow
-		tt <- .PBSmodEnv$.PBSmod[[winName]]$tkwindow
+		tget(.PBSmod)
+		tt <- .PBSmod[[winName]]$tkwindow
 		if (!is.null(tt))
 			tkdestroy(tt)
 
@@ -277,6 +278,7 @@ focusWin <- function(winName, winVal=TRUE)
 	tkfocus(.PBSmod[[winName]]$tkwindow)
 	if (winVal) {
 		#packList(".activeWin",".PBSmod",winName) #.PBSmod$.activeWin <<- winName
+		tget(.PBSmod)
 		.PBSmod$.activeWin <- winName
 		tput(.PBSmod)
 	}
@@ -471,7 +473,8 @@ getChoice <- function(choice=c("Yes","No"),question="Make a choice: ",winname="g
 	#if (exists(".PBSmod")) {
 	#	setPBSoptions(winname,NULL); setPBSoptions("activeWin",.PBSmod$.activeWin) }
 	if (exists(".PBSmod",envir=.PBSmodEnv)) {
-		setPBSoptions(winname,NULL); setPBSoptions("activeWin",.PBSmodEnv$.PBSmod$.activeWin) }
+		setPBSoptions(winname,NULL)
+		setPBSoptions("activeWin",.PBSmodEnv$.PBSmod$.activeWin) } # changes .PBSMod
 
 	#Create the Window Description file
 	createWin(blist,astext=TRUE)
@@ -1316,7 +1319,8 @@ rmHistory <- function(hisname="", index="")
 .map.add <- function(winName, key, ...)
 {
 	#if( is.null( .PBSmod[[ winName ]] ) )
-	if( is.null(.PBSmodEnv$.PBSmod[[ winName ]]) )
+	tget(.PBSmod)
+	if( is.null(.PBSmod[[ winName ]]) )
 		.map.init(winName)
 	if (!is.character(key)) {
 		stop("map error - key must be a string")
@@ -1358,7 +1362,8 @@ rmHistory <- function(hisname="", index="")
 .map.set <- function(winName, key, ...)
 {
 	#if( is.null( .PBSmod[[ winName ]] ) )
-	if( is.null( .PBSmodEnv$.PBSmod[[ winName ]] ) )
+	tget(.PBSmod)
+	if( is.null( .PBSmod[[ winName ]] ) )
 		.map.init(winName)
 
 	if (!is.character(key))
@@ -1401,7 +1406,8 @@ rmHistory <- function(hisname="", index="")
 .map.get <- function(winName, key)
 {
 	#return(.PBSmod[[winName]]$widgetPtrs[[key]])
-	return(.PBSmodEnv$.PBSmod[[winName]]$widgetPtrs[[key]])
+	tget(.PBSmod)
+	return(.PBSmod[[winName]]$widgetPtrs[[key]])
 }
 
 # ***********************************************************
@@ -1413,7 +1419,8 @@ rmHistory <- function(hisname="", index="")
 .map.getAll <- function(winName)
 {
 	#return(.PBSmod[[winName]]$widgetPtrs)
-	return(.PBSmodEnv$.PBSmod[[winName]]$widgetPtrs)
+	tget(.PBSmod)
+	return(.PBSmod[[winName]]$widgetPtrs)
 }
 
 # ***********************************************************
@@ -1461,7 +1468,8 @@ rmHistory <- function(hisname="", index="")
 			next
 		}
 		#wid <- .PBSmod[[winName]]$widgets[[keys[i]]]
-		wid <- .PBSmodEnv$.PBSmod[[winName]]$widgets[[keys[i]]]
+		tget(.PBSmod)
+		wid <- .PBSmod[[winName]]$widgets[[keys[i]]]
 		if( is.null( wid ) || is.null( wid[["type"]] ) )
 			next
 		if( wid$type == "button" )
@@ -1559,8 +1567,9 @@ rmHistory <- function(hisname="", index="")
 			retData[[keys[i]]] <- values[[i]]
 			#if (!is.null(.PBSmod[[ winName ]]$widgets[[ keys[i] ]][[ ".name" ]]))
 			#	names(retData[[keys[i]]]) <- .PBSmod[[winName]]$widgets[[keys[i]]]$.name
-			if (!is.null(.PBSmodEnv$.PBSmod[[ winName ]]$widgets[[ keys[i] ]][[ ".name" ]]))
-				names(retData[[keys[i]]]) <- .PBSmodEnv$.PBSmod[[winName]]$widgets[[keys[i]]]$.name
+			tget(.PBSmod)
+			if (!is.null(.PBSmod[[ winName ]]$widgets[[ keys[i] ]][[ ".name" ]]))
+				names(retData[[keys[i]]]) <- .PBSmod[[winName]]$widgets[[keys[i]]]$.name
 		}
 	}
 
@@ -1569,12 +1578,13 @@ rmHistory <- function(hisname="", index="")
 		keys <- names(matrixTmp)
 		for(i in 1:length(matrixTmp)) {
 			#colnames <- .PBSmod[[winName]]$widgets[[keys[i]]]$colnames
-			colnames <- .PBSmodEnv$.PBSmod[[winName]]$widgets[[keys[i]]]$colnames
+			tget(.PBSmod)
+			colnames <- .PBSmod[[winName]]$widgets[[keys[i]]]$colnames
 			if (is.null(colnames)) 
 				colnames <- ""
 
 			#rownames <- .PBSmod[[winName]]$widgets[[keys[i]]]$rownames
-			rownames <- .PBSmodEnv$.PBSmod[[winName]]$widgets[[keys[i]]]$rownames
+			rownames <- .PBSmod[[winName]]$widgets[[keys[i]]]$rownames
 			if (is.null(rownames)) 
 				rownames <- ""
 
@@ -1593,8 +1603,9 @@ rmHistory <- function(hisname="", index="")
 		for(i in 1:length(dataframeTmp)) {
 			#colnames <- .PBSmod[[winName]]$widgets[[keys[i]]]$colnames
 			#rownames <- .PBSmod[[winName]]$widgets[[keys[i]]]$rownames
-			colnames <- .PBSmodEnv$.PBSmod[[winName]]$widgets[[keys[i]]]$colnames
-			rownames <- .PBSmodEnv$.PBSmod[[winName]]$widgets[[keys[i]]]$rownames
+			tget(.PBSmod)
+			colnames <- .PBSmod[[winName]]$widgets[[keys[i]]]$colnames
+			rownames <- .PBSmod[[winName]]$widgets[[keys[i]]]$rownames
 
 			retData[[keys[i]]] <- .convertMatrixListToDataFrame(dataframeTmp[[i]], colnames, rownames)
 			#can't use dimnames incase of 3 dimension or higher arrays
@@ -1609,7 +1620,8 @@ rmHistory <- function(hisname="", index="")
 	#assign vecnames to any vectors
 	#droplist widget - get position of selected item (and possibly the complete set of possible choices)
 	#for(wid in .PBSmod[[winName]]$widgets) {
-	for(wid in .PBSmodEnv$.PBSmod[[winName]]$widgets) {
+	tget(.PBSmod)
+	for(wid in .PBSmod[[winName]]$widgets) {
 		if( !is.list( wid ) ) next
 		if( is.null( wid[["type"]] ) ) next
 		if (wid$type=="vector") {
@@ -1635,7 +1647,7 @@ rmHistory <- function(hisname="", index="")
 			#get stored values (useful if labels were applied)
 			wid_name <- paste( wid$name, ".values", sep="" )
 			#values <- .PBSmod[[winName]]$widgets[[ wid_name ]]$labels
-			values <- .PBSmodEnv$.PBSmod[[winName]]$widgets[[ wid_name ]]$labels
+			values <- .PBSmod[[winName]]$widgets[[ wid_name ]]$labels
 			retData[[wid_name]] <- values 
 
 			#overwrite label values with real values (except when the user input their own choice)
@@ -1644,7 +1656,7 @@ rmHistory <- function(hisname="", index="")
 		} else if( wid$type == "notebook" ) {
 			if( !is.null( wid[["name"]] ) )
 				#retData[[ wid$name ]] <- .PBSmod[[winName]]$widgets[[ paste( wid$name, ".raised", sep="" ) ]]
-				retData[[ wid$name ]] <- .PBSmodEnv$.PBSmod[[winName]]$widgets[[ paste( wid$name, ".raised", sep="" ) ]]
+				retData[[ wid$name ]] <- .PBSmod[[winName]]$widgets[[ paste( wid$name, ".raised", sep="" ) ]]
 		}
 	}
 	
@@ -1652,9 +1664,10 @@ rmHistory <- function(hisname="", index="")
 	for( k in names( superobjects_to_process ) ) {
 		.superobject.saveValues( winName, k ) #save currently visible data
 		#retData[[ k ]] <- .PBSmod[[ winName ]]$widgets[[ k ]]$.data
-		retData[[ k ]] <- .PBSmodEnv$.PBSmod[[ winName ]]$widgets[[ k ]]$.data
+		tget(.PBSmod)
+		retData[[ k ]] <- .PBSmod[[ winName ]]$widgets[[ k ]]$.data
 		#if( .PBSmod[[ winName ]]$widgets[[ k ]]$class == "matrix" )
-		if( .PBSmodEnv$.PBSmod[[ winName ]]$widgets[[ k ]]$class == "matrix" )
+		if( .PBSmod[[ winName ]]$widgets[[ k ]]$class == "matrix" )
 			retData[[ k ]] <- as.matrix( retData[[ k ]] )
 	}
 	
@@ -2865,7 +2878,6 @@ rmHistory <- function(hisname="", index="")
 	.map.set( winName, widget$name, tclwidget=notebook ) # changes .PBSmod
 
 	#create tabs
-	tget(.PBSmod)
 	childWidgets <- widgetList[ -1 ]
 	tab_i <- 1
 	for( tab in widget$tabs ) {
@@ -2876,10 +2888,12 @@ rmHistory <- function(hisname="", index="")
 			#save most recently raised tab
 			return( 
 			function() { 
-				if( !is.null( widget[["name"]] ) )
+				if( !is.null( widget[["name"]] ) ) {
 					#eval(parse(text=".PBSmod[[winName]]$widgets[[ paste( widget$name, \".raised\", sep=\"\" ) ]] <<- tab"))
+					tget(.PBSmod)
 					.PBSmod[[winName]]$widgets[[ paste( widget$name, ".raised", sep="" ) ]] <- tab
-
+					tput(.PBSmod)
+				}
 				#callback
 				.extractData(widget[["function"]], widget$action, winName)
 			} )
@@ -2907,7 +2921,7 @@ rmHistory <- function(hisname="", index="")
 
 	#set height
 	if( any( c( widget$width, widget$height ) != 0 ) && any( c( widget$width, widget$height ) == 0 ) )
-    	.stopWidget( "both width and height must be non-zero (to manually set the size) or both zero to automatically set the size", widget$.debug, winName)
+		.stopWidget( "both width and height must be non-zero (to manually set the size) or both zero to automatically set the size", widget$.debug, winName)
 	tcl( notebook, "configure", width = widget$width, height = widget$height )
 	
 	return( list( widget = notebook, widgetList = childWidgets ) )
@@ -2972,7 +2986,6 @@ rmHistory <- function(hisname="", index="")
 
 .createWidget.image <- function(tk, widgetList, winName)
 {
-	tget(.PBSmod)
 	widget <- widgetList[[ 1 ]]
 	argList <- list(parent=tk)
 
@@ -2987,6 +3000,7 @@ rmHistory <- function(hisname="", index="")
 			#R is crashing here.... wtf? .stopWidget( msg, widget$.debug, winName ) #maybe its crashing when the window is closed by tkclose
 			stop( msg )
 		}
+		tget(.PBSmod)
 		image <- get( widget$varname, envir = .PBSmod[[ winName ]]$env )
 	} else {
 		image = widget$file
@@ -3063,7 +3077,6 @@ rmHistory <- function(hisname="", index="")
 
 .createWidget.label <- function(tk, widgetList, winName)
 {
-	tget(.PBSmod)
 	widget <- widgetList[[ 1 ]]
 	argList <- list(parent=tk)
 	if( !is.null(widget[["name"]]) && widget$name != "" ) {
@@ -3088,8 +3101,9 @@ rmHistory <- function(hisname="", index="")
 
 	tkWidget<-do.call("tklabel", argList)
 	if( !is.null(widget[["name"]]) && widget$name != "" ) {
-		tkconfigure( tkWidget,textvariable= .map.get(winName, widget$name )$tclvar )
+		tkconfigure( tkWidget,textvariable = .map.get(winName, widget$name )$tclvar )
 		#eval(parse(text=".PBSmod[[ winName ]]$widgetPtrs[[ widget$name ]]$tclwidget <<- tkWidget"))
+		tget(.PBSmod)
 		.PBSmod[[ winName ]]$widgetPtrs[[ widget$name ]]$tclwidget <- tkWidget
 		tput(.PBSmod)
 	}
@@ -3717,6 +3731,7 @@ rmHistory <- function(hisname="", index="")
 		
 	#save back to global memory (so getWinVal can access it)
 	#eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject"))
+	tget(.PBSmod)
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <- userObject
 	tput(.PBSmod)
 	invisible()
@@ -3744,30 +3759,34 @@ rmHistory <- function(hisname="", index="")
 .createWidget.object.scrolling <- function(tk, widgetList, winName)
 {
 	widget <- widgetList[[ 1 ]]
-	#check for existance
+	#check for existence
 	tmp <- .check.object.exists( tk, widget, winName )
 	if( !is.null( tmp ) )
 		return( list( widget = tmp$widget, widgetList = widgetList[ -1 ] ) )
 
 	widget_name <- widget$name	
 	userObject <- .getValueForWidgetSetup( widget$name, widget, winName )
-	tget(.PBSmod)
 
 	if( is.matrix( userObject ) ) {
 		userObject <- as.data.frame( userObject )
 		#eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$class <<- \"matrix\""))
+		tget(.PBSmod)
 		.PBSmod[[ winName ]]$widgets[[ widget_name ]]$class <- "matrix"
+		tput(.PBSmod)
 	} else {
 		#eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$class <<- \"\""))
+		tget(.PBSmod)
 		.PBSmod[[ winName ]]$widgets[[ widget_name ]]$class <- ""
+		tput(.PBSmod)
 	}
 	if( !is.data.frame( userObject ) ) {
-		tput(.PBSmod)
 		stop( "superobjects only support data.frames" )
 	}
 
 	#eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <<- 1"))
+	tget(.PBSmod)
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top <- 1
+	tput(.PBSmod)
 	rows_to_display <- widget$rowshow #num of rows visible
 	enable_scrolling <- TRUE
 	if( rows_to_display <= 0 || rows_to_display >= nrow( userObject ) ) {
@@ -3775,7 +3794,9 @@ rmHistory <- function(hisname="", index="")
 		enable_scrolling <- FALSE
 	}
 	#eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$rows_to_display <<- rows_to_display"))
+	tget(.PBSmod)
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$rows_to_display <- rows_to_display
+	tput(.PBSmod)
 	ncols <- ncol( userObject )
 	nrows <- nrow( userObject )
 
@@ -3787,6 +3808,7 @@ rmHistory <- function(hisname="", index="")
 	
 	widget$name <- new_widget_name
 	#eval(parse(text=".PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <<- userObject"))
+	tget(.PBSmod)
 	.PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data <- userObject
 	tput(.PBSmod)
 	rm( userObject )
@@ -3795,6 +3817,7 @@ rmHistory <- function(hisname="", index="")
 	{
 		.superobject.saveValues( winName, widget_name )
 		
+		tget(.PBSmod)
 		display_top <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top
 		userObject <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$.data
 		
@@ -3858,7 +3881,8 @@ rmHistory <- function(hisname="", index="")
 		
 		focus_to <- paste( "[superobject]", widget_name, "[", new_row, ",", col, "]d", sep="" )
 		#tkfocus( .PBSmod[[ winName ]]$widgetPtrs[[ focus_to ]]$tclwidget )
-		tkfocus( .PBSmodEnv$.PBSmod[[ winName ]]$widgetPtrs[[ focus_to ]]$tclwidget )
+		tget(.PBSmod)
+		tkfocus( .PBSmod[[ winName ]]$widgetPtrs[[ focus_to ]]$tclwidget )
 	}
 
 	frame <- tkframe( tk )
@@ -3866,7 +3890,8 @@ rmHistory <- function(hisname="", index="")
 	widget$rowshow <- 0 #now we are just creating a regular object, if this was > 0, then we would get inf recursion
 	widget$.up_func <- function( selected_widget_name, ...) { 
 		#if( .PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top == 1 ) {
-		if( .PBSmodEnv$.PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top == 1 ) {
+		tget(.PBSmod)
+		if( .PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top == 1 ) {
 			#no more hidden rows to scroll, change focus
 			set_widget_row_focus( selected_widget_name, -1 )
 		}
@@ -3874,7 +3899,8 @@ rmHistory <- function(hisname="", index="")
 	}
 	widget$.down_func <- function( selected_widget_name,...) { 
 		#display_top <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top
-		display_top <- .PBSmodEnv$.PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top
+		tget(.PBSmod)
+		display_top <- .PBSmod[[ winName ]]$widgets[[ widget_name ]]$display_top
 		if( display_top + rows_to_display - 1 >= nrows ) {
 			#no more hidden rows to scroll, change focus
 			set_widget_row_focus( selected_widget_name, 1 )
@@ -3949,7 +3975,8 @@ rmHistory <- function(hisname="", index="")
 	}
 
 	#if (!exists(widget$name, envir = .PBSmod[[ winName ]]$env )) {
-	if (!exists(widget$name, envir = .PBSmodEnv$.PBSmod[[ winName ]]$env )) {
+	tget(.PBSmod)
+	if (!exists(widget$name, envir = .PBSmod[[ winName ]]$env )) {
 		return(.dispError(paste("Error: variable \"", widget$name, "\" could not be found.", sep="")))
 	}
 	return( NULL )
@@ -4137,9 +4164,9 @@ rmHistory <- function(hisname="", index="")
 		return( .createWidget.object.scrolling( tk, widgetList, winName ) )
 
 	if( is.null( userObject ) )
+		tget(.PBSmod)
 		userObject <- get( widget$name, envir = .PBSmod[[ winName ]]$env )
 
-	tget(.PBSmod)
 	#matrix
 	if (is.matrix(userObject)) {
 		wid <- list(type="matrix",
@@ -4174,6 +4201,7 @@ rmHistory <- function(hisname="", index="")
 		if( widget$rowlabels == FALSE ) wid$rowlabels <- NULL
 		if( widget$collabels == FALSE ) wid$collabels <- NULL
 		#eval(parse(text=".PBSmod[[winName]]$widgets[[widget$name]] <<- wid"))
+		tget(.PBSmod)
 		.PBSmod[[winName]]$widgets[[widget$name]] <- wid
 		tput(.PBSmod)
 		tmp <- .createWidget(tk, list(wid), winName)
@@ -4227,6 +4255,7 @@ rmHistory <- function(hisname="", index="")
 		if( widget$rowlabels == FALSE ) wid$rowlabels <- NULL
 		if( widget$collabels == FALSE ) wid$collabels <- NULL
 		#eval(parse(text=".PBSmod[[winName]]$widgets[[widget$name]] <<- wid"))
+		tget(.PBSmod)
 		.PBSmod[[winName]]$widgets[[widget$name]] <- wid
 		tput(.PBSmod)
 		tmp <- .createWidget(tk, list(wid), winName)
@@ -4263,6 +4292,7 @@ rmHistory <- function(hisname="", index="")
 		            );
 		if( widget$collabels == FALSE ) wid$labels <- NULL
 		#eval(parse(text=".PBSmod[[winName]]$widgets[[widget$name]] <<- wid"))
+		tget(.PBSmod)
 		.PBSmod[[winName]]$widgets[[widget$name]] <- wid
 		tput(.PBSmod)
 		tmp <- .createWidget(tk, list(wid), winName)
@@ -4491,8 +4521,8 @@ rmHistory <- function(hisname="", index="")
 
 	.map.set( winName, paste( widget$name, ".values", sep="" ), droplist_widget=drop_widget )
 	.map.set( winName, paste( widget$name, ".id", sep="" ), droplist_widget=FALSE )
-	tget(.PBSmod)
 	#eval(parse(text=".PBSmod[[winName]]$widgets[[ paste( widget$name, \".values\", sep=\"\" ) ]]$labels <<- values"))
+	tget(.PBSmod)
 	.PBSmod[[winName]]$widgets[[ paste( widget$name, ".values", sep="" ) ]]$labels <- values
 	tput(.PBSmod)
 
@@ -5149,20 +5179,20 @@ sortHistory <- function(file="",outfile=file,hisname="")
 # -----------------------------------------------------------
 .extractData <- function(command, action, winName)
 {
-	packList(".activeWin",".PBSmod",winName) #.PBSmod$.activeWin <<- winName
-
+	tget(.PBSmod)
+	.PBSmod$.activeWin <- winName
+	tput(.PBSmod)
+	#packList(".activeWin",".PBSmod",winName) # default tenv=.PBSmodEnv #.PBSmod$.activeWin <<- winName
 	setWinAct(winName, action)
-
 	if (is.null(command))
 		return()
-
 	if (command=="")
 		return()
-
 	#if (exists(command,mode="function", envir = .PBSmod[[ winName ]]$env))
 	#	do.call(command, list(), envir = .PBSmod[[ winName ]]$env )
-	if (exists(command,mode="function", envir = .PBSmodEnv$.PBSmod[[ winName ]]$env))
-		do.call(command, list(), envir = .PBSmodEnv$.PBSmod[[ winName ]]$env )
+	tget(.PBSmod)
+	if (exists(command,mode="function", envir = .PBSmod[[ winName ]]$env))
+		do.call(command, list(), envir = .PBSmod[[ winName ]]$env )
 	else
 		cat(paste("Warning: cannot find function '", command, "'.\n", sep=""))
 }
@@ -5170,7 +5200,8 @@ sortHistory <- function(file="",outfile=file,hisname="")
 .setWinValHelper <- function(varname, value, winName)
 {
 	x  <- .map.get(winName, varname)
-	wid<- .PBSmodEnv$.PBSmod[[winName]]$widgets[[varname]]
+	tget(.PBSmod)
+	wid<- .PBSmod[[winName]]$widgets[[varname]]
 
 	#if tclvar is known, we can set it directly.
 	if (!is.null(x[["tclvar"]])) {
@@ -5421,22 +5452,28 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmodEnv$.PBSmod$.acti
 	if( !is.null( myargs[[ "noeditfg" ]] ) ) {
 		widget$noeditfg = myargs[[ "noeditfg" ]]
 		#eval(parse(text=".PBSmod[[ winName ]]$widgets[[ name ]] <<- widget"))
+		tget(.PBSmod)
 		.PBSmod[[ winName ]]$widgets[[ name ]] <- widget
+		tput(.PBSmod)
 	}
 	if( !is.null( myargs[[ "fg" ]] ) ) {
 		widget$fg = myargs[[ "fg" ]]
 		#eval(parse(text=".PBSmod[[ winName ]]$widgets[[ name ]] <<- widget"))
+		tget(.PBSmod)
 		.PBSmod[[ winName ]]$widgets[[ name ]] <- widget
+		tput(.PBSmod)
 	}
 	if( !is.null( myargs[[ "entryfg" ]] ) ) {
 		widget$entryfg = myargs[[ "entryfg" ]]
 		#eval(parse(text=".PBSmod[[ winName ]]$widgets[[ name ]] <<- widget"))
+		tget(.PBSmod)
 		.PBSmod[[ winName ]]$widgets[[ name ]] <- widget
+		tput(.PBSmod)
 	}
 
 	#get tcl ptr to tk widget
+	tget(.PBSmod)
 	widget_ptr <- .PBSmod[[ winName ]]$widgetPtrs[[ name ]]$tclwidget
-	tput(.PBSmod)
 
 	#special case for radio widgets
 	if( widget$type == "radio" ) {
@@ -5548,7 +5585,8 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 		stop( "state must be disabled, normal, readonly (for entry), or active( for radio)" )
 
 	x  <- .map.get(winname, varname)
-	wid<- .PBSmod[[winname]]$widgets[[varname]]
+	tget(.PBSmod)
+	wid <- .PBSmod[[winname]]$widgets[[varname]]
 	if( is.null( wid ) ) stop(paste("supplied widget \"",varname,"\" name not found", sep=""))
 
 	if( any( wid$type == c( "notebook" ) ) )
