@@ -7,7 +7,8 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
-2.65  2012-12-17
+2.65  2012-12-18
+  - Fixed the problem of widget `label` `name` argument not being recognised (mismatch in `tget` and `tput` calls, not sure where though). (RH 12/18)
   - Disabled the grid check in `.validateWindowDescWidgets` because the structure of a windows description list must have changed since this little-used function was written. (RH 12/17)
   - Finished updating example section in Rd files. (RH 12/17)
   - Filed Issue 86 on GoogleCode: `.validateWindowDescWidgets` appears to be buggy. (RH 12/14)
