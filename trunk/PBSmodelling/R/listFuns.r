@@ -32,6 +32,8 @@ writeList <- function(x, fname="", format="D", comments="") {
 	}
 	stop(paste("format \"",format,"\" not recognized."))
 }
+#----------------------------------------writeList
+
 
 #.writeList.P---------------------------2009-02-10
 # Saves list x to disk using "P" format
@@ -145,6 +147,7 @@ writeList <- function(x, fname="", format="D", comments="") {
 }
 #-------------------------------------.writeList.P
 
+
 #readList-------------------------------2008-07-14
 # Returns a list in either "D" or "P" format read from disk.
 # Arguments:
@@ -171,6 +174,8 @@ readList <- function(fname) {
 	if (fileformat == "P") 
 		return(.readList.P(fname))
 }
+#-----------------------------------------readList
+
 
 #.readList.P----------------------------2009-02-05
 # Read list in "P" format.
@@ -259,6 +264,7 @@ readList <- function(fname) {
 	return(retData)
 }
 #--------------------------------------.readList.P
+
 
 #.readList.P.convertData----------------2008-03-05
 # Helper function to convert data into proper mode.
@@ -461,6 +467,7 @@ readList <- function(fname) {
 }
 #--------------------------.readList.P.convertData
 
+
 #unpackList-----------------------------2012-12-06
 # Make local/global variables from the components of a named list.
 #-------------------------------------------ACB/RH
@@ -476,7 +483,10 @@ unpackList <- function(x, scope="L") {
 				assign(namx[i], x[[i]], envir = .GlobalEnv)
 		}
 	}
-	namx[namx != ""] }
+	namx[namx != ""]
+}
+#---------------------------------------unpackList
+
 
 #packList-------------------------------2012-12-03
 # Pack a list with (i) existing objects using their 
@@ -530,9 +540,13 @@ packList=function(stuff, target="PBSlist", value, tenv=.PBSmodEnv) {
 	invisible() }
 #-----------------------------------------packList
 
+
 #lisp-----------------------------------2012-12-12
 lisp = function(name, pos=.PBSmodEnv, envir=as.environment(pos), all.names=TRUE, pattern){
 	ls(name,pos,envir,all.names,pattern)
 }
+#---------------------------------------------lisp
 
+
+#===== THE END ===================================
 

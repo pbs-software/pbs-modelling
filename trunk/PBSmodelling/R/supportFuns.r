@@ -8,6 +8,7 @@
 #  Anisa Egeli <>                                |
 #================================================|
 
+
 #calcFib--------------------------------2006-08-28
 # Calculate a vector containing fibonacci numbers
 # Arguments:
@@ -63,6 +64,7 @@ calcFib <- function(n, len=1, method="C") {
 }
 #------------------------------------------calcFib
 
+
 #calcGM---------------------------------2006-08-28
 # Calculates the geometric mean of a vector of numbers
 # Return the geometric mean of a vector of numbers
@@ -82,6 +84,8 @@ calcGM <- function (x, offset = 0, exzero = TRUE) {
 	g <- exp(mean(log(x)))
 	return(g)
 }
+#-------------------------------------------calcGM
+
 
 #clearAll-------------------------------2012-12-06
 # Remove all data in the global environment
@@ -114,6 +118,7 @@ clearAll <- function(hidden=TRUE, verbose=TRUE, PBSsave=TRUE, pos=.PBSmodEnv) {
 	invisible() }
 #-----------------------------------------clearAll
 
+
 #clearPBSext----------------------------2012-12-04
 # Disassociate any number of file extensions from commands
 #  previously save with setPBSext.
@@ -136,6 +141,8 @@ clearPBSext=function(ext){
     tput(.PBSmod)
   }
 }
+#--------------------------------------clearPBSext
+
 
 #clearRcon------------------------------2009-05-14
 # Clear the R console display.
@@ -153,6 +160,8 @@ clearRcon <- function(os=.Platform$OS.type) {
 	cat('Set pShell = Nothing\n', file=fname, append=TRUE)
 	system(paste("cscript //NoLogo", fname), minimized=TRUE)
 	invisible(fname) }
+#----------------------------------------clearRcon
+
 
 #clipVector-----------------------------2007-06-09
 # Clip a vector at one or both ends of a 
@@ -175,6 +184,8 @@ clipVector <- function (vec,clip,end=0) {
 		vec  = rev(vrev) }
 	return(vec)
 }
+#---------------------------------------clipVector
+
 
 #compileDescription---------------------2006-08-28
 #  Convert a GUI description file into a complete GUI desc List
@@ -198,8 +209,10 @@ compileDescription <- function(descFile, outFile="") {
 	if (outFile!="")
 		sink()
 }
+#-------------------------------compileDescription
 
-#convSlashes---------------------------2009-02-16
+
+#convSlashes----------------------------2009-02-16
 # Convert unix "/" to R's "\\" if OS is windows.
 #-----------------------------------------------RH
 convSlashes=function(expr, os=.Platform$OS.type, addQuotes=FALSE){
@@ -209,6 +222,8 @@ convSlashes=function(expr, os=.Platform$OS.type, addQuotes=FALSE){
 		expr=gsub("\\\\","/",expr)
 	if (addQuotes) expr=paste("\"",expr,"\"",sep="")
 	return(expr) }
+#--------------------------------------convSlashes
+
 
 #createVector---------------------------2012-12-11
 # Create a GUI with a vector widget and button
@@ -262,6 +277,7 @@ createVector <- function (vec, vectorLabels=NULL, func="", windowname="vectorwin
 }
 #-------------------------------------createVector
 
+
 #evalCall-------------------------------2009-03-03
 # Evaluates a function call, resolving conflicting arguments.
 #-----------------------------------------------RH
@@ -294,6 +310,7 @@ evalCall=function(fn,argu,...,envir=parent.frame(),checkdef=FALSE,checkpar=FALSE
 	invisible(expr) }
 #-----------------------------------------evalCall
 
+
 #findPat--------------------------------2006-08-28
 # Searches all patterns in pat from vec, and returns the
 # matched elements in vec.
@@ -311,10 +328,14 @@ findPat <- function (pat, vec) {
 	found <- vec[z]
 	return(found)
 }
+#------------------------------------------findPat
 
-#findProgram----------------------------200?-??-??
-# Given string name of a program - return the complete path to program.
-# This was made without knowing Sys.which() existed - we may want to deprecate this at some point.
+
+#findProgram----------------------------2006-08-28
+# Given string name of a program - return the 
+# complete path to program.  This was made without
+# knowing Sys.which() existed - we may want to 
+# deprecate this at some point.
 #----------------------------------------------ACB
 findProgram <- function( name, includename = FALSE )
 {
@@ -323,6 +344,8 @@ findProgram <- function( name, includename = FALSE )
 		tmp <- dirname( tmp )
 	return( tmp )
 }
+#--------------------------------------findProgram
+
 
 #focusRgui------------------------------2011-09-09
 # Set focus to the RGui window.
@@ -340,6 +363,8 @@ focusRgui = function (os = .Platform$OS.type) {
 	system(paste("cscript //NoLogo", fname), minimized = TRUE)
 	invisible(fname) 
 }
+#----------------------------------------focusRgui
+
 
 #genMatrix------------------------------2006-08-28
 #  Generate a test matrix for use in plotBubbles
@@ -352,6 +377,8 @@ focusRgui = function (os = .Platform$OS.type) {
 genMatrix <- function (m,n,mu=0,sigma=1) {
 	matrix(rnorm(m*n,mean=mu,sd=sigma), m, n)
 }
+#----------------------------------------genMatrix
+
 
 #getPBSext------------------------------2012-12-04
 # Retrieve previously saved command.  Argument:
@@ -367,6 +394,8 @@ getPBSext <- function(ext) {
 		return(NULL)
 	return(.PBSmod$.options$openfile[[ext]])
 }
+#----------------------------------------getPBSext
+
 
 #getPBSoptions--------------------------2012-12-04
 # Retrieve a user option.  Argument:
@@ -378,6 +407,8 @@ getPBSoptions <- function(option) {
 		return(.PBSmod$.options)
 	return(.PBSmod$.options[[option]])
 }
+#------------------------------------getPBSoptions
+
 
 #isWhat---------------------------------2008-09-08
 # Prints the class, mode, type, and attributes
@@ -391,6 +422,8 @@ isWhat <- function(x) {
   cat(paste("attributes:",ifelse(is.null(att)," NULL\n","\n"),sep=""))
   if (!is.null(att)) print(att)
   invisible() }
+#-------------------------------------------isWhat
+
 
 #openFile-------------------------------2012-12-04
 # Opens a file for viewing based on System file
@@ -450,6 +483,7 @@ openFile <- function(fname="", package=NULL)
 	invisible(ops) }
 #-----------------------------------------openFile
 
+
 #openUG---------------------------------2009-12-04
 # Open package User Guide 'pkg-UG.pdf' if it exists.
 # Essentially a wrapper for 'openFile'.
@@ -458,6 +492,8 @@ openUG = function(pkg="PBSmodelling"){
 	pkgnam = as.character(substitute(pkg))
 	openFile(paste("/doc/",pkgnam,"-UG.pdf",sep=""),pkgnam)
 }
+#-------------------------------------------openUG
+
 
 #pad0-----------------------------------2011-12-12
 # Takes numbers (or text coerced to numeric), 
@@ -508,6 +544,7 @@ pad0 <- function (x, n, f = 0) {
 	return(padout) }
 #---------------------------------------------pad0
 
+
 #pause----------------------------------2006-08-28
 # Pause, typically between graphics displays
 # Arguments:
@@ -518,6 +555,8 @@ pause <- function (s = "Press <Enter> to continue") {
 	readline()
 	invisible()
 }
+#--------------------------------------------pause
+
 
 #readPBSoptions-------------------------2012-12-04
 # Load PBS options from a text file. The loaded options will
@@ -545,6 +584,8 @@ readPBSoptions=function(fname="PBSoptions.txt"){
 	.PBSmod$.options$.optionsChanged <- NULL
 	tput(.PBSmod)
 }
+#-----------------------------------readPBSoptions
+
 
 #runDemos-------------------------------2009-03-04
 # Display a GUI to display something equivalent to R's demo()
@@ -588,7 +629,7 @@ runDemos <- function (package) {
 		showAlert(mess); stop(mess) }
 	x <- x$results[x$results[,"Package"]==package,]
 
-	#It is critical that the label widget named package *only* contain the package name + whitespace -> it is used by getWinVal() later
+	# It is critical that the label widget named package *only* contain the package name + whitespace -> it is used by getWinVal() later
 	wintext <- c( paste( "window title=\"R Demos:", package, "\" name=pbsdemo onclose=.dClose", sep="" ),
 		paste( "label name=package text=", .addslashes( package ), " font=\"bold underline\" fg=red3 padx=10 sticky=w", sep="" ),
 		"label text=\"Select a demo to view:\" sticky=W padx=12 font=\"bold 10\"" )
@@ -624,6 +665,7 @@ runDemos <- function (package) {
 }
 #-----------------------------------------runDemos
 
+
 #.dClose--------------------------------2012-12-17
 # Function to execute on closing runDemos().
 #----------------------------------------------ACB
@@ -636,6 +678,7 @@ runDemos <- function (package) {
 		remove(list = c(".dwd", ".dls"), pos = .PBSmodEnv); }; # final good-bye
 	return(); };
 #------------------------------------------.dClose
+
 
 #.dUpdateDesc-------------------------------------
 .dUpdateDesc <- function() {
@@ -652,6 +695,7 @@ runDemos <- function (package) {
 	setWinVal( list( demo_desc=x[demo.id,"Title"] ) )
 }
 #-------------------------------------.dUpdateDesc
+
 
 #.viewPkgDemo---------------------------2009-03-04
 # Display a GUI to display something equivalent to R's demo()
@@ -677,6 +721,7 @@ runDemos <- function (package) {
 	}
 }
 #-------------------------------------.viewPkgDemo
+
 
 #runExample-----------------------------2012-12-10
 # Display a single GUI example.
@@ -715,6 +760,7 @@ runExample <- function (ex, pkg="PBSmodelling") {
 	if (is.element(rnam,bnam)) source(rnam,local=.PBSmodEnv) # seems to see the function in .PBSmodEnv
 	invisible() }
 #---------------------------------------runExample
+
 
 #runExamples----------------------------2012-12-17
 # Display a master GUI to display examples
@@ -776,7 +822,8 @@ runExamples <- function () {
 	invisible() }
 #--------------------------------------runExamples
 
-#selectDir------------------------------200?-??-??
+
+#selectDir------------------------------2006-06-06
 # Prompts user to select a directory - and returns it.
 #----------------------------------------------ACB
 selectDir <- function( initialdir = getwd(), mustexist = TRUE, title = "", usewidget = NULL )
@@ -796,8 +843,10 @@ selectDir <- function( initialdir = getwd(), mustexist = TRUE, title = "", usewi
 		
 	return( d )
 }
+#----------------------------------------selectDir
 
-#selectFile-----------------------------200?-??-??
+
+#selectFile-----------------------------2006-06-06
 # Prompts a user to open/save a file(s).
 #----------------------------------------------ACB
 selectFile <- function(
@@ -870,6 +919,7 @@ selectFile <- function(
 }
 #---------------------------------------selectFile
 
+
 #setPBSext------------------------------2012-12-04
 # Associate a new command with file types;
 #  use "%f" in cmd to designate where the filename will be placed.
@@ -896,6 +946,7 @@ setPBSext <- function(ext, cmd) {
 	tput(.PBSmod)
 }
 #----------------------------------------setPBSext
+
 
 #setPBSoptions--------------------------2012-12-04
 # Change user options. Arguments:
@@ -936,6 +987,7 @@ setPBSoptions <- function(option, value, sublist=FALSE) {
 }
 #------------------------------------setPBSoptions
 
+
 #show0----------------------------------2011-09-08
 # Shows decimal places including zeroes (string)
 # Return character representation of number with
@@ -966,6 +1018,7 @@ show0 <- function (x, n, add2int=FALSE, round2n=FALSE) {
 		newx[z] <- oldx[z]
 	return(newx) }
 #--------------------------------------------show0
+
 
 #showArgs-------------------------------2009-02-23
 #  show arguments of a widget definition
@@ -1017,6 +1070,7 @@ showArgs <- function(widget, width=70, showargs=FALSE) {
 	invisible(out) }
 #-----------------------------------------showArgs
 
+
 #showHelp-------------------------------2009-11-16
 # Show HTML help files for package contents.
 #-----------------------------------------------RH
@@ -1048,6 +1102,7 @@ showHelp <- function(pattern="methods", ...) {
 }
 #-----------------------------------------showHelp
 
+
 #showPacks------------------------------2009-02-17
 # Show packages that need to be installed.
 #-----------------------------------------------RH
@@ -1068,6 +1123,7 @@ showPacks = function(packs=c("PBSmodelling","PBSmapping","PBSddesolve",
 	invisible(list(Apacks=Apacks,Ipacks=Ipacks,Mpacks=Mpacks)) }
 #----------------------------------------showPacks
 
+
 #showRes--------------------------------2008-04-29
 # Show results of the calculation in string x
 #----------------------------------------------JTS
@@ -1080,6 +1136,7 @@ showRes <- function(x, cr=TRUE, pau=TRUE) {
   if(pau) pause();
   invisible(xres); };
 #------------------------------------------showRes
+
 
 #showVignettes--------------------------2008-07-10
 # Display a GUI to display something equivalent to R's vignette()
@@ -1186,6 +1243,7 @@ showVignettes <- function (package) {
 }
 #-------------------------------------showVignettes
 
+
 #testWidgets----------------------------2006-08-28
 # Display a "master" GUI that displays other sample GUIs
 #-----------------------------------------------RH
@@ -1232,7 +1290,8 @@ testWidgets <- function () {
 }
 #--------------------------------------testWidgets
 
-#tget/tput/tprint-----------------------2012-12-06
+
+#tget/tcall/trpint/tput-----------------2012-12-06
 # Functions to get, put, and print objects into the .PBSmodEnv.
 # CRAN packages can no longer modify user's working environment.
 #-----------------------------------------------RH
@@ -1297,7 +1356,8 @@ tput = function (x, penv=NULL, tenv=.PBSmodEnv) {
 	if(exists("cwd",envir=.PBSmodEnv) && tcall(cwd)!=getwd())
 		setwd(tcall(cwd))
 }
-#---------------------------------tget/tput/tprint
+#---------------------------tget/tcall/trpint/tput
+
 
 #view-----------------------------------2011-10-31
 # View first/last/random n element/rows of an object.
@@ -1342,6 +1402,7 @@ view <- function (obj, n=5, last=FALSE, random=FALSE, print.console=TRUE, ...) {
 	invisible(viewed)
 }
 #---------------------------------------------view
+
 
 #viewCode-------------------------------2010-10-19
 # View package R code on the fly.
@@ -1417,6 +1478,7 @@ viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
 	invisible(code) }
 #----------------------------------------viewCode
 
+
 #writePBSoptions------------------------2012-12-04
 # Save PBS options to a text file
 #  fname - name of options file (or path to this file)
@@ -1433,8 +1495,11 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 	saveOpt=.PBSmod$.options[-grep("^[.]", names(.PBSmod$.options))]
 	writeList(saveOpt, fname)
 }
+#----------------------------------writePBSoptions
+
 
 #============HIDDEN FUNCTIONS=====================
+
 
 #.addslashes----------------------------2006-08-28
 # Escapes special characters from a string, which can then be used in the "P" format
@@ -1464,6 +1529,7 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 	}
 	return(paste("\"", x, "\"", sep="")) }
 #--------------------------------------.addslashes
+
 
 #.convertVecToArray---------------------2006-09-16
 # Converts a vector to an Array
@@ -1496,10 +1562,13 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 }
 #-------------------------------.convertVecToArray
 
-#.findSquare--------------------------------------
+
+#.findSquare----------------------------2009-02-11
 .findSquare=function(nc) {
 	sqn=sqrt(nc); m=ceiling(sqn); n=ceiling(nc/m)
 	return(c(m,n)) }
+#--------------------------------------.findSquare
+
 
 #.forceMode-----------------------------2009-02-11
 # Forces a variable into a mode without showing any warnings
@@ -1518,6 +1587,7 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 	options(warn=warn)
 	return(xcon) }
 #---------------------------------------.forceMode
+
 
 #.getArrayPts---------------------------2009-02-10
 #  Returns all possible indices of an array
@@ -1543,6 +1613,7 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 	return(y) }
 #-------------------------------------.getArrayPts
 
+
 #.initPBSoptions------------------------2012-12-04
 # Called from zzz.R's .First.lib() intialization function
 # Attach will place only a copy of the environment on the search path;
@@ -1564,6 +1635,7 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 	tput(.PBSmod)
 }
 #----------------------------------.initPBSoptions
+
 
 #.mapArrayToVec-------------------------2006-09-16
 # Determines which index to use for a vector, when given an 
@@ -1598,6 +1670,7 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 }
 #-----------------------------------.mapArrayToVec
 
+
 #.removeFromList------------------------2008-10-06
 # Remove items from a list.
 #--------------------------------------------AE/RH
@@ -1605,8 +1678,10 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 	if (!length(l) || !length(items))  return(l)
 	keep = l[!is.element(names(l),items)]
 	return(keep) }
+#----------------------------------.removeFromList
 
-#.tclArrayToVector--------------------------------
+
+#.tclArrayToVector----------------------2008-10-06
 .tclArrayToVector <- function( str )
 {
 	#strings (when multiple) are encoded as "{c:/program files/somefile.txt} c:/nospaces/isok.txt"
@@ -1648,6 +1723,7 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 }
 #--------------------------------.tclArrayToVector
 
+
 #.viewPkgVignettes----------------------2008-07-10
 # Display a GUI to display something equivalent to R's vignette()
 #-----------------------------------------------AE
@@ -1662,4 +1738,7 @@ writePBSoptions=function(fname="PBSoptions.txt") {
 	return(invisible(NULL))
 }
 #--------------------------------.viewPkgVignettes
+
+
+#===== THE END ===================================
 

@@ -29,6 +29,7 @@
 #  Rob Kronlund <Allen.Kronlund@dfo-mpo.gc.ca>             |
 #===========================================================
 
+
 #addArrows------------------------------2007-08-22
 # Calls 'arrows' function using relative (0:1) coordinates
 # Arguments:
@@ -50,6 +51,8 @@ addArrows <- function (x1, y1, x2, y2, ...) {
 	if(par()$ylog) { py1 <- 10^py1; py2 <- 10^py2 }
 	arrows(px1, py1, px2, py2, ...)
 	invisible(NULL) }
+#----------------------------------------addArrows
+
 
 #addLabel-------------------------------2007-08-22
 # Panel label function (Adapted from code by Rob Kronlund)
@@ -68,6 +71,8 @@ addLabel <- function (x, y, txt, ...) {
 	if(par()$ylog) y0 <- 10^y0
 	text(x0, y0, txt, ...)
 	invisible() }
+#-----------------------------------------addLabel
+
 
 #addLegend------------------------------2007-08-22
 # Panel key function (Adapted from code by Rob Kronlund)
@@ -85,6 +90,8 @@ addLegend <- function (x, y, ...) {
 	if(par()$ylog) y0 <- 10^y0
 	legend(x0, y0, ...)
 	invisible(NULL) }
+#----------------------------------------addLegend
+
 
 #drawBars-------------------------------2008-08-16
 #  Draw a linear barplot on the current graph
@@ -125,6 +132,7 @@ drawBars <- function (x, y, width, base = 0, ...) {
 	lines(xy, ...) }
 #-----------------------------------------drawBars
 
+
 #expandGraph----------------------------2006-08-16
 #  Tweaks values to expand margins for multiple graphs
 # Arguments:
@@ -135,6 +143,8 @@ drawBars <- function (x, y, width, base = 0, ...) {
 expandGraph <- function(mar=c(4,3,1.2,0.5), mgp=c(1.6,.5,0),...) {
 	par(mar=mar, mgp=mgp, ...)
 	invisible() }
+#--------------------------------------expandGraph
+
 
 #lucent---------------------------------2012-07-26
 # Create translucent colour
@@ -143,6 +153,8 @@ lucent <- function(col.pal=1,a=1){
 	col.rgb<-col2rgb(col.pal)/255
 	rgb(t(col.rgb),alpha=a)
 }
+#-------------------------------------------lucent
+
 
 #pickCol--------------------------------2006-08-08
 # Display interactive colour picking palette
@@ -182,6 +194,7 @@ pickCol <- function(returnValue=TRUE) {
 	tkgrid(entry,button) }
 #------------------------------------------pickCol
 
+
 #plotACF--------------------------------2009-02-24
 # Plot auto correlations (support for BRugs)
 #-----------------------------------------------RH
@@ -202,6 +215,8 @@ plotACF <- function(file,lags=20,clrs=c("blue","red","green","magenta","navy"),.
 		evalCall(lines,argu=list(x=x,y=y,type="h",col=clrs[i]),...,checkdef=TRUE,checkpar=TRUE); };
 		#lines(x,y,type="h",col=clrs[i],...); };
    abline(h=0,col="grey40",lty=3); box(); };
+#------------------------------------------plotACF
+
 
 #plotAsp--------------------------------2008-08-16
 # Plots x and y vectors with plot() but maintaining a fixed aspect
@@ -250,6 +265,7 @@ plotAsp <- function(x,y,asp=1,...) {
 	par(mai=old_mai) 
 	invisible() }
 #------------------------------------------plotAsp
+
 
 #plotBubbles----------------------------2010-08-04
 # Function to construct a bubble plot for a matrix z
@@ -387,6 +403,7 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	box(); invisible(z0) }
 #--------------------------------------plotBubbles
 
+
 #plotCsum-------------------------------2006-07-26
 # Plots cumulative frequecy of data
 # Arguments:
@@ -416,6 +433,7 @@ plotCsum<-function(x,add=FALSE,ylim=c(0,1),xlab="Measure",ylab="Cumulative Propo
 	invisible(data.frame(x=x,y=y)) }
 #-----------------------------------------plotCsum
 
+
 #plotDens-------------------------------2009-02-24
 # Plot density curves (support for BRugs)
 #-----------------------------------------------RH
@@ -438,6 +456,8 @@ plotDens <- function(file,clrs=c("blue","red","green","magenta","navy"),...) {
 		evalCall(lines,argu=list(x=d$x,y=d$y,col=clrs[i]),...,checkdef=TRUE,checkpar=TRUE) }; 
 		#lines(d$x,d$y,col=clrs[i],...) }; 
 	invisible() }
+#-----------------------------------------plotDens
+
 
 #plotFriedEggs--------------------------2008-09-03
 #  Pairs plot featuring fried eggs and beer.
@@ -562,6 +582,7 @@ plotFriedEggs <- function(A, eggs=TRUE, rings=TRUE,
 }
 #------------------------------------plotFriedEggs
 
+
 #plotSidebars---------------------------2012-07-26
 # Plot (x,y) table as horizontal sidebars.
 # Additional arguments:
@@ -614,6 +635,8 @@ plotSidebars <- function(z, scale=1, col=lucent("blue",0.25), ...){
 		text(x, usr[3]+0.02*diff(usr[3:4]), xmarg,adj=1,cex=0.7,font=2)
 	}
 }
+#-------------------------------------plotSidebars
+
 
 #plotTrace------------------------------2009-02-24
 # Plot trace lines (support for BRugs)
@@ -630,6 +653,8 @@ plotTrace <- function(file,clrs=c("blue","red","green","magenta","navy"),...) {
 		evalCall(lines,argu=list(x=x,y=y,col=clrs[i-1]),...,checkdef=TRUE,checkpar=TRUE) }
 		#lines(x,y,col=clrs[i-1],...) }
 	invisible() }
+#----------------------------------------plotTrace
+
 
 #resetGraph-----------------------------2012-12-04
 # Resets par() values to R default
@@ -666,6 +691,7 @@ resetGraph=function(reset.mf=TRUE)
 	invisible(par()) }
 #--------------------------------------resetGrapgh
 
+
 #testAlpha------------------------------2011-09-08
 # Display various alpha transparencies
 #-----------------------------------------------RH
@@ -693,6 +719,8 @@ testAlpha <- function (alpha=seq(0,1,len=25), fg="blue", bg="yellow",
 			cex=1.5), ..., checkpar=TRUE)
 	})
 	invisible(rgba) }
+#----------------------------------------testAlpha
+
 
 #testCol--------------------------------2011-09-08
 # Display test colours as circular patches.
@@ -739,6 +767,7 @@ testCol <- function(cnam=colors()[sample(length(colors()),15)]) {
 	invisible(clrs) }
 #------------------------------------------testCol
 
+
 #testLty--------------------------------2011-09-08
 # Display line types available
 # Arguments:
@@ -756,6 +785,8 @@ testLty <- function (newframe=TRUE, n=1:18, ...) {
 	mtext(as.character(n), side = 1, line = 1, at = n)
 	mtext("LINE TYPES (lty)", side = 3, line = 2)
 	invisible(NULL) }
+#------------------------------------------testLty
+
 
 #testLwd--------------------------------2011-09-08
 # Display line widths
@@ -775,6 +806,8 @@ testLwd <- function (lwd=1:20, col=c("black","blue"), newframe=TRUE) {
 	mtext(as.character(lwd), side = 1, line = 1, at = lwd)
 	mtext(paste("LINE WIDTHS (",xlim[1],"-",xlim[2],")"), side=3, line=2)
 	invisible(NULL) }
+#------------------------------------------testLwd
+
 
 #testPch--------------------------------2011-09-09
 # Display plotting symbols or octal strings
@@ -829,4 +862,5 @@ testPch <- function (pch=1:100, ncol=10, grid=TRUE, newframe=TRUE, octal=FALSE, 
 #------------------------------------------testPch
 
 
+#===== THE END ===================================
 

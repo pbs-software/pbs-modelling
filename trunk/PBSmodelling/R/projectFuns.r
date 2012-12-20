@@ -11,6 +11,7 @@
 #                                                          #
 ############################################################
 
+
 #cleanProj------------------------------2009-04-21
 # Anisa's cleanProj function modified for flexibility.
 #--------------------------------------------AE/RH
@@ -32,6 +33,8 @@ cleanProj=function(prefix, suffix, files) {
 		"button function=doAction text=Clean bg=aliceblue padx=4 pady=4 action=\"PBSmodelling:::.doClean(); closeWin(`cleanWindow`)\"")
 	createWin(winDesc, astext = TRUE) 
 	invisible(TRUE) }
+#----------------------------------------cleanProj
+
 
 #cleanWD--------------------------------2009-02-24
 # Clean all potential garbage files.
@@ -49,6 +52,8 @@ cleanWD=function(files){ # Clean all nuisance files
 		"button function=doAction text=Clean bg=aliceblue padx=4 pady=4 action=\"PBSmodelling:::.doCleanWD(); closeWin(`cleanWD`)\"")
 	createWin(winDesc, astext = TRUE) 
 	invisible(TRUE) }
+#------------------------------------------cleanWD
+
 
 #declareGUIoptions----------------------2012-12-04
 #  Used to add options that a GUI uses/loads. The widget
@@ -65,9 +70,10 @@ declareGUIoptions=function(newOptions){
 	.PBSmod$.options$.optionsDeclared <- .optionsDeclared
 	tput(.PBSmod)
 }
+#--------------------------------declareGUIoptions
 
-# ***********************************************************
-# findPrefix:
+
+#findPrefix-----------------------------2012-12-20
 # Input:
 #  suffix - character vector of suffixes to match to a file.
 # Output: character vector of files with matching extensions
@@ -86,7 +92,10 @@ findPrefix=function(suffix, path = "." ) {
 	pref=substring(sfiles,1,nchar(sfiles)-nchar(suffix))
 	return(pref)
 }
+#---------------------------------------findPrefix
 
+
+#findSuffix-----------------------------2012-12-20
 findSuffix=function( prefix, path = "." ) {
 	if( length( prefix ) > 1 ) {
 		ret <- c()
@@ -101,6 +110,8 @@ findSuffix=function( prefix, path = "." ) {
 	pref=substring(sfiles,nchar(prefix) + 1)
 	return(pref)
 }
+#---------------------------------------findSuffix
+
 
 #getGUIoptions--------------------------2012-12-04
 #  Set used option values as specified by declareGUIoptions in
@@ -116,24 +127,27 @@ getGUIoptions=function(){
 		try(setWinVal(option), silent=TRUE)
 	}
 }
+#------------------------------------getGUIoptions
 
-# ***********************************************************
-# getYes:
+
+#getYes---------------------------------2012-12-02
 #  A pop-up box prompting the user to choose Yes or No
 # Input:
 #  message - the message to display in the pop-up
 #  title - the title of the pop-up
 #  icon - icon to use in message box
 # Output: TRUE if Yes was chosen or FALSE if No was chosen
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 getYes=function(message, title="Choice", icon="question"){
 	answer=as.character(tkmessageBox(message=message, title=title, icon=icon, type="yesno"))
 	if(answer=="yes") return(TRUE)
 	else return(FALSE)
 }
+#-------------------------------------------getYes
 
-# ***********************************************************
-# openExamples: Open examples from the examples subdirectory
+
+#openExamples---------------------------2012-12-20
+#  Open examples from the examples subdirectory
 #  of a given package, making copies into the working
 #  directory. If files with the same name already exist than
 #  the user is prompted with the choice to overwrite.
@@ -142,7 +156,7 @@ getYes=function(message, title="Choice", icon="question"){
 #            (in example subdir)
 #  prefix - prefix of example files
 #  suffix - suffixes of example files (character vector)
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 openExamples=function(package, prefix, suffix){
   if(missing(package) && missing(prefix) && missing(suffix)){
     fromGUI=TRUE
@@ -168,6 +182,8 @@ openExamples=function(package, prefix, suffix){
   for(i in filenames)
     .tryOpen(i)
 }
+#-------------------------------------openExamples
+
 
 #promptWriteOptions---------------------2012-12-04
 #  Prompts user to save options if a change was made since last load
@@ -191,9 +207,10 @@ promptWriteOptions=function(fname=""){
 	if (getYes(paste("Save settings to", fname, "in working directory?")))
 		writePBSoptions(fname)
 }
+#-------------------------------promptWriteOptions
 
-# ***********************************************************
-# setFileOption:
+
+#setFileOption--------------------------2012-12-20
 #  Set a PBS option by browsing for a file.
 #  If this is used in a Window description file, the widget
 #  action will be used for the option name. If a window
@@ -204,21 +221,24 @@ promptWriteOptions=function(fname=""){
 # Output:
 #   Returns TRUE if the option was set, FALSE if the
 #   prompt was cancelled
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 setFileOption=function(option){
   .setOption(option, "file")
 }
+#------------------------------------setFileOption
 
-# ***********************************************************
-# setwdGUI:
+
+#setwdGUI-------------------------------2012-12-20
 #  change the working directory via a GUI
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 setwdGUI=function(){
   wd=as.character(tkchooseDirectory())
   if(!length(wd))
     return()
   setwd(wd)
 }
+#-----------------------------------------setwdGUI
+
 
 #setGUIoptions--------------------------2012-12-04
 #  Transfer option from GUI to option stored in memory.
@@ -240,9 +260,10 @@ setGUIoptions=function(option){
     setPBSoptions(i, getWinVal(i)[[i]])
   }
 }
+#------------------------------------setGUIoptions
 
-# ***********************************************************
-# setPathOption:
+
+#setPathOption--------------------------2012-12-20
 #  Set a PBS option by browsing for a directory.
 #  If this is used in a Window description file, the widget
 #  action will be used for the option name. If a window
@@ -253,26 +274,30 @@ setGUIoptions=function(option){
 # Output:
 #   Returns TRUE if the option was set, FALSE if the
 #   prompt was cancelled
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 setPathOption=function(option){
   .setOption(option, "dir")
 }
+#------------------------------------setPathOption
 
-# ***********************************************************
-# showAlert:
+
+#showAlert------------------------------2012-12-20
 #  Show an alert pop-up box with a message.
 # Input:
 #  message - the message to display in the alert
 #  title - the title of the alert box
 #  icon - icon to show in alert box
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 showAlert=function(message, title="Alert", icon="warning"){
   tkmessageBox(message=message, title=title, icon=icon)
 }
+#----------------------------------------showAlert
+
 
 #=================================================
 #              HIDDEN FUNCTIONS
 #=================================================
+
 
 #.doClean-------------------------------2009-02-24
 # Used by cleanProj(); function called when Clean button is pressed.
@@ -298,6 +323,8 @@ showAlert=function(message, title="Alert", icon="warning"){
 	if(sum(remaining)) 
 		showAlert(paste("Failed to delete",paste(filenames[remaining],collapse=", ")))
 }
+#-----------------------------------------.doClean
+
 
 #.doCleanWD-----------------------------2009-02-24
 # Anisa's .doClean function modified for file names only
@@ -316,6 +343,8 @@ showAlert=function(message, title="Alert", icon="warning"){
 	if (sum(remaining)) 
 		showAlert(paste("Failed to delete", paste(filenames[remaining], collapse = ", "))) 
 }
+#---------------------------------------.doCleanWD
+
 
 #One big hack to allow GUIs from outside PBSmodelling to call PBSmodelling's internal hidden functions.
 #Do not rely on this to remain here - functions beginning with a '.' should ONLY be called from PBSmodelling.
@@ -325,28 +354,29 @@ showAlert=function(message, title="Alert", icon="warning"){
 	return( environment() )
 }
 
-# ***********************************************************
-# .getHome:
+
+#.getHome-------------------------------2012-12-20
 #  Returns platform dependent home drive (Windows) or user
 #  home (Unix) -- NOT TESTED ON UNIX.
 # Output:
 #  HOMEDRIVE or HOME environment variable for Windows or Unix
 #  respectively
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 .getHome=function(){
   if (.Platform$OS.type=="windows")
     return(Sys.getenv("HOMEDRIVE")[[1]])
    return(Sys.getenv("HOME")[[1]])
 }
+#-----------------------------------------.getHome
 
-# ***********************************************************
-# .getPrefix:
+
+#.getPrefix-----------------------------2012-12-20
 #  get the project prefix from the focused GUI. Used to
 #  standardize the error message.
 # Input:
 #  quiet - If TRUE, no errors/alerts will be displayed
 # Output: the prefix, or NULL if the entry box was empty.
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 .getPrefix=function(quiet=FALSE){
   getWinVal("prefix", scope="L")
   if (prefix==""){
@@ -356,9 +386,10 @@ showAlert=function(message, title="Alert", icon="warning"){
   }
   return(prefix)
 }
+#---------------------------------------.getPrefix
 
-# ***********************************************************
-# .mergeLists:
+
+#.mergeLists----------------------------2012-12-20
 #  Add a second list to a first list. If both lists share any
 #  keys, the values from the second list overwrite those in
 #  the first list. Order of components in list is preserved.
@@ -367,7 +398,7 @@ showAlert=function(message, title="Alert", icon="warning"){
 #  list2 - second list
 # Output:
 #   the two lists merged as described above
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 .mergeLists=function(list1, list2){
   if(!length(list1))
     return(list2)
@@ -383,12 +414,12 @@ showAlert=function(message, title="Alert", icon="warning"){
     else
       newComponents[[nameI]]=list2[[nameI]]
   }
-
   return(c(list1, newComponents))
 }
+#--------------------------------------.mergeLists
 
-# ***********************************************************
-# .mergeVectors:
+
+#.mergeVectors--------------------------2012-12-20
 #  Add a second vector to a first vector. If both vectors
 #  share any values, the resulting vector will only contain
 #  this value once
@@ -397,7 +428,7 @@ showAlert=function(message, title="Alert", icon="warning"){
 #  v2 - second vector
 # Output:
 #   the two vectors merged as described above
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 .mergeVectors=function(v1, v2){
   if(!length(v2))
     return(v1)
@@ -409,6 +440,8 @@ showAlert=function(message, title="Alert", icon="warning"){
   }
   return(c(v1, newVals))
 }
+#------------------------------------.mergeVectors
+
 
 #.optionsNotUpdated---------------------2012-12-04
 #  Check if any of the options given by declareGUIoptions are
@@ -433,9 +466,10 @@ showAlert=function(message, title="Alert", icon="warning"){
 	}
 	return(FALSE)
 }
+#-------------------------------.optionsNotUpdated
 
-# ***********************************************************
-# .removeFromList:
+
+#.removeFromList------------------------2012-12-20
 #  Remove components of a list with the given names. "NA" can
 #  be used to remove NA names
 # Input:
@@ -443,7 +477,7 @@ showAlert=function(message, title="Alert", icon="warning"){
 #  items - character vector of names of components to remove
 # Output:
 #  a list with the chosen components removed
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 .removeFromList=function(l, items){
   if(!length(l) || !length(items))
     return(l)
@@ -461,6 +495,8 @@ showAlert=function(message, title="Alert", icon="warning"){
     return(l[-indices])
   return(l)
 }
+#----------------------------------.removeFromList
+
 
 #.selectCleanBoxes----------------------2008-08-25
 # This is used by cleanProj. It is the function for selecting or deselecting
@@ -474,6 +510,8 @@ showAlert=function(message, title="Alert", icon="warning"){
 	}
 	setWinVal(vecList)
 }
+#--------------------------------.selectCleanBoxes
+
 
 #.setOption-----------------------------2012-12-04
 # This used used for setPathOption and setFileOption
@@ -502,9 +540,10 @@ showAlert=function(message, title="Alert", icon="warning"){
 	}
 	return(FALSE)
 }
+#---------------------------------------.setOption
 
-# ***********************************************************
-# .showLog:
+
+#.showLog-------------------------------2012-12-20
 #  Given output for a log, will make pop-up log window
 #  containing this output and/or write this output to a
 #  logfile. \r is stripped from the log text for display
@@ -514,7 +553,7 @@ showAlert=function(message, title="Alert", icon="warning"){
 #  noWindow - if TRUE, log window will not be shown
 #  width - width of log window
 #  height - height of log window
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 .showLog=function(logText, fname, noWindow=FALSE, width=80, height=30){
   if(!noWindow){
     winDesc=c(
@@ -528,17 +567,20 @@ showAlert=function(message, title="Alert", icon="warning"){
     cat(logText, file=fname)
   }
 }
+#-----------------------------------------.showLog
 
-# ***********************************************************
-# .stripExt:
+
+#.stripExt------------------------------2012-12-20
 #  remove file extension from end of filename
 # Input:
 #  x - character vector of filenames, ie. "foo.c"
 # Output: the filename without the extension, ie. "foo"
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 .stripExt=function(x){
 	return(sub("[.].{1,3}$", "", x))
 }
+#----------------------------------------.stripExt
+
 
 #.tryOpen-------------------------------2012-12-04
 #  Tries to open a given file using an editor entered by the
@@ -574,6 +616,8 @@ showAlert=function(message, title="Alert", icon="warning"){
 	}
 	return(TRUE)
 }
+#-----------------------------------------.tryOpen
+
 
 #.makeCleanVec--------------------------2009-03-03
 # This is used by cleanProj() to create the strings describing checkbox vectors.
@@ -596,4 +640,8 @@ showAlert=function(message, title="Alert", icon="warning"){
 	}
 	return(vecDesc)
 }
+#------------------------------------.makeCleanVec
+
+
+#===== THE END ===================================
 

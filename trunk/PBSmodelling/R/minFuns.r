@@ -1,6 +1,8 @@
 #------------------------
 # Minimization Functions
 #------------------------
+
+#calcMin--------------------------------2012-12-20
 calcMin <- function(pvec, func, method="nlm", trace=0, maxit=1000, reltol=1e-8, steptol=1e-6, temp=10, repN=0, ...) {
 	Sfun <- function(S,pvec,func,repN) { # function of surrogate parameters
 		#eval(parse(text="PBSmin$N <<- PBSmin$N + 1"))
@@ -63,22 +65,32 @@ calcMin <- function(pvec, func, method="nlm", trace=0, maxit=1000, reltol=1e-8, 
 		fminS=PBSmin$fmin0, fminE=fmin, Pstart=P0, Pend=Pfin, AIC=AIC, message=mess);
 	return(Obag) 
 };
+#------------------------------------------calcMin
 
+
+#scalePar-------------------------------2012-12-20
 scalePar <- function(pvec) { # Convert true parameters to surrogates
 	Pval <- pvec[,1]; Pmin <- pvec[,2]; Pmax <- pvec[,3]; idx <- pvec[,4];
 	Sval <- (Pval[idx]-Pmin[idx]) / (Pmax[idx]-Pmin[idx]);
 	Sval <- pmax(Sval,0); Sval <- pmin(Sval,1);  # enforces the range
 	S    <- (2/pi) * asin(sqrt(Sval)); names(S) <- dimnames(pvec)[[1]][idx];
-	return(S); }
+	return(S);
+}
+#-----------------------------------------scalePar
 
+
+#restorePar-----------------------------2012-12-20
 restorePar <- function(S,pvec) { # Convert surrogates to true parameters
 	Pval <- pvec[,1]; Pmin <- pvec[,2]; Pmax <- pvec[,3]; idx <- pvec[,4];
 	if (sum(idx) != length(S)) stop("Warning: S & P not consistent/n");
 	Pcon <- Pmin[idx] + (Pmax[idx]-Pmin[idx])*sin(pi*S/2)^2;
 	P <- Pval; P[idx] <- Pcon; names(P) <- dimnames(pvec)[[1]];
-	return(P); };
+	return(P); 
+};
+#---------------------------------------restorePar
 
 
+#GT0------------------------------------2012-12-20
 GT0 <- function (x, eps = 1e-04) {
     eps2 <- eps/2
     ifix <- ((x > 0) & (x < eps))
@@ -86,4 +98,10 @@ GT0 <- function (x, eps = 1e-04) {
     y = x
     y[i0] <- eps2
     y[ifix] <- eps2 * (1 + (x[ifix]/eps)^2)
-    return(y) }
+    return(y) 
+}
+#----------------------------------------------GT0
+
+
+#===== THE END ===================================
+
