@@ -11,7 +11,10 @@
 #                                                          #
 ############################################################
 
-#function for launching loadC GUI
+
+#loadC----------------------------------2009-07-08
+#  Function for launching loadC GUI.
+#-----------------------------------------------AE
 loadC=function(){
 	createWin(system.file("win/loadC.txt", package="PBSmodelling"))
   
@@ -22,9 +25,10 @@ loadC=function(){
   findPrefix(c("c", "cc", "cpp", "cxx"))
   invisible()
 }
+#--------------------------------------------loadC
 
-# ***********************************************************
-# compileC:
+
+#compileC-------------------------------2009-07-08
 #  Compiles a C file into a shared library file, showing and
 #  creating a log of the compiler output and possibly alerts
 #  if errors occur. If the library is already loaded, it will
@@ -40,7 +44,7 @@ loadC=function(){
 #     				 in a pop-up window
 #  logfile - if TRUE, a log file containing the compiler
 #            output will be created
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 compileC=function(file, lib="", options="", logWindow=TRUE, logFile=TRUE){
   if(!file.exists(file)){
     showAlert(paste("File ", file, " does not exist in the working directory.",
@@ -69,9 +73,10 @@ compileC=function(file, lib="", options="", logWindow=TRUE, logFile=TRUE){
   }
 	return(invisible())
 }
+#-----------------------------------------compileC
 
-# ***********************************************************
-# .libName:
+
+#.libName-------------------------------2009-07-08
 #  Given a character vector of shared library object
 #  names, returns the filenames with the appropriate
 #  extension for the user's platform (.dll for Windows or .so
@@ -81,19 +86,20 @@ compileC=function(file, lib="", options="", logWindow=TRUE, logFile=TRUE){
 # Output:
 #   what the corresponding filenames should be on the current
 #   platform
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 .libName=function(lib=""){
   if (.Platform$OS.type=="windows")
     return(paste(lib, ".dll", sep=""))
   else
     return(paste(lib, ".so", sep=""))
 }
+#-----------------------------------------.libName
 
-# ***********************************************************
-# .guiSource:
+
+#.guiSource-----------------------------2009-07-08
 #  Sources the .r file in the working directory indicated by
 #  the prefix entry widget in the GUI
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 .guiSource=function(){
   prefix=.getPrefix()
   filename=paste(prefix, ".r", sep="")
@@ -101,12 +107,13 @@ compileC=function(file, lib="", options="", logWindow=TRUE, logFile=TRUE){
   if(class(res)=="try-error")
     showAlert(paste("Error sourcing ", filename, ".", sep=""))
 }
+#---------------------------------------.guiSource
 
-# ***********************************************************
-# .guiCompileC:
+
+#.guiCompileC---------------------------2009-07-08
 #  Gets the prefix and libPrefix arguments from the GUI and
 #  uses them to call .compileC
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 .guiCompileC=function(){
   prefix=.getPrefix()
   if (is.null(prefix))
@@ -125,13 +132,14 @@ compileC=function(file, lib="", options="", logWindow=TRUE, logFile=TRUE){
     
   compileC(filename, libPrefix)
 }
+#-------------------------------------.guiCompileC
 
-# ***********************************************************
-# .guiDyn:
+
+#.guiDyn--------------------------------2009-07-08
 #  Based on the previous GUI action, either tries to load or
 #  unload the library with the lib prefix specified in the
 #  GUI (or the project file prefix if this is left blank
-# -----------------------------------------------------------
+#-----------------------------------------------AE
 .guiDyn=function(){
   getWinVal("libPrefix", scope="L")
   if(libPrefix=="")
@@ -152,8 +160,12 @@ compileC=function(file, lib="", options="", logWindow=TRUE, logFile=TRUE){
   else
     try(dyn.unload(lib), silent=TRUE)
 }
+#------------------------------------------.guiDyn
 
-#clean function
+
+#.cleanLoadC----------------------------2009-07-08
+#  Clean function
+#-----------------------------------------------AE
 .cleanLoadC=function(){
 	cleanPrefix=.getPrefix(quiet=TRUE)
 	if(is.null(cleanPrefix))
@@ -161,13 +173,14 @@ compileC=function(file, lib="", options="", logWindow=TRUE, logFile=TRUE){
 	cleanProj(cleanPrefix, suffix=c(".d", ".o", "_res.o", "_res.rc", ".log",
 			.libName()), files="Makedeps")
 }
+#--------------------------------------.cleanLoadC
 
-# ***********************************************************
-# .loadCRunComparison
-#   Runs the provided C and R functions a number of times
-#   specified in the GUI and writes into text boxes the
-#   elapsed time for each
-# -----------------------------------------------------------
+
+#.loadCRunComparison--------------------2009-07-08
+#  Runs the provided C and R functions a number of times
+#  specified in the GUI and writes into text boxes the
+#  elapsed time for each
+#-----------------------------------------------AE
 .loadCRunComparison=function(){
   prefix=.getPrefix()
   if(is.null(prefix))
@@ -217,3 +230,8 @@ compileC=function(file, lib="", options="", logWindow=TRUE, logFile=TRUE){
 
   setWinVal(list("rTime"=rTime[3], "cTime"=cTime[3], "ratio"=rTime/cTime))
 }
+#------------------------------.loadCRunComparison
+
+
+#===== THE END ===================================
+

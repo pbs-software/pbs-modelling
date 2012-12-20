@@ -1,3 +1,4 @@
+#.sortWidget----------------------------2012-12-20
 .sortWidget <- function( d, hisname )
 {
 	#given a tcl_variable that represents a matrix, fetch it and convert into an R matrix
@@ -67,3 +68,5 @@
 	tkfocus(tt)
 	return( r )
 }
+#--------------------------------------.sortWidget
+
