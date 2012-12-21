@@ -1138,107 +1138,53 @@ showRes <- function(x, cr=TRUE, pau=TRUE) {
 #------------------------------------------showRes
 
 
-#showVignettes--------------------------2008-07-10
+#showVignettes--------------------------2012-12-21
 # Display a GUI to display something equivalent to R's vignette()
-# Arguments: package = string specifying a package name.
-#-----------------------------------------------AE
-showVignettes <- function (package) {
-	#if (!exists(".dwd",where=1)) assign(".dwd",getwd(),envir=.GlobalEnv)
-	#if (!exists(".dls",where=1)) assign(".dls",c(".dls",ls(pos = 1, all.names=TRUE)),envir=.GlobalEnv)
-	if (!exists(".dwd",envir=.PBSmodEnv)) assign(".dwd",getwd(),envir=.PBSmodEnv) #.GlobalEnv)
-	if (!exists(".dls",envir=.PBSmodEnv)) assign(".dls",c(".dls",ls(pos = .PBSmodEnv, all.names=TRUE)),envir=.PBSmodEnv) #.GlobalEnv)
+# Arguments: package = string specifying a package name.-
+#--------------------------------------------AE/RH
+showVignettes = function(package){
+	if (!exists(".dwd",envir=.PBSmodEnv)) assign(".dwd",getwd(),envir=.PBSmodEnv)
+	if (!exists(".dls",envir=.PBSmodEnv)) assign(".dls",c(".dls",ls(pos = .PBSmodEnv, all.names=TRUE)),envir=.PBSmodEnv)
 	closeWin();
 	x <- vignette()
+	xres = as.data.frame(x[["results"]])
 	if (missing(package)) {
-		#display a list of packages to choose from
-		pkgVignette <- unique(x$results[,"Package"])
-		radios <- list(list(list(type="label", text="Select a package to view available vignettes.", sticky="w", padx=12)))
-		i <- 2
-		for(pkg in pkgVignette) {
-			len <- length(x$results[,"Package"][x$results[,"Package"]==pkg])
-			if (len==1)
-				items <- "(1 vignette)"
-			else
-				items <- paste("(",len," vignettes)", sep="")
-			radios[[i]] <- list(list(type="radio",
-			                    name="pkg",
-			                    value=pkg,
-			                    text=paste(pkg, items),
-			                    mode="character",
-			                    sticky="w",
-			                    padx=12))
-			i <- i+1
-		}
-		win <- list(title = "R Vignettes", windowname = "pbs.vignette", onclose=".dClose",
-			.widgets = list(list(type="grid", .widgets=c(
-
-			list(list(
-			list(type="label", text=paste("R Vignettes", paste(rep(" ", times=100), collapse="")), font="bold underline", fg="red3", padx=10, sticky="w")
-			)),
-			radios,
-			list(list(
-			list(type="button", "function"=".viewPkgVignette", action="pkg", text="View Vignettes", sticky="w", padx=12)
-			))
-			))))
-		assign("xxy",win,envir=.PBSmodEnv) #.GlobalEnv)
-		createWin(list(win))
+		nvig = sapply(split(xres$Item,xres$Package),length)
+		tvig = paste(names(nvig)," (",nvig," vignette",ifelse(nvig>1,"s",""),")",sep="") # radio button labels
+		rvig = paste("radio name=pkg value=",names(nvig),
+			" text=\"",tvig,"\" mode=character sticky=W padx=12",sep="")
+		win = c("window title=\"R Vignettes\" name=pbsvignette onclose=\".dClose\"",
+			"grid 3 1",
+			"label text=\"Select a package to view\\navailable vignettes:\" sticky=W padx=12 font=\"bold 11\"",
+			paste("grid ",length(rvig)," 1",sep=""),
+			rvig,
+			"button function=.viewPkgVignette action=pkg text=\"View Vignettes\" sticky=E padx=12 bg=greenyellow")
+		assign("xxy",win,envir=.PBSmodEnv)
+		createWin(win,astext=TRUE)
 		return(invisible(NULL))
 	}
 	#display vignettes from a certain package
-	x <- x$results[x$results[,"Package"]==package,]
-	radios <- list(list(list(type="label", text="Select a Vignette to view.", sticky="w", padx=12)))
-	i <- 2
-	if (is.null(dim(x))) {
-		tmp<-names(x)
-		dim(x)<-c(1,4)
-		colnames(x)<-tmp
-	}
-	for(j in 1:length(x[,1])) {
-		vignetteDir <- file.path(x[j,"LibPath"], package, "doc")
-		path <- tools::list_files_with_type(vignetteDir, "vignette")
-		path <- path[x[j,"Item"]==tools::file_path_sans_ext(basename(path))]
-
-		if (length(path)==0)
-			stop("error - could not find the path for vignette - this is most likely a bug!")
-		radios[[i]] <- list(list(type="radio",
-		                    name="vignette",
-		                    value=path,
-		                    text=x[j,"Item"],
-		                    mode="character",
-		                    font="underline",
-		                    sticky="w",
-		                    padx=12))
-		i <- i+1
-		radios[[i]] <- list(list(type="label",
-		                    text=x[j,"Title"],
-		                    sticky="w",
-		                    wraplength=500,
-		                    padx=20
-		                    ))
-		i <- i+1
-	}
-	win <- list(title = paste("R Vignettes:", package), windowname = "pbs.vignette", onclose=".dClose",
-		.widgets = list(list(type="grid", .widgets=c(
-			list(list(
-				list(type="label", text=paste(package, paste(rep(" ", times=100), collapse="")), font="bold underline", fg="red3", sticky="w")
-			)),
-			radios,
-			list(list(list(type="null", pady=4))),
-				list(list(
-					list(type="grid", sticky="w", pady=3, .widgets=
-						list(
-							list(
-								list(type="button", "function"=".viewPkgVignette", action="vignette", text="View Vignette", sticky="w", padx=12),
-								list(type="button", "function"=".viewPkgVignette", action="source", text="View Source", sticky="w", padx=12),
-								list(type="button", "function"="showVignettes", action="", text="All Packages", sticky="w", padx=12)
-							)
-						)
-					)
-				))
-			)
-		)))
-	assign("xx",win,envir=.PBSmodEnv) #.GlobalEnv)
-	createWin(list(win))
+	xpac <- xres[is.element(xres$Package,package),]
+	if (nrow(xpac)==0) stop("No such package on your system")
+	if (is.null(dim(xpac))) {
+		tmp <- names(xres); dim(xpac) <- c(1,dim(xres)[2]); colnames(xpac) <- tmp }
+	vdir <- file.path(xpac[1,"LibPath"], package, "doc") # always the same for a single package
+	path <- tools::list_files_with_type(vdir, "vignette")
+	path <- path[xpac[,"Item"]==tools::file_path_sans_ext(basename(path))]
+	nvig = sapply(split(xpac$Item,xpac$Package),length)
+	rvig = paste("radio name=vignette value=\"",path,"\" text=\"",xpac[,"Item"],"\" mode=character font=\"underline 10\" sticky=W padx=12",sep="")
+	lvig = paste("label text=\"",xpac[,"Title"],"\" sticky=W  wraplength=500 padx=20",sep="")
+	win = c("window title=\"R Vignettes\" name=pbsvignette onclose=\".dClose\"",
+		"grid 3 1",
+		"label text=\"Select a vignette:\" sticky=W padx=12 font=\"bold 11\"",
+		paste("grid ",length(rvig)," 2 byrow=FALSE",sep=""),
+		rvig,lvig,
+		"grid 1 3",
+		"button function=.viewPkgVignette action=vignette text=\"View Vignette\" sticky=W padx=12 bg=lightsteelblue1",
+		"button function=.viewPkgVignette action=source text=\"View Source\" sticky=W padx=12 bg=lightsteelblue1",
+		"button function=showVignettes action=\"\" text=\"All Packages\" sticky=W padx=12 bg=greenyellow")
+	assign("xx",win,envir=.PBSmodEnv)
+	createWin(win,astext=TRUE)
 	return(invisible(NULL))
 }
 #-------------------------------------showVignettes

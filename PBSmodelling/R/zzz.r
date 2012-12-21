@@ -72,7 +72,7 @@ http://code.google.com/p/pbs-software/
 # No Visible Bindings
 # ===================
 if(getRversion() >= "2.15.1") utils::globalVariables(names=c(
-	".closeChoice",".cls",".cwd",".dls",".dwd",".makeChoice",".PBSmod",".runExHelperQuit",
+	".cfl",".closeChoice",".cls",".cwd",".dls",".dwd",".makeChoice",".PBSmod",".runExHelperQuit",
 	"blist",
 	"chFile","chTest","closeALL","closeSDE","command","curVal","cwd",
 	"for",
