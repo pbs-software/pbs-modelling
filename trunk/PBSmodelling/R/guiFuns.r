@@ -1673,12 +1673,12 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	
 	if( is.null( widget[["varname"]] ) == FALSE ) {
 		#get image from variable
+		tget(.PBSmod)
 		if( !exists( widget$varname, envir=.PBSmod[[ winName ]]$env ) ) {
 			msg <- paste( "unable to load image from variable \"", widget[["varname"]], "\" - variable not found", sep="" )
 			#R is crashing here.... wtf? .stopWidget( msg, widget$.debug, winName ) #maybe its crashing when the window is closed by tkclose
 			stop( msg )
 		}
-		tget(.PBSmod)
 		image <- get( widget$varname, envir = .PBSmod[[ winName ]]$env )
 	} else {
 		image = widget$file
@@ -2095,9 +2095,10 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	if( !is.null( widget[["rowshow"]] ) && widget$rowshow > 0 )
 		return( .createWidget.object.scrolling( tk, widgetList, winName ) )
 
-	if( is.null( userObject ) )
+	if( is.null( userObject ) ) {
 		tget(.PBSmod)
 		userObject <- get( widget$name, envir = .PBSmod[[ winName ]]$env )
+	}
 
 	#matrix
 	if (is.matrix(userObject)) {

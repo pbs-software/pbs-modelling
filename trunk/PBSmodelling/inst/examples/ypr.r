@@ -30,7 +30,8 @@ RickFig <- function() {
 	Fvec <- seq(Flim[1],Flim[2],length=Flim[3]);
 	tvec <- seq(tlim[1],tlim[2],length=tlim[3]);
 	ymat <- outer(Fvec,tvec,FUN="ypr"); ymax <- max(ymat);
-	EumP <<- sapply(Fopt,topt); Topt <- EumP[1,]; EumL <- rbind(Fopt,EumP);
+	EumP <- sapply(Fopt,topt); tput(EumP)
+	Topt <- EumP[1,]; EumL <- rbind(Fopt,EumP);
 	ye   <- teum(Flim);
 	# clevs<- c(seq(clim[1],clim[2],by=clim[3]),floor(max(ye[,3])))
 	clevs<- seq(clim[1],clim[2],by=clim[3]);

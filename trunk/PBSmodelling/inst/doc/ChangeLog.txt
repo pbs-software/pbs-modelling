@@ -7,7 +7,8 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
-2.65  2012-12-21
+2.65  2013-01-02
+  - Fixed a few bugs due to misplaced `.tget(.PBSmod)` statements (thanks Athena Ogden). (RH 01/02)
   - Modified function `showVignettes`; old code was based on deprecated grid structure (see Issue 86). (RH 12/21)
   - Re-organised some of the R code (no functional changes). (RH 12/20)
   - Fixed the problem of widget `label` `name` argument not being recognised (mismatch in `tget` and `tput` calls, not sure where though). (RH 12/18)
