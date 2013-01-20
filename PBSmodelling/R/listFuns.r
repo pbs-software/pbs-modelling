@@ -14,18 +14,23 @@ writeList <- function(x, fname="", format="D", comments="") {
 		if (file.exists(fname) && !NoComments) {
 			output <- scan(fname, what=character(0), sep="\n")
 			output <- paste(output, collapse="\n")
+
 			sink(fname)
-				#add comments
-				if (all(comments!="#"))
-					cat(paste(comments, collapse="\n")); cat("\n");
-				#spit out original output from dput
-				cat(output); cat("\n")
-			sink()
+                        on.exit(expr=sink());
+
+                        #add comments
+                        if (any(comments!="#")) {
+                                cat(paste(comments, collapse="\n"));
+                                cat("\n");
+                        }
+                        #spit out original output from dput
+                        cat(output)
+                        cat("\n")
 		}
 		return(fname)
 	}
 	if (format=="P") {
-		if (!is.list(x) || !length(x))
+		if (!is.list(x) || length(x) == 0)
 			stop("x must be a non-empty list.")
 		.writeList.P(x, fname, comments)
 		return(fname)
@@ -38,66 +43,93 @@ writeList <- function(x, fname="", format="D", comments="") {
 #.writeList.P---------------------------2009-02-10
 # Saves list x to disk using "P" format
 #-------------------------------------------ACB/RH
-.writeList.P <- function( x, fname="", comments) {
-	if (fname!="") sink(fname)
-	if (!missing(comments))
+.writeList.P <- function( x, fname="", comments, prefix="") {
+	if (fname!="") {
+                sink(fname)
+                on.exit(expr=sink())
+        }
+	if (!missing(comments)) {
 		cat(paste(comments,collapse="\n")); cat("\n")
-	xNames=names(x); z=is.element(xNames,"")
-	if (any(z)) xNames[z]=names(x)[z]=paste("X",1:sum(z),sep="")
+        }
+
+        # check for list elements that are missing names
+	xNames=names(x)
+        if (is.null (xNames))
+                # names(x) returns NULL if no names are set
+                xNames <- names(x) <- paste("X",1:length(x),sep="")
+        else {
+                # assign X# names for NA/"" cases
+                z <- is.na(xNames) | is.element(xNames,"")
+                if (any(z))
+                        xNames[z] <- names(x)[z] <- paste("X",1:sum(z),sep="")
+        }
+
 	#check for errors
 	for(i in 1:length(x)) {
-		ii=xNames[i]; iii=x[[i]]
-		if (!is.vector(iii) && !is.matrix(iii) && class(iii)!="data.frame") next
-			#stop("writelist can only support modes of vector, matrix, and dataframes.")
+		dat=x[[i]]
+                # note if a list (A) contains a list (B), is.vector will return
+                # true for (B)
+		if (!is.vector(dat) && !is.matrix(dat) && class(dat)!="data.frame") next
 		#prepare character strings with quotes if spaces exist
-		if (is.character(iii) && length(iii)>0) {
-			for(j in 1:length(iii)) {
+		if (is.character(dat) && length(dat)>0) {
+			for(j in 1:length(dat)) {
 				#only strings with spaces need quotes
-				if (typeof(iii[j])=="character") {
-					x[[i]][j] <- .addslashes(iii[j])
+				if (typeof(dat[j])=="character") {
+					x[[i]][j] <- .addslashes(dat[j])
 				}
 			}
 		}
 	}
+
 	#start cat-ing keys and values
 	for(i in 1:length(x)) {
-		ii=xNames[i]; iii=x[[i]]
-		if (!is.vector(iii) && !is.matrix(iii) && class(iii)!="data.frame" && !is.array(iii)) next
+                if (prefix != "")
+                        nam=paste(prefix, xNames[i], sep="$")
+                else
+                        nam=xNames[i]
+                dat=x[[i]]
+		if (!is.vector(dat) && !is.matrix(dat) && class(dat)!="data.frame"
+                    && !is.array(dat))
+                        next
 		#print varName
-		cat(paste("$", ii, "\n", sep=""))
-		if (is.vector(iii)) {
+		cat(paste("$", nam, "\n", sep=""))
+                # we must handle lists first because is.vector returns true for
+                # a list
+                if (class(dat) == "list") {
+                        #list within the list
+                        .writeList.P (dat, fname="", prefix=nam)
+                }
+                else if (is.vector(dat)) {
 			#print names
-			vecNames<-names(iii)
+			vecNames<-names(dat)
 			if (is.null(vecNames)) vecNames=""
 			vecNames <- .addslashes(vecNames)
-			cat(paste("$$vector mode=\"", typeof(iii), "\" names=", vecNames, "\n", sep=""))
-			cat(iii); cat("\n")
+			cat(paste("$$vector mode=\"", typeof(dat), "\" names=", vecNames, "\n", sep=""))
+			cat(dat); cat("\n")
 		}
-		else if( is.matrix( iii ) ) {
+		else if( is.matrix( dat ) ) {
 			#print colnames
-			matColNames <- colnames( iii )
-			matRowNames <- rownames( iii )
+			matColNames <- colnames( dat )
+			matRowNames <- rownames( dat )
 			if (is.null(matColNames))
 				matColNames <- ""
 			if (is.null(matRowNames))
 				matRowNames <- ""
 			matColNames <- .addslashes(matColNames)
 			matRowNames <- .addslashes(matRowNames)
-			cat(paste("$$matrix mode=\"", typeof( iii ), "\" rownames=", matRowNames, " colnames=", matColNames, " ncol=", ncol( iii ), "\n", sep=""))
+			cat(paste("$$matrix mode=\"", typeof( dat ), "\" rownames=", matRowNames, " colnames=", matColNames, " ncol=", ncol( dat ), "\n", sep=""))
 
 			for(j in 1:dim(x[[i]])[1]) {
-				cat(iii[j,]); cat("\n")
+				cat(dat[j,]); cat("\n")
 			}
 			
 		}
-		else if ( is.array(iii) ) {
-
-
-			d=dim(iii); nr=d[1]; nc=d[2]; nd=length(d) # dimension info
+		else if ( is.array(dat) ) {
+                        d=dim(dat); nr=d[1]; nc=d[2]; nd=length(d) # dimension info
 
 			#get the dimensional names
 			dim_names_flat <- c() #single dimension vector
-			dim_names <- dimnames( iii ) #note: dimnames may also have a names attribute
+			dim_names <- dimnames( dat ) #note: dimnames may also have a names attribute
 			if( is.null( dim_names ) ) {
 				dim_names_flat <- ""
 			} else {
@@ -110,40 +142,39 @@ writeList <- function(x, fname="", format="D", comments="") {
 			}
 			dim_names_flat <- .addslashes( dim_names_flat )
 
-			cat(paste("$$array mode=\"", typeof(iii), "\" dim=",.addslashes(d)," byright=FALSE",
+			cat(paste("$$array mode=\"", typeof(dat), "\" dim=",.addslashes(d)," byright=FALSE",
 				" byrow=TRUE dimnames=", dim_names_flat, "\n", sep="")) 
 			dhi=d[3:nd]; nhi=length(dhi) # extra dimensions above 2
 			idx=1:nhi; index=letters[10+(idx)]
 			ex1=paste(paste("for(",rev(index)," in 1:",dhi[rev(idx)],"){",sep=""),collapse=" ")
 			ex2="for(j in 1:nr){"
-			ex3=paste("cat(iii[j,,",paste(index,collapse=","),"]); cat(\"\\n\")",sep="")
+			ex3=paste("cat(dat[j,,",paste(index,collapse=","),"]); cat(\"\\n\")",sep="")
 			ex4=paste(rep("}",nhi+1),collapse="")
 			expr=paste(ex1,ex2,ex3,ex4,collapse=" ")
 			eval(parse(text=expr)) 
 		}
-		else if (class(iii)=="data.frame") {
+		else if (class(dat)=="data.frame") {
 			cat("$$data "); 
 			#ncol
-			cat("ncol="); cat(dim(iii)[2]); cat(" ");
+			cat("ncol="); cat(dim(dat)[2]); cat(" ");
 			#modes
 			cat("modes=\"")
-			for (j in 1:length(iii)) {
+			for (j in 1:length(dat)) {
 				if (j>1) cat(" ")
-					cat(typeof(iii[[j]])) }
+					cat(typeof(dat[[j]])) }
 			cat("\" ")
 			#rownames
-			cat("rownames="); cat(.addslashes(rownames(iii))); cat(" ")
+			cat("rownames="); cat(.addslashes(rownames(dat))); cat(" ")
 			#colnames
-			cat("colnames="); cat(.addslashes(colnames(iii))); cat(" ")
+			cat("colnames="); cat(.addslashes(colnames(dat))); cat(" ")
 			#byrow
 			cat("byrow=TRUE"); cat("\n")
-			for(j in 1:dim(iii)[1]) {
-				for(k in 1:dim(iii)[2]) {
-					cat(iii[j,k]); cat(" ") }
+			for(j in 1:dim(dat)[1]) {
+				for(k in 1:dim(dat)[2]) {
+					cat(dat[j,k]); cat(" ") }
 				cat("\n") }
 		}
 	}
-	if (fname!="") sink()
 }
 #-------------------------------------.writeList.P
 
@@ -214,11 +245,13 @@ readList <- function(fname) {
 			}
 		}
 	}
+
 	#convert the "data" list into a real list
 	varName=varOptions=NULL
 	varData=retData=list()    #list to return
 	for(i in 1:length(data)) {
 		str <- data[[i]]$str
+
 		#varOptions (optional)
 		if (substr(str,1,2)=="$$") {
 			if (!is.null(varOptions))
@@ -232,13 +265,15 @@ readList <- function(fname) {
 		else if (substr(str,1,1)=="$") {
 			if (!is.null(varName)) {
 				#save data into the retData list
-				retData[[varName]] <- .readList.P.convertData(varOptions, varData, fname, orgfile)
-				if (is.null(retData[[varName]])) halt<-TRUE
+                                listelem <- paste("retData", paste("[[\"", paste(strsplit (varName, "\\$")[[1]], collapse="\"]][[\""), "\"]]", sep=""), sep="")
+                                savedata <- paste(listelem, " <- .readList.P.convertData(varOptions, varData, fname, orgfile)", sep="")
+                                eval(parse(text=savedata))
+				if (is.null(eval(parse(text=listelem)))) halt<-TRUE
 				varName <- varOptions <- NULL
 				varData <- list()
 			}
 			varName <- .trimWhiteSpace(substr(str, 2, nchar(str)))
-			if (!any(grep("^[a-zA-Z0-9_.]+$", varName))) {
+			if (!any(grep("^[a-zA-Z0-9_.$ ]+$", varName))) {
 				.catError(
 					paste("Variable name \"", varName,"\" is not valid", sep=""), fname, 
 					data[[i]]$line.start, data[[i]]$line.end, 
@@ -252,15 +287,17 @@ readList <- function(fname) {
 			varData[[length(varData)+1]] <-data[[i]]
 		}
 	}
+
 	#save anything from after
 	if (!is.null(varName)) {
-		#print(".readList.P.convertData start"); print(date());
-#browser();return()
-		retData[[varName]] <- .readList.P.convertData(varOptions, varData, fname, orgfile)
-		#print(".readList.P.convertData end"); print(date());
-		if (is.null(retData[[varName]])) halt=TRUE
+                listelem <- paste("retData", paste("[[\"", paste(strsplit(varName, "\\$")[[1]], collapse="\"]][[\""), "\"]]", sep=""), sep="")
+                savedata <- paste(listelem, " <- .readList.P.convertData(varOptions, varData, fname, orgfile)", sep="")
+                eval(parse(text=savedata))
+		if (is.null(eval(parse(text=listelem)))) halt<-TRUE
 	}
+
 	if (halt) {stop("Errors were found in the file. Unable to continue\n")}
+
 	return(retData)
 }
 #--------------------------------------.readList.P
