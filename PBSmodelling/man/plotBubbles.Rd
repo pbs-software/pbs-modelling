@@ -17,7 +17,7 @@ plotBubbles(z, xval=FALSE, yval=FALSE, dnam=FALSE, rpro=FALSE,
     If \code{yval=TRUE}, the first column contains y-values for the rows.}
   \item{dnam}{logical: if \code{TRUE}, attempt to use \code{dimnames} of input
     matrix \code{z} as \code{xval} and \code{yval}. The \code{dimnames} are 
-    converted to numeric values and must be strictly inreasing or decreasing. 
+    converted to numeric values and must be strictly increasing or decreasing. 
     If successful, these values will overwrite previously specified values
     of \code{xval} and \code{yval} or any default indices.}
   \item{rpro}{logical: if \code{TRUE}, convert rows to proportions.}

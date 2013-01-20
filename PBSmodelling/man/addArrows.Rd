@@ -15,7 +15,7 @@ addArrows(x1, y1, x2, y2, ...)
   \item{y1}{ y-coordinate (0:1) at base of arrow.}
   \item{x2}{ x-coordinate (0:1) at tip of arrow.}
   \item{y2}{ y-coordinate (0:1) at tip of arrow.}
-  \item{...}{ additional paramaters for the function \code{arrows}.}
+  \item{...}{ additional parameters for the function \code{arrows}.}
 }
 
 \details{

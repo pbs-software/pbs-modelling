@@ -9,7 +9,7 @@
 }
 \note{
   These file associations are not saved from one \emph{PBS Modelling} session to
-  the next unless explicity saved and loaded (see \code{writePBSoptions} and
+  the next unless explicitly saved and loaded (see \code{writePBSoptions} and
   \code{readPBSoptions}).
 }
 \usage{getPBSext(ext)}

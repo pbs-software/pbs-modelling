@@ -29,7 +29,7 @@ cleanProj(prefix, suffix, files)
            \tab selecting and clearing all the check boxes, respectively.\cr
   \bold{4} \tab A "Clean" button that deletes files in the working directory \cr
            \tab matching one of the following criteria: \cr
-           \tab (i) file name matches both an expansion of a concantenation of a \cr
+           \tab (i) file name matches both an expansion of a concatenation of a \cr
            \tab prefix in the entry box and a suffix chosen with a check box; or \cr
            \tab (ii) file name matches an expansion of a file chosen with a check box.
   }

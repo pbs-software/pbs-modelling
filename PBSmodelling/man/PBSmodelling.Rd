@@ -11,7 +11,7 @@
   user interface (GUI). Although it depends heavily on the R interface 
   to the \code{Tcl/Tk} package, a user does not need to know Tcl/Tk. 
 
-  \code{PBSmodelling} contains examples that illustrate models built uisng 
+  \code{PBSmodelling} contains examples that illustrate models built using 
   other R packages, including \code{PBSmapping}, \code{odesolve}, 
   \code{PBSddesolve}, and \code{BRugs}. 
   It also serves as a convenient prototype for building new R packages, 

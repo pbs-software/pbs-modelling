@@ -4,7 +4,7 @@
 # ***********************************************************
 # Data: .widgetDefs
 #
-# Defines allowed widget paramaters names and default values
+# Defines allowed widget parameters names and default values
 # -----------------------------------------------------------
 .widgetDefs <- list()
 .widgetDefs$window <- list(
@@ -477,7 +477,7 @@
 # ***********************************************************
 # Data: .pFormatDefs
 #
-# Defines allowed P format paramaters names and default values
+# Defines allowed P format parameters names and default values
 # to be used in readList (when P format is detected)
 # -----------------------------------------------------------
 

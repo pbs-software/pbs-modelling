@@ -10,7 +10,7 @@ testAlpha(alpha=seq(0,1,len=25), fg="blue", bg="yellow",
 }
 \arguments{
   \item{alpha}{ numeric vector of alpha transparency values values from 0 to 1. }
-  \item{fg}{ forground colour of the top shape that varies in trnasparency. }
+  \item{fg}{ foreground colour of the top shape that varies in transparency. }
   \item{bg}{ background colour (remains constant) of the underlying shape. }
   \item{border}{ border colour (which also changes in transparency) of the foreground polygon. }
   \item{grid}{ logical: if \code{TRUE}, lay a grey grid on the background colour. }

@@ -22,7 +22,7 @@
 \note{
   The \code{runDemos} GUI attempts to retain the user's objects and restore
   the working directory. However, pre-existing objects will be overwritten 
-  if their names co-incide with names used by the various demos. Also, 
+  if their names coincide with names used by the various demos. Also, 
   depending on conditions, the user may lose working directory focus. 
   We suggest that cautious users run this demo from a project where data objects are 
   not critical.

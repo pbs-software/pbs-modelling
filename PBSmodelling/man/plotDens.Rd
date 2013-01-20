@@ -11,12 +11,12 @@ plotDens(file, clrs=c("blue","red","green","magenta","navy"), ...)
 \arguments{
   \item{file}{data frame, matrix, or vector of numeric values.}
   \item{clrs}{vector of colours. Patterns are repeated if the number 
-    of fields exceeed the length of \code{clrs}.}
+    of fields exceed the length of \code{clrs}.}
   \item{...}{additional arguments for \code{plot} or \code{lines}.}
 }
 \details{
   This function is designed primarily to give greater flexibility when viewing 
-  results from the R-package \code{BRugs}. Use \code{plotDens} in conjuction with 
+  results from the R-package \code{BRugs}. Use \code{plotDens} in conjunction with 
   \code{samplesHistory("*",beg=0,plot=FALSE)} rather than \code{samplesDensity} 
   which calls \code{plotDensity}.
 }

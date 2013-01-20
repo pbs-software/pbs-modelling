@@ -261,7 +261,7 @@ createVector <- function (vec, vectorLabels=NULL, func="", windowname="vectorwin
 		vecLabels <- names(vec)
 	else {
 		if (length(vectorLabels) != length(vec)) 
-			stop("length of paramaters vec and vectorLabels should be the same length")
+			stop("length of parameters vec and vectorLabels should be the same length")
 		vectorLabels <- as.character(vectorLabels)
 		vecLabels <- vectorLabels
 	}
