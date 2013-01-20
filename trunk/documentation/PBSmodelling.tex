@@ -54,7 +54,7 @@ addArrows(x1, y1, x2, y2, ...)
 \item[\code{y1}] y-coordinate (0:1) at base of arrow.
 \item[\code{x2}] x-coordinate (0:1) at tip of arrow.
 \item[\code{y2}] y-coordinate (0:1) at tip of arrow.
-\item[\code{...}] additional paramaters for the function \code{arrows}.
+\item[\code{...}] additional parameters for the function \code{arrows}.
 \end{ldescription}
 \end{Arguments}
 \begin{Details}\relax
@@ -507,7 +507,7 @@ The GUI includes the following:
 & selecting and clearing all the check boxes, respectively.\\
 \bold{4} & A "Clean" button that deletes files in the working directory \\
 & matching one of the following criteria: \\
-& (i) file name matches both an expansion of a concantenation of a \\
+& (i) file name matches both an expansion of a concatenation of a \\
 & prefix in the entry box and a suffix chosen with a check box; or \\
 & (ii) file name matches an expansion of a file chosen with a check box.
 }
@@ -715,7 +715,7 @@ Close (destroy) one or more windows made with \code{createWin}.
 \begin{ldescription}
 \item[\code{name}] a vector of window names that indicate which windows to close. These 
 names appear in the \emph{window description file}(s) on the line(s) defining WINDOW widgets.
-If \code{name} is ommitted, all active windows will be closed.
+If \code{name} is omitted, all active windows will be closed.
 \end{ldescription}
 \end{Arguments}
 \begin{Author}\relax
@@ -940,7 +940,7 @@ createWin(system.file("testWidgets/LissWin.txt",package="PBSmodelling"));
 \begin{Description}\relax
 This function allows a GUI creator to specify widget names that 
 correspond to names in PBS options. These widgets can then be 
-used to load and set PBS options uing \code{getGUIoptions} and 
+used to load and set PBS options using \code{getGUIoptions} and 
 \code{setGUIoptions}.
 \end{Description}
 \begin{Usage}
@@ -1423,7 +1423,7 @@ Command associated with file extension.
 \end{Value}
 \begin{Note}\relax
 These file associations are not saved from one \emph{PBS Modelling} session to
-the next unless explicity saved and loaded (see \code{writePBSoptions} and
+the next unless explicitly saved and loaded (see \code{writePBSoptions} and
 \code{readPBSoptions}).
 \end{Note}
 \begin{Author}\relax
@@ -1527,7 +1527,7 @@ Get a string vector of actions (latest to earliest).
 \end{Arguments}
 \begin{Details}\relax
 When a function is called from a GUI, a string descriptor associated with 
-the action of the function is stored internaly (appended to the first position 
+the action of the function is stored internally (appended to the first position 
 of the action vector). A user can utilize this action as a type of argument 
 for programming purposes. The command \code{getWinAct()[1]} yields the latest action.
 \end{Details}
@@ -2281,7 +2281,7 @@ tools that make it easy to construct and edit a customized graphical
 user interface (GUI). Although it depends heavily on the R interface 
 to the \code{Tcl/Tk} package, a user does not need to know Tcl/Tk. 
 
-\code{PBSmodelling} contains examples that illustrate models built uisng 
+\code{PBSmodelling} contains examples that illustrate models built using 
 other R packages, including \code{PBSmapping}, \code{odesolve}, 
 \code{PBSddesolve}, and \code{BRugs}. 
 It also serves as a convenient prototype for building new R packages, 
@@ -2347,13 +2347,13 @@ plotACF(file, lags=20,
 \item[\code{file}] data frame, matrix, or vector of numeric values.
 \item[\code{lags}] maximum number of lags to use in the ACF calculation.
 \item[\code{clrs}] vector of colours. Patterns are repeated if the number 
-of fields exceeed the length of \code{clrs}.
+of fields exceed the length of \code{clrs}.
 \item[\code{...}] additional arguments for \code{plot} or \code{lines}.
 \end{ldescription}
 \end{Arguments}
 \begin{Details}\relax
 This function is designed primarily to give greater flexibility when viewing 
-results from the R-package \code{BRugs}. Use \code{plotACF} in conjuction with 
+results from the R-package \code{BRugs}. Use \code{plotACF} in conjunction with 
 \code{samplesHistory("*",beg=0,plot=FALSE)} rather than \code{samplesAutoC} 
 which calls \code{plotAutoC}.
 \end{Details}
@@ -2423,7 +2423,7 @@ if \code{xval=TRUE}, the first row contains x-values for the columns.
 If \code{yval=TRUE}, the first column contains y-values for the rows.
 \item[\code{dnam}] logical: if \code{TRUE}, attempt to use \code{dimnames} of input
 matrix \code{z} as \code{xval} and \code{yval}. The \code{dimnames} are 
-converted to numeric values and must be strictly inreasing or decreasing. 
+converted to numeric values and must be strictly increasing or decreasing. 
 If successful, these values will overwrite previously specified values
 of \code{xval} and \code{yval} or any default indices.
 \item[\code{rpro}] logical: if \code{TRUE}, convert rows to proportions.
@@ -2511,13 +2511,13 @@ plotDens(file, clrs=c("blue","red","green","magenta","navy"), ...)
 \begin{ldescription}
 \item[\code{file}] data frame, matrix, or vector of numeric values.
 \item[\code{clrs}] vector of colours. Patterns are repeated if the number 
-of fields exceeed the length of \code{clrs}.
+of fields exceed the length of \code{clrs}.
 \item[\code{...}] additional arguments for \code{plot} or \code{lines}.
 \end{ldescription}
 \end{Arguments}
 \begin{Details}\relax
 This function is designed primarily to give greater flexibility when viewing 
-results from the R-package \code{BRugs}. Use \code{plotDens} in conjuction with 
+results from the R-package \code{BRugs}. Use \code{plotDens} in conjunction with 
 \code{samplesHistory("*",beg=0,plot=FALSE)} rather than \code{samplesDensity} 
 which calls \code{plotDensity}.
 \end{Details}
@@ -2610,13 +2610,13 @@ plotTrace(file, clrs=c("blue","red","green","magenta","navy"), ...)
 \begin{ldescription}
 \item[\code{file}] data frame or matrix of x and y-values, or a vector of y-values.
 \item[\code{clrs}] vector of colours. Patterns are repeated if the number 
-of traces (y-fields) exceeed the length of \code{clrs}.
+of traces (y-fields) exceed the length of \code{clrs}.
 \item[\code{...}] additional arguments for \code{plot} or \code{lines}.
 \end{ldescription}
 \end{Arguments}
 \begin{Details}\relax
 This function is designed primarily to give greater flexibility when viewing 
-results from the R-package \code{BRugs}. Use \code{plotTrace} in conjuction with 
+results from the R-package \code{BRugs}. Use \code{plotTrace} in conjunction with 
 \code{samplesHistory("*",beg=0,plot=FALSE)} rather than \code{samplesHistory} 
 which calls \code{plotHistory}.
 \end{Details}
@@ -2779,7 +2779,7 @@ promptWriteOptions(fname="")
 \end{Arguments}
 \begin{Details}\relax
 If there are options that have been changed in the GUI but have not been
-commited to PBSmodelling memory in the global R environment, the user
+committed to PBSmodelling memory in the global R environment, the user
 is prompted to choose whether or not to commit these options.
 
 Then, if any PBS options have been changed, the user is prompted to choose
@@ -2955,7 +2955,7 @@ demos in all packages installed on the user's system.
 \begin{Note}\relax
 The \code{runDemos} GUI attempts to retain the user's objects and restore
 the working directory. However, pre-existing objects will be overwritten 
-if their names co-incide with names used by the various demos. Also, 
+if their names coincide with names used by the various demos. Also, 
 depending on conditions, the user may lose working directory focus. 
 We suggest that cautious users run this demo from a project where data objects are 
 not critical.
@@ -3341,7 +3341,7 @@ setWinAct(winName, action)
 \end{Arguments}
 \begin{Details}\relax
 When a function is called from a GUI, a string descriptor associated with 
-the action of the function is stored internaly (appended to the first position 
+the action of the function is stored internally (appended to the first position 
 of the action vector). A user can utilize this action as a type of argument 
 for programming purposes. The command \code{getWinAct()[1]} yields the latest action.
 
@@ -3706,7 +3706,7 @@ testAlpha(alpha=seq(0,1,len=25), fg="blue", bg="yellow",
 \begin{Arguments}
 \begin{ldescription}
 \item[\code{alpha}] numeric vector of alpha transparency values values from 0 to 1. 
-\item[\code{fg}] forground colour of the top shape that varies in trnasparency. 
+\item[\code{fg}] foreground colour of the top shape that varies in transparency. 
 \item[\code{bg}] background colour (remains constant) of the underlying shape. 
 \item[\code{border}] border colour (which also changes in transparency) of the foreground polygon. 
 \item[\code{grid}] logical: if \code{TRUE}, lay a grey grid on the background colour. 
@@ -4048,7 +4048,7 @@ Lengths-at-age for freshwater mussels (\emph{Anodonta kennerlyi}).
 A data frame with 16 rows and 2 columns \code{c("age","len")}.
 \end{Format}
 \begin{Details}\relax
-Data for demonstartion of the von Bertalanffy model used in the 
+Data for demonstration of the von Bertalanffy model used in the 
 \code{\LinkA{calcMin}{calcMin}} example.
 \end{Details}
 \begin{Source}\relax

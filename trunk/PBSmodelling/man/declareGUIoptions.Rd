@@ -5,7 +5,7 @@
 \description{
   This function allows a GUI creator to specify widget names that 
   correspond to names in PBS options. These widgets can then be 
-  used to load and set PBS options uing \code{getGUIoptions} and 
+  used to load and set PBS options using \code{getGUIoptions} and 
   \code{setGUIoptions}.
 }
 \usage{

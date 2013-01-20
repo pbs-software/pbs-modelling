@@ -11,7 +11,7 @@
 \arguments{
   \item{name}{a vector of window names that indicate which windows to close. These 
     names appear in the \emph{window description file}(s) on the line(s) defining WINDOW widgets.
-    If \code{name} is ommitted, all active windows will be closed.}
+    If \code{name} is omitted, all active windows will be closed.}
 }
 \author{
   Alex Couture-Beil, Vancouver Island University, Nanaimo BC

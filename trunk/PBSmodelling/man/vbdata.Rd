@@ -12,7 +12,7 @@
   A data frame with 16 rows and 2 columns \code{c("age","len")}.
 }
 \details{
-  Data for demonstartion of the von Bertalanffy model used in the 
+  Data for demonstration of the von Bertalanffy model used in the 
   \code{\link{calcMin}} example.
 }
 \source{

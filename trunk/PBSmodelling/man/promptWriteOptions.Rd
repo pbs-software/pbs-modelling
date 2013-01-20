@@ -15,7 +15,7 @@ promptWriteOptions(fname="")
 }
 \details{
   If there are options that have been changed in the GUI but have not been
-  commited to PBSmodelling memory in the global R environment, the user
+  committed to PBSmodelling memory in the global R environment, the user
   is prompted to choose whether or not to commit these options.
 
   Then, if any PBS options have been changed, the user is prompted to choose

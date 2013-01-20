@@ -12,12 +12,12 @@ plotTrace(file, clrs=c("blue","red","green","magenta","navy"), ...)
 \arguments{
   \item{file}{data frame or matrix of x and y-values, or a vector of y-values.}
   \item{clrs}{vector of colours. Patterns are repeated if the number 
-    of traces (y-fields) exceeed the length of \code{clrs}.}
+    of traces (y-fields) exceed the length of \code{clrs}.}
   \item{...}{additional arguments for \code{plot} or \code{lines}.}
 }
 \details{
   This function is designed primarily to give greater flexibility when viewing 
-  results from the R-package \code{BRugs}. Use \code{plotTrace} in conjuction with 
+  results from the R-package \code{BRugs}. Use \code{plotTrace} in conjunction with 
   \code{samplesHistory("*",beg=0,plot=FALSE)} rather than \code{samplesHistory} 
   which calls \code{plotHistory}.
 }

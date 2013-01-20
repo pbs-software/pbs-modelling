@@ -23,7 +23,7 @@ The data, entry, matrix, and vector widgets support a "readonly" state that allo
 
 Be aware that Tk uses gray for the highlight color during a selection operation.  This means that when the background colour is also gray, there is no visual clue that the value has been selected for a copy operation.
 
-Exceptions to the behavior determined by state include the object, table and text widgets.  There is no "readonly" state applicable to these widgets.  Nevertheless, the values displayed can be copied even when the state is "disabled".
+Exceptions to the behaviour determined by state include the object, table and text widgets.  There is no "readonly" state applicable to these widgets.  Nevertheless, the values displayed can be copied even when the state is "disabled".
 
 Individual radio widgets grouped by the name variable of a radio declaration can be updated by specifying radiovalue in the call to setWidgetState.
 
