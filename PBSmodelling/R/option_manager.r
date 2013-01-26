@@ -103,6 +103,11 @@ definition=function(.Object, filename, initial.options = list(), gui.prefix = "o
 	set <- function( ... )
 	{
 		v <- list( ... )
+                if( length( v ) == 1 && is.list( v[[1]] ) && length( names( v ) ) == 0
+                   && length( names( v[[1]] ) ) > 0)
+                        # assume that a single, unnamed list that contains a named list of
+                        # length greater than 0 is actually a list of options
+                        v <- v[[1]]
 		if( length( v ) == 0 ) return()
 		if( is.null( names( v ) ) || any( names( v ) == "" ) )
 			stop( "values must be named" )
