@@ -10,11 +10,11 @@
 #  Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>       #
 #                                                #
 # Hidden object code line numbers:               #
-#   1121 - .create functions                     #
-#   3261 - .map functions                        #
-#   3408 - .convert functions                    #
-#   3724 - .extract functions                    #
-#   4336 - helper functions                      #
+#   1151 - .create functions                     #
+#   3312 - .map functions                        #
+#   3459 - .convert functions                    #
+#   3775 - .extract functions                    #
+#   4387 - helper functions                      #
 ##################################################
 
 
@@ -45,6 +45,16 @@ createWin <- function( fname, astext=FALSE, env=NULL )  #parent.frame() ) #globa
 		return()
 	}
 
+        #uncomment the following code to test colours
+        ## if (!exists ("counter")) {
+        ##         counter <<- 0
+        ## }
+        ## counter <<- counter + 1
+        ## colourset <- c("#D4D0C8", "#FF0000", "#00FF00")
+        ## guiDesc[[1]]$windowname <- paste(guiDesc[[1]]$windowname, counter, sep="")
+        ## guiDesc[[1]]$winBackground <- colourset[counter %% 3 + 1]
+        #end of colour test code
+        
 	if (is.null(guiDesc)) {
 		return()
 	}
@@ -86,7 +96,7 @@ createWin <- function( fname, astext=FALSE, env=NULL )  #parent.frame() ) #globa
 				if (is.null(command)) {}
 				else if (command=="") {}
 				else if (exists(command,mode="function")) {
-					do.call(command, list())
+					.do.gui.call(command, list())
 				}
 				else {
 					cat(paste("Warning: cannot find function '", command, "'.\n", sep=""))
@@ -108,18 +118,35 @@ createWin <- function( fname, astext=FALSE, env=NULL )  #parent.frame() ) #globa
 			w
 		}
 
-		#set tcl/tk color palette with window bg and fg
-		#this will change ALL window background colours
+		#set Tcl/Tk color palette with window bg and fg colour;
+		#tk_setPalette will derive a number of other colours,
+		#e.g., highlight, based on these colours
+		#
+		#note that calls to tk_setPalette normally change
+		#colours on ALL existing widgets (if they use the
+		#default colours), so after creating a widget, we'll
+		#change its colour very slightly to ensure that the
+		#colour isn't the default
+		#
+		#for the background, we'll change the colour when we
+		#call setPalette so that we can use the proper value
+		#when setting the actual background
+
+		bgCol <- .getSimilarColour (guiDesc[[i]]$winBackground)
+		fgCol <- .getSimilarColour (guiDesc[[i]]$winForeground)
 		tcl("tk_setPalette", 
-		    "background", guiDesc[[i]]$winBackground, 
-		    "activebackground", guiDesc[[i]]$winBackground, 
-		    "foreground", guiDesc[[i]]$winForeground,
-		    "activeforeground", guiDesc[[i]]$winForeground,
+		    "background", bgCol,
+		    "activebackground", bgCol,
+		    "foreground", fgCol,
+		    "activeforeground", fgCol,
 		    "selectColor", "white" #inner colour of checkboxes
 		    )
-
+                
 		#create TK window (blank canvas)
 		tt <- mytktoplevel( guiDesc[[i]] )
+                # if the bg color is the same as setPalette, future calls to setPalette
+                # will change the background color
+                tkconfigure (tt, bg=guiDesc[[i]]$winBackground)
 
 		#store the TK handle (so we can destroy it at a later time via closeWin)
 		#eval(parse(text=".PBSmod[[winName]]$tkwindow <<- tt"))
@@ -152,6 +179,7 @@ createWin <- function( fname, astext=FALSE, env=NULL )  #parent.frame() ) #globa
 			#create the top space where drop down menus are attached
 			topMenu <- tkmenu(tt)
 			tkconfigure(tt,menu=topMenu)
+                        .adjustAllColours (topMenu)
 
 			#define function to create menu widgets
 			.createMetaWidget.menu <- function(topMenu, widget)
@@ -161,6 +189,7 @@ createWin <- function( fname, astext=FALSE, env=NULL )  #parent.frame() ) #globa
 					stop("menu nitems must have atleast one menuitem.")
 
 				subMenu <- tkmenu(topMenu, tearoff=FALSE)
+                                .adjustAllColours (subMenu)
 
 				for(i in 1:widget$nitems) {
 					if (widget$.widgets[[i]]$type=="menu") {
@@ -180,7 +209,7 @@ createWin <- function( fname, astext=FALSE, env=NULL )  #parent.frame() ) #globa
 								argList$foreground <- widget$.widgets[[i]]$fg
 							if( widget$.widgets[[i]]$bg != "" )
 								argList$background <- widget$.widgets[[i]]$bg
-							do.call( "tkadd", argList )
+							.do.gui.call( "tkadd", argList )
 					}
 					else {
 						stop(paste("widget type", widget$.widgets[[i]]$type, "found when expecting a menu or menuitem widget"))
@@ -194,7 +223,7 @@ createWin <- function( fname, astext=FALSE, env=NULL )  #parent.frame() ) #globa
 					argList$foreground <- widget$fg
 				if( widget$bg != "" )
 					argList$background <- widget$bg				
-				do.call( "tkadd", argList )
+				.do.gui.call( "tkadd", argList )
 			}
 			#.createMetaWidget.menu function finished
 
@@ -943,7 +972,7 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmodEnv$.PBSmod$.acti
 							argList[[ "noeditfg" ]] <- NULL
 						}
 					}
-					do.call( setWidgetColor, argList )
+					.do.gui.call( setWidgetColor, argList )
 				}
 			return(NULL)
 		}
@@ -967,7 +996,7 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmodEnv$.PBSmod$.acti
 							argList[[ "noeditfg" ]] <- NULL
 						}
 					}
-					do.call( setWidgetColor, argList )
+					.do.gui.call( setWidgetColor, argList )
 				}
 			return(NULL)
 		}
@@ -990,7 +1019,7 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmodEnv$.PBSmod$.acti
 						argList[[ "noeditfg" ]] <- NULL
 					}
 				}
-				do.call( setWidgetColor, argList )
+				.do.gui.call( setWidgetColor, argList )
 			}
 			return(NULL)
 		}
@@ -1008,7 +1037,7 @@ setWidgetColor <- function( name, radioValue, winName = .PBSmodEnv$.PBSmod$.acti
 	if( exists( func ) == FALSE )
 		stop( paste( "not supported for widget type:", widget$type ) )
 
-	do.call( func, list( ptr=widget_ptr, ... ) )
+	.do.gui.call( func, list( ptr=widget_ptr, ... ) )
 	return(invisible())
 }
 #-----------------------------------setWidgetColor
@@ -1118,6 +1147,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 #=================================================
 
 
+
 #===== Create Functions ==========================
 #----- (.createWidget, etc.) ---------------------
 
@@ -1168,7 +1198,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	#all of these functions have the same parameters: (tk, widget, winName)
 	func <- paste(".createWidget.", widget$type, sep="")
 	if (exists(func,mode="function")) {
-		ret <- do.call(func, list(tk, widgetList, winName))
+		ret <- .do.gui.call(func, list(tk, widgetList, winName))
 		if( is.list( ret ) == FALSE )
 			stop( paste( func, "didn't return a list( widget = <tkpointer>, widgetList = <uncreated remaining widgets> )" ) )
 		return( ret )
@@ -1177,7 +1207,6 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	return()
 }
 #------------------------------------.createWidget
-
 
 #.createWidget.button-------------------2012-12-20
 .createWidget.button <- function(tk, widgetList, winName)
@@ -1197,7 +1226,8 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	if (!is.null(widget[["disablefg"]]) && widget$disablefg!="")
 		param$disabledforeground = widget$disablefg
 
-	button <- do.call(tkbutton, param)
+	button <- .do.gui.call("tkbutton", param)
+
 	if( !is.null( widget[[ "name" ]] ) ) 
 		.map.add(winName, widget$name, tclwidget=button)
 	return(list( widget = button, widgetList = widgetList[ -1 ] ) )
@@ -1229,7 +1259,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	argList$variable <- .map.add(winName, widget$name, tclvar=tclVar(val))$tclvar
 	argList$command=function(...) { .extractData(widget[["function"]], widget$action, winName)}
 
-	tkWidget<-do.call("tkcheckbutton", argList)
+	tkWidget<-.do.gui.call("tkcheckbutton", argList)
 	.map.set( winName, widget$name, tclwidget=tkWidget )
 	if( widget$edit == FALSE )
 		tkconfigure( tkWidget, state="disabled" )
@@ -1521,7 +1551,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 
 	#callback
 	argList$modifycmd = function(...) { .extractData(widget[["function"]], widget$action, winName)}
-	drop_widget <- do.call( "tkwidget", argList )
+	drop_widget <- .do.gui.call( "tkwidget", argList )
 	if( length( labels ) == 1 )
 		tclvalue( argList$textvariable ) <- labels
 
@@ -1585,7 +1615,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 
 #if (widget$name=="something") browser()
 
-	tkWidget<-do.call("tkentry", argList)
+	tkWidget<-.do.gui.call("tkentry", argList)
 	.map.set( winName, widget$name, tclwidget=tkWidget )
 	
 	if( widget$edit == FALSE ) {
@@ -1618,12 +1648,12 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	else
 		tkbind(tkWidget,"<KeyRelease>",function(...) { .extractData(widget[["function"]], widget$action, winName)})
 	if( !is.null( widget[[".up_func"]] ) ) {
-		tkbind(tkWidget,"<Up>",function(...) { do.call( widget[[".up_func"]], list( selected_widget_name = widget$name, ... ) ) } )
-		tkbind(tkWidget,"<Prior>",function(...) { do.call( widget[[".pageup_func"]], list( selected_widget_name = widget$name, ... ) ) } )
+		tkbind(tkWidget,"<Up>",function(...) { .do.gui.call( widget[[".up_func"]], list( selected_widget_name = widget$name, ... ) ) } )
+		tkbind(tkWidget,"<Prior>",function(...) { .do.gui.call( widget[[".pageup_func"]], list( selected_widget_name = widget$name, ... ) ) } )
 	}
 	if( !is.null( widget[[".down_func"]] ) ) {
-		tkbind(tkWidget,"<Down>",function(...) { do.call( widget[[".down_func"]], list( selected_widget_name = widget$name, ... ) ) } )
-		tkbind(tkWidget,"<Next>",function(...) { do.call( widget[[".pagedown_func"]], list( selected_widget_name = widget$name, ... ) ) } )
+		tkbind(tkWidget,"<Down>",function(...) { .do.gui.call( widget[[".down_func"]], list( selected_widget_name = widget$name, ... ) ) } )
+		tkbind(tkWidget,"<Next>",function(...) { .do.gui.call( widget[[".pagedown_func"]], list( selected_widget_name = widget$name, ... ) ) } )
 	}
 	return(list( widget = tkWidget, widgetList = widgetList[ -1 ] ) )
 }
@@ -1651,8 +1681,8 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	if (!is.null(widget[["font"]]) && any(widget$font!=""))
 		argList$font <- .createTkFont(widget$font)
 
-	tkWidget<-do.call("tkframe", argList)
-
+	tkWidget<-.do.gui.call("tkframe", argList)
+        
 	#call buildgrid to attach all children widgets to grid
 	tmp <- .buildgrid(tkWidget, widget, winName, widgetList[ - 1 ])
 
@@ -1706,7 +1736,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 		argList$image = image.id #use original image
 	}
 
-	tkWidget<-do.call("tklabel", argList)
+	tkWidget<-.do.gui.call("tklabel", argList)
 	return( list( widget = tkWidget, widgetList = widgetList[ -1 ] ) )
 }
 #------------------------------.createWidget.image
@@ -1732,8 +1762,11 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 		.stopWidget( paste( "unable to load included filename \"", file, "\" - file does not exist", sep="" ), widget$.debug, winName )
 
 	gui_desc <- parseWinFile( file )
-	if( length( gui_desc ) == 0 )
-		return( tkframe( tk ) )
+	if( length( gui_desc ) == 0 ) {
+                frm <- tkframe( tk )
+                .adjustAllColours( frm )
+		return( frm )
+        }
 	if( length( gui_desc ) > 1 ) warning( "Multiple windows found in the window description file - only the first will be included (and displayed)" )
 	grid <- .packWidgetsIntoGrid( gui_desc[[ 1 ]]$.widgets, gui_desc[[ 1 ]]$vertical )
 	return( list( widget = .createWidget( tk, grid, winName )$widget, widgetList = widgetList[ -1 ] )  )
@@ -1766,7 +1799,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	if (!is.null(widget[["width"]]) && widget$width > 0)
 		argList$width <- widget$width 
 
-	tkWidget<-do.call("tklabel", argList)
+	tkWidget<-.do.gui.call("tklabel", argList)
 	if( !is.null(widget[["name"]]) && widget$name != "" ) {
 		tkconfigure( tkWidget,textvariable = .map.get(winName, widget$name )$tclvar )
 		#eval(parse(text=".PBSmod[[ winName ]]$widgetPtrs[[ widget$name ]]$tclwidget <<- tkWidget"))
@@ -2012,7 +2045,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	if (!is.null(widget[["font"]]) && any(widget$font!=""))
 		argList$font <- .createTkFont(widget$font)
 
-	notebook <- do.call( "tkwidget", argList )
+	notebook <- .do.gui.call( "tkwidget", argList )
 	if( !is.null( widget[["name"]] ) )
 	.map.set( winName, widget$name, tclwidget=notebook ) # changes .PBSmod
 
@@ -2041,6 +2074,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 		tab.button <- tclvalue(tkinsert(notebook, "end", tab_i, "-text", tab, "-raisecmd", .makeRaiseCmd( tab_i ) ))
 		tab.win <- .Tk.newwin(tab.button)
 		tab.frame <- tkframe(tab.win)
+                .adjustAllColours(tab.frame)
 
 		#embed the next widget from the list as the *only* object in the frame (users should use a grid for multi items)
 		embedded <- .createWidget( tab.frame, childWidgets, winName )
@@ -2075,7 +2109,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	argList <- list( parent = tk, text="" )
 	if( !is.null(widget[["bg"]]) && widget$bg != "" )
 		argList$bg <- widget$bg
-	tkWidget <- do.call( "tklabel", argList )
+	tkWidget <- .do.gui.call( "tklabel", argList )
 
 	return(list( widget = tkWidget, widgetList = widgetList[ -1 ] ) )
 }
@@ -2368,6 +2402,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	}
 
 	frame <- tkframe( tk )
+        .adjustAllColours(frame)
 	rowshow <- ceiling( widget$rowshow / 2 )
 	widget$rowshow <- 0 #now we are just creating a regular object, if this was > 0, then we would get inf recursion
 	widget$.up_func <- function( selected_widget_name, ...) { 
@@ -2403,7 +2438,10 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 		#two frames - one for the top two buttson, one for the bottom two
 		f1 <- tkframe( frame )
 		f2 <- tkframe( frame )
-
+                # to deal with square artifacts above the buttons
+                .adjustAllColours(f1)
+                .adjustAllColours(f2)
+                
 		#keys for pageup, up, down, pagedown keys
 		if( .Platform$OS == "windows" ) {
 			#Bug in R check, wont accept keys <- c( "\u00E3", "p", "q", "\u00E4" )
@@ -2419,10 +2457,17 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 		button_up <- tkbutton( parent = f1, text = keys[2], font = font, width=1, command=function(...) { scroll_callback( "scroll", "-1", "units" ) } )
 		button_down <- tkbutton( parent = f2, text = keys[3], font = font, width=1, command=function(...) { scroll_callback( "scroll", "1", "units" ) } )
 		button_pagedown <- tkbutton( parent = f2, text = keys[4], font = font, width=1, command=function(...) { scroll_callback( "scroll", as.character( rowshow ), "units" ) } )
-
+                .adjustAllColours(button_pageup)
+                .adjustAllColours(button_up)
+                .adjustAllColours(button_down)
+                .adjustAllColours(button_pagedown)
+                
 		#attach buttons to correct frame
-		if( widget[["collabels"]] != FALSE )
-			tkgrid( tklabel( parent = f1, text = "" ) ) #align with rows
+		if( widget[["collabels"]] != FALSE ) {
+                        lab <- tklabel( parent = f1, text = "" )
+                        .adjustAllColours(lab)
+			tkgrid( lab ) #align with rows
+                }
 		tkgrid( button_pageup ); tkgrid( button_up );
 		tkgrid( button_down ); tkgrid( button_pagedown );
 
@@ -2452,7 +2497,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	#return( list( widget = tkwidget, widgetList = widgetList[ -1 ] ) )
 
 	widget <- widgetList[[ 1 ]]
-	#usualy I would use tkwidget(.....), but we need to pass `type' to the widget creation (unfortuantly type is used by tkwidget too)
+	#usually, I would use tkwidget(.....), but we need to pass `type' to the widget creation (unfortunately, type is used by tkwidget too)
 	win <- .Tk.subwin( tk )
 	argList <- list( "ProgressBar", win )
 
@@ -2480,7 +2525,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	if (!is.null(widget[["style"]]) && widget$style!="")
 		argList$type <- widget$style
 
-	tmp <- do.call( "tcl", argList )
+	tmp <- .do.gui.call( "tcl", argList )
 	.map.set( winName, widget$name, tclwidget=tmp )
 
 	return( list( widget = win, widgetList = widgetList[ -1 ] ) )
@@ -2504,7 +2549,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 		tclvalue(argList$variable) <- widget$value
 	argList$command=function(...) { .extractData(widget[["function"]], widget$action, winName)}
 
-	tkWidget<-do.call("tkradiobutton", argList)
+	tkWidget<-.do.gui.call("tkradiobutton", argList)
 	
 	#save widget pointer - radio can have many widgets for ONE varname, so store in a list
 	widget_list <- .map.get( winName, widget$name )$tclwidgetlist
@@ -2536,7 +2581,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 		argList$font <- .createTkFont(widget$font)
 	argList$variable<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar
 	argList$command<-function(...) { .extractData(widget[["function"]], widget$action, winName)}
-	tkWidget<-do.call("tkscale", argList)
+	tkWidget<-.do.gui.call("tkscale", argList)
 	.map.set( winName, widget$name, tclwidget=tkWidget )
 	return(list( widget = tkWidget, widgetList = widgetList[ -1 ] ) )
 }
@@ -2631,7 +2676,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 			argList$bg <- widget$bg
 		if ( !is.null( widget[["font"]] ) && any( widget$font != "" ) )
 			argList$font=.createTkFont(widget$font)
-		return( do.call( type, argList ) )
+		return( .do.gui.call( type, argList ) )
 	}
 
 	#calculate fractional values
@@ -2747,7 +2792,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	#setup callback function
 	argList$modifycmd = function(...) { .extractData(widget[["function"]], widget$action, winName)}	
 
-	tkWidget<-do.call("tkwidget", argList)
+	tkWidget<-.do.gui.call("tkwidget", argList)
 	.map.set( winName, widget$name, tclwidget=tkWidget )
 	#tkconfigure( tkWidget, command = function(...) { print(list(...)); } )
 	#tcl( tkWidget, "from", "6" )
@@ -2809,6 +2854,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	table_ncols <- ncols
 
 	frame <- tkframe( tk )
+        .adjustAllColours(frame)
 	
 	#create tcl storage for matrix
 	tcl_array <- .map.add( winName, widget$name, tclarray=tclArray() )$tclarray
@@ -2862,13 +2908,15 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 
 	
 
-	table1 <- do.call( "tkwidget", argList )
+	table1 <- .do.gui.call( "tkwidget", argList )
 	.map.set( winName, widget$name, tclwidget=table1 )
 	             
 	#bug with tktable for "moveto" scrollbar scrolling - doesn't hit last element - must push down on keyboard, or click down arrow
 	xscr <- tkscrollbar( frame,orient="horizontal", command=function(...)tkxview(table1,...))
 	yscr <- tkscrollbar( frame,command=function(...)tkyview(table1,...))
-	
+        .adjustAllColours(xscr)
+        .adjustAllColours(yscr)
+
 	tkgrid(table1,yscr)
 	tkgrid.configure(yscr,sticky="nsw")
 	tkgrid(xscr,sticky="new")
@@ -2897,6 +2945,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 {
 	widget <- widgetList[[ 1 ]]
 	tk <- tkframe(tk)
+        .adjustAllColours(tk)
 
 	param <- list(
 	              parent=tk, 
@@ -2911,7 +2960,8 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 		param$font=.createTkFont(widget$font)
 
 	scrollBar <- tkscrollbar(tk, repeatinterval=5, command=function(...)tkyview(txtBox,...))
-	txtBox <- do.call(tktext, param)
+        .adjustAllColours(scrollBar)
+	txtBox <- .do.gui.call("tktext", param)
 
 	.map.add(winName, widget$name, tclwidget=txtBox)
 	tkinsert(txtBox,"end",widget$value)
@@ -3119,7 +3169,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 			#cat(paste("warning: font familly \"", fontstr[i], "\" is not guarenteed to work with TK on all platforms\n", sep=""))
 		}
 	}
-	return(do.call(tkfont.create, fontparam))
+	return(.do.gui.call(tkfont.create, fontparam))
 }
 #------------------------------------.createTkFont
 
@@ -3192,7 +3242,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 			argList$background <- grid$topbg
 		if (any( topfont!="" ) )
 			argList$font <- .createTkFont(topfont)
-		mytklabel<-do.call("tklabel", argList)
+		mytklabel<-.do.gui.call("tklabel", argList)
 		tkgrid(mytklabel, columnspan=colspan, row=0, column=1+grid$toptitle.offset)
 	}
 	
@@ -3206,7 +3256,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 			argList$background=grid$sidebg
 		if (any(topfont!=""))
 			argList$font <- .createTkFont(sidefont)
-		mytklabel<-do.call("tklabel", argList)
+		mytklabel<-.do.gui.call("tklabel", argList)
 		tkgrid(mytklabel, rowspan=rowspan, row=1+grid$sidetitle.offset, column=0)
 		showsidetitle<-TRUE
 	}
@@ -3252,7 +3302,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 		if (is.character(widget_def$sticky)) {
 			argList$sticky <- widget_def$sticky
 		}
-		do.call("tkgrid", argList)
+		.do.gui.call("tkgrid", argList)
 	}
 	return( list( widget = tk, widgetList = childWidgets ) )
 }
@@ -3745,10 +3795,10 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	if (command=="")
 		return()
 	#if (exists(command,mode="function", envir = .PBSmod[[ winName ]]$env))
-	#	do.call(command, list(), envir = .PBSmod[[ winName ]]$env )
+	#	.do.gui.call(command, list(), envir = .PBSmod[[ winName ]]$env )
 	tget(.PBSmod)
 	if (exists(command,mode="function", envir = .PBSmod[[ winName ]]$env))
-		do.call(command, list(), envir = .PBSmod[[ winName ]]$env )
+		.do.gui.call(command, list(), envir = .PBSmod[[ winName ]]$env )
 	else
 		cat(paste("Warning: cannot find function '", command, "'.\n", sep=""))
 }
@@ -4337,6 +4387,73 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 #===== Helper Functions ==========================
 #----- (.parse/.strip/.search/.validate,etc.) ----
 
+#.getSimilarColour-------------------------2013-02-06
+# obtains a similar colour (slightly brighter/darker) than the argument
+# args:  col - the colour to adjust
+#----------------------------------------------NMB
+.getSimilarColour <- function (col) {
+        # convert the current colour to an RGB vector
+        col <- col2rgb(col)[, 1]
+
+        # slightly lighten the colour unless it's already white, in which case
+        # we'll slightly darken it
+        col <- rgb(ifelse(col[1] == 255, col[1] - 1, col[1] + 1),
+                   ifelse(col[2] == 255, col[2] - 1, col[2] + 1),
+                   ifelse(col[3] == 255, col[3] - 1, col[3] + 1),
+                   maxColorValue = 255)
+
+        return (col)
+}
+#-----------------------------------.getSimilarColour
+
+#.adjustAllColours----------------------------2013-02-06
+# for the passed Tk widget, attempts to slightly modify all applicable colours
+# args:  tObj - Tk object
+#----------------------------------------------NMB
+.adjustAllColours <- function(tObj)
+{
+        # obtain the configuration for the Tk widget
+        config <- as.character(tkconfigure(tObj))
+
+        # property list obtained from http://www.tcl.tk/man/tcl/TkCmd/palette.htm
+        for (attr in c("activebackground", "activeforeground", "background",
+                       "disabledforeground", "foreground", "highlightbackground",
+                       "highlightcolor", "insertbackground", "selectbackground",
+                       "selectcolor", "selectforeground", "troughcolor")) {
+                # if the attribute exists in the configuration...
+                if (length(grep(paste("^-", attr, " ", sep=""), config,
+                                ignore.case = TRUE)) > 0) {
+                        # ... let's set it to a similar colour
+                        expr <- paste(
+                                "tkconfigure(tObj, ", attr,
+                                '=.getSimilarColour(as.character(tkconfigure(tObj,',
+                                ' paste("-", attr, sep="")))[5]))', sep="")
+                        eval(parse(text=expr))
+                }
+        }
+}
+#--------------------------------------.adjustAllColours
+
+#.do.gui.call------------------------------2013-02-07
+# extends do.call, which is used to create most Tk widgets, to
+# immediately adjust a new widget's colours (to get around how
+# tk_setPalette changes the colour of existing widgets)
+#-------------------------------------------NMB
+.do.gui.call <- function (what, args, quote = FALSE, envir = parent.frame()) 
+{
+        rval <- do.call (what, args, quote, envir)
+
+        # if it's likely that we've just created a widget, try setting
+        # the colours for it
+        if (is.character(what)
+            && is.element(what, c("tcl", "tkbutton", "tkcheckbutton", "tkentry",
+                                  "tkframe", "tklabel", "tkradiobutton",
+                                  "tkscale", "tktext", "tkwidget"))) {
+                .adjustAllColours(rval)
+        }
+
+        return (rval)
+}
 
 #.catError------------------------------2012-12-20
 #  Used to display parsing errors.
@@ -4642,11 +4759,11 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 		#some widgets must update other widgets(or functions) when they change
 		if (!is.null(x[["onChange"]])) {
 			if (is.function(x$onChange)) {
-				do.call(x$onChange, list())
+				.do.gui.call(x$onChange, list())
 			}
 			if (is.character(x$onChange)) #function names are accepted as strings
 				if (exists(x$onChange,mode="function"))
-					do.call(x$onChange, list())
+					.do.gui.call(x$onChange, list())
 		}
 		return(value)
 	}
@@ -5005,9 +5122,9 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 
 
 #.validateWindowDescList----------------2012-12-20
-#   determines if the list represents a valid PBS Modelling description List
+#   determines if the list represents a valid PBS Modelling description list
 #   if any required fields are missing, it will halt via stop()
-#   if any fields are ommitied which have default values defined in the
+#   if any fields are omitted which have default values defined in the
 #   .widgetDefs list, then those fields and values will be set
 # Arguments:
 #   x - list to validate
