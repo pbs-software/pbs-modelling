@@ -3,14 +3,17 @@
 .onLoad <- function(libname, pkgname)
 {
 	library.dynam("PBSmodelling", pkgname, libname)
-	
+}
+
+.onAttach <- function(libname, pkgname){
+        # obtain values necessary for the start-up message
 	pkg_info <- utils::sessionInfo( package="PBSmodelling" )$otherPkgs$PBSmodelling
 	if( is.character( pkg_info$Packaged ) )
 		pkg_date <- strsplit( pkg_info$Packaged, " " )[[1]][1]
 	else
 		pkg_date  <- date()
-	
-	userguide_path <- system.file( "doc/PBSmodelling-UG.pdf", package = "PBSmodelling" )
+
+        userguide_path <- system.file( "doc/PBSmodelling-UG.pdf", package = "PBSmodelling" )
 	
 	packageStartupMessage("
 -----------------------------------------------------------
@@ -31,6 +34,20 @@ http://code.google.com/p/pbs-software/
 	tcl("lappend", "auto_path", system.file( "tcl_scripts", package = "PBSmodelling" ) )
 	tclRequire( "PBSmodelling" )
 
+        #Ensure that Tk is available, first
+        tk <- tclRequire("Tk", warn = FALSE)
+        if ( is.logical (tk) ) {
+		packageStartupMessage("
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ERROR: Your system failed to load Tk, the widget toolkit required for
+PBSmodelling.  See the R FAQ for your operating system at
+        http://cran.r-project.org/faqs.html
+for suggestions on resolving issues with Tcl/Tk.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+        }
+        
         #Try to load the required packages; set warn = FALSE so that
         #the user won't see warnings during the install; warnings
         #during the install don't include the the details (below), and
@@ -43,8 +60,8 @@ http://code.google.com/p/pbs-software/
         }
 	tktable <- tclRequire("Tktable", warn = FALSE)
 
-        #If either package failed to load, display an appropriate error message
-        if( is.logical( bwidget ) || is.logical( tktable ) ) {
+        #If Tk succeeded and either package failed to load, display an appropriate error message
+        if( !is.logical (tk) && ( is.logical( bwidget ) || is.logical( tktable ) ) ) {
 		packageStartupMessage("
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -94,9 +111,7 @@ downloaded from their SourceForge site
 		packageStartupMessage("
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 	}
-}
-
-.onAttach <- function(libname, pkgname){
+        
 	.initPBSoptions()
 }
 .onUnload <- function(libpath) {
