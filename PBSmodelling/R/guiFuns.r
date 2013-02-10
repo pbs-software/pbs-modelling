@@ -2443,15 +2443,8 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
                 .adjustAllColours(f2)
                 
 		#keys for pageup, up, down, pagedown keys
-		if( .Platform$OS == "windows" ) {
-			#Bug in R check, wont accept keys <- c( "\u00E3", "p", "q", "\u00E4" )
-			#Ugly hack with eval to avoid failing R check
-			eval(parse(text=" keys <- c( \"\\u00E3\", \"p\", \"q\", \"\\u00E4\" ) " ))
-			font <- tkfont.create( family = "wingdings 3", size = 6 )
-		} else {
-			keys <- c( "|<", "<", ">", ">|" )
-			font <- .createTkFont( "7" )
-		}
+		keys <- c( "<<", "<", ">", ">>" )
+		font <- .createTkFont( "7" )
 
 		button_pageup <- tkbutton( parent = f1, text = keys[1], font = font, width=1, command=function(...) { scroll_callback( "scroll", as.character( -rowshow ), "units" ) } )
 		button_up <- tkbutton( parent = f1, text = keys[2], font = font, width=1, command=function(...) { scroll_callback( "scroll", "-1", "units" ) } )
