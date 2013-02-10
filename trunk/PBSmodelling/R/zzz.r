@@ -3,7 +3,6 @@
 .onLoad <- function(libname, pkgname)
 {
 	library.dynam("PBSmodelling", pkgname, libname)
-	#.initPBSoptions()
 	
 	pkg_info <- utils::sessionInfo( package="PBSmodelling" )$otherPkgs$PBSmodelling
 	if( is.character( pkg_info$Packaged ) )
@@ -32,33 +31,68 @@ http://code.google.com/p/pbs-software/
 	tcl("lappend", "auto_path", system.file( "tcl_scripts", package = "PBSmodelling" ) )
 	tclRequire( "PBSmodelling" )
 
-	#TO DO find a better place
+        #Try to load the required packages; set warn = FALSE so that
+        #the user won't see warnings during the install; warnings
+        #during the install don't include the the details (below), and
+        #thus, are very confusing
 	bwidget <- tclRequire("BWidget", warn = FALSE)
-	tktable <- tclRequire("Tktable")
-	if( is.logical( bwidget ) || is.logical( tktable ) ) {
-		packageStartupMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" )
-	}
-	if( is.logical( bwidget ) ) {
-		#try included distribution
+        if ( is.logical (bwidget) ) {
+                # try the included distribution
 		tcl("lappend", "auto_path", system.file( "thirdparty/BWidget-1.9.0/", package = "PBSmodelling" ) )
-		bwidget <- tclRequire("BWidget")
-		if( is.logical( bwidget ) ) {
-		packageStartupMessage(
-			"ERROR: PBSmodelling requires the tcl package \"BWidget\"\nand cannot proceed until it is installed.\n" ,
-			"Ubuntu (apt) users can install via the command:\n\tsudo apt-get install bwidget\n",
-			"Bwidget source can be downloaded from\n\thttp://sourceforge.net/projects/tcllib/files/\n")
-		}
-	}
-	if( is.logical( tktable ) ) {
-		packageStartupMessage(
-			"ERROR: PBSmodelling requires the tcl package \"Tktable\"\nand cannot proceed until it is installed.\n",
-			"Ubuntu (apt) users can install via the command:\n\tsudo apt-get install libtktable2.10\n",
-			"Mac (port) users can install via the command:\n\tsudo port install tktable\n",
-			"assuming Mac Ports is installed (http://www.macports.org/)\n",
-			"tktable can also be donwloaded from \n\thttp://sourceforge.net/projects/tktable/files/\n" )
-	}
-	if( is.logical( bwidget ) || is.logical( tktable ) ) {
-		packageStartupMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+		bwidget <- tclRequire("BWidget", warn = FALSE)
+        }
+	tktable <- tclRequire("Tktable", warn = FALSE)
+
+        #If either package failed to load, display an appropriate error message
+        if( is.logical( bwidget ) || is.logical( tktable ) ) {
+		packageStartupMessage("
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ERROR: Your system is missing at least one Tcl/Tk package that
+PBSmodelling requires to function correctly (details below).  Missing
+packages must be installed outside of R.")
+                if( is.logical( bwidget ) ) {
+                        packageStartupMessage("
+MISSING PACKAGE: \"BWidget\" (Tcl/Tk package)
+
+Ubuntu/Debian users may try installing BWidget with the command
+        sudo apt-get install bwidget
+
+If this command doesn't work, the source code for the BWidget
+toolkit can be downloaded from their SourceForge site
+        http://sourceforge.net/projects/tcllib/files/BWidget/")
+                }
+                if( is.logical( tktable ) ) {
+                        packageStartupMessage("
+MISSING PACKAGE: \"Tktable\" (Tcl/Tk package)
+
+Ubuntu/Debian users may try installing Tktable with the command
+        sudo apt-get install libtktable2.10
+or
+        sudo apt-get install tk-table
+If these commands fail, it may be possible to obtain a version of the
+package \"tk-table\" from
+        http://packages.ubuntu.com
+and then install it with a command like
+        sudo dpkg -i tk-table_2.10-1_i386.deb
+If the above (dpkg) command fails because the package \"tk\" cannot be
+found, first try installing the package \"tk\" with the command
+        sudo apt-get install tk
+
+Mac users may try installing the Tcl/Tk package available from
+        http://cran.r-project.org/bin/macosx/tools
+This package includes Tktable 2.9.  Those Mac users who are using
+MacPorts (http://www.macports.org/) may try installing Tktable with
+the command
+        sudo port install tktable
+
+If these commands don't work, the source code for tktable can be
+downloaded from their SourceForge site
+        http://sourceforge.net/projects/tktable/files/tktable/")
+                }
+
+		packageStartupMessage("
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 	}
 }
 

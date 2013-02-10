@@ -7,7 +7,7 @@ Author:   Jon T. Schnute <schnutej-dfo@shaw.ca>,
           Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>, and
           A.R. (Rob) Kronlund <allen.kronlund@dfo-mpo.gc.ca>
 Maintainer: Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>
-Depends:  R (>= 2.15.0), methods
+Depends:  R (>= 2.15.0), methods, tcltk
 Suggests: PBSmapping, PBSddesolve, deSolve, KernSmooth, XML
 Description: PBS Modelling provides software to facilitate the design,
      testing, and operation of computer models. It focuses particularly on
