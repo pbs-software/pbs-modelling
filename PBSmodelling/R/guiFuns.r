@@ -1617,7 +1617,7 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 
 	tkWidget<-.do.gui.call("tkentry", argList)
 	.map.set( winName, widget$name, tclwidget=tkWidget )
-	
+
 	if( widget$edit == FALSE ) {
 		tkconfigure( tkWidget, state="readonly" )
 		if (!is.null(widget[["noeditfg"]]) && widget$noeditfg!="") {
@@ -2782,14 +2782,9 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	argList$width<-widget$width
 	argList$validate = "all"
 	
-	#setup callback function
-	argList$modifycmd = function(...) { .extractData(widget[["function"]], widget$action, winName)}	
-
 	tkWidget<-.do.gui.call("tkwidget", argList)
 	.map.set( winName, widget$name, tclwidget=tkWidget )
-	#tkconfigure( tkWidget, command = function(...) { print(list(...)); } )
-	#tcl( tkWidget, "from", "6" )
-	
+
 	#bug in spinbox -> up/down arrows still modify value in disabled mode
 	if( widget$edit == FALSE )
 		tkconfigure( tkWidget, state="disabled" )
@@ -2797,16 +2792,32 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	enter <- !is.null(widget[["enter"]])
 	if (enter)
 		enter <- widget$enter
+        
 	if (enter) {
-		#dont update it (unless an return was pressed) as it can slow it down a lot
-		tkbind(tkWidget,"<KeyPress-Return>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+		# don't update it unless Return/Enter was pressed (updating can slow it down a lot)
+                keylist <- c("<KeyRelease-Return>", "<KeyRelease-KP_Enter>")
 	}
-	else
-		tkbind(tkWidget,"<KeyRelease>",function(...) { .extractData(widget[["function"]], widget$action, winName)});
+	else {
+                # update on every key release
+                keylist <- c("<KeyRelease>")
+                # update when otherwise modified (clicking the up/down arrows)
+                tkconfigure( tkWidget, modifycmd=function(...) {
+                        .extractData(widget[["function"]], widget$action, winName)
+                })
+        }
+        # NOTE: tkbind does not work with SpinBox (from BWidget); instead, we need to use
+        # Tcl directly with 'pathName bind ?arg...?' to set bindings for this widget
+        for (key in keylist) {
+                cmd <- paste(tkWidget$ID, 'bind ', key,
+                             .Tcl.args(function(...) {
+                                     .extractData(widget[["function"]],
+                                                  widget$action, winName)}),
+                             sep=" ")
+                .Tcl(cmd)
+        }
 	return(list( widget = tkWidget, widgetList = widgetList[ -1 ] ) )
 }
 #----------------------------.createWidget.spinbox
-
 
 #.createWidget.table--------------------2012-12-19
 .createWidget.table <- function(tk, widgetList, winName)
