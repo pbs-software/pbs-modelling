@@ -2584,82 +2584,75 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 #.createWidget.slideplus----------------2012-12-20
 .createWidget.slideplus <- function(tk, widgetList, winName)
 {
+        floatRegExp <- "^-?(([0-9]+\\.?[0-9]*)|([0-9]*\\.[0-9]+))$"
 	widget <- widgetList[[ 1 ]]
+
 	#initial widget$value defaults to <from> argument
 	if (is.na(widget$value))
 		widget$value <- widget$from
 
-	#to remember last valid number
+	#to remember last valid number; used to reset values upon an
+	#invalid value
 	lastMinVal <- ""
 	lastCurVal <- ""
 	lastMaxVal <- ""
 
-	#command to update min/max changes
+	#update the slider
 	updateSlideBounds <- function(slider, slideVar, curVar, minVar, maxVar, widget, winName)
 	{
+                #convert Tcl variables to values
 		minVal <- tclvalue(minVar)
 		curVal <- tclvalue(curVar)
 		maxVal <- tclvalue(maxVar)
 
 		#change min
-		if (any(grep("^-?(([0-9]+(\\.[0-9]*)?)|([0-9]*\\.[0-9]+))$",minVal))) {
-			minVal<-as.numeric(minVal)
-			tkconfigure(slider,from=minVal/widget$by);
-			tclvalue(minVar)<-minVal
-		}
-		else {
-			#reset min to the last valid "-from" parameter of the slider
-			if (!any(grep("^-?\\.?$",minVal)))
-				tclvalue(minVar)<-lastMinVal 
-
+		if (any(grep(floatRegExp,minVal))) {
+                        # new value = valid: update
+			tkconfigure(slider,from=as.numeric(minVal)/widget$by);
+		} else {
+                        # reset to last valid
+                        tclvalue(minVar)<-lastMinVal 
 		}
 
 		#change max
-		if (any(grep("^-?(([0-9]+(\\.[0-9]*)?)|([0-9]*\\.[0-9]+))$",maxVal))) {
-			maxVal<-as.numeric(maxVal)
-			tkconfigure(slider,to=maxVal/widget$by);
-			tclvalue(maxVar)<-maxVal
-		}
-		else {
-			#reset max to the last valid "-to" parameter of the slider
-			if (!any(grep("^-?\\.?$",maxVal)))
-				tclvalue(maxVar)<-lastMaxVal
+		if (any(grep(floatRegExp,maxVal))) {
+			tkconfigure(slider,to=as.numeric(maxVal)/widget$by);
+		} else {
+                        tclvalue(maxVar)<-lastMaxVal
 		}
 
 		#change current
-		if (any(grep("^-?(([0-9]+(\\.[0-9]*)?)|([0-9]*\\.[0-9]+))$",curVal))) {
+		if (any(grep(floatRegExp,curVal))) {
 			tclvalue(slideVar)<-round(as.numeric(curVal)/widget$by)
-			.extractData(widget[["function"]], widget$action, winName)
-		}
-		else {
-			#reset max to the last valid "-to" parameter of the slider
-			if (!any(grep("^-?\\.?$",maxVal)))
-				tclvalue(maxVar)<-lastMaxVal
-		}
-		if (!any(grep("^-?[0-9]*(\\.[0-9]*$)?",curVal))) {
+		} else {
 			tclvalue(curVar)<-lastCurVal
 		}
 	}
 
+        # with the saving below, we'll save values on key down and possibly
+        # restore them on key release (if key was invalid); with such a short
+        # lifetime, saving the values in .PBSmodEnv should be safe
 	saveSlideBounds <- function(slider, curVar, minVar, maxVar)
 	{
-		assign("minVal",tclvalue(minVar),envir=.PBSmodEnv) #.GlobalEnv) #minVal <<- tclvalue(minVar)
-		assign("curVal",tclvalue(curVar),envir=.PBSmodEnv) #.GlobalEnv) #curVal <<- tclvalue(curVar)
-		assign("maxVal",tclvalue(maxVar),envir=.PBSmodEnv) #.GlobalEnv) #maxVal <<- tclvalue(maxVar)
+                # convert Tcl variables to values
+		minVal <- tclvalue(minVar)
+		curVal <- tclvalue(curVar)
+		maxVal <- tclvalue(maxVar)
 
-		if (any(grep("^-?[0-9]*$",minVal)))
-			assign("lastMinVal",minVal,envir=.PBSmodEnv) #.GlobalEnv) #lastMinVal <<- minVal
-		if (any(grep("^-?[0-9]*$",curVal)))
-			assign("lastCurVal",curVal,envir=.PBSmodEnv) #.GlobalEnv) #lastCurVal <<- curVal
-		if (any(grep("^-?[0-9]*$",maxVal)))
-			assign("lastMaxVal",maxVal,envir=.PBSmodEnv) #.GlobalEnv) #lastMaxVal <<- maxVal
+		if (any(grep(floatRegExp,minVal)))
+			assign("lastMinVal",minVal,envir=.PBSmodEnv)
+		if (any(grep(floatRegExp,curVal)))
+			assign("lastCurVal",curVal,envir=.PBSmodEnv)
+		if (any(grep(floatRegExp,maxVal)))
+			assign("lastMaxVal",maxVal,envir=.PBSmodEnv)
 	}
 
 	convertCurVal <- function(widget, slideVar, curVar)
 	{
-		tclvalue(curVar) <- as.numeric(tclvalue(slideVar))*widget$by
+		tclvalue(curVar) <- as.numeric(tclvalue(slideVar)) * widget$by
 	}
-	
+
+        # create the widget using the specified font and fg/bg colours
 	getColourfulWidget <- function( parent, type, widget, ... )
 	{
 		argList <- list( parent = parent, ... )
@@ -2679,56 +2672,72 @@ setWidgetState <- function( varname, state, radiovalue, winname, warn = TRUE )
 	if (is.null(widget[["value"]])) {
 		value <- to
 		widget$value <- widget$to
-	}
-	else {
+	} else {
 		value <- widget$value / widget$by
 	}
 
-	curVar<-.map.add(winName, widget$name, tclvar=tclVar(widget$value))$tclvar #this one is the fractional value
-	slideVar<-.map.add(winName, paste(".", widget$name, ".slide", sep=""), tclvar=tclVar(value))$tclvar #integer
+	slideVar<-.map.add(winName, paste(".", widget$name, ".slide", sep=""), tclvar=tclVar(value))$tclvar
 	minVar<-.map.add(winName, paste(widget$name, ".min", sep=""), tclvar=tclVar(widget$from))$tclvar
+	curVar<-.map.add(winName, widget$name,                        tclvar=tclVar(widget$value))$tclvar
 	maxVar<-.map.add(winName, paste(widget$name, ".max", sep=""), tclvar=tclVar(widget$to))$tclvar
 
 	#hold the widgets in this frame
-	tkWidget <- getColourfulWidget( tk, "tkframe", list( bg = widget$bg ) ) #tkframe(tk)
+	tkWidget <- getColourfulWidget( tk, "tkframe", list( bg = widget$bg ) )
 
-	#slider <- tkscale(tkWidget, from=from, to=to, orient="horizontal", showvalue=FALSE, variable=slideVar, command=function(...) { convertCurVal(widget, slideVar, curVar); .extractData(widget[["function"]], widget$action, winName)})
-	slider <- getColourfulWidget( tkWidget, "tkscale", widget, from=from, to=to, orient="horizontal", showvalue=FALSE, variable=slideVar, command=function(...) { convertCurVal(widget, slideVar, curVar); .extractData(widget[["function"]], widget$action, winName)})
+        #create slider
+	slider <- getColourfulWidget(tkWidget, "tkscale", widget,
+                                     from=from, to=to, orient="horizontal", showvalue=FALSE, variable=slideVar,
+                                     command=function(...) {
+                                             # update the current value entry box
+                                             convertCurVal(widget, slideVar, curVar)
+                                             if (!widget$enter)
+                                                     # call the user function automatically if enter = FALSE
+                                                     .extractData(widget[["function"]], widget$action, winName)
+                                     })
 
 	#insert slider
 	tkgrid(slider, columnspan=5, row=1, column=1)
 
 	#create entries
-	#
 	minWid <- getColourfulWidget( tkWidget, "tkentry", list( fg=widget$entryfg, bg=widget$entrybg, font=widget$entryfont ), textvariable=minVar, width=5 )
 	curWid <- getColourfulWidget( tkWidget, "tkentry", list( fg=widget$entryfg, bg=widget$entrybg, font=widget$entryfont ), textvariable=curVar, width=5 )
 	maxWid <- getColourfulWidget( tkWidget, "tkentry", list( fg=widget$entryfg, bg=widget$entrybg, font=widget$entryfont ), textvariable=maxVar, width=5 )
 
 	if (widget$enter) {
-		tkbind(minWid,"<KeyRelease-Return>",function() updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName));
-		tkbind(maxWid,"<KeyRelease-Return>",function() updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName));
-		tkbind(curWid,"<KeyRelease-Return>",function() updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName));
-	}
-	else {
-		#capture value before press (incase new value isnt valid)
-		tkbind(minWid,"<KeyPress>",function() saveSlideBounds(slider, curVar, minVar, maxVar));
-		tkbind(maxWid,"<KeyPress>",function() saveSlideBounds(slider, curVar, minVar, maxVar));
-		tkbind(curWid,"<KeyPress>",function() saveSlideBounds(slider, curVar, minVar, maxVar));
+                #capture value after return/enter is released; evaluate expressions like...
+                #  tkbind(minWid,"<KeyRelease-KP_Enter>",function() updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName))
+                for (wid in c("minWid", "curWid", "maxWid")) {
+                        for (key in c("<KeyRelease-Return>", "<KeyRelease-KP_Enter>")) {
+                                expr <- paste('tkbind(', wid, ', "', key, '", ',
+                                              'function() { updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName); .extractData(widget[["function"]], widget$action, winName) })',
+                                              sep="")
+                                eval(parse(text=expr))
+                        }
+                }
+	} else {
+                #capture value before press (in case new value isn't
+                #valid); then capture value after key is received
+                for (wid in c("minWid", "curWid", "maxWid")) {
+                        expr <- paste('tkbind(', wid, ', "<KeyPress>",function() { saveSlideBounds(slider, curVar, minVar, maxVar) }); ',
+                                      'tkbind(', wid, ', "<KeyRelease>",function() { updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName); .extractData(widget[["function"]], widget$action, winName) })',
+                                      sep ="")
+                        eval(parse(text=expr))
+                }
+        }
 
-		#capture value after key is received
-		tkbind(minWid,"<KeyRelease>",function() updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName));
-		tkbind(maxWid,"<KeyRelease>",function() updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName));
-		tkbind(curWid,"<KeyRelease>",function() updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName));
-	}
-
-	#bind functions for setwinval() changes
-	.map.set(winName, paste(widget$name, ".min", sep=""), onChange=function() updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName))
-	.map.set(winName, paste(widget$name, ".max", sep=""), onChange=function() updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName))
-	.map.set(winName, widget$name, onChange=function() updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName))
-
+	#bind functions for setWinVal() changes
+	.map.set(winName, paste(widget$name, ".min", sep=""), onChange=function() {
+                updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName)
+                if (!widget$enter) .extractData(widget[["function"]], widget$action, winName) })
+	.map.set(winName, widget$name, onChange=function() {
+                updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName)
+                if (!widget$enter) .extractData(widget[["function"]], widget$action, winName) })
+	.map.set(winName, paste(widget$name, ".max", sep=""), onChange=function() {
+                updateSlideBounds(slider, slideVar, curVar, minVar, maxVar, widget, winName)
+                if (!widget$enter) .extractData(widget[["function"]], widget$action, winName) })
 
 	#place widgets in grid
-	tkgrid( getColourfulWidget( tkWidget, "tklabel", widget, text="Min->"), row=2, column=1)
+	tkgrid(getColourfulWidget( tkWidget, "tklabel", widget, text="Min->"), row=2, column=1)
 	tkgrid(minWid, row=2, column=2)
 	tkgrid(curWid, row=2, column=3)
 	tkgrid(maxWid, row=2, column=4)
