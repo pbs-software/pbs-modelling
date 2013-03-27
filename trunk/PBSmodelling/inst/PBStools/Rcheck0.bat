@@ -13,7 +13,7 @@ call RPathCheck.bat
 
 if not defined PBSERROR (
   rem echo %TMPDIR%
-  rem Rcmd check %1 )
-  R CMD check --as-cran %1 )
+  R CMD check %1 )
+  rem R CMD check --as-cran %1 )
 
 :end

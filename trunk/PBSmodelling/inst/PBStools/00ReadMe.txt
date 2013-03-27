@@ -6,12 +6,12 @@ Revised batch files are included here:
 -------------------------------------
 RPaths.bat
 RPathCheck.bat
-Rcheck.bat
+Rcheck.bat        (w/ CRAN check)
+Rcheck0.bat       (w/out CRAN check)
 Rbuild.bat
 Rpack.bat
 Runpack.bat
 RmakePDF.bat
-RmakePDF2.bat
 
 You can use the small package archived in PBStry_x.xx.tar.gz as a 
 convenient prototype for starting your own new package. It includes 

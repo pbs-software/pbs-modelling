@@ -1,34 +1,116 @@
 Echo Off
-Rem Batch file to copy a package from a Subversion (SVN) trunk directory to %Temp%
-Rem An environment variable TEMP must designate a temporary directory
-set Temp=E:\Package
+rem Batch file to copy a package from a Local (LOC) or Subversion (SVN) trunk directory to %Build%
+rem SETLOCAL ENABLEDELAYEDEXPANSION
 
-Rem Check that %Temp% exists
-If !%Temp% == ! goto NoTemp
+set Build=E:\Projects\R\Build
+rem Check that %Build% exists
+if not exist %Build%\NUL goto NoBuild
 
-Rem Check that the source directory exists
-if not exist .\%1\NUL goto NoSource
+if "%1"=="" (
+	ECHO ERROR - you must specify a package name
+	ECHO example: %0 PBSmodelling SVN
+	goto end 
+	) else (
+	set package=%1
+	)
+rem echo %package%
 
-Rem Clear the destination directory if it exists
-if not exist %Temp%\%1\NUL goto OKdest
-Echo Removing destination %Temp%\%1
-rmdir /S %Temp%\%1
-if not exist %Temp%\%1.Rcheck\NUL goto OKdest
-rmdir /S %Temp%\%1.Rcheck
+if "%2"=="" (
+	SET repo=SVN
+	) else (
+	SET repo=%2
+	)
+rem echo %repo%
+
+if "%repo%"=="LOC" (
+	call set Source=E:\Projects\R\Source
+	)
+if "%repo%"=="SVN" (
+	set string=
+	set string=%package%
+rem echo !string!
+	call :lenStr !string! nchar
+	call set Source=E:\Projects\R\Source\Google\%%package:~0,3%%-%%package:~3,!nchar!%%\trunk
+	)
+echo %Source%
+echo %Build%
+rem goto:exit
+
+rem Check that the source directory exists
+rem if not exist .\%1\NUL goto NoSource
+if not exist %Source%\%1\NUL goto NoSource
+rem cd /d %Source%
+
+rem Clear the destination directory if it exists
+if not exist %Build%\%1\NUL goto OKdest
+Echo Removing destination %Build%\%1
+rmdir /S %Build%\%1
+if not exist %Build%\%1.Rcheck\NUL goto OKdest
+rmdir /S %Build%\%1.Rcheck
+rm -fv %1*.zip
 
 :OKdest
-Rem Hidden .svn directories won't get copied
-xcopy /E /I %1 %Temp%\%1
+rem Hidden .svn directories will not get copied
+xcopy /E /I %Source%\%1 %Build%\%1
+
 Rem Change to the destination for checking and building
-cd /d %Temp%
+cd /d %Build%
+rem set TD=
+rem set TD=%Build%
+rem call :BuildDir !TD!
+
+rem ENDLOCAL rem & call :BuildDir !TD!
 Goto Exit
 
-:NoTemp
-Echo You must designate a temporary directory with the variable TEMP
+:lenStr %string% nchar ::returns the length of a string minus 3 characters for 'PBS'
+rem                    -- string  [in] - variable name containing the string being measured for length
+rem                    -- nchar  [out] - variable to be used to return the length of the string
+rem Based on 'revStr' from 'devcom': http://www.computerhope.com/forum/index.php?topic=85897.0
+	SETLOCAL ENABLEDELAYEDEXPANSION
+	rem set line=sdas sfsa fwfwa21321
+	set nchar=0
+	:LOOP
+		call set tmpa=%%string:~!nchar!,1%%%
+rem echo !tmpa!
+		if not "!tmpa!" equ "" (
+			rem set rline=!tmpa!%rline%
+			set /a nchar+=1
+rem echo !nchar!
+			goto LOOP
+		)
+		set /a nchar-=3  :: PBS = 3 characters
+rem echo %nchar%
+	rem )
+   ENDLOCAL & set /a "%~2"="%nchar%" :: seen outside as !nchar!
+exit /b
+	rem ( ENDLOCAL & REM RETURN VALUES
+	rem 	IF "%~2" NEQ "" SET /a %~2=%nchar%
+	rem )
+	rem EXIT /b
+
+:BuildDir %TD%
+	SETLOCAL ENABLEDELAYEDEXPANSION
+	echo %TD%
+	cd /d %TD%
+	ENDLOCAL
+exit /b
+
+:NoBuild
+Echo You must designate a Build directory with the variable Build
 Goto Exit
 
 :NoSource
-Echo Source directory %1 not found
+Echo Source directory %Source%\%1 not found
 Goto Exit
 
 :Exit
+set Source=
+set Build=
+set package=
+set string=
+set nchar=
+set tmpa=
+set repo=
+
+
+
