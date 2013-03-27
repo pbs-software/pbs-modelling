@@ -3,11 +3,23 @@ PBSmodelling Changes
 Authors:  JTS = Jon T. Schnute
           ACB = Alex Couture-Beil
           RH  = Rowan Haigh
+          NB  = Nicholas Boers
           ARK = Rob Kronlund
           AE  = Anisa Egeli
 -----------------------------------
 
-2.65  2013-01-02
+2.65  2013-03-27
+  - Revised the command line tools (e.g., RPaths.bat in PBStools). (RH 3/27)
+  - Corrected the behaviour of slideplus widget to match documentation ( issue 83 ). (NB 2/19)
+  - Corrected the behaviour of spinbox widget to match documentation ( issue 83 ). (NB 2/18)
+  - Moved start-up message to .onAttach and test for Tk availability. (NB 2/10)
+  - Improved warning messages when tclRequire fails ( Issue 90 ). (NB 2/10)
+  - Changed page up/page down button labels to work the same on all systems. (NB 2/9)
+  - Allow multiple on-screen windows to have different bg colours (Issues 3 & 84) (NB 2/7)
+  - Modified function `setOptions` to support a list of options ( issue 81 ). (NB 1/26)
+  - Fixed a number of spelling mistakes. (NB 1/20)
+  - Added support to readList/writeList ("P" format) for nested lists. (NB 1/20)
+  - Addressed  issue 61 : openFile ("..") opened the current directory and not parent. (NB 1/13)
   - Fixed a few bugs due to misplaced `.tget(.PBSmod)` statements (thanks Athena Ogden). (RH 01/02)
   - Modified function `showVignettes`; old code was based on deprecated grid structure (see Issue 86). (RH 12/21)
   - Re-organised some of the R code (no functional changes). (RH 12/20)

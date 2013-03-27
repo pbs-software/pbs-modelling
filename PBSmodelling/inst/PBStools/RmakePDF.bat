@@ -20,14 +20,17 @@ if "%2"=="" (
 SET ext=aux;dvi;idx;ilg;ind;log;out;pdf;tex;toc
 SET PBS_NO_PAUSE=1
 CALL RPathCheck.bat
+if exist %R_Root%\share\texmf\tex\latex\Rd.sty cp -f -v %R_Root%\share\texmf\tex\latex\Rd.sty .
 echo %R_PATH%
+rem goto :exit
+SETLOCAL ENABLEDELAYEDEXPANSION
 
 if not defined PBSERROR (
 	for %%a in (%ext%) do (
 		if exist "%1.%%a" (
 			rm -f "%1.%%a" ) )
 	rm -f -r .Rd2pdf* rem remove all the temporary R directories
-
+ 
 	%R_PATH%\R CMD Rd2pdf --no-clean --no-preview  %1
 	dir /b .Rd2pdf* > dirRd.txt
 	set dviP=
@@ -47,5 +50,8 @@ if not defined PBSERROR (
 	dvips -q %1.dvi
 	ps2pdf %1.ps
 )
+:exit
+SET ext=
+SET PBS_NO_PAUSE=
+SET dviP=
 :end
-
