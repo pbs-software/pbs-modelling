@@ -1,7 +1,16 @@
 Echo Off
-rem Batch file to copy a package from a Local (LOC) or Subversion (SVN) trunk directory to %Build%
-rem SETLOCAL ENABLEDELAYEDEXPANSION
+rem ===================================================
+rem Batch file to copy a package from a Local (LOC) or 
+rem Subversion (SVN) trunk directory to %Build%
+rem Args:
+rem   %1 = package name
+rem   %2 = package source:
+rem        LOC = local or SVN = subversion (default)
+rem User needs to change directories flagged by +++++
+rem ===================================================
+SETLOCAL ENABLEDELAYEDEXPANSION
 
+rem +++++ Specify target directory here: +++++
 set Build=E:\Projects\R\Build
 rem Check that %Build% exists
 if not exist %Build%\NUL goto NoBuild
@@ -23,6 +32,7 @@ if "%2"=="" (
 rem echo %repo%
 
 if "%repo%"=="LOC" (
+	rem +++++ Specify local source directory here: +++++
 	call set Source=E:\Projects\R\Source
 	)
 if "%repo%"=="SVN" (
@@ -30,6 +40,7 @@ if "%repo%"=="SVN" (
 	set string=%package%
 rem echo !string!
 	call :lenStr !string! nchar
+	rem +++++ Specify local subversion directory here: +++++
 	call set Source=E:\Projects\R\Source\Google\%%package:~0,3%%-%%package:~3,!nchar!%%\trunk
 	)
 echo %Source%
@@ -71,22 +82,14 @@ rem Based on 'revStr' from 'devcom': http://www.computerhope.com/forum/index.php
 	set nchar=0
 	:LOOP
 		call set tmpa=%%string:~!nchar!,1%%%
-rem echo !tmpa!
 		if not "!tmpa!" equ "" (
 			rem set rline=!tmpa!%rline%
 			set /a nchar+=1
-rem echo !nchar!
 			goto LOOP
 		)
 		set /a nchar-=3  :: PBS = 3 characters
-rem echo %nchar%
-	rem )
-   ENDLOCAL & set /a "%~2"="%nchar%" :: seen outside as !nchar!
-exit /b
-	rem ( ENDLOCAL & REM RETURN VALUES
-	rem 	IF "%~2" NEQ "" SET /a %~2=%nchar%
-	rem )
-	rem EXIT /b
+	ENDLOCAL & set /a "%~2"="%nchar%" :: seen outside as !nchar!
+	exit /b
 
 :BuildDir %TD%
 	SETLOCAL ENABLEDELAYEDEXPANSION
@@ -111,6 +114,4 @@ set string=
 set nchar=
 set tmpa=
 set repo=
-
-
 

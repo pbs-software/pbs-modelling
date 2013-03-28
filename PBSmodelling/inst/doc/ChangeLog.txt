@@ -8,7 +8,8 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
-2.65  2013-03-27
+2.65  2013-03-28
+  - Revised the User Guide, `Rcopy.bat`, and `setPBSoptions.Rd`. (RH 3/28)
   - Revised the command line tools (e.g., RPaths.bat in PBStools). (RH 3/27)
   - Corrected the behaviour of slideplus widget to match documentation ( issue 83 ). (NB 2/19)
   - Corrected the behaviour of spinbox widget to match documentation ( issue 83 ). (NB 2/18)
