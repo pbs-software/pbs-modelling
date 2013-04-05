@@ -151,7 +151,7 @@ TestFuns <- function(funs=ls(pos=grep("package:PBSmodelling",search()))){
 	}
 	if (any(funs=="openFile")) {
 		sys=Sys.info()[["sysname"]]
-		if (sys=="Windows") prog="notepad"
+		if (sys=="Windows") prog="notepad.exe"
 		else if (sys=="Darwin" && .Platform$GUI=="AQUA") prog="TextEdit"
 		else prog="gedit"
 		setPBSext("html", paste(prog,"%f") )

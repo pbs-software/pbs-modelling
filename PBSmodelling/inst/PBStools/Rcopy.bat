@@ -66,11 +66,6 @@ xcopy /E /I %Source%\%1 %Build%\%1
 
 Rem Change to the destination for checking and building
 cd /d %Build%
-rem set TD=
-rem set TD=%Build%
-rem call :BuildDir !TD!
-
-rem ENDLOCAL rem & call :BuildDir !TD!
 Goto Exit
 
 :lenStr %string% nchar ::returns the length of a string minus 3 characters for 'PBS'
@@ -90,13 +85,6 @@ rem Based on 'revStr' from 'devcom': http://www.computerhope.com/forum/index.php
 		set /a nchar-=3  :: PBS = 3 characters
 	ENDLOCAL & set /a "%~2"="%nchar%" :: seen outside as !nchar!
 	exit /b
-
-:BuildDir %TD%
-	SETLOCAL ENABLEDELAYEDEXPANSION
-	echo %TD%
-	cd /d %TD%
-	ENDLOCAL
-exit /b
 
 :NoBuild
 Echo You must designate a Build directory with the variable Build

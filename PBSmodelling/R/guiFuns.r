@@ -376,7 +376,7 @@ getWinVal <- function(v=NULL, scope="", asvector=FALSE, winName="")
 		else if (scope=="P")
 			assign(key, vars[[key]], envir = .PBSmodEnv)
 		else if (scope=="G")
-			assign(key, vars[[key]], envir = .GlobalEnv)
+			eval(parse(text="assign(key, vars[[key]], envir = .GlobalEnv)"))
 	}
 	return(vals)
 }
