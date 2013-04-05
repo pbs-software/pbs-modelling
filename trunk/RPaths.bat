@@ -5,7 +5,7 @@ if not defined PBS_SETLOCAL (
 
 rem ***** Edit the six PATH variables listed below *****
 
-set R_Root=C:\Program Files\R\R-2.14.0\
+set R_Root=C:\Program Files\R\R-3.0.0\
 set TOOLS_PATH=C:\Rtools\bin
 set PERL_PATH=C:\Rtools\perl\bin
 set MINGW_PATH=C:\Rtools\MinGW\bin

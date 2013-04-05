@@ -6,7 +6,7 @@ if not defined PBS_SETLOCAL (
 rem ***** Edit the following five PATH variables *****
 
 set R_Base=C:\Utils\R
-set R_Root=%R_Base%\R-2.15.3
+set R_Root=%R_Base%\R-3.0.0
 set TOOLS_PATH=%R_Base%\Rtools\bin
 set GCC_PATH=%R_Base%\Rtools\gcc-4.6.3\bin
 set TEX_PATH=C:\Utils\MiKTeX\miktex\bin

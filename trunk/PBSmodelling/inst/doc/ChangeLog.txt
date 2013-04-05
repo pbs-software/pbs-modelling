@@ -8,13 +8,15 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
-2.65  2013-03-28
+2.65  2013-04-05
+  - Fixed bug in `openFile` - `gsub` needs to expand WinOS "\\" delimiters introduced by `normalizePath`. (RH 4/5)
+  - Masked two `assign` calls where the user can choose to populate the global environment with objects using functions `getWinVal` and `unpackList`. (RH 4/5)
   - Revised the User Guide, `Rcopy.bat`, and `setPBSoptions.Rd`. (RH 3/28)
-  - Revised the command line tools (e.g., RPaths.bat in PBStools). (RH 3/27)
-  - Corrected the behaviour of slideplus widget to match documentation ( issue 83 ). (NB 2/19)
-  - Corrected the behaviour of spinbox widget to match documentation ( issue 83 ). (NB 2/18)
-  - Moved start-up message to .onAttach and test for Tk availability. (NB 2/10)
-  - Improved warning messages when tclRequire fails ( Issue 90 ). (NB 2/10)
+  - Revised the command line tools (e.g., RPaths.bat in directory PBStools). (RH 3/27)
+  - Corrected the behaviour of `slideplus` widget to match documentation ( issue 83 ). (NB 2/19)
+  - Corrected the behaviour of `spinbox` widget to match documentation ( issue 83 ). (NB 2/18)
+  - Moved start-up message to `.onAttach` and test for Tk availability. (NB 2/10)
+  - Improved warning messages when `tclRequire` fails ( Issue 90 ). (NB 2/10)
   - Changed page up/page down button labels to work the same on all systems. (NB 2/9)
   - Allow multiple on-screen windows to have different bg colours (Issues 3 & 84) (NB 2/7)
   - Modified function `setOptions` to support a list of options ( issue 81 ). (NB 1/26)

@@ -517,7 +517,7 @@ unpackList <- function(x, scope="L") {
 			else if (scope=="P")
 				assign(namx[i], x[[i]], envir = .PBSmodEnv)
 			else if (scope=="G")
-				assign(namx[i], x[[i]], envir = .GlobalEnv)
+				eval(parse(text="assign(namx[i], x[[i]], envir = .GlobalEnv)"))
 		}
 	}
 	namx[namx != ""]

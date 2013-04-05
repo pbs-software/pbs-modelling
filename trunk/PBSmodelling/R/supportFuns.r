@@ -425,67 +425,61 @@ isWhat <- function(x) {
 #-------------------------------------------isWhat
 
 
-#openFile-------------------------------2012-12-04
+#openFile-------------------------------2013-04-05
 # Opens a file for viewing based on System file
 # extension association or .PBSmod$.options$openfile
-#-------------------------------------------ACB/RH
+#----------------------------------------ACB/RH/NB
 openFile <- function(fname="", package=NULL)
 {
-        if (!exists(".PBSmod",envir=.PBSmodEnv))
-                .initPBSoptions()
-        
+	if (!exists(".PBSmod",envir=.PBSmodEnv)) .initPBSoptions()
+
 	.openFile=function(fname, package)
 	{
 		if (fname=="")  fname=getWinAct()[1] # does this work?
-
 		if(!is.null(package)) {
-                        # relative within package
-			pkg_file <- system.file( fname, package=package)
+			# relative within package
+			pkg_file <- system.file(fname, package=package)
 			if( pkg_file == "" )
-				stop(paste("File \"", fname,
-                                           "\" does not exist in package \"",
-                                           package, "\"", sep=""))
+				stop(paste("File \"", fname,"\" does not exist in package \"", package, "\"", sep=""))
 			fname <- pkg_file
 		} else {
-                        # relative/absolute within file system
-                        fname <- normalizePath (fname);
-                }
-
-                # system.file and normalizePath both fail if the file
-                # doesn't exist; if we've gotten this far, we
-                # should be okay to open it
-
-                # remove everything that precedes extension
+			# relative/absolute within file system
+			fname <- normalizePath (fname);
+		}
+		# system.file and normalizePath both fail if the file
+		# doesn't exist; if we've gotten this far, we
+		# should be okay to open it
+		# remove everything that precedes extension
 		ext <- sub("^.*\\.", "", fname)
-
-                tget(.PBSmod)
+		tget(.PBSmod)
 		if ( is.null( .PBSmod$.options$openfile[[ ext ]] ) ) {
-                        # nothing previously set with setPBSext
+			# nothing previously set with setPBSext
 			if ( exists("shell.exec", mode="function" ) )  {
-                                # Windows
+				# Windows
 				shell.exec(fname)
 				return(fname)
 			} else if( file.exists( "/usr/bin/open" ) ) {
-                                # Mac OS X
+				# Mac OS X
 				system( paste( "open", fname ) )
 				return(fname)
 			} else if( file.exists( "/usr/bin/xdg-open" ) ) {
-                                # Linux (xdg-open is a desktop-independent tool)
+				# Linux (xdg-open is a desktop-independent tool)
 				system( paste( "xdg-open", fname ) )
 				return(fname)
 			} else if( file.exists( "/usr/bin/gnome-open" ) ) {
-                                # Linux (Gnome desktop)
+				# Linux (Gnome desktop)
 				system( paste( "gnome-open", fname ) )
 				return(fname)
 			}
 			stop(paste("There is no program associated with the ",
-                                   "extension '", ext, "'\n",
-			           "Please set an association with the ",
-                                   "setPBSext command\n"))
+				"extension '", ext, "'\n",
+				"Please set an association with the ",
+				"setPBSext command\n"))
 		} else {
-                        # matches extension previously set with setPBSext
+			# matches extension previously set with setPBSext
 			cmd <- getPBSext(ext)
-			cmd <- gsub("%f", fname, cmd)
+			# RH: gsub needs to expand WinOS "\\" delimiters introduced by `normalizePath` above.
+			cmd <- gsub("%f", gsub("\\\\","\\\\\\\\",fname), cmd)
 			if (.Platform$OS.type=="windows")
 				shell(cmd,wait=FALSE)
 			else
@@ -495,7 +489,7 @@ openFile <- function(fname="", package=NULL)
 	}
 	ops=sapply(fname,.openFile, package=package)
 	invisible(ops) }
-#-----------------------------------------openFile
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-openFile
 
 
 #openUG---------------------------------2009-12-04
