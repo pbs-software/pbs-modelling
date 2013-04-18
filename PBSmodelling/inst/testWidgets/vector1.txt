@@ -1,5 +1,0 @@
-window name=widWin title="Widget = vector"
-vector length=4 names="a b g d" labels="alpha beta gamma delta" \
-   values="100 0.05 1 5" font="times italic" width=6
-vector length=5 mode=logical names=chosen labels="yes no maybe unsure asleep" \
-   values="F T F T T" vertical=T

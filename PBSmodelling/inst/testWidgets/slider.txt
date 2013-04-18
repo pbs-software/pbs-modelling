@@ -1,3 +1,0 @@
-window name=widWin title="slide and slidePlus"
-slide name=junk from=1 to=1000 value=225 showvalue=T
-slideplus name=junk2 from=0 to=1 by=0.01 value=0.75 padx=10

@@ -1,2 +1,0 @@
-window name=widWin title="table: iris"
-table name=iris rowshow=5 rowlabels=NULL

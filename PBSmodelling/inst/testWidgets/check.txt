@@ -1,4 +1,0 @@
-window name=widWin title="Widget = check"
-grid 1 2
-check name=yep checked=T text="Check Me" padx=10 pady=10
-check name=nope checked=F text="Or Not" padx=10 pady=10

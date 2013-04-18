@@ -1,3 +1,0 @@
-window name=widWin title="Widget = history"
-vector length=3 names="alpha beta gamma" values="2 5 15"
-history padx=20 pady=5

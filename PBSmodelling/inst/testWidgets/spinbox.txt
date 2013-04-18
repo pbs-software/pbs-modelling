@@ -1,2 +1,0 @@
-window name=widWin title="Widget = spinbox"
-spinbox name=spun from=0 to=100 by=12.5 value=50 label="Showcase showdown" bg=lightyellow font=bold entryfg=purple

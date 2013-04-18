@@ -1,6 +1,0 @@
-window name=widWin title="Widget = button"
-grid 2 2
-button text="Push Me" font="10 Helvetica overstrike" sticky=EW
-button text="Pull You" font="40 Times underline"
-button text="Pull You" font="40 Times underline"
-button text="Push Me" font="10 Helvetica overstrike" sticky=NS
