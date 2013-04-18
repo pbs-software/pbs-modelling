@@ -66,7 +66,7 @@ xcopy /E /I %Source%\%1 %Build%\%1
 
 Rem Change to the destination for checking and building
 cd /d %Build%
-Goto Exit
+Goto:Exit
 
 :lenStr %string% nchar ::returns the length of a string minus 3 characters for 'PBS'
 rem                    -- string  [in] - variable name containing the string being measured for length

@@ -8,7 +8,8 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
-2.65  2013-04-05
+2.65  2013-04-18
+  - Moved obsolete tools from `trunk` root to `oldtools` under `branches`. (RH 4/18)
   - Fixed bug in `openFile` - `gsub` needs to expand WinOS "\\" delimiters introduced by `normalizePath`. (RH 4/5)
   - Masked two `assign` calls where the user can choose to populate the global environment with objects using functions `getWinVal` and `unpackList`. (RH 4/5)
   - Revised the User Guide, `Rcopy.bat`, and `setPBSoptions.Rd`. (RH 3/28)
