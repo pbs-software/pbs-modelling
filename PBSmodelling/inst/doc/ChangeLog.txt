@@ -9,6 +9,7 @@ Authors:  JTS = Jon T. Schnute
 -----------------------------------
 
 2.65  2013-04-18
+  - Removed `PBSddesolve` from `Suggests` in DESCRIPTION file. (RH 4/18)
   - Moved obsolete tools from `trunk` root to `oldtools` under `branches`. (RH 4/18)
   - Fixed bug in `openFile` - `gsub` needs to expand WinOS "\\" delimiters introduced by `normalizePath`. (RH 4/5)
   - Masked two `assign` calls where the user can choose to populate the global environment with objects using functions `getWinVal` and `unpackList`. (RH 4/5)
