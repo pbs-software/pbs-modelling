@@ -1,3 +1,6 @@
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 VBinit <- function() {
 	VBlist <- readList("vonBdata.txt"); unpackList(VBlist,scope="P");
 	setWinVal(list(parVec=VBpars)); };
@@ -45,4 +48,5 @@ VBset <- function(){
 
 require("PBSmodelling");
 createWin("vonBWin.txt");
-remove(list=ls(1)[is.element(ls(1),c("VBlist","VBdata","VBpars","PBSmin"))]); VBinit();
+remove(list=ls(locale)[is.element(ls(locale),c("VBlist","VBdata","VBpars","PBSmin"))],envir=locale); VBinit()
+}) # end local scope

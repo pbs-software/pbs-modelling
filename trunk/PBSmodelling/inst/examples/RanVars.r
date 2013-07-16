@@ -1,3 +1,6 @@
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 simData <- function() {
 
   # calculate parameters
@@ -102,4 +105,7 @@ plPair <- function() {
     pch=16,cex=0.5,col="forestgreen",gap=0,
     diag.panel=panel.hist); }
 
-require(PBSmodelling); createWin("RanVarsWin.txt");
+if (!require(PBSmodelling, quietly=TRUE)) stop("The PBSmodelling package is required for this example")
+createWin("RanVarsWin.txt")
+
+}) # end local scope

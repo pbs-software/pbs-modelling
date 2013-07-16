@@ -3,6 +3,9 @@
 # Ricker 1975 - p. 257 - eqn. 10.24 (North Sea cod from Halliday)
 # M=0.2, aref=t0, Winf=11.41, K=0.14, t0=0.07, b=3
 
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 # Incomplete beta function
 incbeta <- function(x,pp,qq) {beta(pp,qq) * pbeta(x,pp,qq)}
 
@@ -61,3 +64,4 @@ autoC <- function() {
 #~~ <°)))<< ~~~~~~~~~~~~
 require(PBSmodelling);
 createWin("yprWin.txt");
+}) # end local scope

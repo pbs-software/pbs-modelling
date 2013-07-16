@@ -18,6 +18,9 @@
 #         s = side length of a square from the origin
 # Output: a TowSet
 
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 makeTows <- function(n=10,s=100) {
    X <- runif(2*n,0,s); Y <- runif(2*n,0,s);
    ieven <- 2*(1:n); iodd <- ieven-1;
@@ -164,6 +167,8 @@ plotTow <- function(act=NULL) {
 # Initialize the GUI
 # ******************
 
-if (!require(PBSmapping, quietly=TRUE)) stop("The PBSmapping package is required for this example")
-if (!require(PBSmodelling, quietly=TRUE)) stop("The PBSmodelling package is required for this example")
-createWin("FishTowsWin.txt");
+if (!require(PBSmapping, quietly=TRUE)) stop("The `PBSmapping` package is required for this example")
+if (!require(PBSmodelling, quietly=TRUE)) stop("The `PBSmodelling` package is required for this example")
+createWin("FishTowsWin.txt")
+
+}) # end local scope

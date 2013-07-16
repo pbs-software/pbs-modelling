@@ -1,3 +1,9 @@
+#SGM------------------------------------2012-12-06
+# Schnute Growth Model
+#-------------------------------------------------
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 SGinit <- function(act=NULL) {
 	SGlist <- readList("SGMdata.txt"); unpackList(SGlist,scope="P");
 	if (is.null(act)) act <- getWinAct()[1]
@@ -123,6 +129,8 @@ show8 <- function(xy=1.5) {
 		adj=c(0,0),cex=.7,col="grey30"); };
 
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-require("PBSmodelling");
-createWin("SGMWin.txt");
-remove(list=ls(.PBSmodEnv)[is.element(ls(1),c("FP","SGlist","SGdata","SGpars","PBSmin"))],pos=.PBSmodEnv); SGinit();
+if (!require(PBSmodelling, quietly=TRUE)) stop("The PBSmodelling package is required for this example")
+createWin("SGMWin.txt")
+remove(list=ls(locale)[is.element(ls(locale),c("FP","SGlist","SGdata","SGpars","PBSmin"))],pos=locale)
+SGinit()
+}) # end local scope

@@ -20,10 +20,13 @@
 #
 #---------------------------------------------------------------
 
-
 # Checks if a given sudoku puzzle (does not have to be complete)
 # is consistant with the constraints of sudoku
 # returns TRUE if consistant, FALSE otherwise
+
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 is.consistant.master <- function(x)
 {
 	for(i in 1:9) {
@@ -112,14 +115,14 @@ clearPuz <- function()
 #restore saved sudoku puzzle (ie before running solveSudoku())
 resetPuz <- function()
 {
-	if (exists("sudokuMat"))
-		setWinVal(list(s=sudokuMat))
+	if (exists("sudokuMat",envir=locale))
+		setWinVal(list(s=tget(sudokuMat,tenv=locale)))
 }
 
 #function to display message instructing user to run appropriate cmd
 savePuz <- function()
 {
-	sudokuMat <<- getWinVal()$s
+	sudokuMat <- getWinVal()$s; tput(sudokuMat,tenv=locale)
 	
 	if (!is.consistant.master(sudokuMat))
 		stop("initial sudoku puzzle contains errors")
@@ -136,7 +139,7 @@ savePuz <- function()
 #Start a depth-first search for the solution
 solveSudoku <- function(refreshWin=TRUE, solHalt=TRUE)
 {
-	sudokuMat <<- getWinVal()$s
+	sudokuMat <- getWinVal()$s; tput(sudokuMat,tenv=locale)
 
 	if (!is.consistant.master(sudokuMat))
 		stop("initial sudoku puzzle contains errors")
@@ -269,11 +272,12 @@ the list of possible states, set the \"solHalt\" to FALSE.
 Usage: solveSudoku(refreshWin=TRUE, solHalt=TRUE)
 -------------------------------------------------------------------------------
 ")
-	}
+}
 }
 
-		
 #create window and initialize with a sample problem.
-require("PBSmodelling")
+if (!require(PBSmodelling, quietly=TRUE)) stop("The PBSmodelling package is required for this example")
 createWin("sudokuSolverWin.txt")
 loadPuz("easy")
+
+}) # end local scope

@@ -1,3 +1,6 @@
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 # R code for the tranform example: sine of a normal variate
 
 plotSN <- function() {
@@ -24,4 +27,6 @@ plotSN <- function() {
     hist(yy,xlab=paste("y",xpars),main=""); };
   };
 
-require(PBSmodelling); createWin("SineNormWin.txt");
+require(PBSmodelling); createWin("SineNormWin.txt")
+
+}) # end local scope
