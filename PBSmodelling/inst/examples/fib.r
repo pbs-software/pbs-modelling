@@ -1,3 +1,6 @@
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 # ***********************************************************
 # fib.C:
 #   Compute Fibonacci numbers iteratively using a .C call to
@@ -50,3 +53,9 @@ fib.init=function(){
   defaultN <- 200; tput(defaultN)
   defaultLen <- 10; tput(defaultLen)
 }
+#fib.init()
+#print(fib.R(13))
+#print(fib.C(13))
+
+}) # end local scope
+	

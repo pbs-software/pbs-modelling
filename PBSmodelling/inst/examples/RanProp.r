@@ -1,9 +1,11 @@
 # Functions to test properties of random proportions
 
 # ************************** Utilities *******************************
-
 # Composition operator
 # Converts vector v to proportions
+
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
 
 comp <- function(v) {
   v <- v[v>0 & !is.na(v)]
@@ -142,6 +144,8 @@ getMod <- function(){
   rmod <- switch(MDL,"testrmul","testrdir","testrln")
   get(rmod)()
 }
-require(PBSmodelling)
+if (!require(PBSmodelling, quietly=TRUE)) stop("The PBSmodelling package is required for this example")
 createWin("RanPropWin.txt")
+
+}) # end local scope
 

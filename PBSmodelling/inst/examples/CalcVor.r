@@ -1,3 +1,4 @@
+local(envir=.PBSmodEnv,expr={
 cVor <- function() {
 	getWinVal(scope="L"); resetGraph();
 	x <- switch(xdis,
@@ -29,5 +30,11 @@ cVor <- function() {
 	addPoints(events, pch=20, col="orangered")     #--- plot the points
 }
 
-require(PBSmodelling); require(PBSmapping);
+require(PBSmodelling); require(PBSmapping)
+if(!require(deldir,quietly=TRUE)) {
+	if (getYes("Load package `deldir` from CRAN?","Package Needed")) install.packages("deldir")
+	else stop("Package `deldir` needed for this example",call.=FALSE) }
 createWin("CalcVorWin.txt"); N<-0;
+
+}) # end local scope
+

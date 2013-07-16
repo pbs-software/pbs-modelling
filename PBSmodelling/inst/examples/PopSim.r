@@ -17,6 +17,10 @@
 #                the information from the GUI
 #              The parameter chk is a logical saying whether or not we should
 #                do error checking
+#-------------------------------------------------------------------------------
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 calcAssess <- function(as50, as95, am50, am95, winf, linf, b, t0, k, h1, h2, 
     sigma1, sigma2, tau1, tau2, A, T, M, R, q, gamma1, unitType, plotType, 
     percent, maxB, powr, chk=FALSE, act=NULL)
@@ -398,13 +402,13 @@ plotResults <- function() {
 	.workingDirQuit <- function() {
 		closeWin(c("window","runE"))
 		setwd(tget(.cwd))
-		remove(list = setdiff(ls(pos = .PBSmodEnv), tget(.cls)), pos = .PBSmodEnv)
+		remove(list = setdiff(ls(pos=locale), tget(.cls)), pos=locale)
 		return()
 	}
 	tput(.workingDirQuit)
 	
 	# save the current working directory 
-	.cls <- ls(pos = .PBSmodEnv, all.names = TRUE); tput(.cls)
+	.cls <- ls(pos=locale, all.names=TRUE); tput(.cls)
 	.cwd <- getwd(); tput(.cwd)
 	
 	# the files you wish to copy to the new working directory
@@ -989,20 +993,10 @@ validParam <- function()
   
 }
 
-#----------------------------- Main function ----------------------------------#
-
-
-# runAssess (run PBS Assess):
-# Purpose:    Start up the graphical user interface (GUI) for PBS Assess
-# Parameters: None
-# Returns:    NULL (invisible)
-#runAssess <- function()
-#{  
-#  .workingDir()
-  
-  require(PBSmodelling)
-  require(RODBC)
+#===================================================================================================
+if (!require(PBSmodelling, quietly=TRUE)) stop("The `PBSmodelling` package is required for this example")
+if (!require(RODBC, quietly=TRUE)) stop("The `RODBC` package is required for this example")
   resetGraph(); if (exists(".PBSpopsim",where=.PBSmodEnv)) rm(.PBSpopsim,pos=.PBSmodEnv)
   createWin("PopSimWin.txt"); calcAssess();
-#  invisible()
-#}
+
+}) # end local scope

@@ -3,6 +3,8 @@
 # Functions that define and run the model,
 # with parameters shared globally for time series.
 #-------------------------------------------------
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
 
 # Make an expression (until part of PBSmodelling)
 makeExpression <- function(s) { # s is a single string
@@ -51,8 +53,8 @@ modR1a <- function(t,y,parms=NULL) {
 	dy <- c(dy1=dy1,dy2=dy2);  # derivatives required for lsoda
 	z <- c(dy1,dy2,F1,F2);        # values saved by lsoda
 	names(z) <- c("dy1","dy2","F1","F2");
-	list(dy,z); };
-
+	list(dy,z)
+}
 # Model R1 Continuous for k > 0 (use DDE)
 modR1b <- function(t,y,parms=NULL) {
 	M <- Mcont; r <- rCont; a <- aCont;
@@ -60,9 +62,9 @@ modR1b <- function(t,y,parms=NULL) {
 	lag <- if (t<=k) yinit else pastvalue(t-k);
 	dy1  <- -M*y[1] + r*lag[1]*g1(lag[1]/K1,r,M,gam) + a*((y[2]/p2)-(y[1]/p1)) - F1*y[1];
 	dy2  <- -M*y[2] + r*lag[2]*g1(lag[2]/K2,r,M,gam) - a*((y[2]/p2)-(y[1]/p1)) - F2*y[2];
-	return(list(c(dy1,dy2), c(ttt=t,yy1=y[1],yy2=y[2],dy1=dy1,dy2=dy2,F1=F1,F2=F2))); };
-	#return(list(c(dy1,dy2), c(dy1=dy1,dy2=dy2,F1=F1,F2=F2))); };
-
+	return(list(c(dy1,dy2), c(ttt=t,yy1=y[1],yy2=y[2],dy1=dy1,dy2=dy2,F1=F1,F2=F2)))
+	#return(list(c(dy1,dy2), c(dy1=dy1,dy2=dy2,F1=F1,F2=F2)))
+}
 # Model R2 Discrete
 modR2 <- function(tt,yy,parms=NULL) {
 	#stop("model 2 still needs modification")
@@ -77,12 +79,11 @@ modR2 <- function(tt,yy,parms=NULL) {
 		else { Nk1 <- N[i-1-k,"y1"]; Nk2 <- N[i-1-k,"y2"]; }      # i=t+1 here, so i-1=t
 		N[i,"y1"] <- max(0, Nt1 -M*Nt1 + r*Nk1*g1(Nk1/K1,r,M,gam) + a*((Nt2/p2) - (Nt1/p1)) - N[i-1,"F1"]*Nt1);
 		N[i,"y2"] <- max(0, Nt2 -M*Nt2 + r*Nk2*g1(Nk2/K2,r,M,gam) - a*((Nt2/p2) - (Nt1/p1)) - N[i-1,"F2"]*Nt2);
-	};
-	return(N) };
-
+	}
+	return(N)
+}
 check <- function() { 
 	getWinVal(scope="L"); p1p2 <- p1*(1-p1);
-	
 	#convert model 1 parms to equivalent model 2 parms
 	if (mod==1) { FresDisc <- 1-exp(-FresCont); FminDisc <- 1-exp(-FminCont); FmaxDisc <- 1-exp(-FmaxCont);
 		hbig <- 1-exp(-Fbig); Mdisc <- 1-exp(-Mcont); rDisc <- exp(rCont)-1; aDisc <- p1p2*(1-exp(-aCont/p1p2));};
@@ -115,21 +116,22 @@ check <- function() {
 	              FresDisc=FresDisc,FminDisc=FminDisc,FmaxDisc=FmaxDisc,
 	              Fbig=Fbig,hbig=hbig,rDisc=rDisc,rCont=rCont,Mdisc=Mdisc,
 	              Mcont=Mcont,k=k, aDisc=aDisc, aCont=aCont);
-	alist <- sapply(alist,round,3); setWinVal(alist); };
-
+	alist <- sapply(alist,round,3); setWinVal(alist)
+}
 #-----------------------------------------------------------------------
 # Run Models R using shared global parameters
 runModel <- function() {
 	check();
 	clrs <- c("forestgreen","red","blue","dodgerblue3");
-	remove(list=ls(1)[is.element(ls(1),c(names(getWinVal()),"p2","K1","K2"))],pos=.PBSmodEnv); # remove global values from previous runs
-	getWinVal(scope="P"); act <- getWinAct()[1]; unpackList(pbs,scope="L");
+	remove(list=ls(locale)[is.element(ls(locale),c(names(getWinVal()),"p2","K1","K2"))],pos=locale) # remove global values from previous runs
+	getWinVal(scope="P"); #getWinVal(scope="L")
+	act <- getWinAct()[1]; unpackList(pbs,scope="L")
 
 	if(ptype=="p"){
-		if (!exists("yout")){
+		if (!exists("yout",envir=.PBSmodEnv)){
 			resetGraph(); addLabel(.5,.5,"Run Time Series First",col="red",cex=large); return();}
 		else {
-			resetGraph();  par(mgp=c(2,.75,0),las=1);
+			resetGraph();  par(mgp=c(2,.75,0),las=1) #; tget(yout)
 			pairs(yout,pch=20,cex=tiny,col=clrs[4],gap=0,cex.labels=huge, cex.axis=big); return(); } };
 
 	p2 <- 1-p1; K1 <- p1*K;  K2 <- (1-p1)*K;
@@ -144,7 +146,7 @@ runModel <- function() {
 		colnames(yout) <- c("tt","y1","y2","dy1","dy2","F1","F2"); }
 	if (mod==1 && k>0) {
 		tt <- seq(0,tmax,tstp);
-		yout <- dde(y=yinit,times=tt,func=modR1b,parms=plist,tol=atol); tput(yout)
+		yout <- dde(y=yinit,times=tt,func=modR1b,parms=plist,tol=atol); #tput(yout)
 		colnames(yout)[1:3] <- c("tt","y1","y2"); }; 
 	if (mod==2) {
 		tt <- seq(0,tmax,by=1);
@@ -183,13 +185,12 @@ runModel <- function() {
 		title("Cactch C",line=0.5,col.main="#400080");
 		lines(tt,C12,col=clrs[3],lwd=2); lines(tt,C2,col=clrs[2],lwd=2); lines(tt,C1,col=clrs[1],lwd=2); 
 		mtext("time",outer=TRUE,side=1,line=2.5,adj=.55,cex=big); }; 
-
 	invisible(yout); };
 
 #-------------------------------------------------------------
 yield <- function (act=NULL) { # Equilibrium Yield Equations (Table 4)
 	check();
-	remove(list=ls(1)[is.element(ls(1),c("Yout","Zout"))],pos=.PBSmodEnv);
+	remove(list=ls(locale)[is.element(ls(locale),c("Yout","Zout"))], pos=locale)
 	getWinVal(scope="L")
 	if (is.null(act))  act <- getWinAct()[1]
 	unpackList(pbs,scope="L")
@@ -273,7 +274,6 @@ yield <- function (act=NULL) { # Equilibrium Yield Equations (Table 4)
 			points(x,y,pch=16,cex=small,col=clr);
 			points(x[1],y[1],col="red",pch=17,cex=large);
 			points(x[1],y[1],col="black",pch=2,cex=large); } ); };
-	
 }; 
 
 fig4 <- function(wmf=TRUE){
@@ -307,17 +307,20 @@ fig4 <- function(wmf=TRUE){
 
 #===================================================================================================
 pbs <- list(tiny=0.5, small=0.8, medium=1, big=1.25, large=1.5, huge=2); # cex sizes
-remove(list=ls(1)[is.element(ls(1),c("yout","Yout","Zout"))],pos=.PBSmodEnv); # remove objects from previous session
+remove(list=ls(locale)[is.element(ls(locale),c("yout","Yout","Zout"))], pos=locale) # remove objects from previous session
 ips = installed.packages(); ip=ips[,"Package"]; names(ip)=ips[,"Version"]
-for (i in c("PBSmodelling","odesolve","akima")) {
+for (i in c("PBSmodelling","deSolve","akima")) {
 	if (any(ip==i)) { 
 		eval(parse(text=paste("ipload=require(",i,", quietly=FALSE)",sep="")))
 		if (!ipload) { 
 			ii=paste("The",i,"package failed to load")
 			showAlert(ii,i,"error"); stop(ii,call.=FALSE) } } 
 	else {
-		ii=paste("The",i,"package is required for this example")
-		showAlert(ii,i,"error"); stop(ii,call.=FALSE) } }
+		ii=paste("The `",i,"` package is required for this example.\n",sep="")
+		if (getYes(paste(ii,"Load package from CRAN?",sep=""),"Package Needed")) install.packages(i)
+		else stop(paste("Package `",i,"` needed for this example",sep=""),call.=FALSE)
+	} }
+		#showAlert(ii,i,"error"); stop(ii,call.=FALSE) } }
 if (any(ip=="PBSddesolve")) 
 	require(PBSddesolve,quietly=TRUE) else
 	if (any(ip=="ddesolve")) {
@@ -327,3 +330,4 @@ if (any(ip=="PBSddesolve"))
 		showAlert(ii,"PBSddesolve","error"); stop(ii,call.=FALSE) } 
 createWin("FishResWin.txt");
 
+}) # end local scope

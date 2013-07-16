@@ -1,6 +1,10 @@
-#TestFuns-------------------------------2012-11-28
+#TestFuns-------------------------------2013-07-03
 # GUI menu to test various PBSmodelling functions.
 #-------------------------------------------RH/ACB
+
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 TestFuns <- function(funs=ls(pos=grep("package:PBSmodelling",search()))){
 	setPBSoptions("testWins", list(
 		createVector = "vector",
@@ -291,3 +295,4 @@ closeALL <- function(){ closeWin(sort(unique(unlist(getPBSoptions("testWins"))))
 #require(PBSmodelling)
 createWin("TestFunsWin.txt")
 
+}) # end local scope

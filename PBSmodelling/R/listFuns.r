@@ -525,12 +525,50 @@ unpackList <- function(x, scope="L") {
 #---------------------------------------unpackList
 
 
-#packList-------------------------------2012-12-03
-# Pack a list with (i) existing objects using their 
+#packList-------------------------------2013-07-16
+# Pack a list in target environment with existing
+# objects from parent or user-specified environment.
+# NOTE:-------------
+# New 'packList' takes advantage of the accessor functions:
+#  'tget', 'tcall', and 'tput'.
+# Less complicated than former 'packList' (temporarily 
+#  available as '.packList.deprecated'), and should be way faster.
+#-----------------------------------------------RH
+packList=function(stuff, target="PBSlist", value, penv=NULL, tenv=.PBSmodEnv)
+{
+	if (is.null(penv)) penv = parent.frame() # for a parent envir, need to call this inside the function NOT as an argument
+	if (!is.vector(stuff) || !is.character(stuff))
+		showAlert("Provide a vector of names denoting objects")
+	target = as.character(substitute(target))
+	if (target %in% lisp(envir=tenv))
+		eval(parse(text=paste("tget(",target,",tenv=tenv)",sep="")))
+	else
+		eval(parse(text=paste(target,"=list()")))
+	if (!missing(value)) {# use explicit value instead of objects
+		eval(parse(text=paste(target,"[[\"",stuff,"\"]] = ",paste(deparse(value),collapse="\n"),sep="")))
+	} else {
+		for (i in stuff)
+			eval(parse(text=paste(target,"[[\"",i,"\"]] = tcall(",i,",tenv=penv)",sep="")))
+	}
+	eval(parse(text=paste("tput(",target,",tenv=tenv)",sep="")))
+	invisible()
+}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~packList
+
+
+#lisp-----------------------------------2012-12-12
+lisp = function(name, pos=.PBSmodEnv, envir=as.environment(pos), all.names=TRUE, pattern){
+	ls(name,pos,envir,all.names,pattern)
+}
+#---------------------------------------------lisp
+
+
+#.packList.deprecated-------------------2012-12-03
+# Pack a list with (i) existing objects using their
 # names or (ii) one explicit value.
 #-----------------------------------------------RH
-packList=function(stuff, target="PBSlist", value, tenv=.PBSmodEnv) {
-                  #lenv=parent.frame(), tenv=.PBSmodEnv) { #.GlobalEnv) {
+.packList.deprecated=function(stuff, target="PBSlist", value, tenv=.PBSmodEnv)
+{
 	penv = parent.frame() # need to call this inside the function NOT as an argument
 	# Deparse bad objects: those that break code (see function 'deparse')
 	deparseBO = function(x){
@@ -575,15 +613,7 @@ packList=function(stuff, target="PBSlist", value, tenv=.PBSmodEnv) {
 			eval(parse(text=paste(target,"[[\"",s,"\"]]=",objet,sep="")),envir=tenv) } #pack into the list
 	}
 	invisible() }
-#-----------------------------------------packList
-
-
-#lisp-----------------------------------2012-12-12
-lisp = function(name, pos=.PBSmodEnv, envir=as.environment(pos), all.names=TRUE, pattern){
-	ls(name,pos,envir,all.names,pattern)
-}
-#---------------------------------------------lisp
-
+#-----------------------------.packList.deprecated
 
 #===== THE END ===================================
 

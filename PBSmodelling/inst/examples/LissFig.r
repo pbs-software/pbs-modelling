@@ -1,3 +1,6 @@
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 # **********************************************
 # R code for the Lissajous example
 # **********************************************
@@ -16,3 +19,5 @@ drawLiss <- function() {
 # Load PBS Modelling and initialize the GUI
 
 require(PBSmodelling); createWin("LissFigWin.txt")
+
+}) # end local scope

@@ -1,3 +1,6 @@
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 # Catch-curve model based on Schnute, J.T., and Haigh, R. 2006.
 # Compositional analysis of catch curve data with an application to Sebastes maliger.
 # ICES Journal of Marine Science.
@@ -78,8 +81,9 @@ Uget <- function() {# Get user's data
 	mtext("Age",side=1,line=1.75,cex=1.5)
 	mtext("Frequency",side=2,line=1.75,cex=1.5)
 
-	remove(list=ls(1)[is.element(ls(1),c("FP",paste("Fout",1:3,sep="")))],pos=.PBSmodEnv);
-	setWinVal(list(allflds=msg,phi=phi)); };
+	remove(list=ls(envir=locale)[is.element(ls(envir=locale),c("FP",paste("Fout",1:3,sep="")))],pos=.PBSmodEnv);
+	setWinVal(list(allflds=msg,phi=phi))
+}
 
 Uset <- function() { #Set user's settings
 	getWinVal(scope="L")
@@ -143,7 +147,8 @@ Uset <- function() { #Set user's settings
 
    assign(paste("FP",fnam,sep="."),FP,pos=.PBSmodEnv)
    setWinVal(list(phi=phi,pset=pset)) #,active=active))
-   remove(list=ls(1)[is.element(ls(1),paste("Fout",1:3,sep=""))],pos=.PBSmodEnv); };
+   remove(list=ls(envir=locale)[is.element(ls(envir=locale),paste("Fout",1:3,sep=""))],pos=.PBSmodEnv)
+}
 
 Ueval <- function() { # Evaluate user's model
 	if (!exists("FP",where=.PBSmodEnv)) Uset()
@@ -430,7 +435,9 @@ modHist <- function() { # Histograms of parameter posterior distributions
 
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
-remove(list=ls(1)[is.element(ls(1),c("afile","FP","Fout","Fout1","Fout2","Fout3"))],pos=.PBSmodEnv);
 if (!require(BRugs, quietly=TRUE)) stop("The BRugs package is required for this example")
 if (!require(PBSmodelling, quietly=TRUE)) stop("The PBSmodelling package is required for this example")
+remove(list=ls(envir=locale)[is.element(ls(envir=locale),c("afile","FP","Fout","Fout1","Fout2","Fout3"))],pos=locale)
 createWin("CCAWin.txt"); Uget();
+
+}) # end local scope

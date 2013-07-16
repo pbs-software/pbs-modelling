@@ -1,8 +1,10 @@
 # R Code to run Linear Regression demo
-
 # ***********************************************
 # Function for viewing linear regression examples
 # ***********************************************
+
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
 
 pairsLR <- function() {
    # ----------------------------
@@ -271,3 +273,5 @@ modSplash <- function() {
 if (!require(BRugs, quietly=TRUE)) stop("The BRugs package is required for this example")
 if (!require(PBSmodelling, quietly=TRUE)) stop("The PBSmodelling package is required for this example")
 createWin("LinRegWin.txt"); pairsLR()
+
+}) # end local scope

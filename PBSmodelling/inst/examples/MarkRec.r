@@ -1,5 +1,8 @@
 # R Code to run the mark-recovery model
 
+local(envir=.PBSmodEnv,expr={
+locale = sys.frame(sys.nframe() - 1) # local environment
+
 # ************************************************************
 # Functions required for the GUI
 # ************************************************************
@@ -56,6 +59,8 @@ modPairs <- function() {
 # Load libraries and start the GUI
 # ************************************************************
 
-if (!require(BRugs, quietly=TRUE)) stop("The BRugs package is required for this example")
-if (!require(PBSmodelling, quietly=TRUE)) stop("The PBSmodelling package is required for this example")
-createWin("MarkRecWin.txt");
+if (!require(BRugs, quietly=TRUE)) stop("The `BRugs` package is required for this example")
+if (!require(PBSmodelling, quietly=TRUE)) stop("The `PBSmodelling` package is required for this example")
+createWin("MarkRecWin.txt")
+
+}) # end local scope

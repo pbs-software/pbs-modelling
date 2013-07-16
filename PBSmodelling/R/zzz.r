@@ -12,12 +12,12 @@
 		pkg_date <- strsplit( pkg_info$Packaged, " " )[[1]][1]
 	else
 		pkg_date  <- date()
+	userguide_path <- system.file( "doc/PBSmodelling-UG.pdf", package = "PBSmodelling" )
+	year <- substring(date(),nchar(date())-3,nchar(date()))
 
-        userguide_path <- system.file( "doc/PBSmodelling-UG.pdf", package = "PBSmodelling" )
-	
 	packageStartupMessage("
 -----------------------------------------------------------
-PBS Modelling ", pkg_info$Version, " -- Copyright (C) 2005-2013 Fisheries and Oceans Canada
+PBS Modelling ", pkg_info$Version, " -- Copyright (C) 2005-",year," Fisheries and Oceans Canada
 
 A complete user guide 'PBSmodelling-UG.pdf' is located at 
 ", userguide_path, "
