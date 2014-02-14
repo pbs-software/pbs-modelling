@@ -38,10 +38,11 @@ local(envir=.PBSmodEnv,expr={
 })
 local(envir=.PBSmodEnv,expr={
   # via doAction in a window description file:
-  createWin( "button text=help func=doAction action=\"openFile( `doc/PBSmodelling-UG.pdf`, package=`PBSmodelling` )\"", astext=TRUE )
+  createWin( "button text=help func=doAction width=20 pady=25 bg=green
+  action=\"openFile(`doc/PBSmodelling-UG.pdf`,package=`PBSmodelling`)\"", astext=TRUE)
 })
 local(envir=.PBSmodEnv,expr={
-  # Set up Firefox to open .html files (only applicable if Firefox is NOT the default web browser)
+  # Set up Firefox to open .html files (only applicable if Firefox is NOT default web browser)
   setPBSext("html", '"c:/Program Files/Mozilla Firefox/firefox.exe" file://\%f')
   openFile("foo.html")
 })
