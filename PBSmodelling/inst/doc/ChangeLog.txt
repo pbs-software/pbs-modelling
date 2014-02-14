@@ -8,7 +8,13 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
-2.65  2013-07-16
+2.65  2014-02-14
+  - Fixed Rcheck NOTE: `Package in Depends field not imported from: 'methods'` by 
+	(a) moving `methods` from Depends to Imports in DESCRIPTION file and
+	(b) adding `import(methods)` to NAMESPACE file;
+	(c) also moved `tcltk` from Depends to Imports in DESCRIPTION file (may or may not matter) (RH 2/14)
+  - Fixed Rcheck NOTE: `Rd file '.../PBSmodelling/man/openFile.Rd': \examples lines wider than 100 characters` (RH 2/14)
+----2014-(above)---2013-(below)-----------------------------
   - Modified function `packList` to use accessor functions `tget`, `tcall`, and `tput`; should be much faster. (RH 7/16)
   - Updated each example code file to run in `.PBSmodEnv`. (RH 7/16)
   - Revised functions `runDemos` and `showVignettes` to avoid deprecated functions in package `tools` (requested by Kurt Hornik). (RH 7/2)
