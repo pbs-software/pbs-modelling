@@ -279,12 +279,13 @@ createVector <- function (vec, vectorLabels=NULL, func="", windowname="vectorwin
 #-------------------------------------createVector
 
 
-#evalCall-------------------------------2009-03-03
+#evalCall-------------------------------2014-03-04
 # Evaluates a function call, resolving conflicting arguments.
 #-----------------------------------------------RH
-evalCall=function(fn,argu,...,envir=parent.frame(),checkdef=FALSE,checkpar=FALSE){
+evalCall=function(fn, argu=list(), ..., envir=parent.frame(), checkdef=FALSE, checkpar=FALSE){
 	fnam=as.character(substitute(fn))
 	fnam.def=paste(fnam,"default",sep=".")
+
 	base=formals(fnam)
 	if (checkdef && exists(fnam.def)) {
 		defs=formals(fnam.def)
@@ -295,21 +296,24 @@ evalCall=function(fn,argu,...,envir=parent.frame(),checkdef=FALSE,checkpar=FALSE
 		pars=par(); pars=pars[setdiff(names(pars),names(base))] # use only pars not in base
 		forms=c(base,pars) } # all possible formal arguments
 	else forms=base
-#if (fnam=="axis") {browser();return()}
-	#forms=NULL
-	#for (i in names(base)) forms[[i]]=get(i,envir=envir)
+
 	dots=list(...)
+	# check to see if user has manipulated dots before passing to `evalCall`
+	if (length(dots)==1 && !is.null(names(dots)) && names(dots)=="dots")
+		dots = dots[["dots"]]
+
 	argus=argu[setdiff(names(argu),names(dots))]
 	given=c(argus,dots)
 	allow=given[intersect(names(given),names(forms))]
 	strargs=sapply(allow,deparse,width.cutoff=500,simplify=FALSE)
 	strargs=sapply(strargs,paste,collapse="",simplify=FALSE) # collapse multiple strings
 	argspec=character(0)
+
 	for (i in names(strargs)) argspec=c(argspec,paste(i,"=",strargs[[i]]))
 	expr=paste(fnam,"(",paste(argspec,collapse=","),")",sep="")
 	eval(parse(text=expr)) 
 	invisible(expr) }
-#-----------------------------------------evalCall
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~evalCall
 
 
 #findPat--------------------------------2006-08-28

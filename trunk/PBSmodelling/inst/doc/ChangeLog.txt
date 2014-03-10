@@ -8,7 +8,9 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
-2.65  2014-02-14
+2.65  2014-03-10
+  - Modified function `evalCall` to recognise a user-modified dots list called `dots` (RH 3/4)
+	Useful for passing selected/modified original dots into various functions within the calling function.
   - Fixed Rcheck NOTE: `Package in Depends field not imported from: 'methods'` by 
 	(a) moving `methods` from Depends to Imports in DESCRIPTION file and
 	(b) adding `import(methods)` to NAMESPACE file;
