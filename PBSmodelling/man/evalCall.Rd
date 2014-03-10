@@ -27,6 +27,28 @@ evalCall(fn, argu, ..., envir = parent.frame(),
   (ii) availability as usable arguments in \code{fn}, \code{fn.default} if
   \code{checkdef=TRUE}, and \code{par} if \code{checkpar=TRUE}.
 }
+\note{
+  Sometimes the user may wish to pass arguments into a function to be used
+  by other functions within, but may not want all the arguments to be used, 
+  depending on the functions subsequently called. In this case, the user needs
+  to create a list object called \code{dots}, which is passed to \code{evalCall}.
+
+  For instance, if the user passes \code{lwd=4} but only wants this 
+  used in a call to \code{lines} but not in a call to \code{points},
+  the function might look like this:
+  \preformatted{
+myfunc = function(x=seq(0,360,5), ...) {
+  pdots = ldots = list(...)
+  pdots[["lwd"]] = NULL
+  ldots[["col"]] = "cyan"
+  xrad = x*pi/180
+  plot(sin(xrad),type="n")
+  evalCall(lines, argu=list(x=sin(xrad)), dots=ldots, checkpar=TRUE)
+  evalCall(points,argu=list(x=sin(xrad)), dots=pdots, checkpar=TRUE)
+}
+myfunc(lwd=4,pch=20,col=" blue")
+}
+}
 \value{
   Invisibly returns the string expression of the function call that is
   passed to \code{eval(parse(text=expr))}.
