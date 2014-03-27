@@ -1,16 +1,16 @@
-Package:  PBSmodelling
-Version:  2.65
-Date:     2014-03-10
-Title:    GUI Tools Made Easy: Interact with Models, Explore Data, Give Dynamic Presentations
-Author:   Jon T. Schnute <schnutej-dfo@shaw.ca>,
-          Alex Couture-Beil <alex@mofo.ca>, 
-          Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>,
-          A.R. (Rob) Kronlund <allen.kronlund@dfo-mpo.gc.ca>, and
-          Nicholas Boers <boersn@macewan.ca>
-Maintainer: Jon T. Schnute <schnutej-dfo@shaw.ca>
-Depends:  R (>= 2.15.0)
-Imports:  tcltk, methods
-Suggests: PBSmapping, deSolve, KernSmooth, XML
+Package:    PBSmodelling
+Version:    2.66
+Date:       2014-03-27
+Title:      GUI Tools Made Easy: Interact with Models, Explore Data, Give Dynamic Presentations
+Author:     Jon T. Schnute <schnutej-dfo@shaw.ca>,
+            Alex Couture-Beil <alex@mofo.ca>, 
+            Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>,
+            A.R. (Rob) Kronlund <allen.kronlund@dfo-mpo.gc.ca>, and
+            Nicholas Boers <boersn@macewan.ca>
+Maintainer: Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>
+Depends:    R (>= 2.15.0)
+Imports:    tcltk, methods
+Suggests:   PBSmapping, deSolve, KernSmooth, XML
 SystemRequirements: BWidget
 Description: PBS Modelling provides software to facilitate the design,
      testing, and operation of computer models. It focuses particularly on

@@ -126,6 +126,7 @@ if(getRversion() >= "2.15.1") utils::globalVariables(names=c(
 	"chFile","chTest","closeALL","closeSDE","command","curVal","cwd",
 	"for",
 	"global",
+	"httpdPort",
 	"maxVal","minVal",
 	"OK",
 	"PBS.history","PBSmin","prefix",
