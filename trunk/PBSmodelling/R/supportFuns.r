@@ -1088,11 +1088,12 @@ showArgs <- function(widget, width=70, showargs=FALSE) {
 #-----------------------------------------showArgs
 
 
-#showHelp-------------------------------2009-11-16
+#showHelp-------------------------------2014-03-20
 # Show HTML help files for package contents.
 #-----------------------------------------------RH
 showHelp <- function(pattern="methods", ...) {
-	warn <- options()$warn
+	oldopts = options(); on.exit(options(oldopts))
+	options(stringsAsFactors=FALSE)
 	options(warn = -1)
 	Apacks = .packages(all.available = TRUE) # all packages
 	Spacks = findPat(pattern,Apacks)         # show packages that match the pattern
@@ -1100,12 +1101,13 @@ showHelp <- function(pattern="methods", ...) {
 	if (npacks==0) { print("No such package"); return() }
 	unpackList(list(...))
 	# 'home' code from 'help.start'
-	home <- if (!is.element("remote",ls(envir=sys.frame(sys.nframe()))) || is.null(remote)) {
-		if (tools:::httpdPort == 0L) tools::startDynamicHelp()
-		if (tools:::httpdPort > 0L) {
+	home <- 
+	if (!is.element("remote",ls(envir=sys.frame(sys.nframe()))) || is.null(remote)) {
+		if (eval(parse(text="tools:::httpdPort")) == 0L) tools::startDynamicHelp()
+		if (eval(parse(text="tools:::httpdPort")) > 0L) {
 			if ("update" %in% ls(envir=sys.frame(sys.nframe())) && update)
 				make.packages.html(temp = TRUE)
-			paste("http://127.0.0.1:", tools:::httpdPort, sep = "") }
+			paste("http://127.0.0.1:", eval(parse(text="tools:::httpdPort")), sep = "") }
 		else stop("showHelp() requires the HTTP server to be running", call. = FALSE)
 	}
 	else remote
@@ -1114,10 +1116,9 @@ showHelp <- function(pattern="methods", ...) {
 		browseURL(url)
 		return(url) }
 	URLs=sapply(Spacks,getURL)
-	options(warn = warn)
 	invisible(list(Apacks=Apacks,Spacks=Spacks,URLs=URLs))
 }
-#-----------------------------------------showHelp
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~showHelp
 
 
 #showPacks------------------------------2009-02-17
@@ -1391,7 +1392,7 @@ view <- function (obj, n=5, last=FALSE, random=FALSE, print.console=TRUE, ...) {
 #---------------------------------------------view
 
 
-#viewCode-------------------------------2010-10-19
+#viewCode-------------------------------2014-03-20
 # View package R code on the fly.
 #-----------------------------------------------RH
 viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
@@ -1421,7 +1422,6 @@ viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
 		showAlert("Your choice for 'funs' is badly specified")
 		return(invisible("Error: 'funs' badly specified")) }
 	seeFuns=pkgFuns[is.element(pkgFuns,funs)]
-#browser();return()
 	if (length(seeFuns)==0) {
 		showAlert("Your choices yield no functions")
 		return(invisible("Error: choices for 'funs' yield no functions")) }
@@ -1429,11 +1429,11 @@ viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
 		unpackList(list(...))
 		# 'home' code from 'help.start'
 		home <- if (!is.element("remote",ls(envir=sys.frame(sys.nframe()))) || is.null(remote)) {
-			if (tools:::httpdPort == 0L) tools::startDynamicHelp()
-			if (tools:::httpdPort > 0L) {
+			if (eval(parse(text="tools:::httpdPort")) == 0L) tools::startDynamicHelp()
+			if (eval(parse(text="tools:::httpdPort")) > 0L) {
 				if ("update" %in% ls(envir=sys.frame(sys.nframe())) && update)
 					make.packages.html(temp = TRUE)
-				paste("http://127.0.0.1:", tools:::httpdPort, sep = "") }
+				paste("http://127.0.0.1:", eval(parse(text="tools:::httpdPort")), sep = "") }
 			else stop("showHelp() requires the HTTP server to be running", call. = FALSE)
 		}
 		else remote
