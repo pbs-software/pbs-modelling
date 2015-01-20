@@ -459,14 +459,16 @@ plotDens <- function(file,clrs=c("blue","red","green","magenta","navy"),...) {
 #-----------------------------------------plotDens
 
 
-#plotFriedEggs--------------------------2008-09-03
+#plotFriedEggs--------------------------2015-01-20
 #  Pairs plot featuring fried eggs and beer.
 #  Original code by Steve Martell (UBC).
 #--------------------------------------------SM/RH
 plotFriedEggs <- function(A, eggs=TRUE, rings=TRUE,
 		levs=c(0.01,0.1,0.5,0.75,0.95), pepper=200, replace=FALSE,
-		jitt=c(1,1), bw=25, histclr=NULL) {
-	require(KernSmooth)
+		jitt=c(1,1), bw=25, histclr=NULL)
+{
+	if (!requireNamespace("KernSmooth", quietly=TRUE))
+		stop("Package `KernSmooth' is needed for this function'")
 	expandGraph(las=1,mgp=c(0,.75,0))
 
 	panel.cor <- function(x, y, digits=2, prefix="", cex.cor) {
@@ -493,7 +495,7 @@ plotFriedEggs <- function(A, eggs=TRUE, rings=TRUE,
 
 	fried.eggs <- function(x, y) {
 		bwx=(max(x)-min(x))/bw; bwy=(max(y)-min(y))/bw
-		est <- bkde2D(cbind(x,y),bandwidth=c(bwx,bwy),gridsize=c(51, 51))
+		est <- KernSmooth::bkde2D(cbind(x,y),bandwidth=c(bwx,bwy),gridsize=c(51, 51))
 		est$fhat=est$fhat/max(est$fhat)
 		levs=sort(levs); maxct=max(levs)
 		nlev=length(levs); is.white=rev(is.element(nlev:1,seq(nlev,1,-2))); is.yolk=!is.white
@@ -514,7 +516,7 @@ plotFriedEggs <- function(A, eggs=TRUE, rings=TRUE,
 
 	smoke.rings <- function(x, y) {
 		bwx=(max(x)-min(x))/bw; bwy=(max(y)-min(y))/bw
-		est <- bkde2D(cbind(x,y),bandwidth=c(bwx,bwy),gridsize=c(51, 51))
+		est <- KernSmooth::bkde2D(cbind(x,y),bandwidth=c(bwx,bwy),gridsize=c(51, 51))
 		est$fhat=est$fhat/max(est$fhat)
 		levs=sort(levs); maxct=max(levs)
 		nlev=length(levs)

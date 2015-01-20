@@ -83,23 +83,20 @@ writeList <- function(x, fname="", format="D", comments="") {
 
 	#start cat-ing keys and values
 	for(i in 1:length(x)) {
-                if (prefix != "")
-                        nam=paste(prefix, xNames[i], sep="$")
-                else
-                        nam=xNames[i]
-                dat=x[[i]]
-		if (!is.vector(dat) && !is.matrix(dat) && class(dat)!="data.frame"
-                    && !is.array(dat))
-                        next
+		if (prefix != "")
+			nam=paste(prefix, xNames[i], sep="$")
+		else
+			nam=xNames[i]
+		dat=x[[i]]
+		if (!is.vector(dat) && !is.matrix(dat) && class(dat)!="data.frame" && !is.array(dat))  next
 		#print varName
 		cat(paste("$", nam, "\n", sep=""))
-                # we must handle lists first because is.vector returns true for
-                # a list
-                if (class(dat) == "list") {
-                        #list within the list
-                        .writeList.P (dat, fname="", prefix=nam)
-                }
-                else if (is.vector(dat)) {
+		# we must handle lists first because is.vector returns true for a list
+		if (class(dat) == "list") {
+			#list within the list
+			.writeList.P (dat, fname="", prefix=nam)
+		}
+		else if (is.vector(dat)) {
 			#print names
 			vecNames<-names(dat)
 			if (is.null(vecNames)) vecNames=""
@@ -125,8 +122,7 @@ writeList <- function(x, fname="", format="D", comments="") {
 			
 		}
 		else if ( is.array(dat) ) {
-                        d=dim(dat); nr=d[1]; nc=d[2]; nd=length(d) # dimension info
-
+			d=dim(dat); nr=d[1]; nc=d[2]; nd=length(d) # dimension info
 			#get the dimensional names
 			dim_names_flat <- c() #single dimension vector
 			dim_names <- dimnames( dat ) #note: dimnames may also have a names attribute
@@ -179,34 +175,47 @@ writeList <- function(x, fname="", format="D", comments="") {
 #-------------------------------------.writeList.P
 
 
-#readList-------------------------------2008-07-14
-# Returns a list in either "D" or "P" format read from disk.
+#readList-------------------------------2014-10-21
+# Returns a list object from files originally 
+#  formatted in one of the following ways:
+#  "D" = created by R functions `dput' or `dump'
+#  "R" = R list object as ASCII (e.g., Windows History file)
+#  "P" = PBS-formatted file (see `writeList')
+#  "C" = Comment-delimited file (e.g., Awatea/ADMB input files)
 # Arguments:
 #  fname - file to read
 #  Change (Anisa Egeli): There is a check to see if the file exists. 
 #  This allows try(readList(...), silent=TRUE) to catch the error.
-#-------------------------------------------ACB/AE
+#-------------------------------------ACB/AE/NB/RH
 readList <- function(fname) {
 	if(!file.exists(fname))
 		stop(paste("File", fname, "does not exist."))
 	#detect file type
-	f <- scan(fname, what=character(), sep="\n", quiet=TRUE)
-	for(i in 1:length(f)) {
-		if (!any(grep("^[ \t]*#", f[i]))) {
-			if (any(grep("^[ \t]*structure", f[i]))) fileformat <- "D"
-			else if (any(grep("^[ \t]*list", f[i]))) fileformat <- "R"
-			else if (any(grep("^[ \t]*\\$", f[i])))  fileformat <- "P"
-			else stop("unknown fileformat detected.")
-			break;
-		}
-	}
+	ff <- scan(fname, what=character(), sep="\n", quiet=TRUE)
+
+	if (any(grepl("^[ \t]*structure", ff))) fileformat <- "D"  # file created by `dput' or `dump'
+	else if (any(grepl("^[ \t]*list", ff))) fileformat <- "R"  # R list object
+	else if (any(grepl("^[ \t]*\\$", ff)))  fileformat <- "P"  # file in PBS format
+	else if (any(grepl("^[ \t]*#", ff)))    fileformat <- "C"  # attempt to interpret comment-delimited data (adapted from PBSawatea)
+	else stop("Unknown file format detected (maybe not a list object).")
+#browser();return()
+	#for(i in 1:length(ff)) {
+	#	if (!any(grep("^[ \t]*#", ff[i]))) {
+	#		if (any(grep("^[ \t]*structure", ff[i]))) fileformat <- "D"
+	#		else if (any(grep("^[ \t]*list", ff[i]))) fileformat <- "R"
+	#		else if (any(grep("^[ \t]*\\$", ff[i])))  fileformat <- "P"
+	#		else stop("unknown fileformat detected.")
+	#		break;
+	#	}
+	#}
 	if (fileformat == "R" || fileformat == "D") 
 		return(eval(parse(fname)))
 	if (fileformat == "P") 
 		return(.readList.P(fname))
+	if (fileformat == "C") 
+		return(.readList.C(fname))
 }
-#-----------------------------------------readList
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~readList
 
 #.readList.P----------------------------2009-02-05
 # Read list in "P" format.
@@ -265,9 +274,9 @@ readList <- function(fname) {
 		else if (substr(str,1,1)=="$") {
 			if (!is.null(varName)) {
 				#save data into the retData list
-                                listelem <- paste("retData", paste("[[\"", paste(strsplit (varName, "\\$")[[1]], collapse="\"]][[\""), "\"]]", sep=""), sep="")
-                                savedata <- paste(listelem, " <- .readList.P.convertData(varOptions, varData, fname, orgfile)", sep="")
-                                eval(parse(text=savedata))
+				listelem <- paste("retData", paste("[[\"", paste(strsplit (varName, "\\$")[[1]], collapse="\"]][[\""), "\"]]", sep=""), sep="")
+				savedata <- paste(listelem, " <- .readList.P.convertData(varOptions, varData, fname, orgfile)", sep="")
+				eval(parse(text=savedata))
 				if (is.null(eval(parse(text=listelem)))) halt<-TRUE
 				varName <- varOptions <- NULL
 				varData <- list()
@@ -290,9 +299,9 @@ readList <- function(fname) {
 
 	#save anything from after
 	if (!is.null(varName)) {
-                listelem <- paste("retData", paste("[[\"", paste(strsplit(varName, "\\$")[[1]], collapse="\"]][[\""), "\"]]", sep=""), sep="")
-                savedata <- paste(listelem, " <- .readList.P.convertData(varOptions, varData, fname, orgfile)", sep="")
-                eval(parse(text=savedata))
+		listelem <- paste("retData", paste("[[\"", paste(strsplit(varName, "\\$")[[1]], collapse="\"]][[\""), "\"]]", sep=""), sep="")
+		savedata <- paste(listelem, " <- .readList.P.convertData(varOptions, varData, fname, orgfile)", sep="")
+		eval(parse(text=savedata))
 		if (is.null(eval(parse(text=listelem)))) halt<-TRUE
 	}
 
@@ -300,8 +309,7 @@ readList <- function(fname) {
 
 	return(retData)
 }
-#--------------------------------------.readList.P
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.readList.P
 
 #.readList.P.convertData----------------2008-03-05
 # Helper function to convert data into proper mode.
@@ -502,7 +510,68 @@ readList <- function(fname) {
 		return(ret)
 	}
 }
-#--------------------------.readList.P.convertData
+#~~~~~~~~~~~~~~~~~~~~~~~~~~.readList.P.convertData
+
+#.readList.C----------------------------2014-10-21
+# Read ADMB-like input file and create a list.
+# Adapted from `readAD' in PBSawatea.
+#-----------------------------------------------RH
+.readList.C = function(fname) {
+	Otxt = readLines(fname) # original text
+	otxt = .trimWhiteSpace(Otxt)
+	utxt = otxt[!is.element(substring(otxt,1,3),"###")] # use text (remove data not comments)
+	xlst = strsplit(utxt,"")
+	xlst = xlst[sapply(xlst,length)>0]
+	ntxt = sapply(xlst,function(x){paste(clipVector(x,clip="\t",end=2),collapse="")})
+	#ntxt = gsub("\\\t\\\t","\t",ntxt)   # internal cleanup
+	ntxt = gsub("[[:space:]]+"," ",ntxt)   # internal cleanup
+	vlst = list(); vcom=NULL; acom=NULL
+
+	for (i in 1:length(ntxt)) {
+		if (substring(ntxt[i],1,1)=="#") {
+			expr = paste("vlst[[\"L",pad0(i,3),": Comment\"]] = ",deparse(ntxt[i],width.cutoff=500),sep="")
+			comm = .trimWhiteSpace(substring(ntxt[i],2,)) ; names(comm)=i
+			acom = c(acom,comm) }
+		else {
+			vcom = c(vcom,comm)
+#if (i==4) {browser();return()}
+			if ( all(sapply(strsplit(ntxt[i],""),function(x){grepl("[-0-9. ]",x)}))) # all numeric components
+				expr = paste0("vlst[[\"L",pad0(i,3),": Data {",comm,"}\"]] = c(",gsub("[[:space:]]+",",",ntxt[i]),")")
+			else
+				expr = paste0("vlst[[\"L",pad0(i,3),": Data {",comm,"}\"]] = \"",gsub("\"","\\\\\"",ntxt[i]),"\"")
+		}
+		eval(parse(text=expr))
+	}
+	
+	# description of variables with inputs
+	vdesc = unique(vcom)
+	gcomm = acom[!is.element(acom,vdesc)] # general comments
+	vcomm = acom[is.element(acom,vdesc)]  # variable comments (may be duplicated)
+	nvars = length(vdesc)
+	names(vdesc) = paste("v",pad0(1:nvars,3),sep="")
+	vars = as.list(vdesc)
+
+	dnam = names(vlst); names(dnam)=1:length(dnam)
+	dnam = dnam[grep("Data",dnam)]
+	dnam = substring(dnam,13,nchar(dnam)-1)
+	
+	for (i in names(vdesc)) {
+		ivar = vlst[as.numeric(names(dnam[is.element(dnam,vdesc[i])]))]
+		ilen = length(ivar)
+		if (ilen==1) vars[[i]] = ivar[[1]]
+		else if (ilen>=2) {
+			jvar=NULL
+			for (j in 1:length(ivar))
+				jvar=rbind(jvar,ivar[[j]])
+			vars[[i]] = jvar
+		}
+		else stop("Conversion to a list object failed.")
+	}
+	names(vars)=vdesc[names(vars)]
+#browser();return()
+	return(vars)
+}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~readList.C
 
 
 #unpackList-----------------------------2012-12-06

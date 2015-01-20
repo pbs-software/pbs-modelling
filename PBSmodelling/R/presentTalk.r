@@ -551,15 +551,13 @@ setValidity ("code", function( object )
 #--------------------------------------.setsection
 
 
-#presentTalk----------------------------2012-12-12
+#presentTalk----------------------------2015-01-20
 # Present an interactive talk within R.
 #-------------------------------------------ACB/RH
 presentTalk <- function( talk )
 {
-	if( require( "XML" ) == FALSE ) {
-		stop( "the XML R package is required to use presentTalk - please install it first. Linux users might have to install libxml-dev (via apt) before installing the R XML package." )
-	}
-	#PBSmodelling:::.initPBSoptions()
+	#if (!requireNamespace("XML", quietly=TRUE))
+	#	stop( "The XML R package is required to use `presentTalk' - please install it first. Linux users might have to install `libxml-dev' (via apt) before installing the R XML package." )
 	.initPBSoptions()
 	tget(.PBSmod)
 	#setup .PBSmod$.talk (should be seperate package)

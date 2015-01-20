@@ -71,4 +71,4 @@ exportPattern("^\\.write")
 
 # Packages declared in the 'Depends' field should not also be in the 'Imports' field (from R-exts.pdf).
 # Import all functions from the package tcltk, which is heavily used by PBSmodelling
-import(tcltk,methods)
+import(methods, tcltk, XML)
