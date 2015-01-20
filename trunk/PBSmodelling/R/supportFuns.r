@@ -1088,7 +1088,7 @@ showArgs <- function(widget, width=70, showargs=FALSE) {
 #-----------------------------------------showArgs
 
 
-#showHelp-------------------------------2014-03-20
+#showHelp-------------------------------2015-01-20
 # Show HTML help files for package contents.
 #-----------------------------------------------RH
 showHelp <- function(pattern="methods", ...) {
@@ -1100,14 +1100,20 @@ showHelp <- function(pattern="methods", ...) {
 	npacks = length(Spacks)
 	if (npacks==0) { print("No such package"); return() }
 	unpackList(list(...))
-	# 'home' code from 'help.start'
+	# `home' code from `help.start'
 	home <- 
 	if (!is.element("remote",ls(envir=sys.frame(sys.nframe()))) || is.null(remote)) {
-		if (eval(parse(text="tools:::httpdPort")) == 0L) tools::startDynamicHelp()
-		if (eval(parse(text="tools:::httpdPort")) > 0L) {
+		if (as.numeric(R.version$svn) >= 67548)
+			httpdPort = tools::startDynamicHelp(NA)
+		else {
+			showAlert("This function only available for R (>= 3.2.0)")
+			stop("This function only available for R (>= 3.2.0)", call. = FALSE)
+		}
+		if (httpdPort > 0L) {
 			if ("update" %in% ls(envir=sys.frame(sys.nframe())) && update)
 				make.packages.html(temp = TRUE)
-			paste("http://127.0.0.1:", eval(parse(text="tools:::httpdPort")), sep = "") }
+			paste0("http://127.0.0.1:", httpdPort) 
+		}
 		else stop("showHelp() requires the HTTP server to be running", call. = FALSE)
 	}
 	else remote
@@ -1392,7 +1398,7 @@ view <- function (obj, n=5, last=FALSE, random=FALSE, print.console=TRUE, ...) {
 #---------------------------------------------view
 
 
-#viewCode-------------------------------2014-03-20
+#viewCode-------------------------------2015-01-20
 # View package R code on the fly.
 #-----------------------------------------------RH
 viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
@@ -1427,14 +1433,22 @@ viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
 		return(invisible("Error: choices for 'funs' yield no functions")) }
 	if (output==2) {
 		unpackList(list(...))
-		# 'home' code from 'help.start'
-		home <- if (!is.element("remote",ls(envir=sys.frame(sys.nframe()))) || is.null(remote)) {
-			if (eval(parse(text="tools:::httpdPort")) == 0L) tools::startDynamicHelp()
-			if (eval(parse(text="tools:::httpdPort")) > 0L) {
+		# `home' code from `help.start'
+		home <- 
+		if (!is.element("remote",ls(envir=sys.frame(sys.nframe()))) || is.null(remote)) {
+			if (as.numeric(R.version$svn) >= 67548)
+				httpdPort = tools::startDynamicHelp(NA)
+			else {
+				showAlert("Output 2 only available for R (>= 3.2.0)")
+				stop("Output 2 only available for R (>= 3.2.0)", call. = FALSE)
+			}
+			httpdPort = tools::startDynamicHelp(NA)
+			if (httpdPort > 0L) {
 				if ("update" %in% ls(envir=sys.frame(sys.nframe())) && update)
 					make.packages.html(temp = TRUE)
-				paste("http://127.0.0.1:", eval(parse(text="tools:::httpdPort")), sep = "") }
-			else stop("showHelp() requires the HTTP server to be running", call. = FALSE)
+				paste0("http://127.0.0.1:", httpdPort) 
+			}
+			else stop("`viewCode' requires the HTTP server to be running", call. = FALSE)
 		}
 		else remote
 		expr=paste("iloc=paste(\"",home,"/library/",pkg,"/html/00Index.html\"); ",sep="")
@@ -1463,7 +1477,7 @@ viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
 	fname=paste(tdir,"/",pkg,ifelse(output %in% 1:2,".txt",".r"),sep="")
 	writeLines(code, fname); openFile(convSlashes(fname))
 	invisible(code) }
-#----------------------------------------viewCode
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~viewCode
 
 
 #writePBSoptions------------------------2012-12-04

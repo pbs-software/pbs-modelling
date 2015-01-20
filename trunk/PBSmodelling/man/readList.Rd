@@ -1,23 +1,28 @@
 \name{readList}
 \alias{readList}
-\title{Read a List from a File in PBS Modelling Format}
+\title{Read a List from an ASCII File}
 
 \description{
-  Read in a list previously saved to a file by \code{writeList}.  At
-  present, only two formats are supported: R's native format used by the
-  \code{dput} function and an ad hoc \code{PBSmodelling} format.  The
-  function \code{readList} detects the format automatically.
+  Read in a list previously saved to an ASCII file by various R functions such
+  as \code{dput}, \code{dump}, and \code{writeList}. The latter can render
+  lists in a convenient \pkg{PBSmodelling} format. The function \code{readList}
+  detects the format automatically.
 
-  For information about the \code{PBSmodelling} format, see \code{writeList}.
+  For information about the \pkg{PBSmodelling} format, see \code{writeList}.
 }
 \usage{
-readList(fname)
+  readList(fname)
 }
 \arguments{
   \item{fname}{file name of the text file containing the list.}
 }
 \value{
-  List obtained from the file.
+  Returns a list object from ASCII files originally formatted in one of the 
+  following ways: \cr
+  \code{"D"} = created by the R functions \code{dput} or \code{dump};\cr
+  \code{"R"} = R list object that uses `structure' (e.g., Windows History file);\cr
+  \code{"P"} = PBS-formatted file (see \code{writeList});\cr
+  \code{"C"} = comment-delimited file (e.g., Awatea/Coleraine input files).
 }
 \section{Warning}{
   When importing a list in the \code{PBSmodelling} (\code{"P"}) format,
