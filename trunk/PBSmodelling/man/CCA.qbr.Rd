@@ -52,7 +52,7 @@
 
 \source{
   Fisheries and Oceans Canada - GFBio database: \cr
-  \url{http://www-sci.pac.dfo-mpo.gc.ca/sa-mfpd/statsamp/StatSamp_GFBio.htm}
+  \url{http://www.pac.dfo-mpo.gc.ca/science/species-especes/groundfish-poissonsdesfonds/stats-eng.html}
 }
 
 \references{

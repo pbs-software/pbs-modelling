@@ -27,6 +27,11 @@ viewCode(pkg="PBSmodelling", funs, output=4, ...)
   hidden (dot) functions are displayed. \cr
   If the package has a namespace, functions there are also displayed.
 }
+\note{
+  Output type 2 (function name with brief description) will now only work in
+  R (>=3.2.0) or from SVN revision >= 67548.
+  The CRAN gurus now disallow direct calls to \code{tools:::httpdPort}.
+}
 \value{
   Invisibly returns source code of all functions in the specified package.
   The function invokes \code{openFile} to display the results.

@@ -8,7 +8,8 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
-2.67 2015-01-20
+2.67 2015-01-22
+  - Fixed a broken hyperlink in `CCA.qbr.Rd' and compressed `CCA.qbr.rda' further. (RH 1/22)
   - Promoted `XML' package from `Suggests' to `Imports' as `presentTalk' uses quite a few `XML' functions and `require' in package code is dissuaded by CRAN. (RH 1/20)
   - Changed function calls using `require' to use `requireNamespace' and functions need `pkg::' prefix (e.g. KernSmooth::bkde2D). (RH 1/20)
   - Removed calls to `tools:::httpdPort' and replaced with `tools::startDynamicHelp(NA)' at the request of Kurt Hornik. (1/20)

@@ -39,6 +39,9 @@ showHelp(pattern="methods", ...)
   is slow. If the HTML browser program is not already running,
   multiple matching pages will most likely not be displayed. However, 
   subsequent calls to \code{showHelp} should show all matches.
+  
+  This function will now only work in R (>=3.2.0) or from SVN revision >= 67548.
+  The CRAN gurus now disallow direct calls to \code{tools:::httpdPort}.
 }
 \seealso{ 
   \code{\link{viewCode}}, \code{\link{showPacks}}
