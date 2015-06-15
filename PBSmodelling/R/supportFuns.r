@@ -1088,7 +1088,7 @@ showArgs <- function(widget, width=70, showargs=FALSE) {
 #-----------------------------------------showArgs
 
 
-#showHelp-------------------------------2015-01-20
+#showHelp-------------------------------2015-04-16
 # Show HTML help files for package contents.
 #-----------------------------------------------RH
 showHelp <- function(pattern="methods", ...) {
@@ -1103,11 +1103,11 @@ showHelp <- function(pattern="methods", ...) {
 	# `home' code from `help.start'
 	home <- 
 	if (!is.element("remote",ls(envir=sys.frame(sys.nframe()))) || is.null(remote)) {
-		if (as.numeric(R.version$svn) >= 67548)
+		if (paste0(R.version[c("major","minor")],collapse=".")>="3.3.0")
 			httpdPort = tools::startDynamicHelp(NA)
 		else {
-			showAlert("This function only available for R (>= 3.2.0)")
-			stop("This function only available for R (>= 3.2.0)", call. = FALSE)
+			showAlert("This function only available for R (>= 3.3.0)")
+			stop("This function only available for R (>= 3.3.0)", call. = FALSE)
 		}
 		if (httpdPort > 0L) {
 			if ("update" %in% ls(envir=sys.frame(sys.nframe())) && update)
@@ -1352,8 +1352,7 @@ tput = function (x, penv=NULL, tenv=.PBSmodEnv) {
 }
 #---------------------------tget/tcall/trpint/tput
 
-
-#view-----------------------------------2011-10-31
+#view-----------------------------------2015-06-10
 # View first/last/random n element/rows of an object.
 #-----------------------------------------------RH
 view <- function (obj, n=5, last=FALSE, random=FALSE, print.console=TRUE, ...) {
@@ -1385,20 +1384,22 @@ view <- function (obj, n=5, last=FALSE, random=FALSE, print.console=TRUE, ...) {
 	# End Subfunction------------------------------
 	if (n==0) return("nada")
 	n=abs(n) # coerce to positive
-	if (is.data.frame(obj) || is.matrix(obj) || is.array(obj)) 
-		viewed=showTab(obj,n,last,random,...)
-	else if (is.list(obj)) 
-		viewed=showLis(obj,n,last,random,print.console,...)
-	else if (is.vector(obj) || is.integer(obj) || is.numeric(obj) || is.character(obj)) 
-		viewed=showVec(obj,n,last,random,...)
-	else viewed=showAll(obj)
+	if (is.list(obj) && !is.data.frame(obj)) {
+		### iterate through list objects
+		viewed = showLis(obj,n,last,random,print.console,...)
+	} else {
+		if (is.data.frame(obj) || is.matrix(obj) || is.array(obj)) 
+			viewed = showTab(obj,n,last,random,...)
+		else if (is.vector(obj) || is.integer(obj) || is.numeric(obj) || is.character(obj)) 
+			viewed = showVec(obj,n,last,random,...)
+		else viewed = showAll(obj)
+	}
 	if (print.console) print(viewed)
 	invisible(viewed)
 }
 #---------------------------------------------view
 
-
-#viewCode-------------------------------2015-01-20
+#viewCode-------------------------------2015-04-16
 # View package R code on the fly.
 #-----------------------------------------------RH
 viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
@@ -1436,11 +1437,11 @@ viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
 		# `home' code from `help.start'
 		home <- 
 		if (!is.element("remote",ls(envir=sys.frame(sys.nframe()))) || is.null(remote)) {
-			if (as.numeric(R.version$svn) >= 67548)
+			if (paste0(R.version[c("major","minor")],collapse=".")>="3.3.0")
 				httpdPort = tools::startDynamicHelp(NA)
 			else {
-				showAlert("Output 2 only available for R (>= 3.2.0)")
-				stop("Output 2 only available for R (>= 3.2.0)", call. = FALSE)
+				showAlert("Output 2 only available for R (>= 3.3.0)")
+				stop("Output 2 only available for R (>= 3.3.0)", call. = FALSE)
 			}
 			httpdPort = tools::startDynamicHelp(NA)
 			if (httpdPort > 0L) {
