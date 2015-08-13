@@ -8,6 +8,10 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
+2.68.0 2015-08-12
+  - Version with format x.y.z in DESCRIPTION
+  - Always increase (usually add 1 to z) when committing to Git
+
 2.67 2015-06-15
   • Last update to Google Code before transferring pbs-modelling repository to GitHub. (RH 150615)
   • Fixed logic (hopefully) in function `view' when dealing with list objects. (RH 150610)
