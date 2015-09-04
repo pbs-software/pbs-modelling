@@ -404,7 +404,7 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 #--------------------------------------plotBubbles
 
 
-#plotCsum-------------------------------2006-07-26
+#plotCsum-------------------------------2015-09-01
 # Plots cumulative frequecy of data
 # Arguments:
 #  x    - vector of values
@@ -413,25 +413,37 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 #  xlab - label for x-axis
 #  ylab - label for y-axis
 #-------------------------------------------RH/ACB
-plotCsum<-function(x,add=FALSE,ylim=c(0,1),xlab="Measure",ylab="Cumulative Proportion",...) {
-	x <- sort(x); n <- length(x); y <- (1:n)/n
+plotCsum<-function(x,add=FALSE,ylim=c(0,1),xlab="Measure",ylab="Cumulative Proportion",...)
+{
+	
+	X = x = sort(x[!is.na(x)])
+	N <- length(x)
+	Y = y = (1:N)/N
 	z <- y >= ylim[1] & y <= ylim[2]
-	mdx <- median(x, na.rm = TRUE)
-	mnx <- mean(x, na.rm = TRUE); mny <- approx(x,y,xout=mnx)$y
+	x = x[z]; y=y[z]; xlim = range(x)
+	mdx <- median(X, na.rm = TRUE)
+	mnx <- mean(X, na.rm = TRUE); mny <- approx(X,Y,xout=mnx)$y
+	mcol = c("darkgreen","red")
 	if (!add) {
-		resetGraph();
-		evalCall(plot,argu=list(x=x[z],y=y[z],type="n",xlab="",ylab="",las=1,mgp=c(0,.6,0)),...,checkdef=TRUE,checkpar=TRUE)
+		if (dev.cur()==1) resetGraph()
+		expandGraph(mfrow=c(1,1),mar=c(4,4,0.5,0.5), oma=c(0,0,0,0))
+		evalCall(plot,argu=list(x=0,y=0,type="n",xlim=xlim,ylim=ylim,xlab="",ylab="",las=1,mgp=c(0,.6,0)),...,checkdef=TRUE,checkpar=TRUE)
 		#plot(x[z], y[z], type = "n", xlab = "", ylab = "", las=1, mgp=c(0,.6,0), ...)
 	}
-	evalCall(lines,argu=list(x=x[z],y=y[z],col="blue"),...,checkdef=TRUE,checkpar=TRUE)
+	if (N>1e4){ ### speeds up the line drawing if there are many duplicates
+		not.dupes = !duplicated(x)
+		x = x[not.dupes]; y = y[not.dupes]
+	}
+	evalCall(lines,argu=list(x=x, y=y, col="blue"), ... , checkdef=TRUE, checkpar=TRUE)
 	#lines(x[z], y[z], col = "blue")
-	abline(h = c(0.5,mny), lty = 3, col=1:2)
-	abline(v = c(mdx,mnx), lty = 2, col=1:2)
-	addLabel(0.95,0.1,paste("Median = (",paste(signif(c(mdx,.5),3),collapse=", "),")"),cex=1,adj=1)
-	addLabel(0.95,0.05,paste("Mean = (",paste(signif(c(mnx,mny),3),collapse=", "),")"),cex=1,adj=1,col=2)
-	mtext(xlab, side = 1, line = 2.75, cex = 1.5);  mtext(ylab, side = 2, line = 2.5, cex = 1.5)
+	abline(h = c(0.5,mny), lty = 3, col=mcol)
+	abline(v = c(mdx,mnx), lty = 2, col=mcol)
+	addLabel(0.95,0.1,paste("Median = (",paste(signif(c(mdx,.5),3),collapse=", "),")"),cex=1,adj=1,col=mcol[1])
+	addLabel(0.95,0.05,paste("Mean = (",paste(signif(c(mnx,mny),3),collapse=", "),")"),cex=1,adj=1,col=mcol[2])
+	mtext(xlab, side = 1, line = 2.25, cex = 1.5)
+	mtext(ylab, side = 2, line = 2.25, cex = 1.5)
 	invisible(data.frame(x=x,y=y)) }
-#-----------------------------------------plotCsum
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~plotCsum
 
 
 #plotDens-------------------------------2009-02-24

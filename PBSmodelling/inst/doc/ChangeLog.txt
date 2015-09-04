@@ -8,9 +8,14 @@ Authors:  JTS = Jon T. Schnute
           AE  = Anisa Egeli
 -----------------------------------
 
+2.68.1 2015-09-04
+  • Added imports for undefined globals to the NAMESPACE (new requirement). (RH 150904)
+  • Revised the DESCRIPTION file to help CRAN's library system. (RH 150904)
+  • Revised function `plotCsum' to work faster on large vectors (length>1e4) by removing duplicates only for plotting. (RH 150901)
+
 2.68.0 2015-08-12
-  - Version with format x.y.z in DESCRIPTION
-  - Always increase (usually add 1 to z) when committing to Git
+  • Version with format x.y.z in DESCRIPTION
+  • Always increase (usually add 1 to z) when committing to Git
 
 2.67 2015-06-15
   • Last update to Google Code before transferring pbs-modelling repository to GitHub. (RH 150615)
