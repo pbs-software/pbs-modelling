@@ -1,17 +1,22 @@
 Package:    PBSmodelling
-Version:    2.68.1
-Date:       2015-09-04
+Version:    2.68.2
+Date:       2016-04-04
 Title:      GUI Tools Made Easy: Interact with Models and Explore Data
 Authors@R: c(
    person(c("Jon","T."),"Schnute",role="aut",email="schnutej-dfo@shaw.ca"),
    person("Alex","Couture-Beil",role="aut",email="alex@mofo.ca"),
    person("Rowan","Haigh",role=c("aut","cre"),email="rowan.haigh@dfo-mpo.gc.ca"),
+   person("Nicholas","Boers",role="ctb",email="boersn@macewan.ca"),
+   person("Anisa","Egeli",role="ctb",email="anisa.egeli@dfo-mpo.gc.ca"),
    person(c("A.","R."),"Kronlund",role="ctb",email="allen.kronlund@dfo-mpo.gc.ca"),
-   person("Nicholas","Boers",role="ctb",email="boersn@macewan.ca"))
+   person("Steve","Martell",role="ctb",email="martell.steve@gmail.com"),
+   person("Norm","Olsen",role="ctb",email="norm.olsen@dfo-mpo.gc.ca")
+   )
 Author:     Jon T. Schnute [aut], Alex Couture-Beil [aut], 
-   Rowan Haigh [aut, cre], A. R. Kronlund [ctb], Nicholas Boers [ctb]
+   Rowan Haigh [aut, cre], Nicholas Boers [ctb],Anisa Egeli [ctb],
+   A. R. Kronlund [ctb], Steve Martell [ctb], Norm Olsen [ctb]
 Maintainer: Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>
-Copyright:  2005-2015, Fisheries and Oceans Canada
+Copyright:  2005-2016, Fisheries and Oceans Canada
 Depends:    R (>= 2.15.0)
 Imports:    methods, tcltk, XML
 Suggests:   PBSmapping, deSolve, KernSmooth

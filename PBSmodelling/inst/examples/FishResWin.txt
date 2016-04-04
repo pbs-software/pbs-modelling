@@ -46,7 +46,7 @@ grid 5 1  # Simulation tab in notebook
 				entry name=FmaxDisc width=6 entrybg="#fff3b0" value=0.423
 				entry name=Fcy value="8" label=cycle width=6
 			grid 1 2
-				# final time, time of reserve, time step for odesolve
+				# final time, time of reserve, time step for deSolve
 				vector length=4 vertical=T names="p1 tres tmax tstp" labels="p1 't res' 't max' 't step'" \
 					values="0.7 15 80 0.2" sticky=NE width=6
 				# ode solver tolerances

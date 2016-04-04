@@ -1,4 +1,4 @@
-\documentclass[letter]{article}
+\documentclass[letter,11pt]{article}
 %\VignetteIndexEntry{Introduction to PBSmodelling}
 %\VignettePackage{PBSmodelling}
 
@@ -20,11 +20,11 @@
 \newcommand{\under}[1]{{\underline {#1}}}
 \newcommand{\red}[1]{{\textcolor{red} {#1}}}
 
-\usepackage{verbatim}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, plainpages=true, linkcolor=black, citecolor=black, urlcolor=blue}
 
 % Keep on one page
-\topmargin -1.0in \oddsidemargin 0.5in \evensidemargin 0.5in
-\textheight 9.0in \textwidth 5.5in
+\usepackage[letterpaper, margin=1in]{geometry}
 
 \begin{document}
 
@@ -34,23 +34,32 @@
 
 \section{What is \pbsm{}?}
 
-\pbsm{} contains software to facilitate the design, testing, and operation of computer models. The package focuses particularly on tools that make it easy to construct and edit a customized graphical user interface (GUI) appropriate for a particular problem. Although our package depends heavily on the R interface to \tcl{}, a user does not need to know \tcl{}. In addition to GUI design tools, \pbsm{} provides utilities to support data exchange among model components (including package management), conduct specialized statistical analyses, facilitate the loading of C code for performance enhancement, and produce graphs useful in fisheries modelling and data analysis. Examples implement classical ideas from fishery literature, as well as our own published papers. The examples also provide templates for designing customized analyses using other R libraries, such as \code{PBSmapping}, \code{odesolve}, and \code{BRugs}. Users interested in building new packages can use \pbsm{} and a simpler enclosed package \code{PBStry} as prototypes.
+\pbsm{} contains software to facilitate the design, testing, and operation of computer models.
+The package focuses particularly on tools that make it easy to construct and edit a customized graphical user interface (GUI) appropriate for a particular problem.
+Although our package depends heavily on the R interface to \tcl{}, a user does not need to know \tcl{}.
+In addition to GUI design tools, \pbsm{} provides utilities to support data exchange among model components (including package management), conduct specialized statistical analyses, facilitate the loading of C code for performance enhancement, and produce graphs useful in fisheries modelling and data analysis.
+Examples implement classical ideas from fishery literature, as well as our own published papers.
+The examples also provide templates for designing customized analyses using other R libraries, such as \code{PBSmapping}, \code{deSolve}, and \code{BRugs}.
+Users interested in building new packages can use \pbsm{} and a simpler enclosed package \code{PBStry} as prototypes.
 
 \section{What is PBS?}
 
-The initials \bold{PBS} refer to the Pacific Biological Station, a major fisheries laboratory operated by by Fisheries and Oceans Canada on the Pacific coast in Nanaimo, British Columbia, Canada. For more information, see:\\
-{\tt http://www.pac.dfo-mpo.gc.ca/sci/pbs/}.
+The initials \bold{PBS} refer to the \href{http://www.pac.dfo-mpo.gc.ca/science/facilities-installations/pbs-sbp/index-eng.html}{Pacific Biological Station}, a major fisheries laboratory operated by by Fisheries and Oceans Canada on the Pacific coast in Nanaimo, British Columbia, Canada. 
 
 \section{Where is the User's Guide?}
 
-The R directory \code{../library/PBSmodelling/doc} includes a complete User's Guide \code{PBSmodelling-UG.pdf}. To use this package effectively, please consult the Guide. 
+The R directory \code{../library/PBSmodelling/doc} includes a complete User's Guide \code{PBSmodelling-UG.pdf}.
+To use this package effectively, please consult the Guide.
 
-We update the package more frequently than we update the User's Guide. To see our development site, navigate to:\\
-{\tt http://code.google.com/p/pbs-modelling/}.
+We update the package more frequently than we update the User's Guide. 
+To see our development site, navigate to 
+\href{https://github.com/pbs-software/pbs-modelling}{PBSmodelling on GitHub}.
 
 \section{Demos}
 
-\pbsm{} includes numerous examples, many of which appear in the User's Guide. To see them, run the function \code{runExamples()}. More generally, a user can view all demos available from locally installed packages with the function \code{runDemos()}.
+\pbsm{} includes numerous examples, many of which appear in the User's Guide. 
+To see them, run the function \code{runExamples()}. 
+More generally, a user can view all demos available from locally installed packages with the function \code{runDemos()}.
 
 \vspace*{4ex} \noindent {\bf \Large Reference}
 

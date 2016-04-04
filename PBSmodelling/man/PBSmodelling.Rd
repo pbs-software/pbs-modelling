@@ -12,7 +12,7 @@
   to the \code{Tcl/Tk} package, a user does not need to know Tcl/Tk. 
 
   \code{PBSmodelling} contains examples that illustrate models built using 
-  other R packages, including \code{PBSmapping}, \code{odesolve}, 
+  other R packages, including \code{PBSmapping}, \code{deSolve}, 
   \code{PBSddesolve}, and \code{BRugs}. 
   It also serves as a convenient prototype for building new R packages, 
   along with instructions and batch files to facilitate that process.

@@ -93,14 +93,16 @@ addLegend <- function (x, y, ...) {
 #----------------------------------------addLegend
 
 
-#drawBars-------------------------------2008-08-16
+#drawBars-------------------------------2016-04-04
 #  Draw a linear barplot on the current graph
 #  x,y   - data coordintates
 #  width - bar width, computed if missing
 #  base  - y value of the base of each bar
+#  fill  - colour to fill the bars
 #  ...   - additional parameters for 'lines'
-#----------------------------------------------JTS
-drawBars <- function (x, y, width, base = 0, ...) {
+#-------------------------------------------JTS/RH
+drawBars <- function (x, y, width, base=0, fill=NULL, ...)
+{
 	nx <- length(x)
 	n5 <- 5 * nx
 	if ((nx != length(y) || nx == 0)) 
@@ -129,8 +131,11 @@ drawBars <- function (x, y, width, base = 0, ...) {
 	x1[5 * k] <- NA
 	y1[5 * k] <- NA
 	xy <- list(x = x1, y = y1)
-	lines(xy, ...) }
-#-----------------------------------------drawBars
+	if (!is.null(fill))
+		polygon(xy$x,xy$y,col=fill,border=FALSE)
+	lines(xy, ...)
+}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~drawBars
 
 
 #expandGraph----------------------------2006-08-16

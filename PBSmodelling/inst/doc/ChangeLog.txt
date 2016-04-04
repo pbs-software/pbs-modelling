@@ -4,9 +4,14 @@ Authors:  JTS = Jon T. Schnute
           ACB = Alex Couture-Beil
           RH  = Rowan Haigh
           NB  = Nicholas Boers
-          ARK = Rob Kronlund
           AE  = Anisa Egeli
+          ARK = Rob Kronlund
 -----------------------------------
+
+2.68.2 (2016-04-04)
+  • Updated `DESCRIPTION' file to properly inlcude all contributors. (RH 160404)
+  • Modified function `drawBars' to fill the bars with colour when new argument `fill' is set to a colour. (RH 160404)
+  • Updated the vignette `PBSmodellingIntro.Rnw'. (RH 160404)
 
 2.68.1 2015-09-04
   • Added imports for undefined globals to the NAMESPACE (new requirement). (RH 150904)
