@@ -156,20 +156,6 @@ int countVals(const char *s) {
 	return kvpair;
 }
 
-
-/* converts a single string into a list of (key, value) lists
-   i.e. convert "nokey keyname=foo" into the following R list:
-   list(list(value="nokey"), list(key="keyname", value="foo"))
-   
-   args: str - R character string
-         env - R environment for use in calling R code
-         fname - R character string of filename for use in error reporting
-         lineNum - R numeric value for line number for use in error reporting
-   
-   return: R list of 1-element, or 2-element lists.
-           i.e.: "nokey keyname=foo" becomes
-           list(list(value="nokey"), list(key="keyname", value="foo"))
-*/
 SEXP strToList(SEXP str, SEXP env, SEXP fname, SEXP lineNum)
 {
 	SEXP list, list_names, list_names_value_only, p;
@@ -316,17 +302,6 @@ strToList_exit:
     return(list);
 }
 
-
-/* converts a single string into a vector of extracted values
-   while treating spaces in quotes as regular chars
-   
-   args: str - R character string
-         env - R environment for use in calling R code
-         fname - R character string of filename for use in error reporting
-         lineNum - R numeric value for line number for use in error reporting
-	
-	return: R vector of values
-*/
 SEXP strToVector(SEXP str, SEXP env, SEXP fname, SEXP lineNum)
 {
 	SEXP list;
@@ -422,9 +397,6 @@ strToVector_exit:
     return(list);
 }
 
-
-/*returns a string without any leading #comments
- *and strips off leftover whitespace on the right side */
 SEXP stripComments(SEXP str)
 {
 	int objs=0, escape, quoted, i, last_whitspace, escaped_whitespace;

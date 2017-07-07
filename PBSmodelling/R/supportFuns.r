@@ -1399,10 +1399,12 @@ view <- function (obj, n=5, last=FALSE, random=FALSE, print.console=TRUE, ...) {
 }
 #---------------------------------------------view
 
-#viewCode-------------------------------2015-04-16
+
+#viewCode-------------------------------2017-06-26
 # View package R code on the fly.
 #-----------------------------------------------RH
-viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
+viewCode=function(pkg="PBSmodelling", funs, output=4, ...)
+{
 	eval(parse(text=paste("if(!require(",pkg,",quietly=TRUE)) stop(\"",pkg," package is required\")",sep="")))
 	tdir <- tempdir(); tdir <- gsub("\\\\","/",tdir)                    # temporary directory for R
 	if (is.element(pkg,loadedNamespaces())){
@@ -1437,24 +1439,28 @@ viewCode=function(pkg="PBSmodelling", funs, output=4, ...){
 		# `home' code from `help.start'
 		home <- 
 		if (!is.element("remote",ls(envir=sys.frame(sys.nframe()))) || is.null(remote)) {
-			if (paste0(R.version[c("major","minor")],collapse=".")>="3.3.0")
-				httpdPort = tools::startDynamicHelp(NA)
-			else {
-				showAlert("Output 2 only available for R (>= 3.3.0)")
-				stop("Output 2 only available for R (>= 3.3.0)", call. = FALSE)
-			}
-			httpdPort = tools::startDynamicHelp(NA)
-			if (httpdPort > 0L) {
-				if ("update" %in% ls(envir=sys.frame(sys.nframe())) && update)
-					make.packages.html(temp = TRUE)
-				paste0("http://127.0.0.1:", httpdPort) 
-			}
-			else stop("`viewCode' requires the HTTP server to be running", call. = FALSE)
-		}
+			paste0(system.file(package=pkg),"/html/00Index.html")
+			#if (paste0(R.version[c("major","minor")],collapse=".")>="3.3.0")
+			#	httpdPort = tools::startDynamicHelp(NA)
+			#else {
+			#	showAlert("Output 2 only available for R (>= 3.3.0)")
+			#	stop("Output 2 only available for R (>= 3.3.0)", call. = FALSE)
+			#}
+			#httpdPort = tools::startDynamicHelp(NA)
+			#if (httpdPort > 0L) {
+			#	if ("update" %in% ls(envir=sys.frame(sys.nframe())) && update)
+			#		make.packages.html(temp = TRUE)
+			#	paste0("http://127.0.0.1:", httpdPort) 
+			#}
+			#else stop("`viewCode' requires the HTTP server to be running", call. = FALSE)
+		}  #
 		else remote
-		expr=paste("iloc=paste(\"",home,"/library/",pkg,"/html/00Index.html\"); ",sep="")
-		expr=paste(expr,"index=readLines(iloc);",sep="")
-		eval(parse(text=expr))
+		#expr=paste("iloc=paste(\"",home,"/library/",pkg,"/html/00Index.html\"); ",sep="")
+		#expr=paste(expr,"index=readLines(iloc);",sep="")
+		#eval(parse(text=expr))
+		iloc  = home
+		index = readLines(iloc)
+#browser();return()
 	}
 	for (i in c(seeFuns)) {
 		if (output %in% c(1,2)) {

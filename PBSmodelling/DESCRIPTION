@@ -1,6 +1,6 @@
 Package:    PBSmodelling
-Version:    2.68.2
-Date:       2016-04-04
+Version:    2.68.3
+Date:       2017-07-07
 Title:      GUI Tools Made Easy: Interact with Models and Explore Data
 Authors@R: c(
    person(c("Jon","T."),"Schnute",role="aut",email="schnutej-dfo@shaw.ca"),
@@ -16,7 +16,7 @@ Author:     Jon T. Schnute [aut], Alex Couture-Beil [aut],
    Rowan Haigh [aut, cre], Nicholas Boers [ctb],Anisa Egeli [ctb],
    A. R. Kronlund [ctb], Steve Martell [ctb], Norm Olsen [ctb]
 Maintainer: Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>
-Copyright:  2005-2016, Fisheries and Oceans Canada
+Copyright:  2005-2017, Fisheries and Oceans Canada
 Depends:    R (>= 2.15.0)
 Imports:    methods, tcltk, XML
 Suggests:   PBSmapping, deSolve, KernSmooth
@@ -24,11 +24,11 @@ NeedsCompilation: yes
 SystemRequirements: BWidget
 Description: Provides software to facilitate the design, testing, and operation
    of computer models. It focuses particularly on tools that make it easy to
-   construct and edit a customized graphical user interface (`GUI'). Although our
-   simplified `GUI' language depends heavily on the R interface to the `Tcl/Tk'
-   package, a user does not need to know `Tcl/Tk'. Examples illustrate models
-   built with other R packages, including `PBSmapping', `PBSddesolve', and `BRugs'. 
-   A complete user's guide `PBSmodelling-UG.pdf' shows how to use this package
+   construct and edit a customized graphical user interface ('GUI'). Although our
+   simplified 'GUI' language depends heavily on the R interface to the 'Tcl/Tk'
+   package, a user does not need to know 'Tcl/Tk'. Examples illustrate models
+   built with other R packages, including 'PBSmapping', 'PBSddesolve', and 'BRugs'. 
+   A complete user's guide 'PBSmodelling-UG.pdf' shows how to use this package
    effectively.
 License:  GPL (>= 2)
 URL: https://github.com/pbs-software/pbs-modelling

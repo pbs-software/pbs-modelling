@@ -8,6 +8,18 @@ Authors:  JTS = Jon T. Schnute
           ARK = Rob Kronlund
 -----------------------------------
 
+2.68.3 (2017-07-07)
+  • Updated the User's Guide to look more like a DFO CSAS or Tech Report document using Arial 11pt. (RH 170707)
+  • Created header files for `parser.c', `fib.c' and `fib2.c', paralleling NB's changes to PBSmapping. (RH 170707)
+  • Added documentation directory in SVN (not in package) to keep track of changes to the User's Guide. (RH 170707)
+  • Registered C routines (new CRAN request) using Roger Bivand's maptools `init.c' as a template. (NB/RH 170626)
+  • Modified function `viewCode' to use the `00Index.html' file in the user's local package libraries for `output=2' (RH 170626)
+	Previously, the function tried to grab this from the local HTTP server 127.0.0.1.
+  • Changed backticks ` in DESCRIPTION to single quotes ' (Kurt Hornik 2016-09-20)
+  • You need to set the BINPREF variable in etc/.../Makeconf and you can omit the ? (Uwe Ligges 2016-04-18)
+	Old: BINPREF ?= c:/Rtools/mingw_64/bin/
+	New: BINPREF = C:/Apps/R/Rtools/mingw_64/bin/
+
 2.68.2 (2016-04-04)
   • Updated `DESCRIPTION' file to properly inlcude all contributors. (RH 160404)
   • Modified function `drawBars' to fill the bars with colour when new argument `fill' is set to a colour. (RH 160404)
