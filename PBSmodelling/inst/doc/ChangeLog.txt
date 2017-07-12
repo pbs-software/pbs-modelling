@@ -8,6 +8,10 @@ Authors:  JTS = Jon T. Schnute
           ARK = Rob Kronlund
 -----------------------------------
 
+2.68.4 (2017-07-12)
+  • Modified functions `runExample' and `runExamples' to fix a bug in R's `list.files' function, which cannot seem to distinguish directories. (RH 170712)
+  • Finalized formatting the User's Guide -- numerous small tweaks. (RH 170711)
+
 2.68.3 (2017-07-07)
   • Updated the User's Guide to look more like a DFO CSAS or Tech Report document using Arial 11pt. (RH 170707)
   • Created header files for `parser.c', `fib.c' and `fib2.c', paralleling NB's changes to PBSmapping. (RH 170707)

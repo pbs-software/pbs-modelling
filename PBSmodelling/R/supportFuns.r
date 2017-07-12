@@ -740,7 +740,7 @@ runDemos <- function (package) {
 #=====================================END runDemos
 
 
-#runExample-----------------------------2012-12-10
+#runExample-----------------------------2017-07-12
 # Display a single GUI example.
 #-----------------------------------------------RH
 runExample <- function (ex, pkg="PBSmodelling") {
@@ -753,7 +753,9 @@ runExample <- function (ex, pkg="PBSmodelling") {
 		return() }
 	assign(".cls",ls(pos=.PBSmodEnv, all.names=TRUE),envir=.PBSmodEnv)    # current list in .PBSmodEnv
 	assign(".cwd",getwd(),envir=.PBSmodEnv)                               # current working system directory
-	assign(".cfl",list.files(tempdir(),full.names=TRUE),envir=.PBSmodEnv) # current file list in temporary system directory
+	## (RH 170712: There's a bug in R's list.files: it includes dirs like 'trash'
+	#assign(".cfl",list.files(tempdir(),full.names=TRUE),envir=.PBSmodEnv) # current file list in temporary system directory
+	assign(".cfl", setdiff(list.files(tempdir(),full.names=TRUE),list.dirs(tempdir(),full.names=TRUE)),envir=.PBSmodEnv) # current file list in temporary system directory
 	assign(".runExHelperQuit",.runExHelperQuit,envir=.PBSmodEnv) #.GlobalEnv)
 
 	pdir <- system.file(package = pkg)                # package directory
@@ -779,7 +781,7 @@ runExample <- function (ex, pkg="PBSmodelling") {
 #---------------------------------------runExample
 
 
-#runExamples----------------------------2012-12-17
+#runExamples----------------------------2017-07-12
 # Display a master GUI to display examples
 #-------------------------------------------RH/ACB
 runExamples <- function () {
@@ -825,7 +827,9 @@ runExamples <- function () {
 	assign(".runExHelperQuit",.runExHelperQuit,envir=.PBSmodEnv) #.GlobalEnv)
 	assign(".cls",ls(pos=.PBSmodEnv, all.names=TRUE),envir=.PBSmodEnv)    # current list in .PBSmodEnv
 	assign(".cwd",getwd(),envir=.PBSmodEnv)                               # current working system directory
-	assign(".cfl",list.files(tempdir(),full.names=TRUE),envir=.PBSmodEnv) # current file list in temporary system directory
+	## (RH 170712: There's a bug in R's list.files: it includes dirs like 'trash'
+	#assign(".cfl",list.files(tempdir(),full.names=TRUE),envir=.PBSmodEnv) # current file list in temporary system directory
+	assign(".cfl", setdiff(list.files(tempdir(),full.names=TRUE),list.dirs(tempdir(),full.names=TRUE)),envir=.PBSmodEnv) # current file list in temporary system directory
 	pckg <- "PBSmodelling"
 	pdir <- system.file(package = pckg)               # package directory
 	edir <- paste(pdir, "/", "examples", sep = "")    # examples directory

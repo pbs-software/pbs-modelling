@@ -1,6 +1,6 @@
 Package:    PBSmodelling
-Version:    2.68.3
-Date:       2017-07-07
+Version:    2.68.4
+Date:       2017-07-12
 Title:      GUI Tools Made Easy: Interact with Models and Explore Data
 Authors@R: c(
    person(c("Jon","T."),"Schnute",role="aut",email="schnutej-dfo@shaw.ca"),
@@ -13,8 +13,8 @@ Authors@R: c(
    person("Norm","Olsen",role="ctb",email="norm.olsen@dfo-mpo.gc.ca")
    )
 Author:     Jon T. Schnute [aut], Alex Couture-Beil [aut], 
-   Rowan Haigh [aut, cre], Nicholas Boers [ctb],Anisa Egeli [ctb],
-   A. R. Kronlund [ctb], Steve Martell [ctb], Norm Olsen [ctb]
+            Rowan Haigh [aut, cre], Nicholas Boers [ctb], Anisa Egeli [ctb],
+            A. R. Kronlund [ctb], Steve Martell [ctb], Norm Olsen [ctb]
 Maintainer: Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>
 Copyright:  2005-2017, Fisheries and Oceans Canada
 Depends:    R (>= 2.15.0)
