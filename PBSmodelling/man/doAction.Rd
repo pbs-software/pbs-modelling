@@ -29,10 +29,12 @@ doAction(act)
   Invisibly returns the string expression \code{expr}.
 }
 \examples{
+\dontrun{
 local(envir=.PBSmodEnv,expr={
   createWin("button text=\"list objects\" func=doAction action=print(ls(all.names=TRUE))",
     astext=TRUE)
 })
+}
 }
 \author{
   Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC

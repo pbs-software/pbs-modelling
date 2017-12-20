@@ -22,6 +22,7 @@ setOptionsPrefix(option.object, prefix)
   Alex Couture-Beil, Vancouver Island University, Nanaimo BC
 }
 \examples{
+\dontrun{
 local(envir=.PBSmodEnv,expr={
   # For the example, the options object is saved to the temporary environment;
   # however, a user would normally create the object in his/her workspace.
@@ -34,6 +35,7 @@ local(envir=.PBSmodEnv,expr={
   #the GUI variable "optpi" will be loaded with the option "pi"
   loadOptionsGUI( .mypkg )
 })
+}
 }
 \seealso{
   See \code{\link[PBSmodelling]{PBSoptions-class}} for more details and 

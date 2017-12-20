@@ -40,12 +40,14 @@
   \pkg{PBSmodelling}'s talk presentation classes.
 }
 \examples{
+\dontrun{
 local(envir=.PBSmodEnv,expr={
   cwd = getwd()
   talk_dir <- system.file("examples", package = "PBSmodelling" )
   setwd(talk_dir)
   presentTalk( "swisstalk.xml" ) # closing the GUI should restore cwd
 })
+}
 }
 \note{
   See the PBSmodelling User's Guide for more information.

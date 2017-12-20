@@ -10,8 +10,10 @@
 setwdGUI()
 }
 \examples{
+\dontrun{
 local(envir=.PBSmodEnv,expr={
   createWin( "button text=\"Change working directory\" func=setwdGUI", astext=TRUE )
 })
+}
 }
 

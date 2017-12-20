@@ -30,6 +30,7 @@ updateGUI(scope = "L")
   \code{\link{getWinVal}}, \code{\link{setWinVal}}
 }
 \examples{
+\dontrun{
 local(envir=.PBSmodEnv,expr={
   #law of free food: http://www.phdcomics.com/comics.php?f=1223
   createWin( c( 
@@ -39,6 +40,7 @@ local(envir=.PBSmodEnv,expr={
   taste <- foodquality * hunger / cost
   updateGUI()
 })
+}
 }
 \keyword{methods}
 

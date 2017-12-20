@@ -129,7 +129,6 @@ myPlot <- function(saveVal=TRUE) {
   x <- (1+sin(a*tt));  y <- cos(tt)*(1+sin(b*tt));
   plot(x, y);
 }
-
   iHistory("myHistory", "myHistoryIndex", "myHistorySize")
   createWin(winDesc, astext=TRUE)
   par(oldpar)

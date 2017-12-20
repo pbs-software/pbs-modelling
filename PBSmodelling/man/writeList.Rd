@@ -89,7 +89,6 @@ local(envir=.PBSmodEnv,expr={
   openFile("test.txt")
   setwd(cwd)
 })
-}
 local(envir=.PBSmodEnv,expr={
   cwd = getwd(); setwd(tempdir())
   ##Example of dimnames for Arrays
@@ -97,6 +96,7 @@ local(envir=.PBSmodEnv,expr={
   writeList( list( Titanic ), format="P")
   setwd(cwd)
 })
+}
 }
 \keyword{file}
 \keyword{list}

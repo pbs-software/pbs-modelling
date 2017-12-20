@@ -1,6 +1,19 @@
 \documentclass[letter,11pt]{article}
 %\VignetteIndexEntry{Introduction to PBSmodelling}
 %\VignettePackage{PBSmodelling}
+\usepackage{Sweave}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, plainpages=true, linkcolor=black, citecolor=black, urlcolor=blue}
+
+% Keep on one page
+\usepackage[letterpaper, top=0.5in, bottom=0.5in, left=1in, right=1in, footskip=0in, headheight=0.5in]{geometry}
+%\textheight 9.5in \topmargin -1.0in
+
+\usepackage[scaled=1.1]{inconsolata} %% trial and error
+\renewcommand{\rmdefault}{phv}% Helvetica
+\renewcommand{\sfdefault}{phv}% Helvetica
+\renewcommand{\ttdefault}{zi4}% Inconsolata
 
 % For colors
 \usepackage{color}
@@ -9,22 +22,16 @@
 \definecolor{blue}{rgb}{0, 0, 1}
 
 % Definitions
-\newcommand{\slan}{{\tt S}}
-\newcommand{\rlan}{{\tt R}}
-\newcommand{\pbsm}{{\tt PBSmodelling}}
-\newcommand{\pbsmod}{{\it PBS Modelling}}
-\newcommand{\tcl}{{\tt Tcl/Tk}}
-\newcommand{\code}[1]{{\tt #1}}
-\newcommand{\ital}[1]{{\it #1}}
-\newcommand{\bold}[1]{{\bf #1}}
+\newcommand{\slan}{\texttt{S}}
+\newcommand{\rlan}{\texttt{R}}
+\newcommand{\pbsm}{\texttt{PBSmodelling}}
+\newcommand{\pbsmod}{\textit{PBS Modelling}}
+\newcommand{\tcl}{\texttt{Tcl/Tk}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\ital}[1]{\textit{#1}}
+\newcommand{\bold}[1]{\textbf{#1}}
 \newcommand{\under}[1]{{\underline {#1}}}
 \newcommand{\red}[1]{{\textcolor{red} {#1}}}
-
-\usepackage{hyperref}
-\hypersetup{colorlinks=true, plainpages=true, linkcolor=black, citecolor=black, urlcolor=blue}
-
-% Keep on one page
-\usepackage[letterpaper, margin=1in]{geometry}
 
 \begin{document}
 
@@ -32,7 +39,7 @@
 \author{Jon T. Schnute, Alex Couture-Beil, and Rowan Haigh}
 \maketitle
 
-\section{What is \pbsm{}?}
+\section{What is PBSmodelling?}
 
 \pbsm{} contains software to facilitate the design, testing, and operation of computer models.
 The package focuses particularly on tools that make it easy to construct and edit a customized graphical user interface (GUI) appropriate for a particular problem.
@@ -40,17 +47,17 @@ Although our package depends heavily on the R interface to \tcl{}, a user does n
 In addition to GUI design tools, \pbsm{} provides utilities to support data exchange among model components (including package management), conduct specialized statistical analyses, facilitate the loading of C code for performance enhancement, and produce graphs useful in fisheries modelling and data analysis.
 Examples implement classical ideas from fishery literature, as well as our own published papers.
 The examples also provide templates for designing customized analyses using other R libraries, such as \code{PBSmapping}, \code{deSolve}, and \code{BRugs}.
-Users interested in building new packages can use \pbsm{} and a simpler enclosed package \code{PBStry} as prototypes.
+%Users interested in building new packages can use \pbsm{} and a simpler enclosed package \code{PBStry} as prototypes. %% [RH] Not sure if PBStry works any more.
 
 \section{What is PBS?}
 
-The initials \bold{PBS} refer to the \href{http://www.pac.dfo-mpo.gc.ca/science/facilities-installations/pbs-sbp/index-eng.html}{Pacific Biological Station}, a major fisheries laboratory operated by by Fisheries and Oceans Canada on the Pacific coast in Nanaimo, British Columbia, Canada. 
+The initials `PBS' refer to the \href{http://www.pac.dfo-mpo.gc.ca/science/facilities-installations/index-eng.html#pbs}{Pacific Biological Station}, a major fisheries laboratory operated by by Fisheries and Oceans Canada on the Pacific coast in Nanaimo, British Columbia, Canada. 
 
 \section{Where is the User's Guide?}
 
-The R directory \code{../library/PBSmodelling/doc} includes a complete User's Guide \code{PBSmodelling-UG.pdf}.
-To use this package effectively, please consult the Guide.
-
+The R directory \code{../library/PBSmodelling/doc} includes a complete User's Guide\\
+\code{PBSmodelling-UG.pdf}.
+To use this package effectively, please consult the guide.
 We update the package more frequently than we update the User's Guide. 
 To see our development site, navigate to 
 \href{https://github.com/pbs-software/pbs-modelling}{PBSmodelling on GitHub}.
@@ -63,7 +70,7 @@ More generally, a user can view all demos available from locally installed packa
 
 \vspace*{4ex} \noindent {\bf \Large Reference}
 
-\vspace*{2ex} \noindent Schnute, J.T., Couture-Beil, A., Haigh, R., and Kronlund, A.R. 2011. PBSmodelling 2.62 user's guide \red{revised from} \ital{Canadian Technical Report of Fisheries and Aquatic Sciences} \bold{2674}. viii + 190 p. Last updated Aug 4, 2011.
+\vspace*{2ex} \noindent Schnute, J.T., Couture-Beil, A., Haigh, R., and Kronlund, A.R. 2017. PBSmodelling 2.68.4 user's guide \red{revised from} \ital{Canadian Technical Report of Fisheries and Aquatic Sciences} \bold{2674} (2006). viii + 82~pp. Last updated July 12, 2017.
 
 
 \end{document}

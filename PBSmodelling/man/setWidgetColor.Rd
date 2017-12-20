@@ -49,6 +49,7 @@ setWidgetColor(name, radioValue, winName = .PBSmodEnv$.PBSmod$.activeWin, ...)
   Alex Couture-Beil (VIU, Nanaimo BC) and Allen R. Kronlund (PBS, Nanaimo BC)
 }
 \examples{
+\dontrun{
 local(envir=.PBSmodEnv,expr={
   createWin("label \"hello world\" name=hello", astext=TRUE)
   setWidgetColor( "hello", bg="lightgreen", fg="purple" )
@@ -59,5 +60,6 @@ local(envir=.PBSmodEnv,expr={
   setWidgetColor( "v[2]", entrybg="green", entryfg="purple" )
   setWidgetColor( "v[3]", entrybg="forestgreen", entryfg="purple" )
 })
+}
 }
 \keyword{methods}

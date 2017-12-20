@@ -63,6 +63,7 @@
   \code{\link[PBSmodelling]{loadOptionsGUI}} for setting GUI values to reflect user options and vice-versa
 }
 \examples{
+\dontrun{
 local(envir=.PBSmodEnv,expr={
   #initialize an option manager with a single logical option
   .mypkg <- new( "PBSoptions", filename="my_pkg.txt", 
@@ -85,6 +86,7 @@ local(envir=.PBSmodEnv,expr={
   loadOptionsGUI( .mypkg )
   print(getOptions( .mypkg ))
 })
+}
 }
 \keyword{classes}
 \keyword{methods}

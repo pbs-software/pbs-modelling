@@ -54,9 +54,11 @@ tput(x, penv=NULL, tenv=.PBSmodEnv)
   Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
 }
 \examples{
+\dontrun{
 local(envir=.PBSmodEnv,expr={
   str(tcall(.PBSmod),2)
 })
+}
 }
 
 %\seealso{}
