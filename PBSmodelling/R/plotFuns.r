@@ -1,33 +1,33 @@
-#===========================================================
-# Plotting functions (in alphabetic order)                 |
-#  addArrows    : Add arrows to current plot
-#  addLabel     : Add label to current plot
-#  addLegend    : Add a legend to current plot
-#  drawBars     : Draw a linear barplot on the current graph
-#  expandGraph  : Tweaks values to expand margins for multiple graphs
-#  lucent       : Create translucent colour
-#  pickCol      : Display interactive colour picking palette
-#  plotACF      : Plot auto correlations (support for BRugs)
-#  plotAsp      : Plots x and y vectors with plot() but maintaining a fixed aspect
-#  plotBubbles  : Function to construct a bubble plot for a matrix z
-#  plotCsum     : Plots cumulative frequecy of data
-#  plotDens     : Plot density curves (support for BRugs)
-#  plotFriedEggs: Pairs plot featuring fried eggs and beer
-#  plotSidebars : Plot (x,y) table as horizontal sidebars
-#  plotTrace    : Plot trace lines (support for BRugs)
-#  resetGraph   : Resets par() values to R default
-#  testAlpha    : Display various alpha transparencies
-#  testCol      : Display test colours as circular patches
-#  testLty      : Display line types available
-#  testLwd      : Display line widths
-#  testPch      : Display plotting symbols or octal strings
-#-----------------------------------------------------------
-# Authors:                                                 |
-#  Jon T. Schnute <Jon.Schnute@dfo-mpo.gc.ca>,             |
-#  Alex Couture-Beil <alex@mofo.ca>,                       |
-#  Rowan Haigh <Rowan.Haigh@dfo-mpo.gc.ca>                 |
-#  Rob Kronlund <Allen.Kronlund@dfo-mpo.gc.ca>             |
-#===========================================================
+##==========================================================
+## Plotting functions (in alphabetic order)
+##  addArrows    : Add arrows to current plot
+##  addLabel     : Add label to current plot
+##  addLegend    : Add a legend to current plot
+##  drawBars     : Draw a linear barplot on the current graph
+##  expandGraph  : Tweaks values to expand margins for multiple graphs
+##  lucent       : Create translucent colour
+##  pickCol      : Display interactive colour picking palette
+##  plotACF      : Plot auto correlations (support for BRugs)
+##  plotAsp      : Plots x and y vectors with plot() but maintaining a fixed aspect
+##  plotBubbles  : Function to construct a bubble plot for a matrix z
+##  plotCsum     : Plots cumulative frequecy of data
+##  plotDens     : Plot density curves (support for BRugs)
+##  plotFriedEggs: Pairs plot featuring fried eggs and beer
+##  plotSidebars : Plot (x,y) table as horizontal sidebars
+##  plotTrace    : Plot trace lines (support for BRugs)
+##  resetGraph   : Resets par() values to R default
+##  testAlpha    : Display various alpha transparencies
+##  testCol      : Display test colours as circular patches
+##  testLty      : Display line types available
+##  testLwd      : Display line widths
+##  testPch      : Display plotting symbols or octal strings
+##----------------------------------------------------------
+## Authors:                                                |
+##  Jon T. Schnute <schnutej-dfo@shaw.ca>,                 |
+##  Alex Couture-Beil <alex@mofo.ca>,                      |
+##  Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>                |
+##  Rob Kronlund <allen.kronlund@dfo-mpo.gc.ca>            |
+##==========================================================
 
 
 #addArrows------------------------------2007-08-22
@@ -272,34 +272,34 @@ plotAsp <- function(x,y,asp=1,...) {
 #------------------------------------------plotAsp
 
 
-#plotBubbles----------------------------2010-08-04
-# Function to construct a bubble plot for a matrix z
-#  z:     input matrix or data frame
-#  xval:  x-values for the columns of z (if length xval != # colums in z, xval is ignored)
-#         if xval=TRUE, first row contains x-values for the columns
-#  yval:  y-values for the rows of z (if length yval != # rows in z, yval is ignored)
-#         if yval=TRUE, first column contains y-values for the rows
-#  dnam:  if TRUE, use dimnames as xval and yval
-#         (overwrites previously specified values)
-#  rpro:  if rpro=TRUE, convert rows to proportions
-#  cpro:  if cpro=TRUE, convert columns to proportions
-#  rres:  if rres=TRUE, use row residuals (subtract row means)
-#  cres:  if cres=TRUE, use column residuals (subtract column means)
-#  powr:  power tranform; radii proportional to z^powr
-#         powr=0.5 gives bubble areas proportional to z
-#  clrs:  colours used for positive, negative, and zero values
-#  size:  size (inches) of the largest & smallest bubble
-#  lwd:   line width for drawing circles
-#  hide0: if TRUE, hide zero-value bubbles
-#  frange: fraction by which the range of the axes should be extended
-#  prettyaxis: logical: if TRUE, apply the pretty function to both axes
-#  ...:   further parameters for the plotting functions 
-#-------------------------------------------JTS/RH
+## plotBubbles--------------------------2018-08-16
+## Function to construct a bubble plot for a matrix z
+##  z:     input matrix or data frame
+##  xval:  x-values for the columns of z (if length xval != # colums in z, xval is ignored)
+##         if xval=TRUE, first row contains x-values for the columns
+##  yval:  y-values for the rows of z (if length yval != # rows in z, yval is ignored)
+##         if yval=TRUE, first column contains y-values for the rows
+##  dnam:  if TRUE, use dimnames as xval and yval
+##         (overwrites previously specified values)
+##  rpro:  if rpro=TRUE, convert rows to proportions
+##  cpro:  if cpro=TRUE, convert columns to proportions
+##  rres:  if rres=TRUE, use row residuals (subtract row means)
+##  cres:  if cres=TRUE, use column residuals (subtract column means)
+##  powr:  power tranform; radii proportional to z^powr
+##         powr=0.5 gives bubble areas proportional to z
+##  clrs:  colours used for positive, negative, and zero values
+##  size:  size (inches) of the largest & smallest bubble
+##  lwd:   line width for drawing circles
+##  hide0: if TRUE, hide zero-value bubbles
+##  frange: fraction by which the range of the axes should be extended
+##  prettyaxis: logical: if TRUE, apply the pretty function to both axes
+##  ...:   further parameters for the plotting functions 
+## -----------------------------------------JTS/RH
 plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE, 
-    rpro=FALSE, cpro=FALSE, rres=FALSE, cres=FALSE, 
-    powr=0.5, size=0.2, lwd=1, clrs=c("black","red","blue"), 
-    hide0=FALSE, frange=0.1, prettyaxis=FALSE, ...) {
-
+   rpro=FALSE, cpro=FALSE, rres=FALSE, cres=FALSE, 
+   powr=0.5, size=0.2, lwd=1, clrs=c("black","red","blue"), 
+   hide0=FALSE, frange=0.1, prettyaxis=FALSE, ...)
+{
 	if (is.data.frame(z)) {
 		use = !sapply(z,is.factor) & sapply(z,is.numeric)
 		z=z[,use,drop=FALSE]; if (ncol(z)==0) {showAlert("data frame not useable"); return()}
@@ -308,11 +308,11 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	dz <- dim(z);  ny=ny1=dz[1];  nx=nx1=dz[2]
 	if (length(dz)>2) {showAlert("Input matrix must have only 2 dimensions"); return() }
 	xval1 <- 1:nx;  yval1 <- 1:ny
-	# If first row contains x-values for columns
+	## If first row contains x-values for columns
 	if (mode(xval) == "logical") {
 		if (xval[1]) {
 			xval1 <- z[1,]; ny1 <- ny - 1; } }
-	# If first column contains y-values for rows 
+	## If first column contains y-values for rows 
 	if (mode(yval) == "logical") {
 		if (yval[1]) {
 			yval1 <- z[,1]; nx1 <- nx - 1; } }
@@ -332,7 +332,7 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	xlab=dots$xlab; if (is.null(xlab)) xlab=""  # x-axis label
 	ylab=dots$ylab; if (is.null(ylab)) ylab=""  # y-axis label
 
-	# dimnames are to be used to over-ride xval and yval
+	## dimnames are to be used to over-ride xval and yval
 	if (dnam & !is.null(dimnames(zz))) { 
 		warn=options()$warn; options(warn=-1)
 		if (!is.null(dimnames(zz)[[2]])) {
@@ -349,47 +349,60 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 		}
 		options(warn=warn)
 	}
-#browser()
 	xx <- rep(x2, each = length(y2))
 	yy <- rep(y2, length(x2))
-	minz <- min(zz,na.rm=TRUE);  maxz <- max(zz,na.rm=TRUE);
+	minz <- min(zz,na.rm=TRUE)
+	maxz <- max(zz,na.rm=TRUE);
 	if (rpro | cpro) {
 		if (minz < 0) {
 			zz <- zz - minz
 			minz <- 0
-			maxz <- max(zz,na.rm=TRUE) } }
-	if (rpro) {
+			maxz <- max(zz,na.rm=TRUE)
+		}
+	}
+	if (rpro & cpro) {
+		zz <- zz / sum(zz, na.rm=TRUE)
+	} else if (rpro) {
 		zs <- apply(zz, 1, sum, na.rm=TRUE)
-		zz <- sweep(zz, 1, zs, "/") }
-	if (cpro) {
+		zz <- sweep(zz, 1, zs, "/")
+	} else if (cpro) {
 		zs <- apply(zz, 2, sum, na.rm=TRUE)
-		zz <- sweep(zz, 2, zs, "/") }
+		zz <- sweep(zz, 2, zs, "/")
+	}
 	if (rres) {
 		zm <- apply(zz, 1, mean, na.rm=TRUE)
-		zz <- sweep(zz, 1, zm, "-") }
+		zz <- sweep(zz, 1, zm, "-")
+	}
 	if (cres) {
 		zm <- apply(zz, 2, mean, na.rm=TRUE)
-		zz <- sweep(zz, 2, zm, "-") }
+		zz <- sweep(zz, 2, zm, "-")
+	}
 	zNA <- is.na(zz) | is.nan(zz) | is.infinite(zz); zz[zNA] <- 0;
-	z0 <- sign(zz) * abs(zz)^abs(powr)
-	z1 <- z3 <- z0;  z1[z0 <= 0] <- NA; z3[z0<0 | z0>0] <- NA;
-	z2 <- -z0; z2[z0 >= 0] <- NA;
-	za <- max(z0,na.rm=TRUE);  zb <- min(z0,na.rm=TRUE)
-	zM <- max(abs(z0))
+	z0  <- sign(zz) * abs(zz)^abs(powr)
+	z1  <- z3 <- z0
+	z1[z0 <= 0] <- NA
+	z3[z0<0 | z0>0] <- NA
+	z2  <- -z0
+	z2[z0 >= 0] <- NA
+	za  <- max(z0,na.rm=TRUE)
+	zb  <- min(z0,na.rm=TRUE)
+	zM  <- max(abs(z0))
 	sz1 <- max(za * size/zM, 0.001)
 	sz2 <- max(-zb * size/zM, 0.001)
+
 	#plot(0,0,xlim=extendrange(x2),ylim=extendrange(y2),type="n",xaxt="n",...)
 	#axis(1,at=x2,labels=xlabel,...)
 	#symbols(xx,yy,circles=as.vector(abs(z0)),inches=size,fg=0,...)
+
 	evalCall(plot,argu=list(x=0,y=0,xlim=extendrange(x2,f=frange),
 		ylim=extendrange(y2,f=frange),type="n",axes=FALSE,xlab=xlab,ylab=ylab),...,checkdef=TRUE,checkpar=TRUE)
 	if (prettyaxis) {
 		if (length(min(x2):max(x2))<=5) xshow = is.element(x2,x2)
 		else                            xshow = is.element(x2,pretty(x2,n=10))
 		yshow = is.element(y2,pretty(y2,n=10))
+	} else {
+		xshow = rep(TRUE,length(x2)); yshow = rep(TRUE,length(y2))
 	}
-	else {
-		xshow = rep(TRUE,length(x2)); yshow = rep(TRUE,length(y2)) }
 	if (!all(xshow))
 		axis(1,at=x2[!xshow],labels=FALSE,tcl=ifelse(is.null(dots$tcl),par()$tcl,dots$tcl)/3)
 	if (!all(yshow))
@@ -397,16 +410,21 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	evalCall(axis,argu=list(side=1,at=x2[xshow],labels=xlabel[xshow]),...,checkpar=TRUE)
 	evalCall(axis,argu=list(side=2,at=y2[yshow],labels=ylabel[yshow]),...,checkpar=TRUE)
 	if (!hide0 && !all(is.na(z3))) {
-		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z3),inches=0.001,fg=clrs[3],lwd=lwd,add=TRUE),...,checkpar=TRUE) }
-		#symbols(xx, yy, circles = as.vector(z3), inches = 0.001, fg = clrs[3], lwd = lwd, add = TRUE, ...) }
+		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z3),inches=0.001,fg=clrs[3],lwd=lwd,add=TRUE),...,checkpar=TRUE)
+		#symbols(xx, yy, circles = as.vector(z3), inches = 0.001, fg = clrs[3], lwd = lwd, add = TRUE, ...)
+	}
 	if (!all(is.na(z2))) {
-		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z2),inches=sz2,fg=clrs[2],lwd=lwd,add=TRUE),...,checkpar=TRUE) }
-		#symbols(xx, yy, circles = as.vector(z2), inches = sz2, fg = clrs[2], lwd = lwd, add = TRUE, ...) }
+		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z2),inches=sz2,fg=clrs[2],lwd=lwd,add=TRUE),...,checkpar=TRUE)
+		#symbols(xx, yy, circles = as.vector(z2), inches = sz2, fg = clrs[2], lwd = lwd, add = TRUE, ...)
+	}
 	if (!all(is.na(z1))) {
-		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z1),inches=sz1,fg=clrs[1],lwd=lwd,add=TRUE),...,checkpar=TRUE) }
-		#symbols(xx, yy, circles = as.vector(z1), inches = sz1, fg = clrs[1], lwd = lwd, add = TRUE, ...) }
-	box(); invisible(z0) }
-#--------------------------------------plotBubbles
+		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z1),inches=sz1,fg=clrs[1],lwd=lwd,add=TRUE),...,checkpar=TRUE)
+		#symbols(xx, yy, circles = as.vector(z1), inches = sz1, fg = clrs[1], lwd = lwd, add = TRUE, ...)
+	}
+	box()
+	invisible(z0)
+}
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~plotBubbles
 
 
 #plotCsum-------------------------------2015-09-01
@@ -560,8 +578,8 @@ plotFriedEggs <- function(A, eggs=TRUE, rings=TRUE,
 		xmid=(usr[2]+usr[1])/2
 		ymid=(ymax1+ymin1)/2
 		xrng=(usr[2]-usr[1])
-		Lbot=xmid-.15*xrng; Rbot=xmid+.15*xrng; Ltop=xmid-.25*xrng; Rtop=xmid+.25*xrng             # sides of glass
-		Lbeer=xmid-(.15+abs(v)*.1)*xrng;  Rbeer=xmid+(.15+abs(v)*.1)*xrng                          # top of beer
+		Lbot=xmid-.15*xrng; Rbot=xmid+.15*xrng; Ltop=xmid-.25*xrng; Rtop=xmid+.25*xrng  ## sides of glass
+		Lbeer=xmid-(.15+abs(v)*.1)*xrng;  Rbeer=xmid+(.15+abs(v)*.1)*xrng               ## top of beer
 
 		curved=function(x,yval,scale=0.2) {
 			xmin=min(x,na.rm=TRUE); xmax=max(x,na.rm=TRUE)
@@ -569,31 +587,31 @@ plotFriedEggs <- function(A, eggs=TRUE, rings=TRUE,
 			smid=mean(s,na.rm=TRUE)
 			ycur=scale/cos(s-smid); ycur=yval+ycur-max(ycur,na.rm=TRUE); return(ycur) }
 
-		xbot=seq(Lbot,Rbot,len=100); ybot=curved(xbot,ymin1) # bottom of glass
-		xtop=seq(Ltop,Rtop,len=100); ytop=curved(xtop,ymax1) # top of glass
-		xglass=c(xbot,rev(xtop)); yglass=c(ybot,rev(ytop))   # curved glass poly
+		xbot=seq(Lbot,Rbot,len=100); ybot=curved(xbot,ymin1) ## bottom of glass
+		xtop=seq(Ltop,Rtop,len=100); ytop=curved(xtop,ymax1) ## top of glass
+		xglass=c(xbot,rev(xtop)); yglass=c(ybot,rev(ytop))   ## curved glass poly
 
 		#xbeer=c(Lbot,Lbeer,Rbeer,Rbot,Lbot); ybeer=c(ymin1,ymax2,ymax2,ymin1,ymin1) # rectangular beer poly
 		xsip=seq(Lbeer,Rbeer,len=100); 
-		if (v==0) ysip=ybot else ysip=curved(xsip,ymax2)  # top of beer
-		xbeer=c(xbot,rev(xsip)); ybeer=c(ybot,rev(ysip))        # curved beer poly
+		if (v==0) ysip=ybot else ysip=curved(xsip,ymax2)     ## top of beer
+		xbeer=c(xbot,rev(xsip)); ybeer=c(ybot,rev(ysip))     ## curved beer poly
 		bubblex=runif(round(500*abs(v),0),xmid-(.15+abs(v*.95)*.1)*xrng,xmid+(.15+abs(v*.95)*.1)*xrng)
 		if (v==0) yfroth=ybot else yfroth=curved(bubblex,ymax2)
 		#bubbley=runif(round(500*abs(v),0),ymax2-.02*yrng1,ymax2+.02*yrng1)
 		bubbley=runif(round(500*abs(v),0),yfroth-.02*yrng1,yfroth+.02*yrng1)
 
-		polygon(xglass,yglass,,col="aliceblue",border=FALSE)              # glass surface
-		lines(xtop,ymax1+abs(ytop-ymax1),lwd=2,col=col.glass[1])          # top back rim
+		polygon(xglass,yglass,,col="aliceblue",border=FALSE)              ## glass surface
+		lines(xtop,ymax1+abs(ytop-ymax1),lwd=2,col=col.glass[1])          ## top back rim
 		if (v!=0) {
-			polygon(xbeer,ybeer,col=ifelse(v<0,"orange","gold"),border="burlywood")                # beer
+			polygon(xbeer,ybeer,col=ifelse(v<0,"orange","gold"),border="burlywood")  ## beer
 			points(bubblex,bubbley,pch=21,col=ifelse(v<0,"orange","gold"),bg="white",cex=seq(0.1,1,length=10)) }
-		lines(xbot,ybot,lwd=3,col=col.glass[1])                           # bottom edge
-		lines(xbot,ybot-.005,lwd=1,col=col.glass[2])                      # bottom edge shadow
-		lines(c(Lbot,Ltop),c(ymin1,ymax1),lwd=4,col=col.glass[1])         # left edge
-		lines(c(Lbot-.01,Ltop-.01),c(ymin1,ymax1),lwd=1,col=col.glass[2]) # left edge shadow
-		lines(c(Rbot,Rtop),c(ymin1,ymax1),lwd=4,col=col.glass[1])         # right edge
-		lines(c(Rbot+.01,Rtop+.01),c(ymin1,ymax1),lwd=1,col=col.glass[2]) # right edge shadow
-		lines(xtop,ytop,lwd=3,col=col.glass[1])                           # top front rim
+		lines(xbot,ybot,lwd=3,col=col.glass[1])                           ## bottom edge
+		lines(xbot,ybot-.005,lwd=1,col=col.glass[2])                      ## bottom edge shadow
+		lines(c(Lbot,Ltop),c(ymin1,ymax1),lwd=4,col=col.glass[1])         ## left edge
+		lines(c(Lbot-.01,Ltop-.01),c(ymin1,ymax1),lwd=1,col=col.glass[2]) ## left edge shadow
+		lines(c(Rbot,Rtop),c(ymin1,ymax1),lwd=4,col=col.glass[1])         ## right edge
+		lines(c(Rbot+.01,Rtop+.01),c(ymin1,ymax1),lwd=1,col=col.glass[2]) ## right edge shadow
+		lines(xtop,ytop,lwd=3,col=col.glass[1])                           ## top front rim
 		text(xmid,ymid,labels=c(paste(ifelse(v<0,"-","+"),abs(v))),cex=abs(v*100)^.1)
 	}
 	if (eggs) lower=fried.eggs else if (rings) lower=smoke.rings else lower=pepper.mill

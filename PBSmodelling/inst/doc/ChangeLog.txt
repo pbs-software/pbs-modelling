@@ -8,7 +8,15 @@ Authors:  JTS = Jon T. Schnute
           ARK = Rob Kronlund
 -----------------------------------
 
-2.68.6 (2017-12-13)
+2.68.7 (2018-08-16) [Rcheck=F Rbuild=F]
+  * plotFuns.r
+    + Modified function `plotBubbles' to handle scenario `rpro=T cpro=T'. (RH 180814)
+      - Now, if both are TRUE, the entire matrix is divided by the sum of the matrix,
+      -   which is graphically equivalent to not converting the matrix to proportions.
+      - Previously, if both were TRUE, the matrix rows were converted to proportions and 
+      -   then the matrix columns were converted to proportions.
+
+2.68.6 (2017-12-13) [Rcheck=T Rbuild=T]
   * Documentation
     + Disabled examples in Rd files that either call `createWin', `getWinXxx', or `setwd'. (RH 171213)
     + Kurt Hornik needs a revised package on CRAN before 2018-01-05 to safely retain PBSmodelling on CRAN. (KH 171212)
