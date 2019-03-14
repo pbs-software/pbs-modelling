@@ -11,7 +11,7 @@ SEXP fibonacci2(SEXP sexp_n, SEXP sexp_len) {
 	n = INTEGER_VALUE(sexp_n);
 	
 	/* Allocate space for an R vector */
-	PROTECT(retVals = NEW_NUMERIC(len));
+	retVals = PROTECT(NEW_NUMERIC(len)); /* protect 1 */
 	p_retVals = NUMERIC_POINTER(retVals);
 	
 

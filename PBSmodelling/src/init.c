@@ -11,9 +11,9 @@ static const R_CMethodDef CEntries[]  = {
 
 static const R_CallMethodDef CallEntries[] = {
     {"fibonacci2",    (DL_FUNC) &fibonacci2, 2},    /* fib2.c:     4 */
-    {"strToList",     (DL_FUNC) &strToList, 4},     /* parser.c: 159 */
+    {"strToList",     (DL_FUNC) &strToList, 4},     /* parser.c: 158 */
     {"strToVector",   (DL_FUNC) &strToVector, 4},   /* parser.c: 305 */
-    {"stripComments", (DL_FUNC) &stripComments, 1}, /* parser.c: 400 */
+    {"stripComments", (DL_FUNC) &stripComments, 1}, /* parser.c: 396 */
     {NULL, NULL, 0}
 };
 

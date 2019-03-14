@@ -8,11 +8,11 @@
 packList(stuff, target="PBSlist", value, penv=NULL, tenv=.PBSmodEnv)
 }
 \arguments{
-  \item{stuff}{ string vector of object names }
-  \item{target}{ target list object }
-  \item{value}{ an optional explicit value to assign to \code{stuff} }
-  \item{penv}{ parent environment (default) or user-specified environment where \code{stuff} resides }
-  \item{tenv}{ target environment where target list is or will be located }
+  \item{stuff}{\code{character} -- vector of object names}
+  \item{target}{\code{character} -- name of target list object}
+  \item{value}{\code{numeric|character} -- an optional explicit value to assign to \code{stuff}}
+  \item{penv}{\code{environment} -- source environment (default=parent) or user-specified environment where \code{stuff} resides}
+  \item{tenv}{\code{environment} -- target environment where target list exists or will be located}
 }
 \details{
   A list object called \code{target} will be located in the 
@@ -33,12 +33,21 @@ packList(stuff, target="PBSlist", value, penv=NULL, tenv=.PBSmodEnv)
   No value is returned
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
+  Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
+  \emph{locus opus}: Institute of Ocean Sciences (IOS), Sidney BC\cr
+  Last modified \code{Rd: 2019-03-12}
 }
 \seealso{
-  \code{\link{unpackList}}, \code{\link{readList}}, \code{\link{writeList}} \cr
-  Uses accessor functions:  \code{\link[PBSmodelling]{tget}}, \code{\link[PBSmodelling]{tcall}}, 
-  and \code{\link[PBSmodelling]{tput}}
+In package \pkg{PBSmodelling}:\cr
+  \code{\link[PBSmodelling]{unpackList}},
+  \code{\link[PBSmodelling]{readList}},
+  \code{\link[PBSmodelling]{writeList}} \cr
+Accessor functions:\cr
+  \code{\link[PBSmodelling]{tget}},
+  \code{tcall},
+  \code{tprint}, and
+  \code{tput}
 }
 \examples{
 local(envir=.PBSmodEnv,expr={

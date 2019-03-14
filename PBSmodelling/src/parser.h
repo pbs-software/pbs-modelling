@@ -1,5 +1,5 @@
 /*=============================================================================
-  Copyright (C) 2005-2017 Fisheries and Oceans Canada
+  Copyright (C) 2005-2019 Fisheries and Oceans Canada
 
   This file is part of PBS Modelling.
 
@@ -24,7 +24,21 @@
 #include <R.h>
 #include <Rinternals.h>
 
-/* converts a single string into a list of (key, value) lists
+/*==========================================================
+ Create a 2|3-element list (with names "key" (optional), 
+   "value", "quoted")
+   args:  key    - first element
+          val    - second element
+          quoted - third element: "Y" or "N"
+          list_names - constant 2-length STRSXP for 
+                       "key", "value" names
+   returns: the SEXP of the list.
+============================================================*/
+SEXP addPair(char *key, char *val, char *quoted, SEXP list_names, SEXP list_names_value_only);
+
+
+/*==========================================================
+ Converts a single string into a list of (key, value) lists
    i.e. convert "nokey keyname=foo" into the following R list:
    list(list(value="nokey"), list(key="keyname", value="foo"))
    
@@ -36,10 +50,12 @@
    return: R list of 1-element, or 2-element lists.
            i.e.: "nokey keyname=foo" becomes
            list(list(value="nokey"), list(key="keyname", value="foo"))
-*/
+============================================================*/
 SEXP strToList(SEXP str, SEXP env, SEXP fname, SEXP lineNum);
 
-/* converts a single string into a vector of extracted values
+
+/*==========================================================
+ Converts a single string into a vector of extracted values
    while treating spaces in quotes as regular chars
    
    args: str - R character string
@@ -48,11 +64,15 @@ SEXP strToList(SEXP str, SEXP env, SEXP fname, SEXP lineNum);
          lineNum - R numeric value for line number for use in error reporting
 	
 	return: R vector of values
-*/
+============================================================*/
 SEXP strToVector(SEXP str, SEXP env, SEXP fname, SEXP lineNum);
 
-/*returns a string without any leading #comments
- *and strips off leftover whitespace on the right side */
+
+/*==========================================================
+ Returns a string without any leading #comments
+ and strips off leftover whitespace on the right side
+============================================================*/
 SEXP stripComments(SEXP str);
+
 
 #endif /* __PARSER_H_ */

@@ -1,5 +1,5 @@
 /*=============================================================================
-  Copyright (C) 2005-2017 Fisheries and Oceans Canada
+  Copyright (C) 2005-2019 Fisheries and Oceans Canada
 
   This file is part of PBS Modelling.
 

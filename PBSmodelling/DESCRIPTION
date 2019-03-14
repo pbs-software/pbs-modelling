@@ -1,6 +1,6 @@
 Package:    PBSmodelling
-Version:    2.68.7
-Date:       2018-08-16
+Version:    2.68.8
+Date:       2019-03-12
 Title:      GUI Tools Made Easy: Interact with Models and Explore Data
 Authors@R: c(
    person(c("Jon","T."),"Schnute",role="aut",email="schnutej-dfo@shaw.ca"),
@@ -16,7 +16,7 @@ Author:     Jon T. Schnute [aut], Alex Couture-Beil [aut],
             Rowan Haigh [aut, cre], Nicholas Boers [ctb], Anisa Egeli [ctb],
             A. R. Kronlund [ctb], Steve Martell [ctb], Norm Olsen [ctb]
 Maintainer: Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>
-Copyright:  2005-2018, Fisheries and Oceans Canada
+Copyright:  2005-2019, Fisheries and Oceans Canada
 Depends:    R (>= 3.5.0)
 Imports:    methods, tcltk, XML
 Suggests:   PBSmapping, deSolve, KernSmooth

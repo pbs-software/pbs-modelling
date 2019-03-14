@@ -8,6 +8,12 @@ Authors:  JTS = Jon T. Schnute
           ARK = Rob Kronlund
 -----------------------------------
 
+2.68.8 (2019-03-12) [Rcheck=T Rbuild=T]
+  * C code
+    + Changed `parser.c' to confine PROTECT statements to each C function. (RH 190312)
+      - Previously, an `obj' counter was passed among functions and was impossible to follow.
+      - UNPROTECT now features explicit numbers for stack removal.
+
 2.68.7 (2018-08-16) [Rcheck=F Rbuild=F]
   * plotFuns.r
     + Modified function `plotBubbles' to handle scenario `rpro=T cpro=T'. (RH 180814)
