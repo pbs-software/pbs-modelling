@@ -8,6 +8,17 @@ Authors:  JTS = Jon T. Schnute
           ARK = Rob Kronlund
 -----------------------------------
 
+2.68.9 (2021-11-23) [Rcheck=T Rbuild=T]
+  * Documentation
+    + Updated the user guide `PBSmodelling-UG'. (RH 2021-11-23)
+    + Changed subdirectory 'PBStools' to 'tools' as the former name conflicts with the package 'PBStools'. (RH 211122)
+    + Updated trial package 'PBStry' to conform to more recent requirements for package building. (RH 211122)
+  * plotFuns.r
+    + Modified function `plotBubbles' to disable code that transformed negative values to positive. (RH 211104)
+  * supportFuns.r
+    + Updated function `show0' to deal with changing decimal place delimiters. (RH 190703)
+      - Decimal delimter is specified in options()$OutDec -- in french, the decimal delimiter is a comma ','.
+
 2.68.8 (2019-03-12) [Rcheck=T Rbuild=T]
   * C code
     + Changed `parser.c' to confine PROTECT statements to each C function. (RH 190312)
