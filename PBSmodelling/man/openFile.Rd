@@ -1,24 +1,30 @@
 \name{openFile}
 \alias{openFile}
-\title{Open a File with an Associated Program}
+\title{Open File with Associated Program}
 \description{
-  Open a file using the program that the operating system (Windows/Mac
-  OS X/Linux) associates with its type.  Users wishing to override the
-  default application can specify a program association using
-  \code{setPBSext}.
+  Open a file using the program that the operating system (Windows / Mac
+  OS X / Linux) associates with its type.  Users wishing to override the
+  default application can specify a program association using \code{'setPBSext'}.
 }
 \usage{
-openFile(fname, package=NULL)
+openFile(fname="", package=NULL, select=FALSE)
 }
 \arguments{
-  \item{fname}{character vector, containing file names to open.}
-  \item{package}{(optional) open files relative to this package.}
+  \item{fname}{\code{character} -- vector containing file names to open.}
+  \item{package}{\code{character} -- (optional) package name; open files relative to this package.}
+  \item{select}{\code{logical} -- if \code{TRUE}, force the use of \code{'selectFile'}.}
 }
 \value{
   An invisible string vector of the file names and/or commands with file names.
 }
 \author{
-  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
+  \href{mailto:alex@mofo.ca}{Alex Couture-Beil}, Software Engineer\cr
+  Earthly Technologies, Victoria BC\cr
+
+  Maintainer: \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
+  Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
+  \emph{locus opus}: Regional Headquarters (RHQ), Vancouver BC\cr
+  Last modified \code{Rd: 2023-01-05}
 }
 \note{
   If a command is registered with \code{setPBSext}, then 
@@ -27,8 +33,11 @@ openFile(fname, package=NULL)
 }
 
 \seealso{
-  \code{\link{getPBSext}}, \code{\link{setPBSext}}, \code{\link{clearPBSext}},
-  \code{\link{writePBSoptions}}
+In package \pkg{PBSmodelling}:\cr
+  \code{\link[PBSmodelling]{getPBSext}},
+  \code{\link[PBSmodelling]{setPBSext}},
+  \code{\link[PBSmodelling]{clearPBSext}},
+  \code{\link[PBSmodelling]{writePBSoptions}}
 }
 \examples{
 \dontrun{
@@ -42,7 +51,7 @@ local(envir=.PBSmodEnv,expr={
   action=\"openFile(`doc/PBSmodelling-UG.pdf`,package=`PBSmodelling`)\"", astext=TRUE)
 })
 local(envir=.PBSmodEnv,expr={
-  # Set up Firefox to open .html files (only applicable if Firefox is NOT default web browser)
+  # Set up 'Firefox' to open '.html' files (only applicable if Firefox is NOT default web browser)
   setPBSext("html", '"c:/Program Files/Mozilla Firefox/firefox.exe" file://\%f')
   openFile("foo.html")
 })

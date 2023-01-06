@@ -443,21 +443,22 @@ showAlert=function(message, title="Alert", icon="warning"){
 #------------------------------------.mergeVectors
 
 
-#.optionsNotUpdated---------------------2012-12-04
+#.optionsNotUpdated---------------------2023-01-06
 #  Check if any of the options given by declareGUIoptions are
 #  different in the GUI from their stored values. A blank
 #  GUI entry is equivalent to the option not being set.
 # Ouput:
 #  Returns TRUE if any of the options are different in the
 #  GUI than in their stored values
-# -------------------------------------------AE/RH
+# -------------------------------------------AE|RH
 .optionsNotUpdated=function(){
 	.initPBSoptions()
 	tget(.PBSmod)
 	if(is.null(.PBSmod$.options$.optionsDeclared))
 		return(FALSE)
 	winVals=try(getWinVal(.PBSmod$.options$.optionsDeclared), silent=TRUE)
-	if(class(winVals)=="try-error")
+	#if(class(winVals)=="try-error")
+	if (inherits(winVals, "try-error"))
 		return(FALSE)
 	for(i in names(winVals)){
 		if((is.null(.PBSmod$.options[[i]]) && winVals[[i]]!="") || 
@@ -582,7 +583,7 @@ showAlert=function(message, title="Alert", icon="warning"){
 #----------------------------------------.stripExt
 
 
-#.tryOpen-------------------------------2012-12-04
+#.tryOpen-------------------------------2023-01-06
 #  Tries to open a given file using an editor entered by the
 #  GUI. If an editor wasn't set, tries to open using openFile.
 #  Appropriate alerts are shown if quiet isn't turned on.
@@ -607,11 +608,12 @@ showAlert=function(message, title="Alert", icon="warning"){
 		system(cmd, wait=FALSE, invisible=FALSE)
 	} else {
 		tryRet=try(openFile(filename), silent=TRUE)
-		if(class(tryRet)=="try-error"){
+		#if(class(tryRet)=="try-error"){
+		if (inherits(tryRet, "try-error")){
 			if(!quiet)
 				showAlert(paste("Could not open file ", filename, ". Please choose ",
 				"a default editor or set the appropriate file association.", sep=""))
-		return(FALSE)
+			return(FALSE)
 		}
 	}
 	return(TRUE)

@@ -512,17 +512,28 @@ isWhat <- function(x)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~isWhat
 
 
-## openFile-----------------------------2013-04-05
+## openFile-----------------------------2023-01-04
 ##  Open a file for viewing based on System file
 ##  extension association or .PBSmod$.options$openfile
-## -------------------------------------ACB/RH/NB
-openFile <- function(fname="", package=NULL)
+## --------------------------------------ACB|NB|RH
+openFile <- function(fname="", package=NULL, select=FALSE)
 {
+	## Create the PBSmodelling control file '.PBSmod' into PBSmodelling working environment
 	if (!exists(".PBSmod",envir=.PBSmodEnv)) .initPBSoptions()
 
 	.openFile=function(fname, package)
 	{
-		if (fname=="")  fname=getWinAct()[1] ## does this work?
+		if ( fname=="" && any(grepl("^[^\\.]",names(tcall(.PBSmod)))) ) { ## window names do not start with '.'
+			fname = getWinAct()[1] 
+			if (!file.exists(fname))
+				fname = ""
+		}
+		## Could be troublesome if a valid 'fname' is sitting in GUI actions but user just wants to open a 'selectFile' prompt.
+		if (fname=="" || select) {
+			fname = selectFile(mode="open", multiple=TRUE)
+			openFile(fname) ; return()
+		}
+		## Check package space
 		if(!is.null(package)) {
 			## relative within package
 			pkg_file <- system.file(fname, package=package)
@@ -531,19 +542,31 @@ openFile <- function(fname="", package=NULL)
 			fname <- pkg_file
 		} else {
 			## relative/absolute within file system
-			fname <- normalizePath (fname);
+			fname <- normalizePath(fname, mustWork=FALSE);
+			if (!file.exists(fname)) {
+				message(paste0("'",fname,"' does not exist"))
+				return(fname)
+			}
 		}
-		## system.file and normalizePath both fail if the file
-		## doesn't exist; if we've gotten this far, we
-		## should be okay to open it
+		## system.file and normalizePath both fail if the file doesn't exist;
+		## if we've gotten this far, we should be okay to open it
+
 		## remove everything that precedes extension
-		ext <- sub("^.*\\.", "", fname)
+		#ext <- sub("^.*\\.", "", fname)
+		if (!any(grepl("\\.", basename(fname))))
+			ext = ""
+		else 
+			ext <- sub("^.*\\.", "", basename(fname)) ## (RH 230103)
 		tget(.PBSmod)
-		if ( is.null( .PBSmod$.options$openfile[[ ext ]] ) ) {
+		if ( is.null( .PBSmod$.options$openfile[[ext]] ) ) {
 			## nothing previously set with setPBSext
-			if ( exists("shell.exec", mode="function" ) )  {
+			#if ( exists("shell.exec", mode="function" ) )  {
+			if ( exists("shell", mode="function" ) )  {
 				## Windows
-				shell.exec(fname)
+				if (ext=="")  ## Windows likely has no association if there is no extension
+					shell(paste0("C:/Windows/notepad.exe ", fname), wait=FALSE)  ## (RH 230104)
+				else 
+					shell(fname, wait=FALSE) #shell.exec(fname)
 				return(fname)
 			} else if( file.exists( "/usr/bin/open" ) ) {
 				## Mac OS X
@@ -558,10 +581,8 @@ openFile <- function(fname="", package=NULL)
 				system( paste( "gnome-open", fname ) )
 				return(fname)
 			}
-			stop(paste("There is no program associated with the ",
-				"extension '", ext, "'\n",
-				"Please set an association with the ",
-				"setPBSext command\n"))
+			stop(paste("There is no program associated with the extension '", ext, "'\n",
+				"Set an association with the 'setPBSext' command\n"))
 		} else {
 			## matches extension previously set with setPBSext
 			cmd <- getPBSext(ext)
@@ -574,7 +595,7 @@ openFile <- function(fname="", package=NULL)
 			return(cmd)
 		}
 	}
-	ops=sapply(fname,.openFile, package=package)
+	ops = sapply(fname, .openFile, package=package)
 	invisible(ops)
 }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~openFile
@@ -657,7 +678,7 @@ pause <- function (s = "Press <Enter> to continue")
 ##-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~pause
 
 
-## readPBSoptions-----------------------2012-12-04
+## readPBSoptions-----------------------2023-01-06
 ##  Load PBS options from a text file. The loaded options will
 ##  overwrite existing ones in memory; however, an existing
 ##  option in memory will not be cleared if this option does
@@ -667,12 +688,13 @@ pause <- function (s = "Press <Enter> to continue")
 ##  Output:
 ##   returns FALSE if file did not exist or if read failed
 ##   otherwise returns TRUE
-## -----------------------------------------ACB/RH
+## -----------------------------------------ACB|RH
 readPBSoptions=function(fname="PBSoptions.txt")
 {
 	.initPBSoptions()
 	optList=try(readList(fname), silent=TRUE)
-	if(class(optList)=="try-error")
+	#if(class(optList)=="try-error")
+	if (inherits(optList, "try-error"))
 		return(FALSE)
 	tget(.PBSmod)
 	##eval(parse(text=".PBSmod$.options <<- .mergeLists(.PBSmod$.options, optList)"))

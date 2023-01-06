@@ -8,11 +8,27 @@ Authors:  JTS = Jon T. Schnute
           ARK = Rob Kronlund
 -----------------------------------
 
+2.69.0 (2023-01-06) [Rcheck=T Rbuild=T]
+  * supportFuns.r
+    + Debugged function `openFile' to fix Issue #87 (RH 230104)
+      - Call to `openfile("")' opens a browser window to select files.
+      - Handles files with no extension; tests calls from GUIs that use `act=openFile'.
+  * cSupport.r, listFuns.r, projectFuns.r, supportFuns.r
+    + Fixed NOTEs `Found if() conditions comparing class() to string:' (RH 230106)
+			e.g., `if (class(foo)=="try-error")' changed to `if (inherits(foo,"try-error"))'
+  * Documentation
+    + Modified User Guide to fix some minor issues (RH 230103)
+      - noted that the `grid' widget `sidefont' argument has no effect;
+      - changed `entry' widget's argument `label' description to reflect that label occurs to the left of the entry box, not above;
+      - added an example on page 10 when using `setPBSext' to open text files with a specific editor (need to remove `file://' in call).
+    + Modified Rd help files (RH 230105)
+      - `openFile.Rd', `setPBSext.Rd', `getPBSext.Rd'
+
 2.68.9 (2021-11-23) [Rcheck=T Rbuild=T]
   * Documentation
     + Updated the user guide `PBSmodelling-UG'. (RH 2021-11-23)
-    + Changed subdirectory 'PBStools' to 'tools' as the former name conflicts with the package 'PBStools'. (RH 211122)
-    + Updated trial package 'PBStry' to conform to more recent requirements for package building. (RH 211122)
+    + Changed subdirectory `PBStools' to `tools' as the former name conflicts with the package `PBStools'. (RH 211122)
+    + Updated trial package `PBStry' to conform to more recent requirements for package building. (RH 211122)
   * plotFuns.r
     + Modified function `plotBubbles' to disable code that transformed negative values to positive. (RH 211104)
   * supportFuns.r

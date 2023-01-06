@@ -96,16 +96,17 @@ compileC=function(file, lib="", options="", logWindow=TRUE, logFile=TRUE){
 #-----------------------------------------.libName
 
 
-#.guiSource-----------------------------2009-07-08
+#.guiSource-----------------------------2023-01-06
 #  Sources the .r file in the working directory indicated by
 #  the prefix entry widget in the GUI
 #-----------------------------------------------AE
 .guiSource=function(){
-  prefix=.getPrefix()
-  filename=paste(prefix, ".r", sep="")
-  res=try(source(filename))
-  if(class(res)=="try-error")
-    showAlert(paste("Error sourcing ", filename, ".", sep=""))
+	prefix=.getPrefix()
+	filename=paste(prefix, ".r", sep="")
+	res=try(source(filename))
+	#if(class(res)=="try-error")
+	if (inherits(res, "try-error"))
+		showAlert(paste("Error sourcing ", filename, ".", sep=""))
 }
 #---------------------------------------.guiSource
 
@@ -176,7 +177,7 @@ compileC=function(file, lib="", options="", logWindow=TRUE, logFile=TRUE){
 #--------------------------------------.cleanLoadC
 
 
-#.loadCRunComparison--------------------2009-07-08
+#.loadCRunComparison--------------------2023-01-06
 #  Runs the provided C and R functions a number of times
 #  specified in the GUI and writes into text boxes the
 #  elapsed time for each
@@ -186,33 +187,37 @@ compileC=function(file, lib="", options="", logWindow=TRUE, logFile=TRUE){
   if(is.null(prefix))
     return()
     
-  rFun=paste(prefix, ".R", sep="")
-  cFun=paste(prefix, ".C", sep="")
-  if(!exists(rFun) || class(get(rFun))!="function"){
-    showAlert(paste("Cannot find function", rFun))
-    return()
-  }
-  if(!exists(cFun) || class(get(cFun))!="function"){
-    showAlert(paste("Cannot find function", cFun))
-    return()
-  }
+	rFun=paste(prefix, ".R", sep="")
+	cFun=paste(prefix, ".C", sep="")
+	#if(!exists(rFun) || class(get(rFun))!="function"){
+	if( !exists(rFun) || !inherits(get(rFun),"function") ){
+		showAlert(paste("Cannot find function", rFun))
+		return()
+	}
+	#if(!exists(cFun) || class(get(cFun))!="function"){
+	if( !exists(cFun) || !inherits(get(cFun),"function") ){
+		showAlert(paste("Cannot find function", cFun))
+		return()
+	}
+
   getWinVal("runs", winName="loadCGUI", scope="L")
   if (runs<1){
     showAlert("Invalid number of run times.")
     return()
   }
-  
-  initFun=paste(prefix, ".init", sep="")
-  if(exists(initFun) && class(get(initFun))=="function")
-    do.call(initFun, list())
-  
+
+	initFun=paste(prefix, ".init", sep="")
+	#if(exists(initFun) && class(get(initFun))=="function")
+	if( exists(initFun) || inherits(get(initFun),"function") )
+		do.call(initFun, list())
+
   gc()
   rTime=proc.time()
   rRet=do.call(rFun, list())
   rTime=proc.time()-rTime
 	if(runs>1){
 		for(i in 1:(runs-1))
-      rTime=rTime+system.time(do.call(rFun, list()), gcFirst=FALSE)
+			rTime=rTime+system.time(do.call(rFun, list()), gcFirst=FALSE)
 	}
 
 	gc()

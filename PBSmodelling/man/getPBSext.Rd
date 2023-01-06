@@ -1,6 +1,6 @@
 \name{getPBSext}
 \alias{getPBSext}
-\title{Get a Command Associated With a File Name}
+\title{Get Command Associated With File Name Extension}
 
 \description{
   Display all locally defined file extensions and their associated commands, 
@@ -14,15 +14,24 @@
 }
 \usage{getPBSext(ext)}
 \arguments{
-  \item{ext}{optional string specifying a file extension.}
+  \item{ext}{\code{character} -- optional string specifying a file extension.}
 }
 \value{
   Command associated with file extension.
 }
 \author{
-  Alex Couture-Beil, Vancouver Island University, Nanaimo BC
+  \href{mailto:alex@mofo.ca}{Alex Couture-Beil}, Software Engineer\cr
+  Earthly Technologies, Victoria BC\cr
+
+  Maintainer: \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
+  Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
+  \emph{locus opus}: Regional Headquarters (RHQ), Vancouver BC\cr
+  Last modified \code{Rd: 2023-01-05}
 }
 \seealso{
-  \code{\link{setPBSext}}, \code{\link{openFile}}, \code{\link{clearPBSext}}
+In package \pkg{PBSmodelling}:\cr
+  \code{\link[PBSmodelling]{setPBSext}},
+  \code{\link[PBSmodelling]{openFile}},
+  \code{\link[PBSmodelling]{clearPBSext}}
 }
 \keyword{methods}

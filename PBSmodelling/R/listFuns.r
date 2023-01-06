@@ -1,11 +1,11 @@
-#writeList------------------------------2009-02-05
-# Writes a list to a file in "D" or "P" format.
-# Arguments:
-#  x        - list to save
-#  fname    - file to write list to
-#  format   - write list in "D" or "P" format
-#  comments - include string as comment at the top of file
-#-------------------------------------------ACB/RH
+## writeList----------------------------2009-02-05
+## Writes a list to a file in "D" or "P" format.
+## Arguments:
+##  x        - list to save
+##  fname    - file to write list to
+##  format   - write list in "D" or "P" format
+##  comments - include string as comment at the top of file
+## -----------------------------------------ACB|RH
 writeList <- function(x, fname="", format="D", comments="") {
 	NoComments<-missing(comments)
 	comments <- sub("^", "#", comments)
@@ -16,16 +16,16 @@ writeList <- function(x, fname="", format="D", comments="") {
 			output <- paste(output, collapse="\n")
 
 			sink(fname)
-                        on.exit(expr=sink());
+			on.exit(expr=sink());
 
-                        #add comments
-                        if (any(comments!="#")) {
-                                cat(paste(comments, collapse="\n"));
-                                cat("\n");
-                        }
-                        #spit out original output from dput
-                        cat(output)
-                        cat("\n")
+			## add comments
+			if (any(comments!="#")) {
+				cat(paste(comments, collapse="\n"));
+				cat("\n");
+			}
+			#spit out original output from dput
+			cat(output)
+			cat("\n")
 		}
 		return(fname)
 	}
@@ -40,36 +40,37 @@ writeList <- function(x, fname="", format="D", comments="") {
 #----------------------------------------writeList
 
 
-#.writeList.P---------------------------2009-02-10
+#.writeList.P---------------------------2023-01-06
 # Saves list x to disk using "P" format
-#-------------------------------------------ACB/RH
+#-------------------------------------------ACB|RH
 .writeList.P <- function( x, fname="", comments, prefix="") {
 	if (fname!="") {
-                sink(fname)
-                on.exit(expr=sink())
-        }
+		sink(fname)
+		on.exit(expr=sink())
+	}
 	if (!missing(comments)) {
 		cat(paste(comments,collapse="\n")); cat("\n")
-        }
+	}
 
-        # check for list elements that are missing names
+	## check for list elements that are missing names
 	xNames=names(x)
-        if (is.null (xNames))
-                # names(x) returns NULL if no names are set
-                xNames <- names(x) <- paste("X",1:length(x),sep="")
-        else {
-                # assign X# names for NA/"" cases
-                z <- is.na(xNames) | is.element(xNames,"")
-                if (any(z))
-                        xNames[z] <- names(x)[z] <- paste("X",1:sum(z),sep="")
-        }
+	if (is.null (xNames)) {
+		## names(x) returns NULL if no names are set
+		xNames <- names(x) <- paste("X",1:length(x),sep="")
+	} else {
+		## assign X# names for NA/"" cases
+		z <- is.na(xNames) | is.element(xNames,"")
+		if (any(z))
+			xNames[z] <- names(x)[z] <- paste("X",1:sum(z),sep="")
+	}
 
-	#check for errors
+	## check for errors
 	for(i in 1:length(x)) {
 		dat=x[[i]]
-                # note if a list (A) contains a list (B), is.vector will return
-                # true for (B)
-		if (!is.vector(dat) && !is.matrix(dat) && class(dat)!="data.frame") next
+		## note if a list (A) contains a list (B), is.vector will return
+		## true for (B)
+		#if (!is.vector(dat) && !is.matrix(dat) && class(dat)!="data.frame") next
+		if (!is.vector(dat) && !is.matrix(dat) && !inherits(dat, "data.frame")) next
 		#prepare character strings with quotes if spaces exist
 		if (is.character(dat) && length(dat)>0) {
 			for(j in 1:length(dat)) {
@@ -81,23 +82,25 @@ writeList <- function(x, fname="", format="D", comments="") {
 		}
 	}
 
-	#start cat-ing keys and values
+	## start cat-ing keys and values
 	for(i in 1:length(x)) {
 		if (prefix != "")
 			nam=paste(prefix, xNames[i], sep="$")
 		else
 			nam=xNames[i]
 		dat=x[[i]]
-		if (!is.vector(dat) && !is.matrix(dat) && class(dat)!="data.frame" && !is.array(dat))  next
+		#if (!is.vector(dat) && !is.matrix(dat) && class(dat)!="data.frame" && !is.array(dat))  next
+		if (!is.vector(dat) && !is.matrix(dat) && !inherits(dat,"data.frame") && !is.array(dat))  next
 		#print varName
 		cat(paste("$", nam, "\n", sep=""))
-		# we must handle lists first because is.vector returns true for a list
-		if (class(dat) == "list") {
-			#list within the list
+		## we must handle lists first because is.vector returns true for a list
+		#if (class(dat) == "list") {
+		if (inherits(dat,"list")) {
+			## list within the list
 			.writeList.P (dat, fname="", prefix=nam)
 		}
 		else if (is.vector(dat)) {
-			#print names
+			## print names
 			vecNames<-names(dat)
 			if (is.null(vecNames)) vecNames=""
 			vecNames <- .addslashes(vecNames)
@@ -149,7 +152,8 @@ writeList <- function(x, fname="", format="D", comments="") {
 			expr=paste(ex1,ex2,ex3,ex4,collapse=" ")
 			eval(parse(text=expr)) 
 		}
-		else if (class(dat)=="data.frame") {
+		#else if (class(dat)=="data.frame") {
+		else if (inherits(dat,"data.frame")) {
 			cat("$$data "); 
 			#ncol
 			cat("ncol="); cat(dim(dat)[2]); cat(" ");
@@ -644,10 +648,10 @@ lisp = function(name, pos=.PBSmodEnv, envir=as.environment(pos), all.names=TRUE,
 		if (is.list(x) && !is.data.frame(x)) {
 			sapply(x,function(x){deparseBO(x)},simplify=FALSE) # recursion through lists within lists
 		} else {
-			xclass=class(x)
+			xclass = class(x)
 			if (mode(x) %in% c("call","expression","(","function","NULL"))
 				x=paste(deparse(x),collapse="")
-			class(x)=xclass
+			class(x) = xclass
 			return(x)
 		}
 	}
