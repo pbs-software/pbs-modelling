@@ -8,6 +8,15 @@ Authors:  JTS = Jon T. Schnute
           ARK = Rob Kronlund
 -----------------------------------
 
+2.69.1 (2023-10-18) [Rcheck=T Rbuild=T]
+  * plotFuns.r
+    + Removed function `testPch' at the request of Prof Brian Ripley.
+      - BR: ``What testPch does may have made a little sense in an 8-bit locale, but none in a multi-byte locale, and you are simply sending lots of invalid inputs to mtext().''
+    + Debugged function `testPch' after R (probably starting in R.4.4.0) reduced its rendering of pch symbols and octal strings. (RH 230726)
+    + Reduced argument `frange' in `plotBubbles from 0.1 to 0.05. (RH 230201)
+  * Documentation
+    + Added `upquote.sty' to the vignettes directory to prevent errors in Unix builds. (RH 231018)
+
 2.69.0 (2023-01-06) [Rcheck=T Rbuild=T]
   * supportFuns.r
     + Debugged function `openFile' to fix Issue #87 (RH 230104)

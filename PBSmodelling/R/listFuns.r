@@ -179,22 +179,23 @@ writeList <- function(x, fname="", format="D", comments="") {
 #-------------------------------------.writeList.P
 
 
-#readList-------------------------------2014-10-21
-# Returns a list object from files originally 
-#  formatted in one of the following ways:
-#  "D" = created by R functions `dput' or `dump'
-#  "R" = R list object as ASCII (e.g., Windows History file)
-#  "P" = PBS-formatted file (see `writeList')
-#  "C" = Comment-delimited file (e.g., Awatea/ADMB input files)
-# Arguments:
-#  fname - file to read
-#  Change (Anisa Egeli): There is a check to see if the file exists. 
-#  This allows try(readList(...), silent=TRUE) to catch the error.
-#-------------------------------------ACB/AE/NB/RH
-readList <- function(fname) {
+## readList-----------------------------2014-10-21
+## Returns a list object from files originally 
+##  formatted in one of the following ways:
+##  "D" = created by R functions `dput' or `dump'
+##  "R" = R list object as ASCII (e.g., Windows History file)
+##  "P" = PBS-formatted file (see `writeList')
+##  "C" = Comment-delimited file (e.g., Awatea/ADMB input files)
+## Arguments:
+##  fname - file to read
+##  Change (Anisa Egeli): There is a check to see if the file exists. 
+##  This allows try(readList(...), silent=TRUE) to catch the error.
+##------------------------------------ACB|AE|NB|RH
+readList <- function(fname)
+{
 	if(!file.exists(fname))
 		stop(paste("File", fname, "does not exist."))
-	#detect file type
+	## detect file type
 	ff <- scan(fname, what=character(), sep="\n", quiet=TRUE)
 
 	if (any(grepl("^[ \t]*structure", ff))) fileformat <- "D"  # file created by `dput' or `dump'
@@ -202,16 +203,7 @@ readList <- function(fname) {
 	else if (any(grepl("^[ \t]*\\$", ff)))  fileformat <- "P"  # file in PBS format
 	else if (any(grepl("^[ \t]*#", ff)))    fileformat <- "C"  # attempt to interpret comment-delimited data (adapted from PBSawatea)
 	else stop("Unknown file format detected (maybe not a list object).")
-#browser();return()
-	#for(i in 1:length(ff)) {
-	#	if (!any(grep("^[ \t]*#", ff[i]))) {
-	#		if (any(grep("^[ \t]*structure", ff[i]))) fileformat <- "D"
-	#		else if (any(grep("^[ \t]*list", ff[i]))) fileformat <- "R"
-	#		else if (any(grep("^[ \t]*\\$", ff[i])))  fileformat <- "P"
-	#		else stop("unknown fileformat detected.")
-	#		break;
-	#	}
-	#}
+
 	if (fileformat == "R" || fileformat == "D") 
 		return(eval(parse(fname)))
 	if (fileformat == "P") 
@@ -219,39 +211,40 @@ readList <- function(fname) {
 	if (fileformat == "C") 
 		return(.readList.C(fname))
 }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~readList
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~readList
 
-#.readList.P----------------------------2009-02-05
-# Read list in "P" format.
-#----------------------------------------ACB/AE/RH
-.readList.P <- function(fname) {
-	#srcfile will be modified, orgfile is untouched and only used for user debug error messages
-	srcfile=orgfile=scan(fname, what=character(), sep="\n", quiet=TRUE, blank.lines.skip=FALSE)
+## .readList.P--------------------------2009-02-05
+## Read list in "P" format.
+## --------------------------------------ACB/AE/RH
+.readList.P <- function(fname)
+{
+	## srcfile will be modified, orgfile is untouched and only used for user debug error messages
+	srcfile = orgfile = scan(fname, what=character(), sep="\n", quiet=TRUE, blank.lines.skip=FALSE)
 	data=list(); j=0; halt=FALSE; str=""
-	extendLine <- FALSE    #used for extending a single line into lines with \
-	extendLineNumber <- 0  #where a new widget starts - used for error messages
+	extendLine <- FALSE    ## used for extending a single line into lines with \
+	extendLineNumber <- 0  ## where a new widget starts - used for error messages
 
 	if (!length(srcfile)) {stop("Input file is empty\n")}
 	#print("loop start"); print(date());
-	#if comments were striped out earlier, we would lose the line count.
+	## if comments were striped out earlier, we would lose the line count.
 	for(i in 1:length(srcfile)) {
 		if (!any(grep("^[[:space:]]*(#.*)?$", srcfile[i]))) {
 			srcfile[i] <- .stripComments(srcfile[i])
-			#append last string onto new string if applicable
+			## append last string onto new string if applicable
 			if (extendLine == TRUE)
 				str <- paste(str, srcfile[i], sep=" ")
 			else {
 				str <- srcfile[i]
 				extendLineNumber <- i
 			}
-			#determine if this string is extended by a \ at the end.
+			## determine if this string is extended by a \ at the end.
 			tmp <- sub('\\\\$', '', str)
 			if (tmp==str) #no sub took place
 				extendLine = FALSE
 			else
 				extendLine = TRUE
 			str <- tmp
-			#parse the line once it is complete (no \)
+			## parse the line once it is complete (no \)
 			if (extendLine == FALSE) {
 				j <- j + 1
 				data[[j]]<-list(str=str, line.start=extendLineNumber, line.end=i)
@@ -259,13 +252,13 @@ readList <- function(fname) {
 		}
 	}
 
-	#convert the "data" list into a real list
+	## convert the "data" list into a real list
 	varName=varOptions=NULL
 	varData=retData=list()    #list to return
 	for(i in 1:length(data)) {
 		str <- data[[i]]$str
 
-		#varOptions (optional)
+		## varOptions (optional)
 		if (substr(str,1,2)=="$$") {
 			if (!is.null(varOptions))
 				stop("extra $$ line found")
@@ -274,10 +267,10 @@ readList <- function(fname) {
 			varOptions <-data[[i]]
 			varOptions$str = substr(varOptions$str, 3, nchar(varOptions$str)) #remove $$
 		}
-		#varName
+		## varName
 		else if (substr(str,1,1)=="$") {
 			if (!is.null(varName)) {
-				#save data into the retData list
+				## save data into the retData list
 				listelem <- paste("retData", paste("[[\"", paste(strsplit (varName, "\\$")[[1]], collapse="\"]][[\""), "\"]]", sep=""), sep="")
 				savedata <- paste(listelem, " <- .readList.P.convertData(varOptions, varData, fname, orgfile)", sep="")
 				eval(parse(text=savedata))
@@ -301,7 +294,7 @@ readList <- function(fname) {
 		}
 	}
 
-	#save anything from after
+	## save anything from after
 	if (!is.null(varName)) {
 		listelem <- paste("retData", paste("[[\"", paste(strsplit(varName, "\\$")[[1]], collapse="\"]][[\""), "\"]]", sep=""), sep="")
 		savedata <- paste(listelem, " <- .readList.P.convertData(varOptions, varData, fname, orgfile)", sep="")
@@ -313,21 +306,22 @@ readList <- function(fname) {
 
 	return(retData)
 }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.readList.P
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.readList.P
 
-#.readList.P.convertData----------------2008-03-05
-# Helper function to convert data into proper mode.
-#-------------------------------------------ACB/RH
-.readList.P.convertData <- function(varOptions, varData, fname="", sourcefile=list()) {
+## .readList.P.convertData--------------2008-03-05
+## Helper function to convert data into proper mode.
+## -----------------------------------------ACB/RH
+.readList.P.convertData <- function(varOptions, varData, fname="", sourcefile=list())
+{
 	if (is.null(varOptions)) {
-		#simple format with no options
+		## simple format with no options
 		if (length(varData)==0) return(varData)
 		else if (length(varData)==1) {
-			#just a vector
+			## just a vector
 			return(.autoConvertMode(.convertParamStrToVector(varData[[1]]$str, fname, varData[[1]]$line.start)))
 		}
 		else {
-			#some sort of matrix to parse
+			## some sort of matrix to parse
 			dimSize <- c(length(varData),0) #num of rows
 			matData <- c()                  #vector to hold values byrow
 			for(i in 1:length(varData)) {
@@ -346,13 +340,13 @@ readList <- function(fname) {
 			return(matrix(matData, dimSize[1], dimSize[2], byrow=TRUE))
 		}
 	}
-	#otherwise varOptions was given (in string format)
-	#convert it into a list first
+	## otherwise varOptions was given (in string format)
+	## convert it into a list first
 	opts <-.getParamFromStr(varOptions$str, fname, varOptions$line.start, varOptions$line.end, sourcefile, .pFormatDefs)
 	if (is.null(opts)) stop("Errors were detected")
 	if (length(varData)==0) return(eval(parse(text=paste(opts$mode,"()",sep="")))) # return empty typeof
 
-	#flatten all data into a vector (of characters)
+	## flatten all data into a vector (of characters)
 	x <- c()
 	for(i in 1:length(varData)) {
 		#weird things happen if its x[i] <- as.vector(.convert...)
@@ -367,7 +361,7 @@ readList <- function(fname) {
 	}
 	else if(opts$type=="matrix") {
 		x <- .forceMode(x, opts$mode)
-		#calculate dims
+		## calculate dims
 		nrow <- length(x)/opts$ncol
 		if (as.integer(nrow)!=nrow) {
 			.catError(paste("Matrix data length [", length(x), "] is not a sub-multiple of ncol [", opts$ncol, "]", sep=""), fname, 
@@ -375,9 +369,9 @@ readList <- function(fname) {
 			sourcefile, "readList error")
 			return(NULL)
 		}
-		#convert to matrix
+		## convert to matrix
 		mat <- matrix(x, nrow, opts$ncol, byrow=opts$byrow)
-		#add colnames
+		## add colnames
 		if (any(opts$colnames!="")) {
 			if (length(opts$colnames)!=opts$ncol) {
 				.catError(paste("Matrix colnames length [", length(opts$colnames), "] is not equal to ncol [", opts$ncol, "]", sep=""), fname, 
@@ -387,7 +381,7 @@ readList <- function(fname) {
 			}
 			colnames(mat)<-opts$colnames
 		}
-		#add rownames
+		## add rownames
 		if (any(opts$rownames!="")) {
 			if (length(opts$rownames)!=nrow) {
 				.catError(paste("Matrix rownames length [", length(opts$rownames), "] is not equal to nrow [", nrow, "]", sep=""), fname, 
@@ -408,7 +402,7 @@ readList <- function(fname) {
 			          sourcefile, "readList error")
 			return(NULL)
 		}
-		#check dims works
+		## check dims works
 		if (length(x)!=prod(opts$dim)) {
 			.catError(paste("dim [product ",prod(opts$dim),"] do not match the length of object [",length(x),"]", sep=""), fname, 
 			          varOptions$line.start, varData[[length(varData)]]$line.end, 
@@ -420,22 +414,22 @@ readList <- function(fname) {
 		if( all( opts$dimnames == "" ) )
 			return( x )
 
-		#restore dimnames
-		# example: dimnames(Titanic) -> there are 4 dimensions (class, sex, age, survived)
-		# these dimensions have different number of names: i.e. Sex has two: male, female
-		# dimnames contains first the name of the element "sex", followed by the labels for the each dimension
-		# "male", "female". dim(Titanic)[2] tells us sex only has two labels, so the next label is a dimension name
-		# ex: dimnames="Class 1st 2nd 3rd Crew Sex Male Female Age Child Adult Survived No Yes" dim="4 2 2 2"
+		##restore dimnames
+		## example: dimnames(Titanic) -> there are 4 dimensions (class, sex, age, survived)
+		## these dimensions have different number of names: i.e. Sex has two: male, female
+		## dimnames contains first the name of the element "sex", followed by the labels for the each dimension
+		## "male", "female". dim(Titanic)[2] tells us sex only has two labels, so the next label is a dimension name
+		## ex: dimnames="Class 1st 2nd 3rd Crew Sex Male Female Age Child Adult Survived No Yes" dim="4 2 2 2"
 		dim_name_dimensions <- length( opts$dim )
 		dim_names <- list()
 
 		for( i in 1:dim_name_dimensions ) {
-			#j points to name of the dimension
+			## j points to name of the dimension
 			if( i == 1 )
 				j <- 1
 			else
 				j <- sum( opts$dim[ 1:(i-1) ] + 1 ) + 1
-			#dim_name_elements are the element names for a particular dimension
+			## dim_name_elements are the element names for a particular dimension
 			dim_name_elements <- ( j + 1 ) : ( j + opts$dim[ i ] )
 			dim_names[[ i ]] <- opts$dimnames[ dim_name_elements ]
 			names( dim_names )[ i ] <- opts$dimnames[ j ]
@@ -444,7 +438,7 @@ readList <- function(fname) {
 		return(x)
 	}
 	else if(opts$type=="data") {
-		#check ncol works
+		## check ncol works
 		if (length(x)%%opts$ncol>0) {
 			.catError(paste("dataframe data length [", length(x), "] is not a sub-multiple of ncol [", opts$ncol, "]", sep=""), fname, 
 			varOptions$line.start, varData[[length(varData)]]$line.end, 
@@ -463,9 +457,9 @@ readList <- function(fname) {
 			sourcefile, "readList error")
 			return(NULL)
 		}
-		#calculate nrow
+		## calculate nrow
 		nrow <- length(x)/opts$ncol
-		#break up data into a vector of a list, such that each element represents a column
+		## break up data into a vector of a list, such that each element represents a column
 		dataCols <- list()
 		if (opts$byrow) {
 			for(i in 1:length(x)) {
@@ -488,11 +482,11 @@ readList <- function(fname) {
 					dataCols[[j]] <- c(dataCols[[j]], x[i])
 			}
 		}
-		#create data.frame and use colnames to refer to each colum
-		#the data.frame will be stored as 'ret'
+		## create data.frame and use colnames to refer to each colum
+		## the data.frame will be stored as 'ret'
 		txt <- "ret <- data.frame("
 		for(i in 1:opts$ncol) { #for each column
-			#convert into propper mode
+			## convert into propper mode
 			dataCols[[i]] <- .convertMode(dataCols[[i]], opts$modes[i])
 			if (i>1)
 				txt <- paste(txt, ", ", sep="")
@@ -501,7 +495,7 @@ readList <- function(fname) {
 		}
 		txt <- paste(txt, ")", sep="")
 		eval(parse(text=txt))
-		#add rownames if any exist
+		## add rownames if any exist
 		if (any(opts$rownames!="")) {
 			if (length(opts$rownames)!=nrow) {
 				.catError(paste("Data rownames length [", length(opts$rownames), "] is not equal to nrow [", nrow, "]", sep=""), fname, 
@@ -514,21 +508,22 @@ readList <- function(fname) {
 		return(ret)
 	}
 }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~.readList.P.convertData
+##~~~~~~~~~~~~~~~~~~~~~~~~~.readList.P.convertData
 
-#.readList.C----------------------------2014-10-21
-# Read ADMB-like input file and create a list.
-# Adapted from `readAD' in PBSawatea.
-#-----------------------------------------------RH
-.readList.C = function(fname) {
-	Otxt = readLines(fname) # original text
+## .readList.C--------------------------2014-10-21
+## Read ADMB-like input file and create a list.
+## Adapted from `readAD' in PBSawatea.
+## ---------------------------------------------RH
+.readList.C = function(fname)
+{
+	Otxt = readLines(fname) ## original text
 	otxt = .trimWhiteSpace(Otxt)
-	utxt = otxt[!is.element(substring(otxt,1,3),"###")] # use text (remove data not comments)
+	utxt = otxt[!is.element(substring(otxt,1,3),"###")] ## use text (remove data not comments)
 	xlst = strsplit(utxt,"")
 	xlst = xlst[sapply(xlst,length)>0]
 	ntxt = sapply(xlst,function(x){paste(clipVector(x,clip="\t",end=2),collapse="")})
 	#ntxt = gsub("\\\t\\\t","\t",ntxt)   # internal cleanup
-	ntxt = gsub("[[:space:]]+"," ",ntxt)   # internal cleanup
+	ntxt = gsub("[[:space:]]+"," ",ntxt)   ## internal cleanup
 	vlst = list(); vcom=NULL; acom=NULL
 
 	for (i in 1:length(ntxt)) {
@@ -547,7 +542,7 @@ readList <- function(fname) {
 		eval(parse(text=expr))
 	}
 	
-	# description of variables with inputs
+	## description of variables with inputs
 	vdesc = unique(vcom)
 	gcomm = acom[!is.element(acom,vdesc)] # general comments
 	vcomm = acom[is.element(acom,vdesc)]  # variable comments (may be duplicated)
@@ -575,7 +570,7 @@ readList <- function(fname) {
 #browser();return()
 	return(vars)
 }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~readList.C
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~readList.C
 
 
 #unpackList-----------------------------2012-12-06

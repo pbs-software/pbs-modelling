@@ -1,4 +1,4 @@
-\documentclass[letter,11pt]{article}
+\documentclass[letterpaper,11pt]{article}
 %\VignetteIndexEntry{Introduction to PBSmodelling}
 %\VignettePackage{PBSmodelling}
 \usepackage{Sweave}

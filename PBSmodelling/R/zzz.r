@@ -139,3 +139,5 @@ if(getRversion() >= "2.15.1") utils::globalVariables(names=c(
 	"wN"
 	), package="PBSmodelling" )
 
+options(big.mark=",")
+

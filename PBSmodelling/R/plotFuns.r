@@ -21,7 +21,7 @@
 ##  testCol      : Display test colours as circular patches
 ##  testLty      : Display line types available
 ##  testLwd      : Display line widths
-##  testPch      : Display plotting symbols or octal strings
+##  testPch      : Display plotting symbols or octal strings (removed)
 ##----------------------------------------------------------
 ## Authors:                                                |
 ##  Jon T. Schnute <schnutej@shaw.ca>                      |
@@ -288,7 +288,7 @@ plotAsp <- function(x,y,asp=1,...)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~plotAsp
 
 
-## plotBubbles--------------------------2021-10-27
+## plotBubbles--------------------------2023-02-01
 ## Function to construct a bubble plot for a matrix z
 ##  z:     input matrix or data frame
 ##  xval:  x-values for the columns of z (if length xval != # colums in z, xval is ignored)
@@ -314,7 +314,7 @@ plotAsp <- function(x,y,asp=1,...)
 plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE, 
    rpro=FALSE, cpro=FALSE, rres=FALSE, cres=FALSE, 
    powr=0.5, size=0.2, lwd=1, clrs=c("black","red","blue"), 
-   hide0=FALSE, frange=0.1, prettyaxis=FALSE, ...)
+   hide0=FALSE, frange=0.05, prettyaxis=FALSE, ...)
 {
 	if (is.data.frame(z)) {
 		use = !sapply(z,is.factor) & sapply(z,is.numeric)
@@ -419,9 +419,11 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	xlimx = extendrange(xlim,f=frange); if (diff(xlim)<0) xlimx = rev(xlimx)
 	ylim  = dots$ylim; if (is.null(ylim)) ylim=range(y2)
 	ylimx = extendrange(ylim,f=frange); if (diff(ylim)<0) ylimx = rev(ylimx)
-	mots  = dots[setdiff(names(dots),c("xlim","ylim","xlab","ylab"))]
+	mots  = dots[setdiff(names(dots),c("xlim","ylim","xlab","ylab","fill"))]  ## (RH 211130)
 	args = c(list(x=0, y=0, xlim=xlimx, ylim=ylimx, type="n", axes=FALSE, xlab=xlab, ylab=ylab), mots)
 	do.call(plot, args=args)
+#abline(h=args$ylim, v=args$xlim, col="blue", lwd=2)
+#browser();return()
 	## End revisions (RH 211027)
 
 	if (prettyaxis) {
@@ -437,12 +439,12 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 		axis(2,at=y2[!yshow],labels=FALSE,tcl=ifelse(is.null(dots$tcl),par()$tcl,dots$tcl)/3)
 	evalCall(axis,argu=list(side=1,at=x2[xshow],labels=xlabel[xshow]),...,checkpar=TRUE)
 	evalCall(axis,argu=list(side=2,at=y2[yshow],labels=ylabel[yshow]),...,checkpar=TRUE)
-#browser();return()
 
 	if (!hide0 && !all(is.na(z3))) {
 		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z3),inches=0.001,fg=clrs[3],lwd=lwd,add=TRUE),...,checkpar=TRUE)
 		#symbols(xx, yy, circles = as.vector(z3), inches = 0.001, fg = clrs[3], lwd = lwd, add = TRUE, ...)
 	}
+#browser();return()
 	if (!all(is.na(z2))) {
 		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z2),inches=sz2,fg=clrs[2],lwd=lwd,add=TRUE),...,checkpar=TRUE)
 		#symbols(xx, yy, circles = as.vector(z2), inches = sz2, fg = clrs[2], lwd = lwd, add = TRUE, ...)
@@ -888,60 +890,7 @@ testLwd <- function (lwd=1:20, col=c("black","blue"), newframe=TRUE)
 }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~testLwd
 
-
-## testPch------------------------------2011-09-09
-##  Display plotting symbols or octal strings
-##  Arguments:
-##   pch      - symbols/octals to test
-##   ncol     - number of columns to use
-##   grid     - logical: if T, display in a grid
-##   newframe - if T, use a new graphics frame, if F, overlay
-##   octal    - logical: if T, use octal (backslash) strings
-## ---------------------------------------------RH
-testPch <- function (pch=1:100, ncol=10, grid=TRUE, newframe=TRUE, octal=FALSE, ...)
-{
-	if (!is.element(ncol,c(2,5,10))) stop("Set ncol to 2 or 5 or 10")
-	if (!all(diff(pch)==1)) stop("pch vector must be a continuous increasing integer series")
-	if (!octal && (all(pch>255) | any(pch<0))) stop("pch must be in the range 0 - 255")
-	if (octal && (all(pch<41) | all(pch>377))) stop("pch must be in the range 41 - 377")
-	if (newframe) {
-		resetGraph(); frame(); }
-	par0 <- par(no.readonly = TRUE)
-	on.exit(par(par0))
-	npch =length(pch)
-	xlim = c(.5,ncol+.5)
-	rlim = floor((pch[c(1,npch)]-1)/ncol); yval = rlim[1]:rlim[2]
-	ylim = rev(rlim); ylim = ylim + c(.5,-.5)
-	pchy = pch[is.element(pch,seq(0,1000,ncol))]
-	if(length(pchy)<length(yval)) {
-		pchy = c(pchy,floor((pchy[length(pchy)]+ncol)/ncol)*ncol)
-	}
-	ylab = pchy - ncol
-	par(usr=c(xlim,ylim))
-	if (grid) {
-		abline(v=seq(.5,ncol+.5,1),h=seq(rlim[1]-.5,rlim[2]+.5,1),col="gainsboro")
-	}
-	for (i in pch) {
-		y = floor((i - 1)/ncol)
-		x = i - ncol * y
-		if (octal) {
-			#if (i<41 | i>377 | is.element(i,seq(9,379,10)) | is.element(i,c(90:99,190:199,290:299))) next
-			if (i<41 | i>377 | grepl("[89]",i) | is.element(i,c(177,201,220,235))) next   # Duncan Murdoch suggested grepl("[89]",i)
-			cset = eval(parse(text=paste("\"\\", i, "\"", sep = "")))
-			text(x,y, cset, cex=1.5, ...) 
-		}
-		else {
-			if (i>255 | is.element(i,26:31)) next
-			points(x, y, pch = i, cex=1.5, ...)
-		}
-	}
-	mtext(as.character(1:ncol), side=1, line=.5, at=(1:ncol), cex=1.3, col="blue")
-	mtext(as.character(1:ncol), side=3, line=.4, at=(1:ncol), cex=1.3, col="blue")
-	mtext(ylab, side=2, line=1, at=yval, cex=1.3, col="red",las=1)
-	mtext(paste(ifelse(octal,"OCTAL STRINGS","PCH CHARACTERS"),"(",pch[1],"-",pch[npch],")"), side=3, line=2.2, cex=1.2)
-	invisible(yval)
-}
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~testPch
+## 'testPch' removed from PBSmodelling at the request of Prof Brian Ripley; moved to PBStools (RH 231018)
 
 
 ##===== THE END ==================================

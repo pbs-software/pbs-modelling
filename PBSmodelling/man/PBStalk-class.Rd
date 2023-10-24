@@ -15,13 +15,14 @@
   execution, making use of R's graphical capabilities. 
 
   For \code{presentTalk} to work, six S4 class objects are created:
-  
-  \code{talk......}{root element that constitutes a talk;} \cr
-  \code{section...}{branch element that defines a section within a talk;} \cr
-  \code{text......}{leaf element that specifies text to be printed on the R console;} \cr
-  \code{file......}{leaf element that specifies files to be opened by the OS;} \cr
-  \code{code......}{leaf element that specifies R code to be executed;} \cr
-  \code{break.....}{leaf element that specifies where to allow a break in the talk.}
+  \tabular{ll}{
+  \code{talk}    \tab {root element that constitutes a talk;} \cr
+  \code{section} \tab {branch element that defines a section within a talk;} \cr
+  \code{text}    \tab {leaf element that specifies text to be printed on the R console;} \cr
+  \code{file}    \tab {leaf element that specifies files to be opened by the OS;} \cr
+  \code{code}    \tab {leaf element that specifies R code to be executed;} \cr
+  \code{break}   \tab {leaf element that specifies where to allow a break in the talk.}
+  }
 
   The leaf elements, also termed \emph{primitive} elements, occur in isolation and cannot
   contain other elements. Therefore, only two levels of nesting are supported: sections 
@@ -92,7 +93,15 @@ new("code",
   "break"  = tolower(xmlGetAttr(node,"break","print")))
 new("break") }
 }
-\author{ Alex Couture-Beil, Vancouver Island University, Nanaimo BC }
+\author{
+  \href{mailto:alex@mofo.ca}{Alex Couture-Beil}, Software Engineer\cr
+  Earthly Technologies, Victoria BC\cr
+
+  Maintainer: \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
+  Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
+  \emph{locus opus}: Offsite, Vancouver BC\cr
+  Last modified \code{Rd: 2023-10-18}
+}
 \seealso{
   \code{\link[PBSmodelling]{presentTalk}} for presenting a talk in R.
   
@@ -103,4 +112,9 @@ new("break") }
   \code{\link[PBSmodelling]{PBSoptions-class}} for a complicated S4 class implementation.
 }
 \keyword{classes}
+% For non-standard keywords, use \concept instead of \keyword:
+\concept{presentTalk}
+% \concept{ ~cpt2 }
+% Use only one concept per line.
+
 

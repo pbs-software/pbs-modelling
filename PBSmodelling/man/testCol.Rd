@@ -1,6 +1,8 @@
 \name{testCol}
 \alias{testCol}
-\title{Display Colours Available Using a Set of Strings}
+\title{
+  Display Colours Available Using a Set of Strings
+}
 \description{
   Display colours as round patches in a plot. Useful for programming purposes. 
   Colours can be specified in any of 3 different ways: \cr
@@ -12,15 +14,23 @@
 testCol(cnam=colors()[sample(length(colors()),15)])
 }
 \arguments{
-  \item{cnam}{vector of colour names to display. Defaults to 15 random names 
+  \item{cnam}{\code{character} -- vector of colour names to display. Defaults to 15 random names 
     from the \code{color} palette to use as patterns.}
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
+  Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
+  \emph{locus opus}: Offsite, Vancouver BC\cr
+  Last modified \code{Rd: 2023-10-18}
 }
 \seealso{
-  \code{\link[PBSmodelling]{pickCol}}, \code{\link[PBSmodelling]{testAlpha}}, 
-  \code{\link[PBSmodelling]{testPch}}, \code{\link[grDevices]{palettes}}
+In package \pkg{PBSmodelling}:\cr
+  \code{\link[PBSmodelling]{pickCol}},
+  \code{\link[PBSmodelling]{testAlpha}}\cr
+In package \pkg{PBStools}:\cr
+  \code{testPch}\cr
+In package \pkg{grDevices}:\cr
+  \code{\link[grDevices]{palettes}}
 }
 \examples{
 local(envir=.PBSmodEnv,expr={
@@ -44,6 +54,7 @@ local(envir=.PBSmodEnv,expr={
   testCol(c("#9e7ad3", "purple", 6))
 })
 }
-
 \keyword{utilities}
 \keyword{color}
+\concept{plotFuns}
+

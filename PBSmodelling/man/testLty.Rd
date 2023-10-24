@@ -8,19 +8,28 @@
 testLty(newframe=TRUE, n=1:18, ...)
 }
 \arguments{
-  \item{newframe}{if \code{TRUE}, create a new blank frame, otherwise overlay current frame.}
-  \item{n}{vector of line type numbers.}
-  \item{...}{additional arguments for function \code{lines}.}
+  \item{newframe}{\code{logical} -- if \code{TRUE}, create a new blank frame, otherwise overlay current frame.}
+  \item{n}{\code{numeric} -- vector of line type numbers.}
+  \item{...}{\code{dots} -- additional arguments for function \code{lines}.}
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
+  Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
+  \emph{locus opus}: Offsite, Vancouver BC\cr
+  Last modified \code{Rd: 2023-10-18}
 }
 \note{
   Quick representation of line types for reference purposes.
 }
 \seealso{
-  \code{\link[PBSmodelling]{testLwd}}, \code{\link[PBSmodelling]{testPch}}, \code{\link[PBSmodelling]{testCol}}
+In package \pkg{PBSmodelling}:\cr
+  \code{\link[PBSmodelling]{testLwd}},
+  \code{\link[PBSmodelling]{testCol}}\cr
+In package \pkg{PBStools}:\cr
+  \code{testPch} 
 }
 \keyword{utilities}
 \keyword{color}
+\concept{plotFuns}
+
 

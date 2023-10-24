@@ -4,26 +4,31 @@
   Open Package User Guide
 }
 \description{
-  Open package User's Guide 'pkg-UG.pdf' if it exists.
-  This function is essentially a wrapper for code{openFile}.
+  Open package User's Guide \sQuote{<pkg>-UG.pdf} if it exists.
+  This function is essentially a wrapper for \code{openFile}.
 }
 \usage{
 openUG(pkg = "PBSmodelling")
 }
 \arguments{
-  \item{pkg}{Full name (with or without quotes) of a package installed on the user's system.}
+  \item{pkg}{\code{character} -- full name (with or without quotes) of a package installed on the user's system.}
 }
 \details{
-  We assume that the name of the User's Guide follows 'PBS' conventions.
-  This means a user's guide in PDF format with extension \code{pdf}.
-  The name of the PDF file will be '<pkg>-UG.pdf' (e.g., \code{PBSmodelling-UG.pdf}.
+  The user's guide is assumed to be PDF format with extension \code{pdf}.
+  The name of the PDF file will be \sQuote{<pkg>-UG.pdf} (e.g., \code{PBSmodelling-UG.pdf}.
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
+  Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
+  \emph{locus opus}: Offsite, Vancouver BC\cr
+  Last modified \code{Rd: 2023-10-18}
 }
 \seealso{
-\code{\link{openFile}}, \code{\link{showHelp}}, \code{\link{viewCode}}
+In package \pkg{PBSmodelling}:\cr
+  \code{\link[PBSmodelling]{openFile}},
+  \code{\link[PBSmodelling]{showHelp}},
+  \code{\link[PBSmodelling]{viewCode}}
 }
 \keyword{package}
-\keyword{documentation}
+\keyword{supportFuns}
 
