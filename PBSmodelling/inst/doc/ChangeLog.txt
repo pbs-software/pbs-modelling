@@ -13,6 +13,10 @@ CRAN   :  PBR = Prof Brian Ripley
           UL  = Uwe Ligges
 -----------------------------------
 
+2.69.3 (2023-10-25) [Rcheck=T Rbuild=T]
+  * Documentation
+    + Overlooked keeping `.PBSdimnameHelper' in the namespace. (RH 231026)
+
 2.69.2 (2023-10-25) [Rcheck=T Rbuild=T]
   * Documentation
     + R now requires documentation for all objects exported from the namespace.

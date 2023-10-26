@@ -1,6 +1,6 @@
 Package:    PBSmodelling
-Version:    2.69.2
-Date:       2023-10-25
+Version:    2.69.3
+Date:       2023-10-26
 Title:      GUI Tools Made Easy: Interact with Models and Explore Data
 Authors@R: c(
    person(c("Jon","T."),"Schnute",role="aut",email="schnutej@shaw.ca"),

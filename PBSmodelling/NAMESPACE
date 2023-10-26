@@ -69,7 +69,7 @@ exportPattern("^[^\\.]")
 #exportPattern("^\\.write")
 
  ## need .PBSmodEnv
-exportPattern("^\\.PBS")
+export(.PBSmodEnv)
 
 ## need these functions called by Windows Description files (GUIs)
 exportPattern("^\\.win")  ## function wrappers
