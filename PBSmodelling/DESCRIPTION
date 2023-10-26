@@ -1,14 +1,14 @@
 Package:    PBSmodelling
-Version:    2.69.1
-Date:       2023-10-18
+Version:    2.69.2
+Date:       2023-10-25
 Title:      GUI Tools Made Easy: Interact with Models and Explore Data
 Authors@R: c(
-   person(c("Jon","T."),"Schnute",role="aut",email="schnutej-dfo@shaw.ca"),
+   person(c("Jon","T."),"Schnute",role="aut",email="schnutej@shaw.ca"),
    person("Alex","Couture-Beil",role="aut",email="alex@mofo.ca"),
    person("Rowan","Haigh",role=c("aut","cre"),email="rowan.haigh@dfo-mpo.gc.ca"),
    person("Nicholas","Boers",role="ctb",email="nboers@gmail.com"),
-   person("Anisa","Egeli",role="ctb",email="anisa.egeli@dfo-mpo.gc.ca"),
-   person(c("A.","R."),"Kronlund",role="ctb",email="allen.kronlund@dfo-mpo.gc.ca"),
+   person("Anisa","Egeli",role="ctb",email="aegeli@gmail.com"),
+   person(c("A.","R."),"Kronlund",role="ctb",email="interfacefisheries@gmail.com"),
    person("Steve","Martell",role="ctb",email="martell.steve@gmail.com"),
    person("Norm","Olsen",role="ctb",email="norm.olsen@dfo-mpo.gc.ca")
    )

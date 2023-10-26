@@ -6,13 +6,28 @@ Authors:  JTS = Jon T. Schnute
           NB  = Nicholas Boers
           AE  = Anisa Egeli
           ARK = Rob Kronlund
+          SM  = Steve Martell
+          NO  = Norm Olsen
 -----------------------------------
+CRAN   :  PBR = Prof Brian Ripley
+          UL  = Uwe Ligges
+-----------------------------------
+
+2.69.2 (2023-10-25) [Rcheck=T Rbuild=T]
+  * Documentation
+    + R now requires documentation for all objects exported from the namespace.
+      - UL suggests not exporting the dot functions, and given the large number of them (153), RH concurs.
+    + Needed to export `.PBSmodEnv' so added Rd file using file name convention from R package `adnuts': `dot-PBSmodEnv.Rd'.
+    + Need to export the `.win' wrapper functions. (RH 231025)
+  * supportFuns.r
+    + Debugged function `viewCode' which was comparing logicals of differing length. (RH 231025)
 
 2.69.1 (2023-10-18) [Rcheck=T Rbuild=T]
   * plotFuns.r
-    + Removed function `testPch' at the request of Prof Brian Ripley.
-      - BR: ``What testPch does may have made a little sense in an 8-bit locale, but none in a multi-byte locale, and you are simply sending lots of invalid inputs to mtext().''
-    + Debugged function `testPch' after R (probably starting in R.4.4.0) reduced its rendering of pch symbols and octal strings. (RH 230726)
+    + Removed function `testPch' at the request of PBR. (RH 231018)
+      - Works in an 8-bit locale, but does not in a multi-byte locale: sends lots of invalid inputs to mtext().
+      - Debugged function `testPch' after R (probably starting in R.4.4.0) reduced its rendering of pch symbols and octal strings. (RH 230726)
+      - Moved `testPch' to non-CRAN package `PBStools'.
     + Reduced argument `frange' in `plotBubbles from 0.1 to 0.05. (RH 230201)
   * Documentation
     + Added `upquote.sty' to the vignettes directory to prevent errors in Unix builds. (RH 231018)
@@ -88,7 +103,7 @@ Authors:  JTS = Jon T. Schnute
       - Previously, the function tried to grab this from the local HTTP server 127.0.0.1.
   * Documentation
     + Changed backticks ` in DESCRIPTION to single quotes ' (Kurt Hornik 2016-09-20)
-    + You need to set the BINPREF variable in etc/.../Makeconf and you can omit the ? (Uwe Ligges 2016-04-18)
+    + You need to set the BINPREF variable in etc/.../Makeconf and you can omit the ? (UL 2016-04-18)
       - Old: BINPREF ?= c:/Rtools/mingw_64/bin/
       - New: BINPREF = C:/Apps/R/Rtools/mingw_64/bin/
 
@@ -201,10 +216,10 @@ Authors:  JTS = Jon T. Schnute
     + Added dot functions to namespace for export using explicit action patterns. (RH 121102)
     + Changed JTS's email address to schnutej-dfo@shaw.ca (RH 121102)
   * plotFuns.r
-    + Added Steve Martell's function 'plotSidebars'. (RH 120807)
+    + Added SM's function 'plotSidebars'. (RH 120807)
   * Documentation
     + Disabled NOTES about 'no visible binding for '<<-'' by converting the assignment lines to evaluated text. (RH 120717)
-    + Implemented Brian Ripley's suggestion to remove NOTES about 'no visible binding for global variable xxx':
+    + Implemented PBR's suggestion to remove NOTES about 'no visible binding for global variable xxx':
       - if(getRversion() >= "2.15.1") globalVariables(names=c(...), package="PBSmapping") (RH 120717)
   * Examples
     + Revised function 'TestFuns' to deal with closing windows more consistently. (RH 120327)

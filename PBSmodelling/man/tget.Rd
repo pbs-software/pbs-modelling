@@ -4,7 +4,7 @@
 \alias{tprint}
 \alias{tput}
 \title{
-  Get/Print Objects From or Put Objects Into Temporary Work Environment
+  Get/Put Objects From/To Temporary Work Environment
 }
 \description{
   Get/print objects from or put objects into a temporary work environment
@@ -18,9 +18,12 @@ tprint(x, penv=NULL, tenv=.PBSmodEnv)
 tput(x, penv=NULL, tenv=.PBSmodEnv)
 }
 \arguments{
-  \item{x}{name (with or without quotes) of an object to retrieve or store in the temporary environment.}
-  \item{penv}{parent environment, defaults to \code{parent.frame()} called from within the function.}
-  \item{tenv}{temporary working environment, defaults to \code{.PBSmodEnv}.}
+  \item{x}{\code{character|object} -- name (with or without quotes) of
+    an object to retrieve or store in the temporary environment.}
+  \item{penv}{\code{environment} -- parent environment, defaults to
+    \code{parent.frame()} called from within the function.}
+  \item{tenv}{\code{environment} -- temporary working environment, 
+    defaults to \code{.PBSmodEnv}.}
 }
 \details{
   These accessor functions were developed as a response to the CRAN
@@ -47,11 +50,13 @@ tput(x, penv=NULL, tenv=.PBSmodEnv)
   user may wish to call, for example, \code{tcall(myfunc)()}.
 }
 \references{
-  CRAN Repository Policy: 
-  \url{https://cran.r-project.org/web/packages/policies.html}
+  \href{https://cran.r-project.org/web/packages/policies.html}{CRAN Repository Policy}
 }
 \author{
-  Rowan Haigh, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo BC
+  \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
+  Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
+  \emph{locus opus}: Offsite, Vancouver BC\cr
+  Last modified \code{Rd: 2023-10-25}
 }
 \examples{
 \dontrun{
@@ -60,8 +65,6 @@ local(envir=.PBSmodEnv,expr={
 })
 }
 }
-
-%\seealso{}
 \keyword{manip}
 \keyword{environment}
 

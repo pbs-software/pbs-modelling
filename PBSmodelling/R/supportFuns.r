@@ -1543,40 +1543,46 @@ view <- function (obj, n=5, last=FALSE, random=FALSE, print.console=TRUE, ...)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~view
 
 
-## viewCode-----------------------------2017-06-26
+## viewCode-----------------------------2023-10-25
 ##  View package R code on the fly.
 ## ---------------------------------------------RH
 viewCode=function(pkg="PBSmodelling", funs, output=4, ...)
 {
 	eval(parse(text=paste("if(!require(",pkg,",quietly=TRUE)) stop(\"",pkg," package is required\")",sep="")))
 	tdir <- tempdir(); tdir <- gsub("\\\\","/",tdir)                    ## temporary directory for R
-	if (is.element(pkg,loadedNamespaces())){
+	if (is.element(pkg,loadedNamespaces())) {
 		penv=asNamespace(pkg); pkgOb=ls(penv,all.names=TRUE)             ## objects in package including those in namespace
 		bad=regexpr(".__",pkgOb); pkgOb=pkgOb[bad<0]                     ## get rid of names starting with ".__"
-		delim=":::" }
-	else {
+		delim=":::" 
+	} else {
 		pkgOb=ls(paste("package:",pkg,sep=""),all.names=TRUE)            ## package objects
-		delim="::" }
+		delim="::"
+	}
 	bad=regexpr("[>=~@:/&%!\\|()[{^$*+?<-]",pkgOb); pkgOb=pkgOb[bad<0]  ## get rid of weird names
-	z=sapply(pkgOb,function(x){
+	z=sapply(pkgOb,function(x) {
 		if (is.element(x,c("break","for","function","if","next","repeat","while"))) return(FALSE) ## special words in pkg 'base'
-		eval(parse(text=paste("is.function(",paste(pkg,x,sep=delim),")",sep=""))) } )
+		eval(parse(text=paste("is.function(",paste(pkg,x,sep=delim),")",sep=""))) 
+	} )
 	pkgF=names(z)[z]                                                    ## package functions
 	if (length(pkgF)==0) {showAlert(paste(pkg,"has no recognizable functions")); return()}
 	dots=regexpr("^\\.",pkgF); pkgF0=pkgF[dots==1]; pkgF1=pkgF[dots!=1]
 	code=c(paste("##",pkg,"Functions"),paste("##",paste(rep("-",nchar(pkg)+10),collapse="")))
 	pkgFuns=c(pkgF1,pkgF0)
-	if (missing(funs)) funs=pkgFuns
-	else {
+	if (missing(funs)) {
+		funs=pkgFuns
+	} else {
 		if (!is.null(list(...)$pat) && is.logical(list(...)$pat) && list(...)$pat)
-			funs = findPat(funs,pkgFuns) }
-	if (is.null(funs) || is.na(funs) || !is.character(funs) || all(funs=="")) {
+			funs = findPat(funs,pkgFuns) 
+	}
+	if (is.null(funs) || all(is.na(funs)) || !is.character(funs) || all(funs=="")) {
 		showAlert("Your choice for 'funs' is badly specified")
-		return(invisible("Error: 'funs' badly specified")) }
+		return(invisible("Error: 'funs' badly specified"))
+	}
 	seeFuns=pkgFuns[is.element(pkgFuns,funs)]
 	if (length(seeFuns)==0) {
 		showAlert("Your choices yield no functions")
-		return(invisible("Error: choices for 'funs' yield no functions")) }
+		return(invisible("Error: choices for 'funs' yield no functions"))
+	}
 	if (output==2) {
 		unpackList(list(...))
 		## `home' code from `help.start'
@@ -1596,8 +1602,9 @@ viewCode=function(pkg="PBSmodelling", funs, output=4, ...)
 			##	paste0("http://127.0.0.1:", httpdPort) 
 			##}
 			##else stop("`viewCode' requires the HTTP server to be running", call. = FALSE)
-		}  ##
-		else remote
+		}  else {
+			remote
+		}
 		##expr=paste("iloc=paste(\"",home,"/library/",pkg,"/html/00Index.html\"); ",sep="")
 		##expr=paste(expr,"index=readLines(iloc);",sep="")
 		##eval(parse(text=expr))
@@ -1610,21 +1617,25 @@ viewCode=function(pkg="PBSmodelling", funs, output=4, ...)
 			if (output==2) {
 				expr=c(expr,paste("helptit=index[grep(\">",i,"<\",index)+1][1]; ",sep=""))
 				expr=c(expr,"if (!is.na(helptit)) {")
-				expr=c(expr,"fun=paste(fun,substring(helptit,5,nchar(helptit)-10),sep=\"\\t\") }; ") }
-		}
-		else if (output %in% c(3)) {
+				expr=c(expr,"fun=paste(fun,substring(helptit,5,nchar(helptit)-10),sep=\"\\t\") }; ")
+			}
+		} else if (output %in% c(3)) {
 			expr=paste("fun=deparse(args(",pkg,delim,i,")); fun=fun[!fun%in%\"NULL\"]; ",sep="")
 			expr=c(expr,"fun=paste(fun,collapse=\"\"); ")
 			expr=c(expr,"fun=gsub(\" \",\"\",x=fun); ")
-			expr=c(expr,paste("fun=gsub(\"function\",\"",i," \",x=fun); ",sep="")) }
-		else if (output %in% c(4)) {
+			expr=c(expr,paste("fun=gsub(\"function\",\"",i," \",x=fun); ",sep="")) 
+		} else if (output %in% c(4)) {
 			expr=paste("fun=deparse(",pkg,delim,i,"); ",sep="")
-			expr=c(expr,paste("fun[1]=paste(\"",i,"\",fun[1],sep=\" = \",collapse=\"\"); ",sep="")) }
-		else expr="fun=\"\"; "
+			expr=c(expr,paste("fun[1]=paste(\"",i,"\",fun[1],sep=\" = \",collapse=\"\"); ",sep=""))
+		} else {
+			expr="fun=\"\"; "
+		}
 		expr=paste(c(expr,"code=c(code,fun)") ,collapse="")
-		eval(parse(text=expr)) }
+		eval(parse(text=expr))
+	}
 	fname=paste(tdir,"/",pkg,ifelse(output %in% 1:2,".txt",".r"),sep="")
-	writeLines(code, fname); openFile(convSlashes(fname))
+	writeLines(code, fname)
+	openFile(convSlashes(fname))
 	invisible(code)
 }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~viewCode
