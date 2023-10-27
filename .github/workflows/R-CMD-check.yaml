@@ -8,6 +8,10 @@ on:
 
 name: R-CMD-check
 
+before_install:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
