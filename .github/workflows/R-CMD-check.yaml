@@ -40,6 +40,7 @@ jobs:
           use-public-rspm: true
 
       - name: Before install
+        if: runner.os == 'Linux'
         run: |
           export DISPLAY=:99.0
           sh -e /etc/init.d/xvfb start
