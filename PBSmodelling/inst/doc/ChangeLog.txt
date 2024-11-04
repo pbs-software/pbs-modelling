@@ -13,7 +13,42 @@ CRAN   :  PBR = Prof Brian Ripley
           UL  = Uwe Ligges
 -----------------------------------
 
-2.69.3 (2023-10-25) [Rcheck=T Rbuild=T]
+2.69.4 (2023-11-04) [Rcheck=T Rbuild=T]
+  * R code
+    + Renamed the R code containers to reflect modules (e.g., M01_<original>.r)
+    + Moved function `.sortWidget' from module `M01_widgetDefs.r' to `M08_historyFuns.r' (RH 241031)
+    + Moved function `.mergeLists' from module `M09_option_manager.r' to `M04_listFuns.r' (RH 241031)
+    + Export all dot functions/objects (RH 241031)
+      - having them hidden from the NAMESPACE caused too many issues in dependent packages
+      - widget.defs  (RH 241101): `.widgetDefs', `.pFormatDefs', `.tagDefs', `.tagOptionChecks' [definitions, not just widgets]
+      - convert.funs (RH 241030): `.convertMatrixListToDataFrame', `.convertMatrixListToMatrix', `.convertMode', `.convertOldGridToNewGrid', `.convertParamStrToList', `.convertParamStrToVector', `.convertVecToArray'
+      - create.funs  (RH 241031): `.createTkFont', `.createWidget', `.createWidget.<widgetType>'
+      - history.funs (RH 241031): `.createWidget.history', `.sortHelper', `.sortHelperActive', `.sortHelperFile', '.sortWidget', `.updateFile', `.updateHistory', `.updateHistoryButtons'
+      - talk.funs    (RH 241031): `.getButton', '.getButtons', `.getIndexForSection', `.getMenus', `.getSectionNames', `.getTalkIndexes', `.nextSlide', `.parseTalkFile', `.presentTalkOpenFile', `.prevSlide', `.sectiondrop', `.setsection', `.slidedrop', `.startSlide', `.updateSlide'
+      - list.funs    (RH 231031): `.mergeLists', `.readList.C', `.readList.P', `.readList.P.convertData', `.writeList.P'
+      - gui.funs     (RH 241101):
+      -  create  --> `.buildgrid'
+      -  map     --> `.map.add', `.map.get', `.map.getAll', `.map.init', `.map.set'
+      -  convert --> `.setMatrixElement', `.getMatrixListSize', `.matrixHelp', `.autoConvertMode'
+      -  extract --> `.extractData', `.extractFuns', `.extractVar', `.getParamFromStr', `.table.getvalue', `.table.setvalue', `.getValueForWidgetSetup'
+      -  helper  --> `.getSimilarColour', `.adjustAllColours', `.do.gui.call', `.catError', `.catError2', `.check.object.exists', `.inCollection', `.packWidgetsIntoGrid', `.parsegrid', `.parsemenu', `.PBSdimnameHelper', `.searchCollection', `.setWinValHelper', `.stopWidget', `.stripComments', `.stripSlashes', `.stripSlashesVec', `.superobject.redraw', `.superobject.saveValues', `.trimWhiteSpace', `.validateWindowDescList', `.validateWindowDescWidgets'
+      - project.funs (RH 241101): `.doClean', `.doCleanWD', `.getHiddenEnv', `.getHome', `.getPrefix', `.makeCleanVec', `.mergeLists', `.mergeVectors', `.optionsNotUpdated', `.removeFromList', `.selectCleanBoxes', `.setOption', `.showLog', `.stripExt', `.tryOpen'
+      - support.funs (RH 241104): 
+      -  C support    --> `.fibCall', `.fibC', `.fibR', `.fibClosedForm'
+      -  demo support --> `.viewPkgDemo', `.dClose', `.dUpdateDesc', `.viewPkgVignette'
+      -  misc support --> `.addslashes', `.findSquare', `.forceMode', `.getArrayPts', `.initPBSoptions', `.mapArrayToVec', `.removeFromList', `.tclArrayToVector'
+      - c.support.funs (RH 241104): `.libName', `.guiSource', `.guiCompileC', `.guiDyn', `.cleanLoadC', `.loadCRunComparison'
+      - widget.defs (RH 241104): added `.maxActionSize', `.regex.complex', `.regex.numeric', `.regex.logical'
+      - added `.showOptions' to `getOptions.Rd' (RH 241104)
+  * C code
+    + Rdevcheck reports : File 'PBSmodelling/libs/x64/PBSmodelling.dll': Found non-API call to R: 'SET_TYPEOF'
+    + Attempted to disable use of 'SET_TYPEOF' :
+      - replace : callStr = PROTECT(allocList(4));
+      -           SET_TYPEOF(callStr, LANGSXP);
+      - with :    callStr = PROTECT(allocVector(LANGSXP, 4));
+      - based on : https://stackoverflow.com/questions/18497837/running-embedded-r-in-c
+
+2.69.3 (2023-10-26) [Rcheck=T Rbuild=T]
   * Documentation
     + Overlooked keeping `.PBSdimnameHelper' in the namespace. (RH 231026)
 

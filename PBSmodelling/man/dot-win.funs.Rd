@@ -15,7 +15,7 @@
   GUI Windows Wrappers
 }
 \description{
-  Wrapper functions to run existing or temporary functions from a GUI's function call.
+  Wrapper dot functions to run existing or temporary functions from a GUI's function call.
 }
 \usage{
 .win.chFile()

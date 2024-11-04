@@ -18,9 +18,10 @@ void dispError(char *error, SEXP env, SEXP fname, SEXP lineNum)
 	
 	/*create list for func call*/
 	t = PROTECT(allocList(4)); /* protect 1 */
-	callStr = PROTECT(allocList(4)); /* protect 2 */
+	/*callStr = PROTECT(allocList(4)); protect 2 */
 	/* objs++; */
-	SET_TYPEOF(callStr, LANGSXP);
+	/*SET_TYPEOF(callStr, LANGSXP);*/
+	callStr = PROTECT(allocVector(LANGSXP, 4)); /* protect 2 (RH 241104) */
 	
 	/* first element - function name */
 	SETCAR(t, install(".catError2"));
