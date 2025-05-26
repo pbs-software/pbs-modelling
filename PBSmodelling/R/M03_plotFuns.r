@@ -415,10 +415,11 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 
 	## Revisions to get frange to work (RH 211027)
 	dots  = list(...)
+	frange = rep(frange,2)[1:2]  ## provide a separate frange for xlim and ylim
 	xlim  = dots$xlim; if (is.null(xlim)) xlim=range(x2)
-	xlimx = extendrange(xlim,f=frange); if (diff(xlim)<0) xlimx = rev(xlimx)
+	xlimx = extendrange(xlim,f=frange[1]); if (diff(xlim)<0) xlimx = rev(xlimx)
 	ylim  = dots$ylim; if (is.null(ylim)) ylim=range(y2)
-	ylimx = extendrange(ylim,f=frange); if (diff(ylim)<0) ylimx = rev(ylimx)
+	ylimx = extendrange(ylim,f=frange[2]); if (diff(ylim)<0) ylimx = rev(ylimx)
 	mots  = dots[setdiff(names(dots),c("xlim","ylim","xlab","ylab","fill"))]  ## (RH 211130)
 	args = c(list(x=0, y=0, xlim=xlimx, ylim=ylimx, type="n", axes=FALSE, xlab=xlab, ylab=ylab), mots)
 	do.call(plot, args=args)

@@ -12,6 +12,21 @@ Authors:  JTS = Jon T. Schnute
 CRAN   :  PBR = Prof Brian Ripley
           UL  = Uwe Ligges
 -----------------------------------
+CRAN package version numbers follow a "major.minor.patch" format (e.g., 1.2.3), where: 
+	Major: Indicates a significant change that might break existing code.
+	Minor: Indicates the addition of new features or improvements, while generally maintaining backward compatibility.
+	Patch: Indicates bug fixes and minor improvements that do not introduce new features.
+-----------------------------------
+
+2.70.0 (2025-05-26) [Rcheck=T Rbuild=T]
+  * R code
+    + Added two arguments to function `selectDir' to increase functionality (RH 250521)
+      - new arguments:
+      - `targetDir' -- (caharcter) another directory to start search from
+      - `relative'  -- (logical) should result be relative to start?
+    + Modified `plotBubbles', which had somehow lost the `frange' functionality (RH 250526)
+  * Documentation
+    + Updated user's guide to reflect a few modern dates (RH 250526)
 
 2.69.4 (2023-11-04) [Rcheck=T Rbuild=T]
   * R code

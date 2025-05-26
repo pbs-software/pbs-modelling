@@ -966,25 +966,38 @@ runExamples <- function ()
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~runExamples
 
 
-## selectDir----------------------------2006-06-06
+## selectDir----------------------------2025-05-21
 ##  Prompt user to select a directory - and returns it.
+##  (RH 250521) added two new arguments:
+##   targetDir - another directory to start search from
+##   relative  - should result be relative to start
 ## --------------------------------------------ACB
-selectDir <- function( initialdir = getwd(), mustexist = TRUE, title = "", usewidget = NULL )
+selectDir <- function (initialdir=getwd(), mustexist=TRUE, title="", usewidget=NULL,
+   targetdir=NULL, relative=FALSE)  
 {
-	##get val from widget
-	if( is.null( usewidget ) == FALSE )
-		initialdir <- getWinVal()[[ usewidget ]]
-
-	d <- tclvalue( tkchooseDirectory( initialdir = initialdir, mustexist = mustexist, title = title ) )
-
-	##set val to widget
-	if( is.null( usewidget ) == FALSE && d != "" ) {
-		val <- list()
-		val[[ usewidget ]] <- d
-		setWinVal( val )
+	if (!is.null(usewidget)) 
+		initialdir <- getWinVal()[[usewidget]]
+	if (!is.null(targetdir)) {
+		startdir   <- initialdir ## keep in case
+		initialdir <- targetdir
 	}
-		
-	return( d )
+	d <- tcltk::tclvalue(tcltk::tkchooseDirectory(initialdir=initialdir, mustexist=mustexist, title=title))  ## activates a choice window
+#browser();return()
+	if (relative) {  ## (RH 250520) Attempt to show d relative to initialdir
+		dee = d
+		d = sub(initialdir, ".", dee)
+		if (substring(d,1,1) != "." || !grepl(basename(dee),d))
+			d = dee  ## revert back to original if it's not the parent of the selected
+	}
+	#if (!is.null(usewidget) && d != "") {
+	if (!is.null(usewidget) && (d != "" || !is.na(d) || !is.null(d))) {
+		val <- list()
+		val[[usewidget]] <- d
+		setWinVal(val)
+	}
+	if (relative)
+		names(d) = dee
+	return(d)
 }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~selectDir
 

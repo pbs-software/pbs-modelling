@@ -50,7 +50,8 @@
   Dot GUI Functions
 }
 \description{
-  Various dot functions used by PBSmodelling code internally to support the GUI functions.
+  Various dot functions used by PBSmodelling code internally to 
+  support the GUI functions.
 }
 \usage{
 %===== Create Functions ==========================
@@ -72,8 +73,8 @@
 .extractData(command, action, winName)
 .extractFuns(data)
 .extractVar(winName)
-.getParamFromStr(inputStr, fname="", line.start=0, line.end=0, sourcefile=list(),
-	paramOrder=.widgetDefs)
+.getParamFromStr(inputStr, fname="", line.start=0, line.end=0,
+	sourcefile=list(), paramOrder=.widgetDefs)
 .table.getvalue(winName, widgetName)
 .table.setvalue(winName, widgetName, value)
 .getValueForWidgetSetup(varname, widget, winName)
@@ -81,7 +82,8 @@
 .getSimilarColour(col)
 .adjustAllColours(tObj)
 .do.gui.call(what, args, quote=FALSE, envir=parent.frame()) 
-.catError(err, fname, line.start, line.end, sourcefile=list(), errorType="GUI parse error")
+.catError(err, fname, line.start, line.end, sourcefile=list(),
+	errorType="GUI parse error")
 .catError2(err, fname, line.start)
 .check.object.exists(tk, widget, winName)
 .inCollection(haystack, needle)
@@ -105,7 +107,8 @@
 \arguments{
   \item{tk}{\code{tcltk} -- parent \code{tk} frame to attach widget to}
   \item{grid}{\code{character} -- widget list describing the grid}
-  \item{winName}{\code{character} -- active or target window name | map to process}
+  \item{winName}{\code{character} -- active or target window 
+    name | map to process}
   \item{childWidgets}{\code{character} -- infer: widgets used by other widgets}
   \item{key}{\code{character} -- name of item to extract (i.e., widget name)}
   \item{...}{\code{dots} -- named items to save (in a list)}
@@ -115,41 +118,55 @@
   \item{d}{\code{numeric} -- infer: a dimension}
   \item{big}{\code{numeric} -- infer: minimum size of array dimension}
   \item{matrixList}{\code{numeric} -- infer: matrix list object}
-  \item{value}{\code{numeric} -- infer: value to populate the matrix | list}
-  \item{x}{\code{character} -- string resembling a numeric | string with or without comments | string to trim | list to validate}
-  \item{command}{\code{character} -- user command to call (ie function argument of widget)}
+  \item{value}{\code{numeric} -- infer: value to populate the 
+    matrix | list}
+  \item{x}{\code{character} -- string resembling a numeric | string 
+    with or without comments | string to trim | list to validate}
+  \item{command}{\code{character} -- user command to call
+    (i.e., function argument of widget)}
   \item{action}{\code{character} -- action value}
   \item{data}{\code{character} -- list of widget lists}
-  \item{inputStr}{\code{character} -- string from win desc file describing a widget}
+  \item{inputStr}{\code{character} -- string from win desc file
+    describing a widget}
   \item{fname}{\code{character} -- file name to display with error messages}
   \item{line.start}{\code{numeric} -- line number where widget is first found}
-  \item{line.end}{\code{numeric} -- line number of last line of widget (ie extended line)}
+  \item{line.end}{\code{numeric} -- line number of last line of widget
+    (i.e., extended line)}
   \item{sourcefile}{\code{character} -- source code of the file in question}
   \item{paramOrder}{\code{unknown} -- infer: parameter order}
   \item{widgetName}{\code{character} -- infer: name of a widget}
   \item{varname}{\code{character} -- infer: variable name}
-  \item{widget}{\code{list} -- widget list passed to \code{.creatWidget.<widget>}}
+  \item{widget}{\code{list} -- widget list passed to 
+    \code{.createWidget.<widget>}}
   \item{col}{\code{character|numeric} -- the colour to adjust}
   \item{tObj}{\code{tcltk} -- \code{Tk} object}
   \item{what}{\code{unknown} -- infer: what what what}
   \item{args}{\code{character} -- infer: a list of arguments}
-  \item{quote}{\code{logical} -- infer: if \code{TRUE}, add | use quaotation marks}
-  \item{envir}{\code{environment} -- infer: environment where whatever awaits \code{'what'} works}
+  \item{quote}{\code{logical} -- infer: if \code{TRUE}, add | use 
+    quotation marks}
+  \item{envir}{\code{environment} -- infer: environment where 
+    whatever awaits \code{'what'} works}
   \item{err}{\code{character} -- error string to display}
   \item{errorType}{\code{character} -- type of error to display}
   \item{haystack}{\code{character} -- a vector to search}
   \item{needle}{\code{character} -- a single element to search for}
   \item{widgets}{\code{list} -- infer: widget list}
-  \item{vertical}{\code{logical} -- infer: if \code{TRUE}, pack widgets vertically (top to bottom)}
+  \item{vertical}{\code{logical} -- infer: if \code{TRUE},
+    pack widgets vertically (top to bottom)}
   \item{nRow}{\code{numeric} -- number of grid rows}
   \item{nCol}{\code{numeric} -- number of grid columns}
-  \item{nItems}{\code{numeric} -- number of children to select for the menu}
-  \item{rownames}{\code{character} -- vector of size 1, or dim[1] naming the rows; 
-    if only one name is given, a number (1..dim[1]) will be appended to the name}
-  \item{colnames}{\code{character} -- vector of size 1 or dim[2] naming columns; 
-    if only one name is given, then (1..dim[2]) is appended}
-  \item{dim}{\code{character} -- vector of size 2, dim[1] is \code{nRows}, dim[2] is \code{nCols}}
-  \item{wid.debug}{\code{list} -- list of widget codes (created in parsing process)}
+  \item{nItems}{\code{numeric} -- number of children to select for
+    the menu}
+  \item{rownames}{\code{character} -- vector of size 1, or dim[1] 
+    naming the rows; if only one name is given, a number (1..dim[1])
+    will be appended to the name}
+  \item{colnames}{\code{character} -- vector of size 1 or dim[2] 
+    naming columns; if only one name is given, then (1..dim[2])
+    is appended}
+  \item{dim}{\code{character} -- vector of size 2, dim[1] is 
+    \code{nRows}, dim[2] is \code{nCols}}
+  \item{wid.debug}{\code{list} -- list of widget codes 
+    (created in parsing process)}
   \item{widget_name}{\code{character} -- infer: name of a widget}
 }
 \details{
@@ -213,7 +230,7 @@
                          \tab however, if single quotes are used, space is perserved;\cr
                          \tab e.g., \code{x="a b `c d'"} converts into \code{"a" "b" "c d"}\cr
   \code{.superobject.redraw}  \tab infer: redraw a \code{superobject} (whatever that is)\cr
-  \code{.superobject.saveValues}   \tab must be outside of \code{.createwidget.superobject} since \code{getWinVal}\cr
+  \code{.superobject.saveValues}   \tab must be outside of \code{.createWidget.superobject} since \code{getWinVal}\cr
                                    \tab must be able to call this\cr
   \code{.trimWhiteSpace} \tab remove leading and trailing whitespace\cr
   \code{.validateWindowDescList}   \tab determines if the list represents a valid PBS Modelling description list;\cr
@@ -236,7 +253,7 @@
   Maintainer: \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
   Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
   \emph{locus opus}: Remote office, Vancouver BC\cr
-  Last modified \code{Rd: 2024-11-01}
+  Last modified \code{Rd: 2025-05-26}
 }
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \seealso{
