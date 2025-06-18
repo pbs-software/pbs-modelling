@@ -35,7 +35,7 @@ packList(stuff, target="PBSlist", value, penv=NULL, tenv=.PBSmodEnv)
 \author{
   \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
   Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
-  \emph{locus opus}: Institute of Ocean Sciences (IOS), Sidney BC\cr
+  \emph{locus opus}: remote office, Vancouver BC\cr
   Last modified \code{Rd: 2019-03-12}
 }
 \seealso{
@@ -62,3 +62,5 @@ local(envir=.PBSmodEnv,expr={
 }
 \keyword{list}
 \keyword{file}
+\concept{M04_listFuns.r}
+

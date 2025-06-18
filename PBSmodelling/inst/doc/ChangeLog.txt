@@ -18,6 +18,17 @@ CRAN package version numbers follow a "major.minor.patch" format (e.g., 1.2.3), 
 	Patch: Indicates bug fixes and minor improvements that do not introduce new features.
 -----------------------------------
 
+2.70.1 (2025-06-18) [Rcheck=T Rbuild=T]
+  * R code
+    + Modified function `plotBubbles' (RH 250605)
+      - reactivate `frange'; this functionality appears to have been lost at some point
+      - make sure there are three colours for positive, negative, and zeroes (even if only one colour is supplied)
+      - retain any additional attributes from input matrix to output matrix
+    + Modified documentation function `imports_for_undefined_globals' in `inst/doc' (RH 250618)
+      - function comes from the R package `tools'
+  * Documentation
+    + Updated 25 Rd files to reflect RH's current office location (RH 250617)
+
 2.70.0 (2025-05-26) [Rcheck=T Rbuild=T]
   * R code
     + Added two arguments to function `selectDir' to increase functionality (RH 250521)

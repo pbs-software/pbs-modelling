@@ -48,7 +48,7 @@ plotBubbles(z, xval=FALSE, yval=FALSE, dnam=FALSE, rpro=FALSE,
 
   Maintainer: \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
   Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
-  \emph{locus opus}: Offsite, Vancouver BC\cr
+  \emph{locus opus}: remote office, Vancouver BC\cr
   Last modified \code{Rd: 2023-10-18}
 }
 \seealso{
@@ -67,5 +67,5 @@ local(envir=.PBSmodEnv,expr={
 }
 \keyword{hplot}
 % For non-standard keywords, use \concept instead of \keyword:
-\concept{plotFuns}
+\concept{M03_plotFuns.r}
 

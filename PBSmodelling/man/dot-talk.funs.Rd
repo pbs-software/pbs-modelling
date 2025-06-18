@@ -80,7 +80,7 @@
 
   Maintainer: \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
   Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
-  \emph{locus opus}: Remote office, Vancouver BC\cr
+  \emph{locus opus}: remote office, Vancouver BC\cr
   Last modified \code{Rd: 2024-10-31}
 }
 %% ~Make other sections like Warning with \section{Warning }{....} ~
@@ -96,7 +96,7 @@ In \pkg{PBSmodelling}:\cr
 % \keyword{ ~kwd2 }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
-\concept{M10_presentTalk}
+\concept{M10_presentTalk.r}
 % \concept{ ~cpt2 }
 % Use only one concept per line.
 

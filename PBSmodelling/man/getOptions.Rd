@@ -32,7 +32,7 @@ setOptions(option.object, ...)
 
   Maintainer: \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
   Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
-  \emph{locus opus}: Remote office, Vancouver BC\cr
+  \emph{locus opus}: remote office, Vancouver BC\cr
   Last modified \code{Rd: 2024-11-04}
 }
 \seealso{
@@ -40,5 +40,5 @@ setOptions(option.object, ...)
   an example that uses \pkg{PBSmodelling}'s option management functions.
 }
 \keyword{methods}
-\concept{M09_options_manager}
+\concept{M09_options_manager.r}
 

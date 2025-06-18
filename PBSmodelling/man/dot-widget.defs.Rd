@@ -74,11 +74,12 @@ List of 25 widgets:
   str(.widgetDefs,1)
 }
 \seealso{
+In package \pkg{PBSmodelling}:\cr
   \code{\link[PBSmodelling]{testWidgets}}, 
   \code{\link[PBSmodelling]{showArgs}},
   \code{\link[PBSmodelling]{presentTalk}},
   \code{\link[PBSmodelling]{readList}}
 }
 \keyword{datasets}
-\concept{M01_widgetDefs}
+\concept{M01_widgetDefs.r}
 

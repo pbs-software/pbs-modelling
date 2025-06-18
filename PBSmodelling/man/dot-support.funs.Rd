@@ -90,11 +90,12 @@
 
   Maintainer: \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
   Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
-  \emph{locus opus}: Remote office, Vancouver BC\cr
+  \emph{locus opus}: remote office, Vancouver BC\cr
   Last modified \code{Rd: 2024-11-04}
 }
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \seealso{
+In package \pkg{PBSmodelling}:\cr
   \code{\link[PBSmodelling]{calcFib}},
   \code{\link[PBSmodelling]{runDemos}},
   \code{\link[PBSmodelling]{showVignettes}},
@@ -107,6 +108,6 @@
 % \keyword{ ~kwd2 }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
-\concept{M06_supportFuns}
+\concept{M06_supportFuns.r}
 % \concept{ ~cpt2 }
 % Use only one concept per line.

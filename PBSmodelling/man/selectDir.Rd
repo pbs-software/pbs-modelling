@@ -33,7 +33,7 @@ selectDir(initialdir=getwd(), mustexist=TRUE, title="", usewidget=NULL,
 
   Maintainer: \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
   Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
-  \emph{locus opus}: Remote office, Vancouver BC\cr
+  \emph{locus opus}: remote office, Vancouver BC\cr
   Last modified \code{Rd: 2025-05-26}
 }
 \seealso{
@@ -54,5 +54,5 @@ local(envir=.PBSmodEnv,expr={
 }
 }
 \keyword{file}
-\concept{supportFuns}
+\concept{M06_supportFuns.r}
 

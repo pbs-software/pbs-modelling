@@ -20,7 +20,7 @@ testCol(cnam=colors()[sample(length(colors()),15)])
 \author{
   \href{mailto:rowan.haigh@dfo-mpo.gc.ca}{Rowan Haigh}, Program Head -- Offshore Rockfish\cr
   Pacific Biological Station (PBS), Fisheries & Oceans Canada (DFO), Nanaimo BC\cr
-  \emph{locus opus}: Offsite, Vancouver BC\cr
+  \emph{locus opus}: remote office, Vancouver BC\cr
   Last modified \code{Rd: 2023-10-18}
 }
 \seealso{
@@ -56,5 +56,5 @@ local(envir=.PBSmodEnv,expr={
 }
 \keyword{utilities}
 \keyword{color}
-\concept{plotFuns}
+\concept{M03_plotFuns.r}
 

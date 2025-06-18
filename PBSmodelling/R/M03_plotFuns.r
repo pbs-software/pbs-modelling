@@ -288,7 +288,7 @@ plotAsp <- function(x,y,asp=1,...)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~plotAsp
 
 
-## plotBubbles--------------------------2023-02-01
+## plotBubbles--------------------------2025-06-05
 ## Function to construct a bubble plot for a matrix z
 ##  z:     input matrix or data frame
 ##  xval:  x-values for the columns of z (if length xval != # colums in z, xval is ignored)
@@ -316,6 +316,7 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
    powr=0.5, size=0.2, lwd=1, clrs=c("black","red","blue"), 
    hide0=FALSE, frange=0.05, prettyaxis=FALSE, ...)
 {
+	z.input = z ## (RH 250604) keep for debugging
 	if (is.data.frame(z)) {
 		use = !sapply(z,is.factor) & sapply(z,is.numeric)
 		z=z[,use,drop=FALSE]; if (ncol(z)==0) {showAlert("data frame not useable"); return()}
@@ -369,14 +370,7 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	yy <- rep(y2, length(x2))
 	minz <- min(zz,na.rm=TRUE)
 	maxz <- max(zz,na.rm=TRUE);
-	## Disabled this if loop because it doesn't make any sense (RH 211104)
-	#if (rpro | cpro) {
-	#	if (minz < 0) {
-	#		zz <- zz - minz
-	#		minz <- 0
-	#		maxz <- max(zz,na.rm=TRUE)
-	#	}
-	#}
+
 	if (rpro & cpro) {
 		zz <- zz / sum(zz, na.rm=TRUE)
 	} else if (rpro) {
@@ -407,13 +401,8 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	sz1 <- max(za * size/zM, 0.001)
 	sz2 <- max(-zb * size/zM, 0.001)
 
-	#plot(0,0,xlim=extendrange(x2),ylim=extendrange(y2),type="n",xaxt="n",...)
-	#axis(1,at=x2,labels=xlabel,...)
-	#symbols(xx,yy,circles=as.vector(abs(z0)),inches=size,fg=0,...)
-	#evalCall(plot, argu=list(x=0, y=0, xlim=extendrange(if(is.null(xlim)) xlim else x2,f=frange),
-		#ylim=extendrange(y2,f=frange), type="n", axes=FALSE, xlab=xlab, ylab=ylab),...,checkdef=TRUE,checkpar=TRUE)
-
 	## Revisions to get frange to work (RH 211027)
+	## -------------------------------------------
 	dots  = list(...)
 	frange = rep(frange,2)[1:2]  ## provide a separate frange for xlim and ylim
 	xlim  = dots$xlim; if (is.null(xlim)) xlim=range(x2)
@@ -423,8 +412,7 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	mots  = dots[setdiff(names(dots),c("xlim","ylim","xlab","ylab","fill"))]  ## (RH 211130)
 	args = c(list(x=0, y=0, xlim=xlimx, ylim=ylimx, type="n", axes=FALSE, xlab=xlab, ylab=ylab), mots)
 	do.call(plot, args=args)
-#abline(h=args$ylim, v=args$xlim, col="blue", lwd=2)
-#browser();return()
+	## -------------------------------------------
 	## End revisions (RH 211027)
 
 	if (prettyaxis) {
@@ -441,21 +429,22 @@ plotBubbles <- function(z, xval=FALSE, yval=FALSE, dnam=FALSE,
 	evalCall(axis,argu=list(side=1,at=x2[xshow],labels=xlabel[xshow]),...,checkpar=TRUE)
 	evalCall(axis,argu=list(side=2,at=y2[yshow],labels=ylabel[yshow]),...,checkpar=TRUE)
 
+	clrs = rep(clrs,3)[1:3]  ## (RH 250604) make sure there are three colours (+ve, -ve, 0)
 	if (!hide0 && !all(is.na(z3))) {
 		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z3),inches=0.001,fg=clrs[3],lwd=lwd,add=TRUE),...,checkpar=TRUE)
-		#symbols(xx, yy, circles = as.vector(z3), inches = 0.001, fg = clrs[3], lwd = lwd, add = TRUE, ...)
 	}
-#browser();return()
 	if (!all(is.na(z2))) {
 		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z2),inches=sz2,fg=clrs[2],lwd=lwd,add=TRUE),...,checkpar=TRUE)
-		#symbols(xx, yy, circles = as.vector(z2), inches = sz2, fg = clrs[2], lwd = lwd, add = TRUE, ...)
 	}
 	if (!all(is.na(z1))) {
 		evalCall(symbols,argu=list(x=xx,y=yy,circles=as.vector(z1),inches=sz1,fg=clrs[1],lwd=lwd,add=TRUE),...,checkpar=TRUE)
-		#symbols(xx, yy, circles = as.vector(z1), inches = sz1, fg = clrs[1], lwd = lwd, add = TRUE, ...)
 	}
 	box()
-	invisible(z0)
+	## (RH 250604) Transfer non-common attributes from original z to z0
+	add.atts = setdiff(names(attributes(z)), names(attributes(z0)))
+	if (length(add.atts) > 0)
+		attributes(z0) = c(attributes(z0), attributes(z)[add.atts])
+	invisible(z0)  ## z transformed to proportions
 }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~plotBubbles
 
