@@ -1,23 +1,24 @@
 Package:    PBSmodelling
-Version:    2.70.1
-Date:       2025-06-18
+Version:    2.70.2
+Date:       2025-11-13
 Title:      GUI Tools Made Easy: Interact with Models and Explore Data
 Authors@R: c(
    person(c("Jon","T."),"Schnute",role="aut",email="schnutej@shaw.ca"),
    person("Alex","Couture-Beil",role="aut",email="alex@mofo.ca"),
-   person("Rowan","Haigh",role=c("aut","cre"),email="rowan.haigh@dfo-mpo.gc.ca"),
-   person("Nicholas","Boers",role="ctb",email="nboers@gmail.com"),
-   person("Anisa","Egeli",role="ctb",email="aegeli@gmail.com"),
+   person("Rowan","Haigh",role=c("aut"),email="rowan.haigh@dfo-mpo.gc.ca"),
+   person("Nicholas","Boers",role="aut",email="nboers@gmail.com"),
+   person("Anisa","Egeli",role="aut",email="aegeli@gmail.com"),
    person(c("A.","R."),"Kronlund",role="ctb",email="interfacefisheries@gmail.com"),
    person("Steve","Martell",role="ctb",email="martell.steve@gmail.com"),
-   person("Norm","Olsen",role="ctb",email="norm.olsen@dfo-mpo.gc.ca")
+   person("Norm","Olsen",role="ctb",email="norm.olsen@dfo-mpo.gc.ca"),
+   person("Nick", "Fisch", role = "cre", email = "nick.fisch@dfo-mpo.gc.ca")
    )
 Author:     Jon T. Schnute [aut], Alex Couture-Beil [aut], 
-            Rowan Haigh [aut, cre], Nicholas Boers [ctb], Anisa Egeli [ctb],
-            A. R. Kronlund [ctb], Steve Martell [ctb], Norm Olsen [ctb]
-Maintainer: Rowan Haigh <rowan.haigh@dfo-mpo.gc.ca>
+            Rowan Haigh [aut], Nicholas Boers [aut], Anisa Egeli [aut],
+            A. R. Kronlund [ctb], Steve Martell [ctb], Norm Olsen [ctb], Nick Fisch [cre]
+Maintainer: Nick Fisch <nick.fisch@dfo-mpo.gc.ca>
 Copyright:  2005-2025, Fisheries and Oceans Canada
-Depends:    R (>= 3.5.0)
+Depends:    R (>= 4.2.0)
 Imports:    methods, tcltk, XML
 Suggests:   PBSmapping, deSolve, KernSmooth
 NeedsCompilation: yes

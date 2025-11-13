@@ -8,6 +8,7 @@ Authors:  JTS = Jon T. Schnute
           ARK = Rob Kronlund
           SM  = Steve Martell
           NO  = Norm Olsen
+          NF  = Nick Fisch
 -----------------------------------
 CRAN   :  PBR = Prof Brian Ripley
           UL  = Uwe Ligges
@@ -17,6 +18,14 @@ CRAN package version numbers follow a "major.minor.patch" format (e.g., 1.2.3), 
 	Minor: Indicates the addition of new features or improvements, while generally maintaining backward compatibility.
 	Patch: Indicates bug fixes and minor improvements that do not introduce new features.
 -----------------------------------
+
+2.70.2 (2025-11-13) [Rcheck=T Rbuild=T]
+  * Package
+    + Notified the CRAN Team that NF will be taking over as the new Maintainer (RH 251112)
+    + NF checked PBSmodelling 2.70.2 using rhub:rhub_platforms() on 5 virtual machines and 26 containers
+    + Reverse dependencies
+      - tools::package_dependencies(package="PBSmodelling", reverse=TRUE)
+      - `PBSadmb' `PredictABEL'
 
 2.70.1 (2025-06-18) [Rcheck=T Rbuild=T]
   * R code
@@ -992,6 +1001,8 @@ CRAN package version numbers follow a "major.minor.patch" format (e.g., 1.2.3), 
   * Examples
     + Changed 'ranVars' example to include a legend.
     + Added required package 'check' to examples.
+  * Package
+    + JTS takes over as package Maintainer from ACB
 
 0.54  2006-08-10  ACB
   * Examples
@@ -1220,3 +1231,4 @@ CRAN package version numbers follow a "major.minor.patch" format (e.g., 1.2.3), 
   * Documentation
     + 'window_markup.doc'
     + Updated changes
+    + ACB becomes package Maintainer

@@ -7,13 +7,53 @@ This site assists developers in tracking and resolving bugs and other issues. Us
 
 **PBSmodelling** represents one of a series of R packages developed at the Pacific Biological Station (<a href="http://www.pac.dfo-mpo.gc.ca/science/facilities-installations/index-eng.html#pbs">PBS</a>) in Nanaimo, British Columbia. A more advanced version of **PBSmodelling** might be available at <a href="https://github.com/pbs-software">pbs-software on GitHub</a>. Any evolving package (Windows binary and source tarball) is built after using CRAN's rigorous `R CMD check --as-cran` routine (on a Windows 11 64-bit system). Most of the time, the revision on <a href="https://github.com/pbs-software/pbs-modelling">GitHub</a> can be built in R using `devtools::install_github("pbs-software/pbs-modelling/PBSmodelling")`.
 
+<font color="red"><h3>Maintainer History</h3></font>
+
+The maintainer of the R package PBSmodelling has changed over time:
+
+<html>
+<style>
+table, th, td {
+  border:1px solid grey;
+  background-color: white;
+}
+</style>
+<body>
+<table style="width:60%">
+  <tr>
+    <th>Maintainer</th>
+    <th>Years</th>
+    <th>Versions</th>
+  </tr>
+  <tr>
+    <td><a href="mailto:alex@mofo.ca">Alex Couture-Beil</a></td>
+    <td>2005-2006</td>
+    <td>0.10 - 0.54</td>
+  </tr>
+  <tr>
+    <td><a href="mailto:schnutej@shaw.ca">Jon T. Schnute</a></td>
+    <td>2006-2014</td>
+    <td>0.55 - 2.65</td>
+  </tr>
+<tr>
+    <td><a href="mailto:rowan.haigh@dfo-mpo.gc.ca">Rowan Haigh</a></td>
+    <td>2014-2025</td>
+    <td>2.66 - 2.70.1</td>
+  </tr>
+  <tr>
+    <td><a href="mailto:nick.fisch@dfo-mpo.gc.ca">Nick Fisch</a></td>
+    <td>2025-present</td>
+    <td>2.70.2</td>
+  </tr></table>
+</body>
+</html>
+
 <font color="red"><h3>Disclaimer</h3></font>
 
 "Fisheries and Oceans Canada (DFO) GitHub project code is provided on an 'as is' basis and the user assumes responsibility for its use. DFO relinquishes control of the information and assumes no responsibility to protect the integrity, confidentiality, or availability of the information. Any claims against DFO stemming from the use of its GitHub project will be governed by all applicable Canadian Federal laws. Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation or favouring by DFO. The Fisheries and Oceans Canada seal and logo, or the seal and logo of a DFO bureau, shall not be used in any manner to imply endorsement of any commercial product or activity by DFO or the Canadian Government.”
 
 As with any freely available product, there is no warranty or promise that **PBSmodelling** will perform adequately for all circumstances. Additionally, coding errors are inevitable, and users should contact the package maintainer if bugs are detected.
 
-Maintainer: <a href="mailto:rowan.haigh@dfo-mpo.gc.ca">Rowan Haigh</a> (current); <a href="mailto:nick.fisch@dfo-mpo.gc.ca">Nick Fisch</a> (future) 
-
+Maintainer: <a href="mailto:nick.fisch@dfo-mpo.gc.ca">Nick Fisch</a> 
 
 <p align="right"><img src="DFOlogo_small.jpg" alt="DFO logo" style="height:30px;"></p> 
